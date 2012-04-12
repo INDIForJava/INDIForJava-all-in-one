@@ -1,0 +1,290 @@
+/*
+ *  This file is part of INDI for Java Client UI.
+ * 
+ *  INDI for Java Client UI is free software: you can redistribute it
+ *  and/or modify it under the terms of the GNU General Public License 
+ *  as published by the Free Software Foundation, either version 3 of 
+ *  the License, or (at your option) any later version.
+ * 
+ *  INDI for Java Client UI is distributed in the hope that it will be
+ *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with INDI for Java Client UI.  If not, see 
+ *  <http://www.gnu.org/licenses/>.
+ */
+package laazotea.indi.client.ui;
+
+import java.io.IOException;
+import java.util.List;
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import laazotea.indi.Constants.PropertyPermissions;
+import laazotea.indi.Constants.PropertyStates;
+import laazotea.indi.Constants.SwitchRules;
+import laazotea.indi.client.INDIElement;
+import laazotea.indi.client.INDIProperty;
+import laazotea.indi.client.INDISwitchProperty;
+import laazotea.indi.client.INDIValueException;
+
+/**
+ * A default panel to represent a
+ * <code>INDIProperty</code>.
+ *
+ * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @version 1.3, April 8, 2012
+ * @see INDIProperty
+ */
+public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
+
+  private INDIPropertyInformationDialog infoDialog;
+
+  /**
+   * Creates new form INDIDefaultPropertyPanel
+   */
+  public INDIDefaultPropertyPanel(INDIProperty ip) {
+    super(ip);
+
+    initComponents();
+
+    VerticalLayout v = new VerticalLayout(5, VerticalLayout.CENTER, VerticalLayout.CENTER);
+    buttons.setLayout(v);
+    buttons.validate();
+
+    updatePropertyData();
+
+    boolean writable = false;
+    if (ip.getPermission() != PropertyPermissions.RO) {
+      writable = true;
+    }
+
+    if (!writable) {
+      set.setVisible(false);
+      buttons.remove(set);
+      buttons.revalidate();
+    }
+
+    List<INDIElement> elems = ip.getElementsAsList();
+
+    // In case that we have a switch property we may need a button group
+    ButtonGroup bg = null;
+
+    if (ip instanceof INDISwitchProperty) {
+      INDISwitchProperty isp = (INDISwitchProperty) ip;
+
+      if (isp.getRule() == SwitchRules.ONE_OF_MANY) {
+        bg = new ButtonGroup();
+      } else if (isp.getRule() == SwitchRules.AT_MOST_ONE) {
+        bg = new ButtonGroupZeroOrOne();
+      }
+    }
+
+
+    for (int i = 0 ; i < elems.size() ; i++) {
+      INDIElementPanel ep = null;
+
+      try {
+        ep = (INDIElementPanel) elems.get(i).getDefaultUIComponent();
+      } catch (Exception e) { // Problem with library. Should not happen unless errors in Client library
+        e.printStackTrace();
+        System.exit(-1);
+      }
+
+      if (bg != null) {
+        ((INDISwitchElementPanel) ep).setButtonGroup(bg);
+      }
+
+      ep.setINDIPropertyPanel(this);
+
+      addElementPanel(ep);
+    }
+  }
+
+  @Override
+  protected void checkSetButton() {
+    boolean enabled = true;
+    boolean changed = false;
+
+    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
+      INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
+
+      if (elp.isDesiredValueErroneous()) {
+        enabled = false;
+      }
+
+      if (elp.isChanged()) {
+        changed = true;
+      }
+    }
+
+    if (!changed) {
+      enabled = false;
+    }
+
+    set.setEnabled(enabled);
+  }
+
+  private void updatePropertyData() {
+    name.setText(getProperty().getLabel());
+    name.setToolTipText(getProperty().getName());
+
+    PropertyStates st = getProperty().getState();
+
+    if (st == PropertyStates.IDLE) {
+      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/light_idle.png"))); // NOI18N
+    } else if (st == PropertyStates.OK) {
+      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/light_ok.png"))); // NOI18N
+    } else if (st == PropertyStates.BUSY) {
+      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/light_busy.png"))); // NOI18N
+    } else if (st == PropertyStates.ALERT) {
+      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/light_alert.png"))); // NOI18N
+    }
+  }
+
+  private void addElementPanel(INDIElementPanel panel) {
+    elements.add(panel);
+
+    elements.validate();
+  }
+
+  private void removeElementPanel(INDIElementPanel panel) {
+    elements.remove(panel);
+
+    elements.validate();
+  }
+
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        state = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        name = new javax.swing.JLabel();
+        elements = new javax.swing.JPanel();
+        buttons = new javax.swing.JPanel();
+        set = new javax.swing.JButton();
+        information = new javax.swing.JButton();
+
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        setLayout(new java.awt.BorderLayout(10, 0));
+
+        jPanel1.setLayout(new java.awt.BorderLayout(5, 0));
+
+        state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/light_idle.png"))); // NOI18N
+        jPanel1.add(state, java.awt.BorderLayout.WEST);
+
+        jPanel5.setLayout(new java.awt.BorderLayout());
+        jPanel5.add(name, java.awt.BorderLayout.CENTER);
+
+        jPanel1.add(jPanel5, java.awt.BorderLayout.CENTER);
+
+        add(jPanel1, java.awt.BorderLayout.WEST);
+
+        elements.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        elements.setLayout(new javax.swing.BoxLayout(elements, javax.swing.BoxLayout.Y_AXIS));
+        add(elements, java.awt.BorderLayout.CENTER);
+
+        buttons.setLayout(new java.awt.BorderLayout(0, 5));
+
+        set.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/tick.png"))); // NOI18N
+        set.setText("Set");
+        set.setEnabled(false);
+        set.setMargin(new java.awt.Insets(1, 14, 1, 14));
+        set.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setActionPerformed(evt);
+            }
+        });
+        buttons.add(set, java.awt.BorderLayout.CENTER);
+
+        information.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/information.png"))); // NOI18N
+        information.setText("Info");
+        information.setToolTipText("Information about the property");
+        information.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        information.setPreferredSize(new java.awt.Dimension(50, 16));
+        information.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                informationActionPerformed(evt);
+            }
+        });
+        buttons.add(information, java.awt.BorderLayout.SOUTH);
+
+        add(buttons, java.awt.BorderLayout.EAST);
+    }// </editor-fold>//GEN-END:initComponents
+
+  private void informationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_informationActionPerformed
+    if (infoDialog == null) {
+      infoDialog = new INDIPropertyInformationDialog((JFrame) SwingUtilities.getWindowAncestor(this), false, getProperty());
+    }
+
+    infoDialog.showDialog();
+  }//GEN-LAST:event_informationActionPerformed
+
+  private void setActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setActionPerformed
+
+    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
+      INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
+
+      if (elp.isChanged()) {
+        try {
+          elp.getElement().setDesiredValue(elp.getDesiredValue());
+        } catch (INDIValueException e) {
+          e.printStackTrace();
+          return;
+        }
+      }
+    }
+
+    try {
+      getProperty().sendChangesToDriver();
+
+      cleanDesiredValues();
+    } catch (INDIValueException e) {
+      INDIElement errorElement = e.getINDIElement();
+
+      for (int i = 0 ; i < elements.getComponentCount() ; i++) {
+        INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
+
+        if (errorElement == elp.getElement()) {
+          elp.setError(true, e.getMessage());
+        }
+      }
+    } catch (IOException e) {
+      // System.out.println("Problem sending properties");
+    }
+  }//GEN-LAST:event_setActionPerformed
+
+  private void cleanDesiredValues() {
+    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
+      INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
+
+      elp.cleanDesiredValue();
+    }
+  }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel buttons;
+    private javax.swing.JPanel elements;
+    private javax.swing.JButton information;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JLabel name;
+    private javax.swing.JButton set;
+    private javax.swing.JLabel state;
+    // End of variables declaration//GEN-END:variables
+
+  @Override
+  public void propertyChanged(INDIProperty property) {
+    if (property == getProperty()) {
+      updatePropertyData();
+    }
+  }
+}
