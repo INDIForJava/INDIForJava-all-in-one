@@ -16,7 +16,7 @@
  *  <http://www.gnu.org/licenses/>.
  */
 package laazotea.indi.client;
-
+ 
 import laazotea.indi.ClassInstantiator;
 import laazotea.indi.INDIBLOBValue;
 import laazotea.indi.INDIException;
