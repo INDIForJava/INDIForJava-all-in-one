@@ -23,7 +23,7 @@ import laazotea.indi.INDIException;
 import org.w3c.dom.Element;
 
 /**
- * A class representing a INDI BLOB Element.
+ * A class representing a INDI BLOB Element.xxx
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  * @version 1.21, April 4, 2012
