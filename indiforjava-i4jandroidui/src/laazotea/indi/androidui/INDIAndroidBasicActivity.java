@@ -84,7 +84,7 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
       int p = conn.getPort();
       
       host.setText(h);   // We update the connection tab interface
-      port.setText("" + port);
+      port.setText("" + p);
       connectionButton.setEnabled(false);   
       
       List<INDIDevice> dds = conn.getDevicesAsList();
