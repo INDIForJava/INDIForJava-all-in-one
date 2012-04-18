@@ -79,10 +79,10 @@
     -->
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
-
+<!--
     <target name="-post-compile"> 
       <copy todir="${out.classes.absolute.dir}"> 
         <fileset dir="${jar.libs.dir}" /> 
       </copy> 
-    </target> 
+    </target> -->
 </project>

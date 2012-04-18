@@ -28,6 +28,7 @@ import android.widget.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import laazotea.indi.INDIException;
 import laazotea.indi.client.INDIDevice;
 import laazotea.indi.client.INDIServerConnection;
@@ -36,7 +37,7 @@ import laazotea.indi.client.INDIServerConnectionListener;
 /**
  * An Android Activity that implements a INDI Basic Client.
  *
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 18, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIAndroidBasicActivity extends TabActivity implements INDIServerConnectionListener {
@@ -50,6 +51,8 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
   private EditText port;
   private Button connectionButton;
   private ArrayList<INDIDevice> devices;
+  
+  private INDIAndroidApplication app;
 
   /**
    * Called when the activity is first created.
@@ -58,6 +61,8 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    app = (INDIAndroidApplication)this.getApplication();
+    
     final Context context = this.getApplicationContext();
     handler = new Handler();
 
@@ -69,6 +74,27 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
     devices = new ArrayList<INDIDevice>();
 
     createConnectionView();
+  
+    // We need to check if the connection was already created (maybe the activity has reestarded due to some configuration change)
+    
+    INDIServerConnection conn = app.getConnection();
+    
+    if (conn != null) {  // Update the interface
+      String h = conn.getHost();
+      int p = conn.getPort();
+      
+      host.setText(h);   // We update the connection tab interface
+      port.setText("" + port);
+      connectionButton.setEnabled(false);   
+      
+      List<INDIDevice> dds = conn.getDevicesAsList();
+      
+      for (int i = 0 ; i < dds.size() ; i++) {
+        INDIDevice d = dds.get(i);
+        
+        addD(d);  // We add the interface for this device
+      } 
+    }
   }
 
   private void createConnectionView() {
@@ -133,8 +159,12 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
     INDIServerConnection sc = new INDIServerConnection("xXx", hostName, portNumber);
     try {
       sc.connect();
+
       sc.addINDIServerConnectionListener(this);
-      sc.askForDevices(); // Ask for all the devices. 
+      
+      sc.askForDevices(); // Ask for all the devices.
+      
+      app.setConnection(sc);  // We save the connection into the application class
     } catch (IOException e) {
       return;
     }
