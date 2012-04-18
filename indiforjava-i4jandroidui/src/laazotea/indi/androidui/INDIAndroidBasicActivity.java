@@ -37,7 +37,7 @@ import laazotea.indi.client.INDIServerConnectionListener;
 /**
  * An Android Activity that implements a INDI Basic Client.
  *
- * @version 1.32, April 18, 2012
+ * @version 1.32, April 19, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIAndroidBasicActivity extends TabActivity implements INDIServerConnectionListener {
@@ -50,8 +50,8 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
   private TextView portText;
   private EditText port;
   private Button connectionButton;
+  private Button disconnectionButton;
   private ArrayList<INDIDevice> devices;
-  
   private INDIAndroidApplication app;
 
   /**
@@ -61,8 +61,8 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    app = (INDIAndroidApplication)this.getApplication();
-    
+    app = (INDIAndroidApplication) this.getApplication();
+
     final Context context = this.getApplicationContext();
     handler = new Handler();
 
@@ -72,28 +72,28 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
     tabs = getTabHost();
 
     devices = new ArrayList<INDIDevice>();
-
+             
     createConnectionView();
-  
+
     // We need to check if the connection was already created (maybe the activity has reestarded due to some configuration change)
-    
+
     INDIServerConnection conn = app.getConnection();
-    
+
     if (conn != null) {  // Update the interface
       String h = conn.getHost();
       int p = conn.getPort();
-      
+
       host.setText(h);   // We update the connection tab interface
       port.setText("" + p);
-      connectionButton.setEnabled(false);   
-      
+      connectionButton.setEnabled(false);
+
       List<INDIDevice> dds = conn.getDevicesAsList();
-      
-      for (int i = 0 ; i < dds.size() ; i++) {
+
+      for (int i = 0; i < dds.size(); i++) {
         INDIDevice d = dds.get(i);
-        
+
         addD(d);  // We add the interface for this device
-      } 
+      }
     }
   }
 
@@ -132,8 +132,19 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
     });
     connectionTab.addView(connectionButton);
 
+    disconnectionButton = new Button(this);
+    disconnectionButton.setText("Disconnect");
+    disconnectionButton.setEnabled(false);
+    disconnectionButton.setOnClickListener(new View.OnClickListener() {
 
-    TabSpec tspec = tabs.newTabSpec("CONNECTION").setIndicator("Connection");
+      public void onClick(View v) {
+        disconnect();
+      }
+    });
+    connectionTab.addView(disconnectionButton);
+
+
+    TabSpec tspec = tabs.newTabSpec("CONNECTION").setIndicator("Connection", getResources().getDrawable(R.drawable.ic_network));
     tspec.setContent(new TabHost.TabContentFactory() {
 
       public View createTabContent(String tag) {
@@ -161,15 +172,28 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
       sc.connect();
 
       sc.addINDIServerConnectionListener(this);
-      
+
       sc.askForDevices(); // Ask for all the devices.
-      
+
       app.setConnection(sc);  // We save the connection into the application class
     } catch (IOException e) {
       return;
     }
 
     connectionButton.setEnabled(false);
+    disconnectionButton.setEnabled(true);
+  }
+
+  public void disconnect() {
+    if (app.getConnection() != null) {
+      app.getConnection().disconnect();
+
+      host.setText("");
+      port.setText("7624");
+
+      connectionButton.setEnabled(true);
+      disconnectionButton.setEnabled(false);
+    }
   }
 
   public void newDevice(INDIServerConnection connection, final INDIDevice device) {
@@ -188,9 +212,9 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
 
   private void addD(INDIDevice device) {
     try {
-      final INDIDeviceView view = (INDIDeviceView)device.getDefaultUIComponent();
+      final INDIDeviceView view = (INDIDeviceView) device.getDefaultUIComponent();
 
-      TabSpec spec = tabs.newTabSpec(device.getName()).setIndicator(device.getName());
+      TabSpec spec = tabs.newTabSpec(device.getName()).setIndicator(device.getName(), getResources().getDrawable(R.drawable.ic_gear));
       spec.setContent(new TabHost.TabContentFactory() {
 
         public View createTabContent(String tag) {
@@ -221,14 +245,14 @@ public class INDIAndroidBasicActivity extends TabActivity implements INDIServerC
   }
 
   private void removeD(INDIDevice device) {
-  // Here we should include the code to remove the tabs.
+    // Here we should include the code to remove the tabs.
   }
 
   public void connectionLost(INDIServerConnection connection) {
-  // Here we should include the code to handle the disconnection
+    // Here we should include the code to handle the disconnection
   }
 
   public void newMessage(INDIServerConnection connection, Date date, String message) {
-      // Here we should include the code to handle messages
+    // Here we should include the code to handle messages
   }
 }
