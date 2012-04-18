@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 18, 2012
  */
 public class INDILightProperty extends INDIProperty {
 
@@ -57,7 +57,7 @@ public class INDILightProperty extends INDIProperty {
 
     NodeList list = xml.getElementsByTagName("defLight");
 
-    for (int i = 0 ; i < list.getLength() ; i++) {
+    for (int i = 0; i < list.getLength(); i++) {
       Element child = (Element) list.item(i);
 
       String name = xml.getAttribute("name");
@@ -123,18 +123,20 @@ public class INDILightProperty extends INDIProperty {
 
   @Override
   public INDIPropertyListener getDefaultUIComponent() throws INDIException {
-    if (UIComponent == null) {
-      Object[] arguments = new Object[]{this};
-      String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
-
-      try {
-        UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-      } catch (ClassCastException e) {
-        throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
-      }
-
-      addINDIPropertyListener(UIComponent);
+    if (UIComponent != null) {
+      removeINDIPropertyListener(UIComponent);
     }
+
+    Object[] arguments = new Object[]{this};
+    String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
+
+    try {
+      UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+    } catch (ClassCastException e) {
+      throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
+    }
+
+    addINDIPropertyListener(UIComponent);
 
     return UIComponent;
   }

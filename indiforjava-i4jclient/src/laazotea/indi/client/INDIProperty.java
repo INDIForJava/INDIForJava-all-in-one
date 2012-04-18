@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.2, March 27, 2012
+ * @version 1.32, April 18, 2012
  */
 public abstract class INDIProperty {
 
@@ -192,7 +192,7 @@ public abstract class INDIProperty {
 
       NodeList list = xml.getElementsByTagName(childNodesType);
 
-      for (int i = 0 ; i < list.getLength() ; i++) {
+      for (int i = 0; i < list.getLength(); i++) {
         Element child = (Element) list.item(i);
 
         String ename = child.getAttribute("name");
@@ -399,7 +399,7 @@ public abstract class INDIProperty {
 
     int changedElements = 0;
     String xml = "";
-    for (int i = 0 ; i < elems.size() ; i++) {
+    for (int i = 0; i < elems.size(); i++) {
       INDIElement el = elems.get(i);
 
       if (el.isChanged()) {
@@ -418,63 +418,6 @@ public abstract class INDIProperty {
     }
   }
 
-  /**
-   * Tests and changes the newValues of some of the Elements of this Property.
-   * If the new
-   * <code>newValues</code> for the Elements are correct the XML code to produce
-   * the change is sent to the INDI Driver. If communication is successful the
-   * state of the property is set to "Busy".
-   *
-   * @param elements the list of Elements to be changed.
-   * @param newValues the new values for each one of the
-   * <code>elements</code>
-   * @throws INDIValueException if some of the desired values are not correct or
-   * if the Property is Read Only.
-   * @throws IOException if there is some communication problem with the INDI
-   * driver connection.
-   */
-  /*
-   * public void changeElementValues(ArrayList<INDIElement> elements,
-   * ArrayList<Object> newValues) throws INDIValueException, IOException { if
-   * (permission == PropertyPermissions.RO) { throw new INDIValueException(null,
-   * "The property is read only"); }
-   *
-   * for (int i = 0; i < elements.size(); i++) { INDIElement aux =
-   * elements.get(i); boolean correct = aux.checkCorrectValue(newValues.get(i));
-   *
-   * if (!correct) { throw new INDIValueException(aux, "Value not correct"); } }
-   *
-   * // At this point every value has been checked. Really send changes
-   * sendChangedValues(elements, newValues);
-  }
-   */
-  /**
-   * Sends the XML code to change the value of some of the Elements of this
-   * Property. It communication is successful the state of the property is set
-   * to "Busy".
-   *
-   * @param elements The elements to be changed.
-   * @param newValues The values to be changed.
-   * @throws IOException if there is some communication problem with the INDI
-   * driver.
-   */
-  /*
-   * private void sendChangedValues(ArrayList<INDIElement> elements,
-   * ArrayList<Object> newValues) throws IOException { if (elements.size() > 0)
-   * { String XML = getXMLPropertyChangeInit();
-   *
-   * for (int i = 0; i < elements.size(); i++) { INDIElement el =
-   * elements.get(i);
-   *
-   * XML += el.getXMLOneElementNewValue(newValues.get(i)); }
-   *
-   * XML += getXMLPropertyChangeEnd();
-   *
-   * setState(PropertyStates.BUSY);
-   *
-   * device.sendMessageToServer(XML); }
-  }
-   */
   /**
    * Adds a new listener to this Property.
    *
@@ -497,7 +440,7 @@ public abstract class INDIProperty {
    * Notifies all the listeners about the changes in the Property.
    */
   private void notifyListeners() {
-    for (int i = 0 ; i < listeners.size() ; i++) {
+    for (int i = 0; i < listeners.size(); i++) {
       INDIPropertyListener l = listeners.get(i);
 
       l.propertyChanged(this);
@@ -525,6 +468,10 @@ public abstract class INDIProperty {
    * will be chosen depending on the loaded UI libraries (I4JClientUI,
    * I4JAndroid, etc). Note that a casting of the returned value must be done.
    *
+   * If a previous default component has been requested, the previous one will
+   * be deregistered. So, only one default component will listen for the
+   * property.
+   *
    * @return A UI component that handles this Property.
    */
   public abstract INDIPropertyListener getDefaultUIComponent() throws INDIException;
@@ -539,7 +486,7 @@ public abstract class INDIProperty {
 
     String[] names = new String[l.size()];
 
-    for (int i = 0 ; i < l.size() ; i++) {
+    for (int i = 0; i < l.size(); i++) {
       names[i] = l.get(i).getName();
     }
 
@@ -556,7 +503,7 @@ public abstract class INDIProperty {
     String aux = getName() + " - " + getState() + "\n";
     List<INDIElement> l = getElementsAsList();
 
-    for (int i = 0 ; i < l.size() ; i++) {
+    for (int i = 0; i < l.size(); i++) {
       aux += "  " + l.get(i).getNameAndValueAsString() + "\n";
     }
 

@@ -27,23 +27,23 @@ import org.w3c.dom.Element;
  * A class representing a INDI Switch Element.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.21, April 4, 2012
+ * @version 1.32, April 18, 2012
  */
 public class INDISwitchElement extends INDIElement {
 
   /**
-   * A UI component that can be used in graphical interfaces for this Switch Element.
+   * A UI component that can be used in graphical interfaces for this Switch
+   * Element.
    */
   private INDIElementListener UIComponent;
   /**
    * Current Status value for this Switch Element.
    */
   private SwitchStatus status;
-  
   /**
    * Current desired status value for this Switch Element.
    */
-  private SwitchStatus desiredStatus;  
+  private SwitchStatus desiredStatus;
 
   /**
    * Constructs an instance of
@@ -61,7 +61,7 @@ public class INDISwitchElement extends INDIElement {
     super(xml, property);
 
     desiredStatus = null;
-    
+
     String sta = xml.getTextContent().trim();
 
     setValue(sta);
@@ -110,18 +110,20 @@ public class INDISwitchElement extends INDIElement {
 
   @Override
   public INDIElementListener getDefaultUIComponent() throws INDIException {
-    if (UIComponent == null) {
-      Object[] arguments = new Object[]{this, getProperty().getPermission()};
-      String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDISwitchElementPanel", "laazotea.indi.androidui.INDISwitchElementView"};
-
-      try {
-        UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-      } catch (ClassCastException e) {
-        throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
-      }
-
-      addINDIElementListener(UIComponent);
+    if (UIComponent != null) {
+      removeINDIElementListener(UIComponent);
     }
+
+    Object[] arguments = new Object[]{this, getProperty().getPermission()};
+    String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDISwitchElementPanel", "laazotea.indi.androidui.INDISwitchElementView"};
+
+    try {
+      UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+    } catch (ClassCastException e) {
+      throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
+    }
+
+    addINDIElementListener(UIComponent);
 
     return UIComponent;
   }
@@ -137,7 +139,9 @@ public class INDISwitchElement extends INDIElement {
    * <code>desiredValue</code> is a
    * <code>SwitchStatus</code>.
    * <code>false</code> otherwise.
-   * @throws INDIValueException if <code>desiredValue</code> is <code>null</code>.
+   * @throws INDIValueException if
+   * <code>desiredValue</code> is
+   * <code>null</code>.
    */
   @Override
   public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
@@ -151,8 +155,8 @@ public class INDISwitchElement extends INDIElement {
 
     return false;
   }
-  
-    @Override
+
+  @Override
   public String getNameAndValueAsString() {
     return getName() + " - " + getValue();
   }
@@ -160,9 +164,9 @@ public class INDISwitchElement extends INDIElement {
   @Override
   public SwitchStatus getDesiredValue() {
     if (desiredStatus == null) { // Maybe there is no desired status, but should be sent
-      return status; 
+      return status;
     }
-    
+
     return desiredStatus;
   }
 
@@ -170,8 +174,8 @@ public class INDISwitchElement extends INDIElement {
   public void setDesiredValue(Object desiredValue) throws INDIValueException {
     SwitchStatus ss = null;
     try {
-      ss = (SwitchStatus)desiredValue;
-    } catch(ClassCastException e) {
+      ss = (SwitchStatus) desiredValue;
+    } catch (ClassCastException e) {
       throw new INDIValueException(this, "Value for a Switch Element must be a SwitchStatus");
     }
 
@@ -192,7 +196,7 @@ public class INDISwitchElement extends INDIElement {
    * <code>&lt;oneSwitch&gt;</code> representing this Switch Element with a new
    * value.
    * @see #setDesiredValue
-   */  
+   */
   @Override
   protected String getXMLOneElementNewValue() {
     String stat = Constants.getSwitchStatusAsString(desiredStatus);
@@ -200,7 +204,7 @@ public class INDISwitchElement extends INDIElement {
     String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";
 
     desiredStatus = null;
-    
+
     return xml;
   }
 }

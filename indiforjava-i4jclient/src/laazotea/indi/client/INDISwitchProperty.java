@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 18, 2012
  */
 public class INDISwitchProperty extends INDIProperty {
 
@@ -79,7 +79,7 @@ public class INDISwitchProperty extends INDIProperty {
 
     NodeList list = xml.getElementsByTagName("defSwitch");
 
-    for (int i = 0 ; i < list.getLength() ; i++) {
+    for (int i = 0; i < list.getLength(); i++) {
       Element child = (Element) list.item(i);
 
       String name = xml.getAttribute("name");
@@ -170,7 +170,7 @@ public class INDISwitchProperty extends INDIProperty {
 
     List<INDIElement> list = getElementsAsList();
 
-    for (int i = 0 ; i < list.size() ; i++) {
+    for (int i = 0; i < list.size(); i++) {
       INDISwitchElement el = (INDISwitchElement) list.get(i);
       //     System.out.println("-->" + el.getName() + el.getValue());
       if (el.getValue() == SwitchStatus.ON) {
@@ -207,28 +207,29 @@ public class INDISwitchProperty extends INDIProperty {
 
   @Override
   public INDIPropertyListener getDefaultUIComponent() throws INDIException {
-    if (UIComponent == null) {
-      Object[] arguments = new Object[]{this};
-      String[] possibleUIClassNames;
-
-      if (getName().equals("CONNECTION")) {
-        possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIConnectionPropertyPanel", "laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
-      } else {
-        possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
-      }
-
-      try {
-        UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-      } catch (ClassCastException e) {
-        throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
-      }
-
-      addINDIPropertyListener(UIComponent);
+    if (UIComponent != null) {
+      removeINDIPropertyListener(UIComponent);
     }
+
+    Object[] arguments = new Object[]{this};
+    String[] possibleUIClassNames;
+
+    if (getName().equals("CONNECTION")) {
+      possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIConnectionPropertyPanel", "laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
+    } else {
+      possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
+    }
+
+    try {
+      UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+    } catch (ClassCastException e) {
+      throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
+    }
+
+    addINDIPropertyListener(UIComponent);
 
     return UIComponent;
   }
-
 
   /**
    * Gets a particular Element of this Property by its name.

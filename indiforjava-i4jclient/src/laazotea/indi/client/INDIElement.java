@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * mechanism to notify changes in its value.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.21, April 4, 2012
+ * @version 1.32, April 18, 2012
  */
 public abstract class INDIElement {
 
@@ -190,7 +190,7 @@ public abstract class INDIElement {
    * Element. The panel is registered as a listener of this Element. Please note that
    * the UI class must implement INDIElementListener. The component will be chosen
    * depending on the loaded UI libraries (I4JClientUI, I4JAndroid, etc). Note that
-   * a casting of the returned value must be done.
+   * a casting of the returned value must be done. If a previous UI element has been asked, it will be discarded and de-registered as listener. So, only one default UI element will be active.
    *
    * @return A UI component that handles this Element.
    */

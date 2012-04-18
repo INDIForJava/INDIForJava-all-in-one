@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Device.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.31, April 11, 2012
+ * @version 1.32, April 18, 2012
  */
 public class INDIDevice {
 
@@ -118,7 +118,7 @@ public class INDIDevice {
    * @param property The new property
    */
   private void notifyListenersNewProperty(INDIProperty property) {
-    for (int i = 0 ; i < listeners.size() ; i++) {
+    for (int i = 0; i < listeners.size(); i++) {
       INDIDeviceListener l = listeners.get(i);
 
       l.newProperty(this, property);
@@ -132,7 +132,7 @@ public class INDIDevice {
    * @param property The removed property
    */
   private void notifyListenersDeleteProperty(INDIProperty property) {
-    for (int i = 0 ; i < listeners.size() ; i++) {
+    for (int i = 0; i < listeners.size(); i++) {
       INDIDeviceListener l = listeners.get(i);
 
       l.removeProperty(this, property);
@@ -143,7 +143,7 @@ public class INDIDevice {
    * Notifies the listeners that the message of this Device has changed.
    */
   private void notifyListenersMessageChanged() {
-    for (int i = 0 ; i < listeners.size() ; i++) {
+    for (int i = 0; i < listeners.size(); i++) {
       INDIDeviceListener l = listeners.get(i);
 
       l.messageChanged(this);
@@ -163,7 +163,7 @@ public class INDIDevice {
     sendMessageToServer(xml);
   }
 
-    /**
+  /**
    * Sends the appropriate message to the Server to establish a particular BLOB
    * policy (BLOBEnable) for the Device and a particular Property.
    *
@@ -172,7 +172,7 @@ public class INDIDevice {
    * @throws IOException if there is some problem sending the message.
    */
   public void BLOBsEnable(BLOBEnables enable, INDIProperty property) throws IOException {
-    if ( (properties.containsValue(property)) && (property instanceof INDIBLOBProperty) ) {
+    if ((properties.containsValue(property)) && (property instanceof INDIBLOBProperty)) {
       String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">" + Constants.getBLOBEnableAsString(enable) + "</enableBLOB>";
 
       sendMessageToServer(xml);
@@ -572,21 +572,26 @@ public class INDIDevice {
    * chosen depending on the loaded UI libraries (I4JClientUI, I4JAndroid, etc).
    * Note that a casting of the returned value must be done.
    *
+   * If a previous component has been asked, it will be dregistered as a
+   * listener. So, only one default component will listen to the device.
+   *
    * @return A UI component that handles this Device.
    * @throws INDIException if no UIComponent is found in the classpath.
    */
   public INDIDeviceListener getDefaultUIComponent() throws INDIException {
-    if (UIComponent == null) {
-      Object[] arguments = new Object[]{this};
-      String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDevicePanel", "laazotea.indi.androidui.INDIDeviceView"};
-      try {
-        UIComponent = (INDIDeviceListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-      } catch (ClassCastException e) {
-        throw new INDIException("The UI component is not a valid INDIDeviceListener. Probably a incorrect library in the classpath.");
-      }
-
-      addINDIDeviceListener(UIComponent);
+    if (UIComponent != null) {
+      removeINDIDeviceListener(UIComponent);
     }
+
+    Object[] arguments = new Object[]{this};
+    String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDevicePanel", "laazotea.indi.androidui.INDIDeviceView"};
+    try {
+      UIComponent = (INDIDeviceListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+    } catch (ClassCastException e) {
+      throw new INDIException("The UI component is not a valid INDIDeviceListener. Probably a incorrect library in the classpath.");
+    }
+
+    addINDIDeviceListener(UIComponent);
 
     return UIComponent;
   }
@@ -612,7 +617,7 @@ public class INDIDevice {
 
     String[] names = new String[l.size()];
 
-    for (int i = 0 ; i < l.size() ; i++) {
+    for (int i = 0; i < l.size(); i++) {
       names[i] = l.get(i).getName();
     }
 

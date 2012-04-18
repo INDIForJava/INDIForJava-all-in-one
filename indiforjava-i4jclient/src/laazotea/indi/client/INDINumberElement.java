@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Number Element.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.21, April 4, 2012
+ * @version 1.32, April 18, 2012
  */
 public class INDINumberElement extends INDIElement {
 
@@ -314,18 +314,20 @@ public class INDINumberElement extends INDIElement {
 
   @Override
   public INDIElementListener getDefaultUIComponent() throws INDIException {
-    if (UIComponent == null) {
-      Object[] arguments = new Object[]{this, getProperty().getPermission()};
-      String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDINumberElementPanel", "laazotea.indi.androidui.INDINumberElementView"};
-
-      try {
-        UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-      } catch (ClassCastException e) {
-        throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
-      }
-
-      addINDIElementListener(UIComponent);
+    if (UIComponent != null) {
+      removeINDIElementListener(UIComponent);
     }
+
+    Object[] arguments = new Object[]{this, getProperty().getPermission()};
+    String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDINumberElementPanel", "laazotea.indi.androidui.INDINumberElementView"};
+
+    try {
+      UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+    } catch (ClassCastException e) {
+      throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
+    }
+
+    addINDIElementListener(UIComponent);
 
     return UIComponent;
   }
