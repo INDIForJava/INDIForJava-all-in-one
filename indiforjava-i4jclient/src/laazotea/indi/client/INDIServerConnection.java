@@ -254,7 +254,7 @@ public class INDIServerConnection implements INDIProtocolParser {
       try {
         socket.shutdownInput();
         out.close();
-        socket.close();
+//        socket.close();
       } catch (IOException e) {
       }
 
