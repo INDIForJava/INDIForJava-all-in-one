@@ -31,7 +31,7 @@ import laazotea.indi.client.INDIProperty;
 /**
  * An class representing a View of a Device.
  *
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 19, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
@@ -60,7 +60,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
 
     properties = new LinearLayout(context);
     properties.setOrientation(LinearLayout.VERTICAL);
-    properties.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1.0f));
+    properties.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1.0f));
     main.addView(properties);
 
 
