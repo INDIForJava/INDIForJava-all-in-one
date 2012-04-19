@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
  * properties and so on.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.31, April 12, 2012
+ * @version 1.32, April 19, 2012
  */
 public class INDIServerConnection implements INDIProtocolParser {
 
