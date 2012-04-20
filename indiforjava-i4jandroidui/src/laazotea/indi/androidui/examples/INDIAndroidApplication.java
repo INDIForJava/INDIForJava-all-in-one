@@ -30,12 +30,21 @@ import laazotea.indi.client.INDIServerConnection;
 public class INDIAndroidApplication extends Application {
 
   private INDIServerConnection connection;
-
+  private String selectedTab;
+  
   public INDIServerConnection getConnection() {
     return connection;
   }
 
   public void setConnection(INDIServerConnection connection) {
     this.connection = connection;
+  }
+
+  public String getSelectedTab() {
+    return selectedTab;
+  }
+
+  public void setSelectedTab(String selectedTab) {
+    this.selectedTab = selectedTab;
   }
 }

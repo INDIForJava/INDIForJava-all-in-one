@@ -98,9 +98,25 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
 
         addD(d);  // We add the interface for this device
       }
+
+      String tabName = app.getSelectedTab();
+
+      if (tabName != null) {
+        tabs.setCurrentTabByTag(tabName);
+      }
+
+      conn.addINDIServerConnectionListener(this);
     }
 
     setContentView(tabs);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+
+    app.setSelectedTab(tabs.getCurrentTabTag());
+    app.getConnection().removeINDIServerConnectionListener(this);
   }
 
   private void createConnectionView() {
@@ -193,12 +209,6 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
   public void disconnect() {
     if (app.getConnection() != null) {
       app.getConnection().disconnect();
-
-/*      host.setText("");
-      port.setText("7624");*/
-
-      connectionButton.setEnabled(true);
-      disconnectionButton.setEnabled(false);
     }
   }
 
@@ -261,7 +271,7 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
 
         @Override
         public void run() {
-          removeAllDevices();
+          connectionHasBeenLost();
         }
       });
     } catch (INDIException e) {
@@ -269,12 +279,15 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
     }
   }
 
-  private void removeAllDevices() {
+  private void connectionHasBeenLost() {
     while (!devices.isEmpty()) {
       INDIDevice d = devices.get(0);
 
       removeD(d);
     }
+
+    connectionButton.setEnabled(true);
+    disconnectionButton.setEnabled(false);
   }
 
   public void newMessage(INDIServerConnection connection, Date date, String message) {
