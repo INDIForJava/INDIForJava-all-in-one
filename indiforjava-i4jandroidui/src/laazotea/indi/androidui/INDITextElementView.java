@@ -31,7 +31,7 @@ import laazotea.indi.client.INDITextElement;
 /**
  * An class representing a View of a Text Element.
  *
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDITextElementView extends INDIElementView {
@@ -49,19 +49,19 @@ public class INDITextElementView extends INDIElementView {
     this.te = te;
 
     name = new TextView(context);
-    name.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     addView(name);
 
     currentValue = new TextView(context);
     currentValue.setSingleLine();
-    currentValue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
     addView(currentValue);
 
     desiredValue = new EditText(context);
     desiredValue.setText("");
     desiredValue.setSingleLine();
-    desiredValue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+    desiredValue.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
     desiredValue.addTextChangedListener(new TextWatcher() {
 

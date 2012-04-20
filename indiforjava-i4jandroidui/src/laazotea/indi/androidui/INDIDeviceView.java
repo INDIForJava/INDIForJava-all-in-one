@@ -31,7 +31,7 @@ import laazotea.indi.client.INDIProperty;
 /**
  * An class representing a View of a Device.
  *
- * @version 1.32, April 19, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
@@ -60,14 +60,17 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
 
     properties = new LinearLayout(context);
     properties.setOrientation(LinearLayout.VERTICAL);
-    properties.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT, 1.0f));
+    properties.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1.0f));
     main.addView(properties);
 
 
     bottomControls = new LinearLayout(context);
+    LayoutParams ps = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    ps.setMargins(5, 10, 5, 0);
+    bottomControls.setLayoutParams(ps);
 
     neverBLOB = new RadioButton(context);
-    neverBLOB.setText("Never");
+    neverBLOB.setText("BLOBs Never");
     neverBLOB.setOnClickListener(new View.OnClickListener() {
 
       public void onClick(View v) {
@@ -76,7 +79,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
     });
 
     alsoBLOB = new RadioButton(context);
-    alsoBLOB.setText("Also");
+    alsoBLOB.setText("BLOBs Also");
     alsoBLOB.setOnClickListener(new View.OnClickListener() {
 
       public void onClick(View v) {
@@ -85,7 +88,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
     });
 
     onlyBLOB = new RadioButton(context);
-    onlyBLOB.setText("Only");
+    onlyBLOB.setText("BLOBs Only");
     onlyBLOB.setOnClickListener(new View.OnClickListener() {
 
       public void onClick(View v) {
@@ -97,14 +100,16 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
     blobButtons.addView(neverBLOB);
     blobButtons.addView(alsoBLOB);
     blobButtons.addView(onlyBLOB);
-    blobButtons.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    blobButtons.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     neverBLOB.toggle();
     bottomControls.addView(blobButtons);
 
     messages = new EditText(context);
     messages.setMaxLines(5);
     messages.setMinLines(5);
-    messages.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+    LayoutParams psm = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    psm.setMargins(5, 0, 0, 0);
+    messages.setLayoutParams(psm);
     bottomControls.addView(messages);
 
     main.addView(bottomControls);

@@ -25,7 +25,7 @@ import laazotea.indi.client.INDIPropertyListener;
 /**
  * An abstract class representing a View of a Property.
  *
- * @version 1.32, April 19, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public abstract class INDIPropertyView extends LinearLayout implements INDIPropertyListener {
@@ -37,7 +37,7 @@ public abstract class INDIPropertyView extends LinearLayout implements INDIPrope
 
     this.property = property;
     
-    this.setLayoutParams(new LinearLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.FILL_PARENT, android.widget.FrameLayout.LayoutParams.FILL_PARENT));
+    this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
   }
 
   public INDIProperty getProperty() {

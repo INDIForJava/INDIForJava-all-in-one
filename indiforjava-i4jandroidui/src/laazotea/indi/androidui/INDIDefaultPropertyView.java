@@ -19,6 +19,8 @@ package laazotea.indi.androidui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 import laazotea.indi.Constants;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.INDIException;
@@ -37,7 +38,7 @@ import laazotea.indi.client.INDIValueException;
 /**
  * An class representing a View of a Property.
  *
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIDefaultPropertyView extends INDIPropertyView {
@@ -46,6 +47,7 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
   private ImageView state;
   private LinearLayout nameLayout;
   private LinearLayout elements;
+  private LinearLayout setButtonPanel;
   private Button setButton;
 
   public INDIDefaultPropertyView(INDIProperty property) throws INDIException {
@@ -53,10 +55,8 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
 
     Context context = I4JAndroidConfig.getContext();
 
-    int rnd = (new Random()).nextInt(150);
-    int color = Color.argb(255, rnd, rnd, rnd);
+    int color = Color.argb(255, 32, 32, 32);
     setBackgroundColor(color);
-
 
     boolean writable = false;
     if (property.getPermission() != Constants.PropertyPermissions.RO) {
@@ -66,13 +66,21 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
     this.setOrientation(LinearLayout.VERTICAL);
 
     nameLayout = new LinearLayout(context);
+    LayoutParams psnl = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    psnl.setMargins(5, 5, 5, 5);
+    nameLayout.setGravity(Gravity.CENTER_VERTICAL);
+    nameLayout.setLayoutParams(psnl);
 
     state = new ImageView(context);
-    state.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    state.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     nameLayout.addView(state);
 
     name = new TextView(context);
-    name.setLayoutParams(new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+    LayoutParams psn = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    psn.setMargins(5, 0, 0, 0);
+    name.setLayoutParams(psn);
+    name.setTextSize(name.getTextSize() * 1.2f);
+    name.setTypeface(Typeface.DEFAULT_BOLD);
     nameLayout.addView(name);
 
     addView(nameLayout);
@@ -81,10 +89,13 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
     // Add the Element Views
     elements = new LinearLayout(context);
     elements.setOrientation(LinearLayout.VERTICAL);
+    LayoutParams pse = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    pse.setMargins(15, 0, 0, 0);
+    elements.setLayoutParams(pse);
 
     List<INDIElement> elems = property.getElementsAsList();
 
-    for (int i = 0 ; i < elems.size() ; i++) {
+    for (int i = 0; i < elems.size(); i++) {
       INDIElementView ev = null;
 
       try {
@@ -101,28 +112,37 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
 
     addView(elements);
 
-
-    // Add the SET button
-    setButton = new Button(context);
-    setButton.setText("Set");
-    setButton.setLayoutParams(new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.FILL_PARENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
-    setButton.setEnabled(false);
-    setButton.setOnClickListener(new View.OnClickListener() {
-
-      public void onClick(View v) {
-        setActionPerformed();
-      }
-    });
-
     if (writable) {
-      addView(setButton);
+      setButtonPanel = new LinearLayout(context);
+      setButtonPanel.setGravity(Gravity.RIGHT);
+
+      // Add the SET button
+      setButton = new Button(context);
+      setButton.setText("  Set  ");
+      LayoutParams lpsb = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+      lpsb.setMargins(0, 0, 5, 0);
+      setButton.setLayoutParams(lpsb);
+      setButton.setEnabled(false);
+      setButton.setOnClickListener(new View.OnClickListener() {
+
+        public void onClick(View v) {
+          setActionPerformed();
+        }
+      });
+
+      setButtonPanel.addView(setButton);
+      addView(setButtonPanel);
     }
+    
+    LayoutParams ps = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    ps.setMargins(5, 10, 5, 0);
+    this.setLayoutParams(ps);
 
     updatePropertyData();
   }
 
   private void setActionPerformed() {
-    for (int i = 0 ; i < elements.getChildCount() ; i++) {
+    for (int i = 0; i < elements.getChildCount(); i++) {
       INDIElementView elv = (INDIElementView) elements.getChildAt(i);
 
       if (elv.isChanged()) {
@@ -142,7 +162,7 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
     } catch (INDIValueException e) {
       INDIElement errorElement = e.getINDIElement();
 
-      for (int i = 0 ; i < elements.getChildCount() ; i++) {
+      for (int i = 0; i < elements.getChildCount(); i++) {
         INDIElementView elv = (INDIElementView) elements.getChildAt(i);
 
         if (errorElement == elv.getElement()) {
@@ -155,7 +175,7 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
   }
 
   private void cleanDesiredValues() {
-    for (int i = 0 ; i < elements.getChildCount() ; i++) {
+    for (int i = 0; i < elements.getChildCount(); i++) {
       INDIElementView elv = (INDIElementView) elements.getChildAt(i);
 
       elv.cleanDesiredValue();
@@ -200,7 +220,7 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
     boolean enabled = true;
     boolean changed = false;
 
-    for (int i = 0 ; i < elements.getChildCount() ; i++) {
+    for (int i = 0; i < elements.getChildCount(); i++) {
       INDIElementView elp = (INDIElementView) elements.getChildAt(i);
 
       if (elp.isDesiredValueErroneous()) {

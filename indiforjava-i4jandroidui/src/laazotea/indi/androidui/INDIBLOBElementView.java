@@ -28,7 +28,7 @@ import laazotea.indi.client.INDIElement;
 /**
  * An class representing a View of a BLOB Element.
  *
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIBLOBElementView extends INDIElementView {
@@ -45,12 +45,12 @@ public class INDIBLOBElementView extends INDIElementView {
     this.be = be;
 
     name = new TextView(context);
-    name.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     addView(name);
 
     currentValue = new TextView(context);
     currentValue.setSingleLine();
-    currentValue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
     addView(currentValue);
 

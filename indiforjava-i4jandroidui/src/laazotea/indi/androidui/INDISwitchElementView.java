@@ -20,6 +20,7 @@ package laazotea.indi.androidui;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -32,7 +33,7 @@ import laazotea.indi.client.INDISwitchElement;
 /**
  * An class representing a View of a Switch Element.
  *
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDISwitchElementView extends INDIElementView {
@@ -50,13 +51,15 @@ public class INDISwitchElementView extends INDIElementView {
 
     this.se = se;
 
+    this.setGravity(Gravity.CENTER_VERTICAL);
+    
     name = new TextView(context);
-    name.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     addView(name);
 
     currentValue = new TextView(context);
     currentValue.setSingleLine();
-    currentValue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     bgColor = currentValue.getBackground();
     addView(currentValue);
 
@@ -64,7 +67,7 @@ public class INDISwitchElementView extends INDIElementView {
     desiredValue.setTextOn("Set Selected");
     desiredValue.setTextOff("Set Deselected");
     desiredValue.setChecked(false);
-    desiredValue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    desiredValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     desiredValue.setOnClickListener(new View.OnClickListener() {
 
       public void onClick(View v) {

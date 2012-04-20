@@ -40,7 +40,7 @@ import laazotea.indi.client.INDIServerConnectionListener;
 /**
  * An Android Activity that implements a INDI Client.
  *
- * @version 1.32, April 19, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIAndroidActivity extends Activity implements INDIServerConnectionListener {
@@ -111,7 +111,7 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
     hostText.setText("Host:");
     host = new EditText(this);
     host.setSingleLine();
-    host.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+    host.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     LinearLayout l = new LinearLayout(this);
     l.addView(hostText);
     l.addView(host);
@@ -122,7 +122,7 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
     port = new EditText(this);
     port.setSingleLine();
     port.setText("7624");
-    port.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+    port.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     l = new LinearLayout(this);
     l.addView(portText);
     l.addView(port);

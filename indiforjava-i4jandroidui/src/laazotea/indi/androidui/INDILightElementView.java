@@ -29,7 +29,7 @@ import laazotea.indi.client.INDILightElement;
 /**
  * An class representing a View of a Light Element.
  *
- * @version 1.3, April 9, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDILightElementView extends INDIElementView {
@@ -46,11 +46,11 @@ public class INDILightElementView extends INDIElementView {
     this.le = le;
 
     name = new TextView(context);
-    name.setLayoutParams(new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+    name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     addView(name);
 
     currentValue = new ImageView(context);
-    currentValue.setLayoutParams(new android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+    currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     addView(currentValue);
 
     updateElementData();
