@@ -185,13 +185,13 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
     PropertyStates st = getProperty().getState();
 
     if (st == PropertyStates.IDLE) {
-      state.setImageResource(R.drawable.light_idle_big);
+      state.setImageResource(R.drawable.ic_idle);
     } else if (st == PropertyStates.OK) {
-      state.setImageResource(R.drawable.light_ok_big);
+      state.setImageResource(R.drawable.ic_ok);
     } else if (st == PropertyStates.BUSY) {
-      state.setImageResource(R.drawable.light_busy_big);
+      state.setImageResource(R.drawable.ic_busy);
     } else if (st == PropertyStates.ALERT) {
-      state.setImageResource(R.drawable.light_alert_big);
+      state.setImageResource(R.drawable.ic_alert);
     }
   }
 
