@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Device.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.33, Novemeber 27, 2012
+ * @version 1.32, Novemeber 27, 2012
  */
 public class INDIDevice {
 
