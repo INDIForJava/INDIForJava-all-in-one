@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Device.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, Novemeber 27, 2012
+ * @version 1.32, December 4, 2012
  */
 public class INDIDevice {
 
@@ -80,11 +80,11 @@ public class INDIDevice {
   protected INDIDevice(String name, INDIServerConnection server) {
     this.name = name;
     this.server = server;
-    
+
     this.properties = new LinkedHashMap<String, INDIProperty>();
-    
+
     this.listeners = new ArrayList<INDIDeviceListener>();
-    
+
     timestamp = new Date();
     message = "";
     blobCount = 0;
@@ -117,7 +117,7 @@ public class INDIDevice {
   private void notifyListenersNewProperty(INDIProperty property) {
     for (int i = 0; i < listeners.size(); i++) {
       INDIDeviceListener l = listeners.get(i);
-      
+
       l.newProperty(this, property);
     }
   }
@@ -131,7 +131,7 @@ public class INDIDevice {
   private void notifyListenersDeleteProperty(INDIProperty property) {
     for (int i = 0; i < listeners.size(); i++) {
       INDIDeviceListener l = listeners.get(i);
-      
+
       l.removeProperty(this, property);
     }
   }
@@ -142,7 +142,7 @@ public class INDIDevice {
   private void notifyListenersMessageChanged() {
     for (int i = 0; i < listeners.size(); i++) {
       INDIDeviceListener l = listeners.get(i);
-      
+
       l.messageChanged(this);
     }
   }
@@ -156,7 +156,7 @@ public class INDIDevice {
    */
   public void BLOBsEnable(BLOBEnables enable) throws IOException {
     String xml = "<enableBLOB device=\"" + getName() + "\">" + Constants.getBLOBEnableAsString(enable) + "</enableBLOB>";
-    
+
     sendMessageToServer(xml);
   }
 
@@ -171,7 +171,7 @@ public class INDIDevice {
   public void BLOBsEnable(BLOBEnables enable, INDIProperty property) throws IOException {
     if ((properties.containsValue(property)) && (property instanceof INDIBLOBProperty)) {
       String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">" + Constants.getBLOBEnableAsString(enable) + "</enableBLOB>";
-      
+
       sendMessageToServer(xml);
     }
   }
@@ -186,7 +186,7 @@ public class INDIDevice {
   @Deprecated
   public void BLOBsEnableNever() throws IOException {
     String xml = "<enableBLOB device=\"" + getName() + "\">Never</enableBLOB>";
-    
+
     sendMessageToServer(xml);
   }
 
@@ -200,7 +200,7 @@ public class INDIDevice {
   @Deprecated
   public void BLOBsEnableAlso() throws IOException {
     String xml = "<enableBLOB device=\"" + getName() + "\">Also</enableBLOB>";
-    
+
     sendMessageToServer(xml);
   }
 
@@ -214,7 +214,7 @@ public class INDIDevice {
   @Deprecated
   public void BLOBsEnableOnly() throws IOException {
     String xml = "<enableBLOB device=\"" + getName() + "\">Only</enableBLOB>";
-    
+
     sendMessageToServer(xml);
   }
 
@@ -229,7 +229,7 @@ public class INDIDevice {
   @Deprecated
   public void BLOBsEnableNever(INDIBLOBProperty property) throws IOException {
     String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Never</enableBLOB>";
-    
+
     sendMessageToServer(xml);
   }
 
@@ -244,7 +244,7 @@ public class INDIDevice {
   @Deprecated
   public void BLOBsEnableAlso(INDIBLOBProperty property) throws IOException {
     String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Also</enableBLOB>";
-    
+
     sendMessageToServer(xml);
   }
 
@@ -259,7 +259,7 @@ public class INDIDevice {
   @Deprecated
   public void BLOBsEnableOnly(INDIBLOBProperty property) throws IOException {
     String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Only</enableBLOB>";
-    
+
     sendMessageToServer(xml);
   }
 
@@ -299,11 +299,11 @@ public class INDIDevice {
   protected void messageReceived(Element xml) {
     if (xml.hasAttribute("message")) {
       String time = xml.getAttribute("timestamp").trim();
-      
+
       timestamp = INDIDateFormat.parseTimestamp(time);
-      
+
       message = xml.getAttribute("message").trim();
-      
+
       notifyListenersMessageChanged();
     }
   }
@@ -316,12 +316,12 @@ public class INDIDevice {
    */
   protected void deleteProperty(Element xml) {
     String propertyName = xml.getAttribute("name").trim();
-    
+
     if (!(propertyName.length() == 0)) {
       messageReceived(xml);
-      
+
       INDIProperty p = getProperty(propertyName);
-      
+
       if (p != null) {
         removeProperty(p);
       }
@@ -355,27 +355,27 @@ public class INDIDevice {
    */
   public INDIProperty waitForProperty(String name, int maxWait) {
     INDIProperty p = null;
-    
+
     long startTime = (new Date()).getTime();
     boolean timeElapsed = false;
-    
+
     while ((p == null) && (!timeElapsed)) {
       p = this.getProperty(name);
-      
+
       if (p == null) {
         try {
           Thread.sleep(500);
         } catch (InterruptedException e) {
         }
       }
-      
+
       long endTime = (new Date()).getTime();
-      
+
       if (((endTime - startTime) / 1000) > maxWait) {
         timeElapsed = true;
       }
     }
-    
+
     return p;
   }
 
@@ -386,30 +386,30 @@ public class INDIDevice {
    */
   protected void updateProperty(Element xml) {
     String propertyName = xml.getAttribute("name").trim();
-    
+
     if (!(propertyName.length() == 0)) {
       // check message 
       messageReceived(xml);
-      
+
       INDIProperty p = getProperty(propertyName);
-      
+
       if (p != null) {  // If it does not exist else ignore
         if ((p.getClass() == INDITextProperty.class) && (xml.getTagName().compareTo("setTextVector") == 0)) {  // If types coincide
           p.update(xml);
         }
-        
+
         if ((p.getClass() == INDINumberProperty.class) && (xml.getTagName().compareTo("setNumberVector") == 0)) {  // If types coincide
           p.update(xml);
         }
-        
+
         if ((p.getClass() == INDISwitchProperty.class) && (xml.getTagName().compareTo("setSwitchVector") == 0)) {  // If types coincide
           p.update(xml);
         }
-        
+
         if ((p.getClass() == INDILightProperty.class) && (xml.getTagName().compareTo("setLightVector") == 0)) {  // If types coincide
           p.update(xml);
         }
-        
+
         if ((p.getClass() == INDIBLOBProperty.class) && (xml.getTagName().compareTo("setBLOBVector") == 0)) {  // If types coincide
           p.update(xml);
         }
@@ -425,43 +425,43 @@ public class INDIDevice {
    */
   protected void addProperty(Element xml) {
     String propertyName = xml.getAttribute("name").trim();
-    
+
     if (!(propertyName.length() == 0)) {
       messageReceived(xml);
-      
+
       INDIProperty p = getProperty(propertyName);
-      
+
       if (p == null) {  // If it does not exist
         try {
           if (xml.getTagName().compareTo("defSwitchVector") == 0) {
             INDISwitchProperty sp = new INDISwitchProperty(xml, this);
-            
+
             addProperty(sp);
-            
+
             notifyListenersNewProperty(sp);
           } else if (xml.getTagName().compareTo("defTextVector") == 0) {
             INDITextProperty tp = new INDITextProperty(xml, this);
-            
+
             addProperty(tp);
-            
+
             notifyListenersNewProperty(tp);
           } else if (xml.getTagName().compareTo("defNumberVector") == 0) {
             INDINumberProperty np = new INDINumberProperty(xml, this);
-            
+
             addProperty(np);
-            
+
             notifyListenersNewProperty(np);
           } else if (xml.getTagName().compareTo("defLightVector") == 0) {
             INDILightProperty lp = new INDILightProperty(xml, this);
-            
+
             addProperty(lp);
-            
+
             notifyListenersNewProperty(lp);
           } else if (xml.getTagName().compareTo("defBLOBVector") == 0) {
             INDIBLOBProperty bp = new INDIBLOBProperty(xml, this);
-            
+
             addProperty(bp);
-            
+
             notifyListenersNewProperty(bp);
           }
         } catch (IllegalArgumentException e) {  // Some problem with the parameters
@@ -488,7 +488,7 @@ public class INDIDevice {
    */
   private void addProperty(INDIProperty property) {
     properties.put(property.getName(), property);
-    
+
     if (property instanceof INDIBLOBProperty) {
       blobCount++;
     }
@@ -502,11 +502,11 @@ public class INDIDevice {
    */
   private void removeProperty(INDIProperty property) {
     properties.remove(property.getName());
-    
+
     if (property instanceof INDIBLOBProperty) {
       blobCount--;
     }
-    
+
     notifyListenersDeleteProperty(property);
   }
 
@@ -538,43 +538,62 @@ public class INDIDevice {
    */
   public ArrayList<String> getGroupNames() {
     ArrayList<String> groupNames = new ArrayList<String>();
-    
+
     Collection c = properties.values();
     Iterator itr = c.iterator();
-    
+
     while (itr.hasNext()) {
       INDIProperty p = (INDIProperty) itr.next();
-      
+
       String groupName = p.getGroup();
-      
+
       if (!groupNames.contains(groupName)) {
-        groupNames.add(groupName);        
+        groupNames.add(groupName);
       }
     }
-    
+
     return groupNames;
   }
-  
-  
+
   /**
-   * Gets a list of properties belonging to a group.
-   * 
-   * @param groupName the name of the group
-   * @return the list of Properties belonging to the group
-   */  
-  public ArrayList<INDIProperty> getPropertiesOfGroup(String groupName) {
+   * Gets a list of all the properties of the device.
+   *
+   * @return the list of Properties belonging to the device
+   */
+  public ArrayList<INDIProperty> getAllProperties() {
     ArrayList<INDIProperty> props = new ArrayList<INDIProperty>();
-    
+
     Collection c = properties.values();
     Iterator itr = c.iterator();
-    
+
+    while (itr.hasNext()) {
+      INDIProperty p = (INDIProperty) itr.next();
+
+      props.add(p);
+    }
+
+    return props;
+  }
+
+  /**
+   * Gets a list of properties belonging to a group.
+   *
+   * @param groupName the name of the group
+   * @return the list of Properties belonging to the group
+   */
+  public ArrayList<INDIProperty> getPropertiesOfGroup(String groupName) {
+    ArrayList<INDIProperty> props = new ArrayList<INDIProperty>();
+
+    Collection c = properties.values();
+    Iterator itr = c.iterator();
+
     while (itr.hasNext()) {
       INDIProperty p = (INDIProperty) itr.next();
       if (p.getGroup().compareTo(groupName) == 0) {
-        props.add(p);        
+        props.add(p);
       }
     }
-    
+
     return props;
   }
 
@@ -590,11 +609,11 @@ public class INDIDevice {
    */
   public INDIElement getElement(String propertyName, String elementName) {
     INDIProperty p = getProperty(propertyName);
-    
+
     if (p == null) {
       return null;
     }
-    
+
     return p.getElement(elementName);
   }
 
@@ -626,7 +645,7 @@ public class INDIDevice {
     if (UIComponent != null) {
       removeINDIDeviceListener(UIComponent);
     }
-    
+
     Object[] arguments = new Object[]{this};
     String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDevicePanel", "laazotea.indi.androidui.INDIDeviceView"};
     try {
@@ -634,9 +653,9 @@ public class INDIDevice {
     } catch (ClassCastException e) {
       throw new INDIException("The UI component is not a valid INDIDeviceListener. Probably a incorrect library in the classpath.");
     }
-    
+
     addINDIDeviceListener(UIComponent);
-    
+
     return UIComponent;
   }
 
@@ -658,13 +677,13 @@ public class INDIDevice {
    */
   public String[] getPropertyNames() {
     List<INDIProperty> l = getPropertiesAsList();
-    
+
     String[] names = new String[l.size()];
-    
+
     for (int i = 0; i < l.size(); i++) {
       names[i] = l.get(i).getName();
     }
-    
+
     return names;
   }
 }
