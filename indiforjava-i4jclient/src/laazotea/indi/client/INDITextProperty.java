@@ -17,6 +17,7 @@
  */
 package laazotea.indi.client;
 
+import java.util.ArrayList;
 import laazotea.indi.ClassInstantiator;
 import laazotea.indi.INDIDateFormat;
 import laazotea.indi.INDIException;

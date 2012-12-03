@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, April 18, 2012
+ * @version 1.32, December 3, 2012
  */
 public abstract class INDIProperty {
 
@@ -508,5 +508,26 @@ public abstract class INDIProperty {
     }
 
     return aux;
+  }
+
+  /**
+   * Gets the values of the Property as a String. 
+   *
+   * @return A String representation of the value of the Property.
+   */
+  public String getValuesAsString() {
+    String aux = "[";
+
+    ArrayList<INDIElement> l = this.getElementsAsList();
+
+    for (int i = 0; i < l.size(); i++) {
+      if (i == 0) {
+        aux += l.get(i).getValue().toString();
+      } else {
+        aux += ", " + l.get(i).getValue().toString();
+      }
+    }
+
+    return aux + "]";
   }
 }
