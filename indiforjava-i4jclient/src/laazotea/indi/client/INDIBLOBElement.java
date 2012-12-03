@@ -187,9 +187,13 @@ public class INDIBLOBElement extends INDIElement {
 
     return xml;
   }
-  
+
   @Override
   public String toString() {
-    return this.getValue().getFormat() + " (" + this.getValue().getSize() + " bytes)";
+    if (this.getValue().getSize() > 0) {
+      return this.getValue().getFormat() + " (" + this.getValue().getSize() + " bytes)";
+    }
+
+    return "";
   }
 }

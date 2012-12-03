@@ -466,6 +466,6 @@ public class INDINumberElement extends INDIElement {
 
   @Override
   public String toString() {
-    return this.getNumberAsString(value);
+    return this.getNumberAsString(value).trim();
   }
 }
