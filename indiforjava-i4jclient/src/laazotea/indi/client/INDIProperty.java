@@ -522,9 +522,9 @@ public abstract class INDIProperty {
 
     for (int i = 0; i < l.size(); i++) {
       if (i == 0) {
-        aux += l.get(i).getValue().toString();
+        aux += l.get(i).toString();
       } else {
-        aux += ", " + l.get(i).getValue().toString();
+        aux += ", " + l.get(i).toString();
       }
     }
 
