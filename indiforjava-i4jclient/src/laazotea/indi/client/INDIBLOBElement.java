@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI BLOB Element.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, April 18, 2012
+ * @version 1.32, December 3, 2012
  */
 public class INDIBLOBElement extends INDIElement {
 
@@ -186,5 +186,10 @@ public class INDIBLOBElement extends INDIElement {
     desiredValue = null;
 
     return xml;
+  }
+  
+  @Override
+  public String toString() {
+    return this.getValue().getFormat() + " (" + this.getValue().getSize() + " bytes)";
   }
 }

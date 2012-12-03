@@ -17,6 +17,7 @@
  */
 package laazotea.indi.client;
 
+import java.util.ArrayList;
 import java.util.List;
 import laazotea.indi.ClassInstantiator;
 import laazotea.indi.Constants.PropertyPermissions;
@@ -33,7 +34,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, April 18, 2012
+ * @version 1.32, December 3, 2012
  */
 public class INDISwitchProperty extends INDIProperty {
 
@@ -243,5 +244,36 @@ public class INDISwitchProperty extends INDIProperty {
   @Override
   public final INDISwitchElement getElement(String name) {
     return (INDISwitchElement) super.getElement(name);
+  }
+
+  /**
+   * Gets the values of the Property as a String.
+   *
+   * @return A String representation of the value of the Property.
+   */
+  @Override
+  public String getValuesAsString() {
+    String aux = "";
+
+    ArrayList<INDIElement> l = this.getElementsAsList();
+    int n = 0;
+
+    for (int i = 0; i < l.size(); i++) {
+      if (l.get(i).getValue() == SwitchStatus.ON) {
+        if (n == 0) {
+          aux += l.get(i).getLabel();
+          n++;
+        } else {
+          aux += ", " + l.get(i).getLabel();
+          n++;
+        }
+      }
+    }
+
+    if (n > 1) {
+      return "[" + aux + "]";
+    }
+
+    return aux;
   }
 }

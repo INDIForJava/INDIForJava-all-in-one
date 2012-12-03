@@ -134,4 +134,6 @@ public class INDIBLOBProperty extends INDIProperty {
   public INDIBLOBElement getElement(String name) {
     return (INDIBLOBElement) super.getElement(name);
   }
+  
+  
 }
