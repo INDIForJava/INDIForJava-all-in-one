@@ -30,6 +30,14 @@ import java.io.OutputStream;
  * @version 1.32, January 18, 2013
  */
 public abstract class INDINotLoadableDriver extends INDIDriver {
+  /**
+   * Constructs a INDINotLoadableDriver with a particular
+   * <code>inputStream<code> from which to read the incoming messages (from clients) and a
+   * <code>outputStream</code> to write the messages to the clients.
+   *
+   * @param inputStream The stream from which to read messages.
+   * @param outputStream The stream to which to write the messages.
+   */  
   public INDINotLoadableDriver(InputStream inputStream, OutputStream outputStream) {
     super(inputStream, outputStream);
   }
