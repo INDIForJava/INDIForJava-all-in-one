@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import laazotea.indi.Constants.PropertyPermissions;
@@ -40,7 +39,7 @@ import org.w3c.dom.NodeList;
  * clients and parsing / formating any incoming / leaving messages.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.3, April 8, 2012
+ * @version 1.32, January 18, 2013
  */
 public abstract class INDIDriver implements INDIProtocolParser {
 
@@ -797,6 +796,19 @@ public abstract class INDIDriver implements INDIProtocolParser {
     return properties.get(propertyName);
   }
 
+  /**
+   * Gets the default Connection property (if the driver implements INDIConnectionHandler)
+   * 
+   * @return The standard Connection property if this driver implements INDIConnectionHandler. <code>null</code> otherwise.
+   */
+  protected INDISwitchProperty getConnectionProperty() {
+    if (this instanceof INDIConnectionHandler) {
+      return connectionP;
+    }
+    
+    return null;
+  }
+  
   /**
    * Gets a list of all the Properties in the Driver.
    *
