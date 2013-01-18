@@ -189,12 +189,13 @@ public abstract class INDIDriver implements INDIProtocolParser {
     connectionP.setState(PropertyStates.OK);
 
     if (message == null) {
-      try {
+      try {  
         updateProperty(connectionP);
       } catch (INDIException e) { // Ignore, there must be no errors here        
       }
     } else {
       try {
+        connectionP.setState(PropertyStates.ALERT);
         updateProperty(connectionP, message);
       } catch (INDIException e) { // Ignore, there must be no errors here        
       }
