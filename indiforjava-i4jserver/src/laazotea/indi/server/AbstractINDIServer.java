@@ -26,6 +26,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import laazotea.indi.INDIException;
 import laazotea.indi.driver.INDIDriver;
+import laazotea.indi.driver.INDINotLoadableDriver;
 import org.w3c.dom.Element;
 
 /**
@@ -516,6 +517,10 @@ public abstract class AbstractINDIServer implements Runnable {
     Class s = c.getSuperclass();
 
     while (s != null) {
+      if (s == INDINotLoadableDriver.class) {
+        return false;  
+      }
+      
       if (s == INDIDriver.class) {
         return true;
       }
