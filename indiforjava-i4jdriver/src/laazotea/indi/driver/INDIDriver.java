@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * clients and parsing / formating any incoming / leaving messages.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, January 18, 2013
+ * @version 1.32, January 19, 2013
  */
 public abstract class INDIDriver implements INDIProtocolParser {
 
@@ -761,7 +761,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     String msg = "<delProperty device=\"" + this.getName() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\"" + mm + " />";
-
+   
     sendXML(msg);
   }
 
@@ -832,5 +832,31 @@ public abstract class INDIDriver implements INDIProtocolParser {
   @Override
   public InputStream getInputStream() {
     return inputStream;
+  }
+  
+  /**
+   * A method that should be implemented when the driver is being 
+   * destroyed to stop threads, kill sub-drivers, etc. By default it 
+   * calls <code>removeDevice</code>.
+   * 
+   * @see removeDevice
+   */
+  public void isBeingDestroyed() {
+    removeDevice("Removing " + getName());
+    
+    System.out.println("ERERE");
+  }
+  
+  /**
+   * Checks if the driver has any subdriver with a particular name.
+   * Should be overriden by Drivers with subdrivers.
+   * 
+   * @param subdriverName The possible name of the subdriver
+   * 
+   * @return <code>true</code> if the driver has a subdriver with a 
+   * particular name. <code>false</code> otherwise.
+   */
+  public boolean hasSubDriver(String subdriverName) {
+    return false;
   }
 }
