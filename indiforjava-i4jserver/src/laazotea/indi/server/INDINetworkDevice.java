@@ -29,7 +29,7 @@ import laazotea.indi.INDIException;
  * A class that represent a Network Device (another INDI server).
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.2, April 2, 2012
+ * @version 1.32, January 19, 2013
  */
 public class INDINetworkDevice extends INDIDevice {
 
@@ -184,5 +184,9 @@ public class INDINetworkDevice extends INDIDevice {
     res += "]";
     
     return res;
+  }
+
+  @Override
+  public void isBeingDestroyed() {
   }
 }

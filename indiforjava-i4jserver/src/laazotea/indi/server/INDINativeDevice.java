@@ -25,7 +25,7 @@ import laazotea.indi.INDIException;
 /**
  * A class that represent a Native Device (created with the usual INDI library).
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.2, April 2, 2012
+ * @version 1.32, January 13, 2013
  */
 public class INDINativeDevice extends INDIDevice {
 
@@ -138,5 +138,9 @@ public class INDINativeDevice extends INDIDevice {
   @Override
   public String toString() {
     return "Native Device: " + driverPath;
-  }  
+  }
+
+  @Override
+  public void isBeingDestroyed() {
+  }
 }

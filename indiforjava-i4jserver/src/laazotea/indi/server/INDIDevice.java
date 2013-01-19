@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * and parses its messages.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.21, April 4, 2012
+ * @version 1.32, January 13, 2013
  */
 public abstract class INDIDevice extends INDIDeviceListener implements INDIProtocolParser {
 
@@ -85,7 +85,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIProto
         Element child = (Element) n;
 
         String nodeName = child.getNodeName();
-
+        
         if (nodeName.equals("getProperties")) {
           processGetProperties(child);
         } else if (nodeName.equals("defTextVector")) {
@@ -263,11 +263,18 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIProto
    * Stops the reader and closes its connections.
    */
   public void destroy() {
+    isBeingDestroyed();
+    
     reader.setStop(true);
 
     closeConnections();
   }
 
+  /**
+   * Notify drivers that they are being destroyed.
+   */
+  public abstract void isBeingDestroyed();
+  
   /**
    * Closes the connections of the device.
    */

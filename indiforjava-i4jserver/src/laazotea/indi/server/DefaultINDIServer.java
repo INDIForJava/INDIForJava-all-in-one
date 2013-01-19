@@ -133,9 +133,9 @@ public class DefaultINDIServer extends AbstractINDIServer {
   @Override
   protected void notifyDeviceListenersDelProperty(INDIDevice device, Element xml) {
     String deviceName = xml.getAttribute("device").trim();
-
+   
     ArrayList<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
-
+          
     for (int i = 0 ; i < list.size() ; i++) {
       INDIDeviceListener c = list.get(i);
 

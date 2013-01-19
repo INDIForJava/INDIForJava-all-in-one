@@ -30,7 +30,7 @@ import laazotea.indi.driver.INDIDriver;
  * A class that represent a Java Device (created with the INDI Driver library).
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.21, April 4, 2012
+ * @version 1.32, January 19, 2013
  *
  * @see laazotea.indi.driver
  */
@@ -139,6 +139,10 @@ public class INDIJavaDevice extends INDIDevice {
       return true;
     }
     
+    if (driver.hasSubDriver(name)) {
+      return true; 
+    }
+    
     return false;
   }
   
@@ -203,5 +207,10 @@ public class INDIJavaDevice extends INDIDevice {
   @Override
   public String toString() {
     return "Java Device: " + identifier + " - " + driverClass.getName();
+  }
+
+  @Override
+  public void isBeingDestroyed() {
+    driver.isBeingDestroyed(); 
   }
 }
