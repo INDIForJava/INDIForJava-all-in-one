@@ -44,6 +44,7 @@ import org.w3c.dom.NodeList;
 public abstract class INDIDriver implements INDIProtocolParser {
 
   private InputStream inputStream;
+  private OutputStream outputStream;  
   private PrintWriter out;
   private INDIProtocolReader reader;
   /**
@@ -78,6 +79,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
   protected INDIDriver(InputStream inputStream, OutputStream outputStream) {
     this.out = new PrintWriter(outputStream);
     this.inputStream = inputStream;
+    this.outputStream = outputStream;
 
     started = false;
 
@@ -835,6 +837,16 @@ public abstract class INDIDriver implements INDIProtocolParser {
   }
   
   /**
+   * Gets the <code>OutputStream</code> of the driver (useful for
+   * subdrivers).
+   * 
+   * @return The <code>OutputStream</code> of the driver.
+   */
+  public OutputStream getOutputStream() {
+    return outputStream;
+  }  
+  
+  /**
    * A method that should be implemented when the driver is being 
    * destroyed to stop threads, kill sub-drivers, etc. By default it 
    * calls <code>removeDevice</code>.
@@ -843,8 +855,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
    */
   public void isBeingDestroyed() {
     removeDevice("Removing " + getName());
-    
-    System.out.println("ERERE");
   }
   
   /**
