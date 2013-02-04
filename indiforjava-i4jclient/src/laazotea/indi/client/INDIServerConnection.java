@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
  * properties and so on.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, April 19, 2012
+ * @version 1.32, January 27, 2013
  */
 public class INDIServerConnection implements INDIProtocolParser {
 
@@ -331,7 +331,7 @@ public class INDIServerConnection implements INDIProtocolParser {
 
   @Override
   public void finishReader() {
-      disconnect();  // If there has been a problem with reading the port really disconnect and notify listeners
+    disconnect();  // If there has been a problem with reading the port really disconnect and notify listeners
   }
 
   /**
@@ -414,7 +414,7 @@ public class INDIServerConnection implements INDIProtocolParser {
 
     NodeList nodes = el.getChildNodes();
 
-    for (int i = 0 ; i < nodes.getLength() ; i++) {
+    for (int i = 0; i < nodes.getLength(); i++) {
       Node n = nodes.item(i);
 
       if (n instanceof Element) {
@@ -569,7 +569,7 @@ public class INDIServerConnection implements INDIProtocolParser {
   public void addINDIDeviceListenerToAllDevices(INDIDeviceListener listener) {
     List<INDIDevice> l = getDevicesAsList();
 
-    for (int i = 0 ; i < l.size() ; i++) {
+    for (int i = 0; i < l.size(); i++) {
       INDIDevice d = l.get(i);
 
       d.addINDIDeviceListener(listener);
@@ -584,7 +584,7 @@ public class INDIServerConnection implements INDIProtocolParser {
   public void removeINDIDeviceListenerFromAllDevices(INDIDeviceListener listener) {
     List<INDIDevice> l = getDevicesAsList();
 
-    for (int i = 0 ; i < l.size() ; i++) {
+    for (int i = 0; i < l.size(); i++) {
       INDIDevice d = l.get(i);
 
       d.removeINDIDeviceListener(listener);
@@ -601,7 +601,7 @@ public class INDIServerConnection implements INDIProtocolParser {
 
     String[] names = new String[l.size()];
 
-    for (int i = 0 ; i < l.size() ; i++) {
+    for (int i = 0; i < l.size(); i++) {
       names[i] = l.get(i).getName();
     }
 
@@ -659,8 +659,10 @@ public class INDIServerConnection implements INDIProtocolParser {
    * @param device the new Device.
    */
   private void notifyListenersNewDevice(INDIDevice device) {
-    for (int i = 0 ; i < listeners.size() ; i++) {
-      INDIServerConnectionListener l = listeners.get(i);
+    ArrayList<INDIServerConnectionListener> lCopy = (ArrayList<INDIServerConnectionListener>) listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIServerConnectionListener l = lCopy.get(i);
 
       l.newDevice(this, device);
     }
@@ -672,8 +674,10 @@ public class INDIServerConnection implements INDIProtocolParser {
    * @param device the removed device.
    */
   private void notifyListenersRemoveDevice(INDIDevice device) {
-    for (int i = 0 ; i < listeners.size() ; i++) {
-      INDIServerConnectionListener l = listeners.get(i);
+    ArrayList<INDIServerConnectionListener> lCopy = (ArrayList<INDIServerConnectionListener>) listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIServerConnectionListener l = lCopy.get(i);
 
       l.removeDevice(this, device);
     }
@@ -683,9 +687,10 @@ public class INDIServerConnection implements INDIProtocolParser {
    * Notifies the listeners when the Connection is lost.
    */
   private void notifyListenersConnectionLost() {
-    for (int i = 0 ; i < listeners.size() ; i++) {
-      INDIServerConnectionListener l = listeners.get(i);
+    ArrayList<INDIServerConnectionListener> lCopy = (ArrayList<INDIServerConnectionListener>) listeners.clone();
 
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIServerConnectionListener l = lCopy.get(i);
       l.connectionLost(this);
     }
   }
@@ -697,8 +702,10 @@ public class INDIServerConnection implements INDIProtocolParser {
    * @param message the message.
    */
   protected void notifyListenersNewMessage(Date timestamp, String message) {
-    for (int i = 0 ; i < listeners.size() ; i++) {
-      INDIServerConnectionListener l = listeners.get(i);
+    ArrayList<INDIServerConnectionListener> lCopy = (ArrayList<INDIServerConnectionListener>) listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIServerConnectionListener l = lCopy.get(i);
 
       l.newMessage(this, timestamp, message);
     }

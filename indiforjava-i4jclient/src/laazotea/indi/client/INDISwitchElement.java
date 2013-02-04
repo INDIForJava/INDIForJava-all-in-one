@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Switch Element.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, April 18, 2012
+ * @version 1.32, February 4, 2012
  */
 public class INDISwitchElement extends INDIElement {
 
@@ -206,5 +206,10 @@ public class INDISwitchElement extends INDIElement {
     desiredStatus = null;
 
     return xml;
+  }
+
+  @Override
+  public String getValueAsString() {
+    return getValue() + "";
   }
 }

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Device.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, December 4, 2012
+ * @version 1.32, January 27, 2013
  */
 public class INDIDevice {
 
@@ -115,8 +115,10 @@ public class INDIDevice {
    * @param property The new property
    */
   private void notifyListenersNewProperty(INDIProperty property) {
-    for (int i = 0; i < listeners.size(); i++) {
-      INDIDeviceListener l = listeners.get(i);
+    ArrayList<INDIDeviceListener> lCopy = (ArrayList<INDIDeviceListener>) listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIDeviceListener l = lCopy.get(i);
 
       l.newProperty(this, property);
     }
@@ -129,8 +131,10 @@ public class INDIDevice {
    * @param property The removed property
    */
   private void notifyListenersDeleteProperty(INDIProperty property) {
-    for (int i = 0; i < listeners.size(); i++) {
-      INDIDeviceListener l = listeners.get(i);
+    ArrayList<INDIDeviceListener> lCopy = (ArrayList<INDIDeviceListener>) listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIDeviceListener l = lCopy.get(i);
 
       l.removeProperty(this, property);
     }
@@ -140,8 +144,10 @@ public class INDIDevice {
    * Notifies the listeners that the message of this Device has changed.
    */
   private void notifyListenersMessageChanged() {
-    for (int i = 0; i < listeners.size(); i++) {
-      INDIDeviceListener l = listeners.get(i);
+    ArrayList<INDIDeviceListener> lCopy = (ArrayList<INDIDeviceListener>) listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIDeviceListener l = lCopy.get(i);
 
       l.messageChanged(this);
     }

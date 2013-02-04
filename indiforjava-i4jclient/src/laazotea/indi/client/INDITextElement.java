@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Text Element.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, December 3, 2012
+ * @version 1.32, February 4, 2012
  */
 public class INDITextElement extends INDIElement {
 
@@ -186,5 +186,10 @@ public class INDITextElement extends INDIElement {
   @Override
   public String toString() {
     return value; 
+  }
+
+  @Override
+  public String getValueAsString() {
+    return getValue();
   }
 }

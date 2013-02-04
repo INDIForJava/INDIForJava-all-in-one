@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * mechanism to notify changes in its value.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, April 18, 2012
+ * @version 1.32, February 4, 2013
  */
 public abstract class INDIElement {
 
@@ -109,8 +109,10 @@ public abstract class INDIElement {
    * Notifies the listeners about changes of the value of the Element
    */
   protected void notifyListeners() {
-    for (int i = 0; i < listeners.size(); i++) {
-      INDIElementListener l = listeners.get(i);
+    ArrayList<INDIElementListener> lCopy = (ArrayList<INDIElementListener>) listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIElementListener l = lCopy.get(i);
 
       l.elementChanged(this);
     }
@@ -149,6 +151,13 @@ public abstract class INDIElement {
    * @return The current value of the Element.
    */
   public abstract Object getValue();
+  
+    /**
+   * Gets the current value of the Element as a String.
+   *
+   * @return The current value of the Element as a String.
+   */
+  public abstract String getValueAsString();
 
   /**
    * Sets the current value of the Element. It is assummed that the XML Element
@@ -178,19 +187,27 @@ public abstract class INDIElement {
    * <code>desiredValue</code> is not of the correct type for the Element.
    */
   public abstract void setDesiredValue(Object desiredValue) throws INDIValueException;
-  
+
   /**
-   * Returns <code>true</code> if the <code>desiredValue</code> has been setted (and thus if it should be send to the Driver).
-   * @return <code>true</code> if the desiredValue has been setted. <code>false</code> otherwise.
+   * Returns
+   * <code>true</code> if the
+   * <code>desiredValue</code> has been setted (and thus if it should be send to
+   * the Driver).
+   *
+   * @return
+   * <code>true</code> if the desiredValue has been setted.
+   * <code>false</code> otherwise.
    */
   public abstract boolean isChanged();
 
   /**
-   * Gets a default UI component to handle the repesentation and control of this 
-   * Element. The panel is registered as a listener of this Element. Please note that
-   * the UI class must implement INDIElementListener. The component will be chosen
-   * depending on the loaded UI libraries (I4JClientUI, I4JAndroid, etc). Note that
-   * a casting of the returned value must be done. If a previous UI element has been asked, it will be discarded and de-registered as listener. So, only one default UI element will be active.
+   * Gets a default UI component to handle the repesentation and control of this
+   * Element. The panel is registered as a listener of this Element. Please note
+   * that the UI class must implement INDIElementListener. The component will be
+   * chosen depending on the loaded UI libraries (I4JClientUI, I4JAndroid, etc).
+   * Note that a casting of the returned value must be done. If a previous UI
+   * element has been asked, it will be discarded and de-registered as listener.
+   * So, only one default UI element will be active.
    *
    * @return A UI component that handles this Element.
    */
@@ -210,14 +227,15 @@ public abstract class INDIElement {
   public abstract boolean checkCorrectValue(Object desiredValue) throws INDIValueException;
 
   /**
-   * Returns the XML code &lt;oneXXX&gt; representing this Element with a new desired value). The desired value is reseted.
+   * Returns the XML code &lt;oneXXX&gt; representing this Element with a new
+   * desired value). The desired value is reseted.
    *
    * @return the XML code
    * <code>&lt;oneXXX&gt;</code> representing the Element with a new value.
    * @see #setDesiredValue
    */
   protected abstract String getXMLOneElementNewValue();
-  
+
   /**
    * Gets the name of the element and its current value
    *

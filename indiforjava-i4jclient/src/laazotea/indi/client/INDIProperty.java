@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, December 3, 2012
+ * @version 1.32, January 27, 2013
  */
 public abstract class INDIProperty {
 
@@ -440,8 +440,10 @@ public abstract class INDIProperty {
    * Notifies all the listeners about the changes in the Property.
    */
   private void notifyListeners() {
-    for (int i = 0; i < listeners.size(); i++) {
-      INDIPropertyListener l = listeners.get(i);
+    ArrayList<INDIPropertyListener> lCopy = (ArrayList<INDIPropertyListener>)listeners.clone();
+
+    for (int i = 0; i < lCopy.size(); i++) {
+      INDIPropertyListener l = lCopy.get(i);
 
       l.propertyChanged(this);
     }
