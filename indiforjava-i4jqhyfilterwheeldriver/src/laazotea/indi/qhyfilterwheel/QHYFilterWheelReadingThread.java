@@ -21,7 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * A Thread that reads the input stream connecting to the Filter Wheel and 
+ * A Thread that reads the input stream connecting to the Filter Wheel and
  * notifies the driver about its changes.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
@@ -33,22 +33,19 @@ public class QHYFilterWheelReadingThread extends Thread {
    * The input stream from the filer wheel.
    */
   FileInputStream fwInput;
-  
   /**
    * The driver to which communicate messages from the filter wheel.
    */
   I4JQHYFilterWheelDriver driver;
-  
   /**
    * Used to signal when the thread must end.
    */
   private boolean end;
-  
   /**
    * Used to know when the thread has ended.
    */
   private boolean ended;
-  
+
   /**
    * Constructs an instance of a
    * <code>QHYFilterWheelReadingThread</code> that reads messages from the
@@ -71,8 +68,8 @@ public class QHYFilterWheelReadingThread extends Thread {
 
   /**
    * To know if the thread has ended.
-   * 
-   * @return <code>true</code> if the thread has ended. <code>false</code> 
+   *
+   * @return <code>true</code> if the thread has ended. <code>false</code>
    * otherwise.
    */
   protected boolean hasEnded() {
