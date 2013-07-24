@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import laazotea.indi.INDIException;
 import laazotea.indi.driver.INDIDriver;
 
@@ -30,7 +31,7 @@ import laazotea.indi.driver.INDIDriver;
  * A class that represent a Java Device (created with the INDI Driver library).
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, January 19, 2013
+ * @version 1.32, July 23, 2013
  *
  * @see laazotea.indi.driver
  */
@@ -41,7 +42,8 @@ public class INDIJavaDevice extends INDIDevice {
    */
   private INDIDriver driver;
   /**
-   * An identifier of the Java Device. Can be the name of a JAR file or any other String, but it must be UNIQUE.
+   * An identifier of the Java Device. Can be the name of a JAR file or any
+   * other String, but it must be UNIQUE.
    */
   private String identifier;
   /**
@@ -60,7 +62,11 @@ public class INDIJavaDevice extends INDIDevice {
    * The name of the device. May be null if it has not been discovered through a
    * <code>defXXXVector</code> message.
    */
-  private String name;
+//  private String name;
+  /**
+   * A list of names of the Device (it may be more than one)
+   */
+  private ArrayList<String> names;
 
   /**
    * Constructs a new Java Device and starts listening to its messages.
@@ -72,34 +78,36 @@ public class INDIJavaDevice extends INDIDevice {
    */
   protected INDIJavaDevice(AbstractINDIServer server, Class driverClass, String identifier) throws INDIException {
     super(server);
-    
-    name = null;
+
+    //name = null;
+    names = new ArrayList<String>();
     this.identifier = identifier;
     this.driverClass = driverClass;
-    
+
     toDriver = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
     fromDriver = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-    
+
     try {
       Constructor c = driverClass.getConstructor(InputStream.class, OutputStream.class);
       this.driver = (INDIDriver) c.newInstance(toDriver.getInputStream(), fromDriver.getOutputStream());
     } catch (InstantiationException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?)");
+      throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - InstantiationException");
     } catch (IllegalAccessException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?)");
+      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - IllegalAccessException");
     } catch (NoSuchMethodException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?)");
+      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - NoSuchMethodException");
     } catch (InvocationTargetException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?)");
+      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - InvocationTargetException");
     } catch (ClassCastException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?)"); 
+      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - ClassCastException");
     }
-    
+
     driver.startListening();
   }
 
   /**
-   * Gets the identifier of the Device (probablythe name of the JAR file that includes it).
+   * Gets the identifier of the Device (probablythe name of the JAR file that
+   * includes it).
    *
    * @return The identifier of the Device
    */
@@ -113,10 +121,21 @@ public class INDIJavaDevice extends INDIDevice {
    *
    * @param possibleNewName The new possible new name.
    */
+  /*  @Override
+   protected void dealWithPossibleNewDeviceName(String possibleNewName) {
+   if (name == null) {
+   name = possibleNewName;
+   }
+   }*/
+  /**
+   * Deals with a possible new Device name, adding it if it is new.
+   *
+   * @param possibleNewName The new possible new name.
+   */
   @Override
   protected void dealWithPossibleNewDeviceName(String possibleNewName) {
-    if (name == null) {
-      name = possibleNewName;
+    if (!names.contains(possibleNewName)) {
+      names.add(possibleNewName);
     }
   }
 
@@ -124,28 +143,41 @@ public class INDIJavaDevice extends INDIDevice {
    * Checks if the Device has a particular name.
    *
    * @param name The name to check.
-   * @return
-   * <code>true</code> if the Device respond to
-   * <code>name</code>.
+   * @return <code>true</code> if the Device respond to <code>name</code>.
+   * <code>false</code> otherwise.
+   */
+  /*  @Override
+   protected boolean hasName(String name) {
+   if (this.name == null) {
+   return false;
+   }
+    
+   if (this.name.equals(name)) {
+   return true;
+   }
+    
+   if (driver.hasSubDriver(name)) {
+   return true; 
+   }
+    
+   return false;
+   }*/
+  /**
+   * Checks if the Device has a particular name.
+   *
+   * @param name The name to check.
+   * @return <code>true</code> if the Device respond to <code>name</code>.
    * <code>false</code> otherwise.
    */
   @Override
   protected boolean hasName(String name) {
-    if (this.name == null) {
-      return false;
-    }
-    
-    if (this.name.equals(name)) {
+    if (names.contains(name)) {
       return true;
     }
-    
-    if (driver.hasSubDriver(name)) {
-      return true; 
-    }
-    
+
     return false;
   }
-  
+
   @Override
   public void closeConnections() {
     try {
@@ -165,17 +197,17 @@ public class INDIJavaDevice extends INDIDevice {
     } catch (IOException e) {
     }
   }
-  
+
   @Override
   public InputStream getInputStream() {
     return fromDriver.getInputStream();
   }
-  
+
   @Override
   public OutputStream getOutputStream() {
     return toDriver.getOutputStream();
   }
-  
+
   @Override
   public String getDeviceIdentifier() {
     return identifier + "-+-" + driverClass.getName();
@@ -185,18 +217,27 @@ public class INDIJavaDevice extends INDIDevice {
    * Checks if the Device corresponds to a particular Device Identifier.
    *
    * @param deviceIdentifier The Device Identifier to check.
-   * @return
-   * <code>true</code> if the Device corresponds to the Device Identifier (that
-   * is, is in the jar file).
+   * @return <code>true</code> if the Device corresponds to the Device
+   * Identifier (that is, is in the jar file).
    */
   @Override
   public boolean isDevice(String deviceIdentifier) {
     return getDeviceIdentifier().startsWith(deviceIdentifier);
   }
-  
+
+  /*  @Override
+   protected String[] getNames() {
+   return new String[]{name};
+   }*/
   @Override
   protected String[] getNames() {
-    return new String[]{name};
+    String[] ns = new String[names.size()];
+
+    for (int i = 0 ; i < ns.length ; i++) {
+      ns[i] = names.get(i);
+    }
+
+    return ns;
   }
 
   /**
@@ -211,6 +252,6 @@ public class INDIJavaDevice extends INDIDevice {
 
   @Override
   public void isBeingDestroyed() {
-    driver.isBeingDestroyed(); 
+    driver.isBeingDestroyed();
   }
 }
