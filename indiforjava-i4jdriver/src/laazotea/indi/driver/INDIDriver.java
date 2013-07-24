@@ -39,12 +39,12 @@ import org.w3c.dom.NodeList;
  * clients and parsing / formating any incoming / leaving messages.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, January 19, 2013
+ * @version 1.32, July 25, 2013
  */
 public abstract class INDIDriver implements INDIProtocolParser {
 
   private InputStream inputStream;
-  private OutputStream outputStream;  
+  private OutputStream outputStream;
   private PrintWriter out;
   private INDIProtocolReader reader;
   /**
@@ -116,9 +116,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
   /**
    * Gets the started or not state of the Driver.
    *
-   * @return
-   * <code>true</code> if the Driver has already started to listen to messages.
-   * <code>false</code> otherwise.
+   * @return <code>true</code> if the Driver has already started to listen to
+   * messages. <code>false</code> otherwise.
    */
   public boolean isStarted() {
     return started;
@@ -127,14 +126,17 @@ public abstract class INDIDriver implements INDIProtocolParser {
   @Override
   public void finishReader() {
     System.err.println("DRIVER " + getName() + " finishing");
+
+    if (reader != null) {
+      reader.setStop(true);
+    }
   }
 
   /**
    * Gets the output
    * <code>PrintWriter</code>.
    *
-   * @return The output
-   * <code>PrintWriter</code>.
+   * @return The output <code>PrintWriter</code>.
    */
   protected PrintWriter getOut() {
     return out;
@@ -159,8 +161,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * Sets the CONNECTION Property to connected or disconnected and sends the
    * changes to the clients. If the property does not exist nothing happens.
    *
-   * @param connected
-   * <code>true</code> if the CONNECT Element must be selected.
+   * @param connected <code>true</code> if the CONNECT Element must be selected.
    * <code>false</code> if the DISCONNECT Element must be selected.
    */
   private void setConnectionProperty(boolean connected) {
@@ -169,11 +170,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
   /**
    * Sets the CONNECTION Property to connected or disconnected and sends the
-   * changes to the clients. If the property does not exist nothing happens.
+   * changes to the clients. If the property does not exist nothing happens. If
+   * the connection is already stablished ignore petition.
    *
    * @param connected
-   * @param message An optional message (can be
-   * <code>null</code>)
+   * @param message An optional message (can be <code>null</code>)
    * <code>true</code> if the CONNECT Element must be selected.
    * <code>false</code> if the DISCONNECT Element must be selected.
    */
@@ -182,16 +183,16 @@ public abstract class INDIDriver implements INDIProtocolParser {
       return;
     }
 
+    connectionP.setState(PropertyStates.OK);
+
     if (connected) {
       connectedE.setValue(SwitchStatus.ON);
     } else {
       disconnectedE.setValue(SwitchStatus.ON);
     }
 
-    connectionP.setState(PropertyStates.OK);
-
     if (message == null) {
-      try {  
+      try {
         updateProperty(connectionP);
       } catch (INDIException e) { // Ignore, there must be no errors here        
       }
@@ -202,6 +203,21 @@ public abstract class INDIDriver implements INDIProtocolParser {
       } catch (INDIException e) { // Ignore, there must be no errors here        
       }
     }
+  }
+
+  /**
+   * Checks if the CONNECTION Property is set to
+   * <code>SwitchStatus.ON</code>.
+   *
+   * @return <code>true</code> if the CONNECTION Property is set to
+   * <code>SwitchStatus.ON</code>. <code>false</code> otherwise.
+   */
+  protected boolean isConnected() {
+    if (connectedE.getValue() == SwitchStatus.ON) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -315,7 +331,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
       newEvs[i] = (INDISwitchElementAndValue) evs[i];
     }
 
-
     if ((this instanceof INDIConnectionHandler) && (prop == connectionP)) { // If it is the CONNECTION property
       handleConnectionProperty(newEvs, timestamp);
     } else {  // if it is any other property
@@ -330,29 +345,37 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * @param newEvs The new Elements and Values
    * @param timestamp The timestamp of the received CONNECTION message.
    */
-  private void handleConnectionProperty(INDISwitchElementAndValue[] newEvs, Date timestamp) {
+  private synchronized void handleConnectionProperty(INDISwitchElementAndValue[] newEvs, Date timestamp) {
     for (int i = 0 ; i < newEvs.length ; i++) {
       INDISwitchElement el = newEvs[i].getElement();
       SwitchStatus s = newEvs[i].getValue();
 
       if (el == connectedE) {
         if (s == SwitchStatus.ON) {
-          try {
-            ((INDIConnectionHandler) this).driverConnect(timestamp);
+          if (connectedE.getValue() != SwitchStatus.ON) {
+            try {
+              ((INDIConnectionHandler) this).driverConnect(timestamp);
 
+              setConnectionProperty(true);
+            } catch (INDIException e) {
+              setConnectionProperty(false, e.getMessage());
+            }
+          } else {
             setConnectionProperty(true);
-          } catch (INDIException e) {
-            setConnectionProperty(false, e.getMessage());
           }
         }
       } else if (el == disconnectedE) {
         if (s == SwitchStatus.ON) {
-          try {
-            ((INDIConnectionHandler) this).driverDisconnect(timestamp);
+          if (disconnectedE.getValue() != SwitchStatus.ON) {
+            try {
+              ((INDIConnectionHandler) this).driverDisconnect(timestamp);
 
+              setConnectionProperty(false);
+            } catch (INDIException e) {
+              setConnectionProperty(true, e.getMessage());
+            }
+          } else {
             setConnectionProperty(false);
-          } catch (INDIException e) {
-            setConnectionProperty(true, e.getMessage());
           }
         }
       }
@@ -551,8 +574,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * Processes a &lt;newXXXVector&gt; message.
    *
    * @param xml The XML message
-   * @return The INDI Property to which the
-   * <code>xml</code> message refers.
+   * @return The INDI Property to which the <code>xml</code> message refers.
    */
   private INDIProperty processNewXXXVector(Element xml) {
     if ((!xml.hasAttribute("device")) || (!xml.hasAttribute("name"))) {
@@ -752,8 +774,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
   /**
    * Sends a mesage to the client to remove the entire device.
    *
-   * @param message A optional message (can be
-   * <code>null</code>).
+   * @param message A optional message (can be <code>null</code>).
    */
   private void sendDelPropertyMessage(String message) {
     String mm = "";
@@ -763,7 +784,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     String msg = "<delProperty device=\"" + this.getName() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\"" + mm + " />";
-   
+
     sendXML(msg);
   }
 
@@ -772,8 +793,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * <code>message</code>.
    *
    * @param property The property that is being removed.
-   * @param message The optional message (can be
-   * <code>null</code>).
+   * @param message The optional message (can be <code>null</code>).
    */
   private void sendDelPropertyMessage(INDIProperty property, String message) {
     String mm = "";
@@ -791,27 +811,28 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * Gets a Property of the Driver given its name.
    *
    * @param propertyName The name of the Property to be retrieved.
-   * @return The Property with
-   * <code>propertyName</code> name.
-   * <code>null</code> if there is no property with that name.
+   * @return The Property with <code>propertyName</code> name. <code>null</code>
+   * if there is no property with that name.
    */
   protected INDIProperty getProperty(String propertyName) {
     return properties.get(propertyName);
   }
 
   /**
-   * Gets the default Connection property (if the driver implements INDIConnectionHandler)
-   * 
-   * @return The standard Connection property if this driver implements INDIConnectionHandler. <code>null</code> otherwise.
+   * Gets the default Connection property (if the driver implements
+   * INDIConnectionHandler)
+   *
+   * @return The standard Connection property if this driver implements
+   * INDIConnectionHandler. <code>null</code> otherwise.
    */
   protected INDISwitchProperty getConnectionProperty() {
     if (this instanceof INDIConnectionHandler) {
       return connectionP;
     }
-    
+
     return null;
   }
-  
+
   /**
    * Gets a list of all the Properties in the Driver.
    *
@@ -835,36 +856,37 @@ public abstract class INDIDriver implements INDIProtocolParser {
   public InputStream getInputStream() {
     return inputStream;
   }
-  
+
   /**
-   * Gets the <code>OutputStream</code> of the driver (useful for
-   * subdrivers).
-   * 
+   * Gets the
+   * <code>OutputStream</code> of the driver (useful for subdrivers).
+   *
    * @return The <code>OutputStream</code> of the driver.
    */
   public OutputStream getOutputStream() {
     return outputStream;
-  }  
-  
+  }
+
   /**
-   * A method that should be implemented when the driver is being 
-   * destroyed to stop threads, kill sub-drivers, etc. By default it 
-   * calls <code>removeDevice</code>.
-   * 
-   * @see removeDevice
+   * A method that should be implemented when the driver is being destroyed to
+   * stop threads, kill sub-drivers, etc. By default it calls
+   * <code>removeDevice</code>.
+   *
+   * @see #removeDevice
    */
   public void isBeingDestroyed() {
+    finishReader();
     removeDevice("Removing " + getName());
   }
-  
+
   /**
-   * Checks if the driver has any subdriver with a particular name.
-   * Should be overriden by Drivers with subdrivers.
-   * 
+   * Checks if the driver has any subdriver with a particular name. Should be
+   * overriden by Drivers with subdrivers.
+   *
    * @param subdriverName The possible name of the subdriver
-   * 
-   * @return <code>true</code> if the driver has a subdriver with a 
-   * particular name. <code>false</code> otherwise.
+   *
+   * @return <code>true</code> if the driver has a subdriver with a particular
+   * name. <code>false</code> otherwise.
    */
   public boolean hasSubDriver(String subdriverName) {
     return false;

@@ -41,7 +41,7 @@ public class INDINumberProperty extends INDIProperty {
    * <code>permission</code> and
    * <code>timeout</code>.
    *
-   * @param driver The Driver to which this property is associated.
+   * @param driver The Driver to which this property is associated
    * @param name The name of the Property
    * @param label The label of the Property
    * @param group The group of the Property

@@ -17,8 +17,8 @@
  */
 package laazotea.indi.driver;
 
+import java.io.Serializable;
 import org.w3c.dom.Element;
-
 
 /**
  * A class representing a INDI Element. The subclasses
@@ -30,9 +30,9 @@ import org.w3c.dom.Element;
  * may contain according to the INDI protocol.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.21, April 4, 2012
+ * @version 1.32, July 23, 2013
  */
-public abstract class INDIElement {
+public abstract class INDIElement implements Serializable {
 
   /**
    * The name of the Element
@@ -42,7 +42,6 @@ public abstract class INDIElement {
    * The label of the Element
    */
   private String label;
-
   /**
    * The Property to which this Element belongs.
    */
@@ -50,72 +49,78 @@ public abstract class INDIElement {
 
   /**
    * Constructs an instance of
-   * <code>INDIElement</code>. Called by its sub-classes. If the <code>label</code> is null, the name is assigned to the label.
-   * 
+   * <code>INDIElement</code>. Called by its sub-classes. If the
+   * <code>label</code> is null, the name is assigned to the label.
+   *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element
    * @param label The label of the Element
-   * @throws IllegalArgumentException if the <code>name</code> is <code>null</code>.
+   * @throws IllegalArgumentException if the <code>name</code>
+   * is <code>null</code>.
    */
   protected INDIElement(INDIProperty property, String name, String label) throws IllegalArgumentException {
     this.property = property;
-    
+
     if (name == null) {
       throw new IllegalArgumentException("No name for Element");
     }
-    
+
     name = name.trim();
-    
+
     if (name.length() == 0) {
       throw new IllegalArgumentException("No name for Element");
     }
-    
+
     this.name = name;
 
     if (label == null) {
-      this.label = name; 
+      this.label = name;
     } else {
       label = label.trim();
-      
+
       if (label.length() == 0) {
-        this.label = name; 
+        this.label = name;
       } else {
         this.label = label;
       }
     }
-    
+
     property.addElement(this);
   }
-  
+
   /**
    * Constructs an instance of
-   * <code>INDIElement</code> with a label equal to its name. Called by its sub-classes.
+   * <code>INDIElement</code> with a label equal to its name. Called by its
+   * sub-classes.
+   *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
-   * @throws IllegalArgumentException if the <code>name</code> is <code>null</code>.
+   * @throws IllegalArgumentException if the <code>name</code>
+   * is <code>null</code>.
    */
   protected INDIElement(INDIProperty property, String name) throws IllegalArgumentException {
     this.property = property;
-    
+
     if (name == null) {
       throw new IllegalArgumentException("No name for Element");
     }
-    
+
     name = name.trim();
-    
+
     if (name.length() == 0) {
       throw new IllegalArgumentException("No name for Element");
     }
-    
+
     this.name = name;
 
     this.label = name;
-    
+
     property.addElement(this);
   }
 
   /**
    * Gets the Property to which this Element belongs.
+   *
    * @return The Property to which this Element belongs
    */
   public INDIProperty getProperty() {
@@ -140,7 +145,6 @@ public abstract class INDIElement {
     return name;
   }
 
-
   /**
    * Gets the current value of the Element.
    *
@@ -150,33 +154,43 @@ public abstract class INDIElement {
 
   /**
    * Parses a &lt;oneXXX&gt; XML message and gets the desired value in it.
+   *
    * @param xml The XML element to be parsed.
    * @return The value of the element described in the <code>XML</code> element.
    */
   public abstract Object parseOneValue(Element xml);
 
   /**
-   * Sets the value of the Element to <code>newValue</code>.
+   * Sets the value of the Element to
+   * <code>newValue</code>.
+   *
    * @param newValue The new value for the Element.
-   * @throws IllegalArgumentException if the <code>newValue</code> is not a valid one for the type of the Element.
+   * @throws IllegalArgumentException if the <code>newValue</code> is not a
+   * valid one for the type of the Element.
    */
   public abstract void setValue(Object newValue) throws IllegalArgumentException;
 
-
   /**
-   * Gets a &lt;oneXXX&gt; XML string describing the current value of the Element.
-   * @return the &lt;oneXXX&gt; XML string describing the current value of the Element.
+   * Gets a &lt;oneXXX&gt; XML string describing the current value of the
+   * Element.
+   *
+   * @return the &lt;oneXXX&gt; XML string describing the current value of the
+   * Element.
    */
   protected abstract String getXMLOneElement();
-  
+
   /**
-   * Gets a &lt;defXXX&gt; XML string describing the current value and properties of the Element.
-   * @return The &lt;defXXX&gt; XML string describing the current value and properties of the Element.
+   * Gets a &lt;defXXX&gt; XML string describing the current value and
+   * properties of the Element.
+   *
+   * @return The &lt;defXXX&gt; XML string describing the current value and
+   * properties of the Element.
    */
   protected abstract String getXMLDefElement();
-  
+
   /**
    * Gets the name of the element and its current value
+   *
    * @return a String with the name of the Element and Its Value
    */
   public abstract String getNameAndValueAsString();

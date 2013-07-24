@@ -167,9 +167,8 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
   /**
    * Checks for the Spain Image and, if new, sends it to the clients.
    *
-   * @param alwaysSend if
-   * <code>true</code> the image is sended to the client. If not, it is only
-   * sended if it is new.
+   * @param alwaysSend if <code>true</code> the image is sended to the client.
+   * If not, it is only sended if it is new.
    */
   private void checksForSpainImage(boolean alwaysSend) {
     boolean newImage = checkForImage("http://www.eltiempo.es/satelite", "SPAIN");
@@ -324,8 +323,8 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
   /**
    * Reads a text file and returns its contents as a String.
    *
-   * @param file
-   * @return
+   * @param file The file to read
+   * @return The contents of the file
    * @throws IOException
    */
   private String readFile(File file) throws IOException {
@@ -345,8 +344,8 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
   /**
    * Reads a binary file and returns its contents as a byte[]
    *
-   * @param file
-   * @return
+   * @param file The file to be read
+   * @return The contents of the file
    * @throws IOException
    */
   private byte[] readBinaryFile(File file) throws IOException {

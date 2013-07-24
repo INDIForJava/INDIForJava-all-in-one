@@ -30,7 +30,7 @@ import laazotea.indi.INDIDateFormat;
  * A class representing a INDI Switch Property.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.11, March 26, 2012
+ * @version 1.32, July 24, 2013
  */
 public class INDISwitchProperty extends INDIProperty {
 
@@ -175,6 +175,30 @@ public class INDISwitchProperty extends INDIProperty {
   }
 
   /**
+   * Resets to OFF al switch elements but one which is set to ON. Very useful
+   * when dealing with
+   * <code>SwitchRules.ONE_OF_MANY</code> tipe of Switches.
+   *
+   * @param element The element that is turned ON.
+   *
+   * @return <code>true</code> if the selected element has been changed.
+   * <code>false</code> otherwise.
+   */
+  public boolean setOnlyOneSwitchOn(INDISwitchElement element) {
+    boolean changed = false;
+
+    if (element.getValue() == Constants.SwitchStatus.OFF) {
+      changed = true;
+    }
+
+    resetAllSwitches();
+
+    element.setValue(Constants.SwitchStatus.ON);
+
+    return changed;
+  }
+
+  /**
    * Gets the current Rule for this Switch Property
    *
    * @return the current Rule for this Switch Property
@@ -186,10 +210,8 @@ public class INDISwitchProperty extends INDIProperty {
   /**
    * Checks if the Rule of this Switch property holds.
    *
-   * @return
-   * <code>true</code> if the values of the Elements of this Property comply
-   * with the Rule.
-   * <code>false</code> otherwise.
+   * @return <code>true</code> if the values of the Elements of this Property
+   * comply with the Rule. <code>false</code> otherwise.
    */
   protected boolean checkCorrectValues() {
     if (getState() == PropertyStates.OK) {
@@ -228,8 +250,6 @@ public class INDISwitchProperty extends INDIProperty {
 
     return selectedCount;
   }
-  
-  
 
   @Override
   public INDISwitchElement getElement(String name) {

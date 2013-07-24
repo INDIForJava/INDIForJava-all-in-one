@@ -17,11 +17,18 @@
  */
 package laazotea.indi.driver;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
+import laazotea.indi.INDIException;
 
 /**
  * A class representing a INDI Property. The subclasses
@@ -33,14 +40,14 @@ import laazotea.indi.Constants.PropertyStates;
  * may contain according to the INDI protocol.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.21, April 4, 2012
+ * @version 1.32, July 23, 2013
  */
-public abstract class INDIProperty {
+public abstract class INDIProperty implements Serializable {
 
   /**
    * The Driver to which this property belongs
    */
-  private INDIDriver driver;
+  private transient INDIDriver driver;
   /**
    * This Property name
    */
@@ -91,8 +98,7 @@ public abstract class INDIProperty {
    * @param state The initial state of the Property
    * @param permission The permission of the Property
    * @param timeout The timeout of the Property
-   * @throws IllegalArgumentException if
-   * <code>name<code> is
+   * @throws IllegalArgumentException if    <code>name<code> is
    * <code>null</code> or empty.
    */
   protected INDIProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) throws IllegalArgumentException {
@@ -153,6 +159,13 @@ public abstract class INDIProperty {
   }
 
   /**
+   * Sets the Driver of the Property.
+   */
+  private void setDriver(INDIDriver driver) {
+    this.driver = driver;
+  }
+
+  /**
    * Gets the Driver of the Property.
    *
    * @return The Driver of the Property.
@@ -174,8 +187,7 @@ public abstract class INDIProperty {
    * Sets the timeout of the property.
    *
    * @param newTimeout The new timeout of the Property.
-   * @throws IllegalArgumentException if
-   * <code>timeout</code> is less than 0.
+   * @throws IllegalArgumentException if <code>timeout</code> is less than 0.
    */
   public void setTimeout(int newTimeout) throws IllegalArgumentException {
     if (timeout < 0) {
@@ -250,9 +262,9 @@ public abstract class INDIProperty {
 
   /**
    * Adds a new Element to this Property (if it there is no other Element with
-   * the same name and it is already being init [not sended to clients]). Drivers
-   * must not call this method directly as it is called when constructing the
-   * Element.
+   * the same name and it is already being init [not sended to clients]).
+   * Drivers must not call this method directly as it is called when
+   * constructing the Element.
    *
    * @param element the Element to be added.
    * @throws IllegalArgumentException
@@ -289,10 +301,8 @@ public abstract class INDIProperty {
    * Gets a particular Element of this Property by its name.
    *
    * @param name The name of the Element to be returned
-   * @return The Element of this Property with the given
-   * <code>name</code>.
-   * <code>null</code> if there is no Element with that
-   * <code>name</code>.
+   * @return The Element of this Property with the given <code>name</code>.
+   * <code>null</code> if there is no Element with that <code>name</code>.
    */
   public INDIElement getElement(String name) {
     return elements.get(name);
@@ -302,8 +312,7 @@ public abstract class INDIProperty {
    * Gets a
    * <code>List</code> with all the Elements of this Property.
    *
-   * @return the
-   * <code>List</code> of Elements belonging to this Property.
+   * @return the <code>List</code> of Elements belonging to this Property.
    */
   public ArrayList<INDIElement> getElementsAsList() {
     return new ArrayList<INDIElement>(elements.values());
@@ -464,4 +473,42 @@ public abstract class INDIProperty {
    * @return the closing XML Element &lt;/setXXXVector&gt; for this Property.
    */
   protected abstract String getXMLPropertySetEnd();
+
+  /**
+   * Saves a property and its elements to a file. Ideal to later restore it on
+   * subsecuent executions of the driver.
+   *
+   * @param property The property to save.
+   * @param fileName The name of the file where the property will be stored.
+   */
+  protected static void saveToFile(INDIProperty property, String fileName) throws IOException {
+    FileOutputStream fos = new FileOutputStream(fileName);
+
+    ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+    oos.writeObject(property);
+
+    oos.close();
+  }
+
+  protected static INDIProperty loadFromFile(INDIDriver driver, String fileName) throws INDIException {
+    INDIProperty prop = null;
+
+    try {
+      FileInputStream fis = new FileInputStream(fileName);
+
+      ObjectInputStream ois = new ObjectInputStream(fis);
+
+      prop = (INDIProperty) ois.readObject();
+
+      ois.close();
+    } catch (ClassNotFoundException ex) {
+      throw new INDIException("Problem when loading a property from file " + fileName + " - ClassNotFoundException");
+    } catch (IOException ex) {
+      throw new INDIException("Problem when loading a property from file " + fileName + " - IOException");
+    }
+
+    prop.setDriver(driver);
+    return prop;
+  }
 }
