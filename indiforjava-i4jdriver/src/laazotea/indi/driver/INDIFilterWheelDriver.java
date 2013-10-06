@@ -20,10 +20,8 @@ package laazotea.indi.driver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import laazotea.indi.Constants;
-import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.INDIException;
 
 /**
@@ -31,42 +29,46 @@ import laazotea.indi.INDIException;
  * Wheel Drivers should extend this class. It is in charge of handling the
  * standard properties for Filter Wheels:
  * <ul>
- * <li>N_FILTERS -> N_FILTERS (number)</li>
- * <li>FILTER_NAMES -> FILTER_NAME_1, FILTER_NAME_2, ..., FILTER_NAME_N
+ * <li>filter_names -> filter_name_1, filter_name_2, ..., filter_name_N
  * (text)</li>
- * <li>CURRENT_FILTER -> F_1, F_2, ..., F_N (Switch)</li>
+ * <li>FILTER_SLOT -> FILTER_SLOT_VALUE (number)</li>
+ * <li>FILTER_NAME -> FILTER_NAME_VALUE (text)</li>
  * </ul>
  *
  * It is <strong>VERY IMPORTANT</strong> that any subclasses implement a
  * <code>super.processNewTextValue(property, timestamp, elementsAndValues);</code>
  * and
- * <code>super.processNewSwitchValue(property, timestamp, elementsAndValues);</code>
+ * <code>super.processNewNumberValue(property, timestamp, elementsAndValues);</code>
  * at the beginning of
  * <code>processNewTextValue</code> and
- * <code>processNewSwitchValue</code> to handle the generic filter wheel
+ * <code>processNewNumberValue</code> to handle the generic filter wheel
  * properties correctly.
  *
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, July 25, 2013
+ * @version 1.33, October 6, 2013
  */
 public abstract class INDIFilterWheelDriver extends INDIDriver {
 
   /**
-   * The N_FILTERS property
-   */
-  private INDINumberProperty nFiltersP;
-  /**
-   * The N_FILTERS element
-   */
-  private INDINumberElement nFiltersE;
-  /**
-   * The FILTER_NAMES property
+   * The filter_names property
    */
   private INDITextProperty filterNamesP;
   /**
-   * The CURRENT_FILTER property
+   * The FILTER_SLOT property
    */
-  private INDISwitchProperty currentFilterP;
+  private INDINumberProperty filterSlotP;
+  /**
+   * The FILTER_SLOT_VALUE element
+   */
+  private INDINumberElement filterSlotValueE;
+  /**
+   * The FILTER_NAME property
+   */
+  private INDITextProperty filterNameP;
+  /**
+   * The FILTER_NAME_VALUE element property
+   */
+  private INDITextElement filterNameValueE;
   /**
    * The file to which the FILTER_NAMES property will be stored
    */
@@ -90,41 +92,31 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
   public INDIFilterWheelDriver(InputStream inputStream, OutputStream outputStream) {
     super(inputStream, outputStream);
 
-    nFiltersP = new INDINumberProperty(this, "N_FILTERS", "Filters", "Control", Constants.PropertyStates.OK, Constants.PropertyPermissions.RO, 0);
-    nFiltersE = new INDINumberElement(nFiltersP, "N_FILTERS", "Number of Filters", getNumberOfFilters(), getNumberOfFilters(), getNumberOfFilters(), 1, "%1.0f");
-
     filterNamesFileName = getName() + ".filterNames";
 
     try {
-      filterNamesP = (INDITextProperty) INDIProperty.loadFromFile(this, filterNamesFileName);
+      filterNamesP = (INDITextProperty)INDIProperty.loadFromFile(this, filterNamesFileName);
     } catch (INDIException ex) {
       System.out.println(ex.getMessage());
     }
 
     if (filterNamesP == null) {
-      filterNamesP = new INDITextProperty(this, "FILTER_NAMES", "Filter Names", "Configuration", Constants.PropertyStates.OK, Constants.PropertyPermissions.RW, 0);
+      filterNamesP = new INDITextProperty(this, "filter_names", "Filter Names", "Configuration", Constants.PropertyStates.OK, Constants.PropertyPermissions.RW, 0);
 
       for (int i = 0 ; i < getNumberOfFilters() ; i++) {
-        INDITextElement te = new INDITextElement(filterNamesP, "FILTER_NAME_" + i, "Filter " + (i + 1), "Filter " + (i + 1));
+        INDITextElement te = new INDITextElement(filterNamesP, "filter_name_" + (i + 1), "Filter " + (i + 1), "Filter " + (i + 1));
       }
 
       saveFilterNames();
     }
 
-    currentFilterP = new INDISwitchProperty(this, "CURRENT_FILTER", "Current Filter", "Control", Constants.PropertyStates.IDLE, Constants.PropertyPermissions.RW, 0, Constants.SwitchRules.ONE_OF_MANY);
-    ArrayList<INDIElement> elements = filterNamesP.getElementsAsList();
+    filterSlotP = new INDINumberProperty(this, "FILTER_SLOT", "Filter Slot", "Control", Constants.PropertyStates.IDLE, Constants.PropertyPermissions.RW, 0);
+    filterSlotValueE = new INDINumberElement(filterSlotP, "FILTER_SLOT_VALUE", "Filter Slot Value", 1, 1, getNumberOfFilters(), 1, "%1.0f");
 
-    for (int i = 0 ; i < elements.size() ; i++) {
-      SwitchStatus sws = Constants.SwitchStatus.OFF;
+    filterNameP = new INDITextProperty(this, "FILTER_NAME", "Filter Name", "Control", Constants.PropertyStates.IDLE, Constants.PropertyPermissions.RO, 0);
+    String firstFilterName = filterNamesP.getElement("filter_name_1").getValue();
+    filterNameValueE = new INDITextElement(filterNameP, "FILTER_NAME_VALUE", "Filter Name Value", firstFilterName);
 
-      if (i == 0) {
-        sws = Constants.SwitchStatus.ON;
-      }
-
-      INDISwitchElement se = new INDISwitchElement(currentFilterP, "F_" + (i + 1), elements.get(i).getValue() + "", sws);
-    }
-
-    addProperty(nFiltersP);
     addProperty(filterNamesP);
   }
 
@@ -150,29 +142,23 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
   }
 
   @Override
-  public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-    if (property == currentFilterP) {
-      boolean changed = false;
-      int filterNumber = -1;
+  public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
+    if (property == filterSlotP) {
+      int newFilterNumber = elementsAndValues[0].getValue().intValue();
 
-      for (int i = 0 ; i < elementsAndValues.length ; i++) {
-        if (elementsAndValues[i].getValue() == Constants.SwitchStatus.ON) {
-          changed = currentFilterP.setOnlyOneSwitchOn(elementsAndValues[i].getElement());
-          String name = elementsAndValues[i].getElement().getName();
-          filterNumber = Integer.parseInt(name.substring(name.lastIndexOf("_") + 1));
-        }
-      }
+      if ((newFilterNumber > 0) && (newFilterNumber <= getNumberOfFilters())) {
+        filterSlotP.setState(Constants.PropertyStates.BUSY);
+        filterNameP.setState(Constants.PropertyStates.BUSY);
 
-      if (changed) {
-        currentFilterP.setState(Constants.PropertyStates.BUSY);
-
-        changeFilter(filterNumber);
+        changeFilter(newFilterNumber);
       } else {
-        currentFilterP.setState(Constants.PropertyStates.OK);
+        filterSlotP.setState(Constants.PropertyStates.OK);
+        filterNameP.setState(Constants.PropertyStates.OK);
       }
 
       try {
-        updateProperty(currentFilterP);
+        updateProperty(filterSlotP);
+        updateProperty(filterNameP);
       } catch (INDIException e) {
         e.printStackTrace();
       }
@@ -200,30 +186,53 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
   /**
    * Notifies that the wheel has finished changing the filter. Should be called
    * by subclases when approppiate.
+   *
+   * @param filterSlot The Filter Slot that is currently on.
    */
-  public void filterHasBeenChanged() {
-    currentFilterP.setState(Constants.PropertyStates.OK);
+  protected void filterHasBeenChanged(int filterSlot) {
+    System.out.println("Filter has been changed " + filterSlot);
+    
+    filterSlotP.setState(Constants.PropertyStates.OK);
+    filterNameP.setState(Constants.PropertyStates.OK);
 
     try {
-      updateProperty(currentFilterP);
+      filterSlotValueE.setValue("" + filterSlot);
+
+      filterNameValueE.setValue(filterNamesP.getElement("filter_name_" + filterSlot).getValue());
+
+      updateProperty(filterNameP);
+      updateProperty(filterSlotP);
     } catch (INDIException e) {
       e.printStackTrace();
     }
   }
 
+  protected void setBusy() {
+    filterSlotP.setState(Constants.PropertyStates.BUSY);
+    filterNameP.setState(Constants.PropertyStates.BUSY);
+    
+    try {
+      updateProperty(filterNameP);
+      updateProperty(filterSlotP);
+    } catch (INDIException e) {
+      e.printStackTrace();
+    }
+  }
   /**
-   * Shows the CURRENT_FILTER property. Usually called when the driver connects
-   * to the wheel.
+   * Shows the FILTER_SLOT and FILTER_NAME properties. Usually called when the
+   * driver connects to the wheel.
    */
-  protected void showCurrentFilterProperty() {
-    addProperty(currentFilterP);
+  protected void showFilterSlotAndNameProperties() {
+    addProperty(filterSlotP);
+    addProperty(filterNameP);
   }
 
   /**
-   * Hidess the CURRENT_FILTER property. Usually called when the driver
-   * disconnects from the wheel.
+   * Hides the FILTER_SLOT and FILTER_NAME properties. Usually called when the
+   * driver disconnects from the wheel.
    */
-  protected void hideCurrentFilterProperty() {
-    removeProperty(currentFilterP);
+  protected void hideFilterSlotAndNameProperties() {
+    removeProperty(filterSlotP);
+    removeProperty(filterNameP);
   }
 }
