@@ -93,13 +93,13 @@ public class INDIJavaDevice extends INDIDevice {
     } catch (InstantiationException ex) {
       throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - InstantiationException");
     } catch (IllegalAccessException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - IllegalAccessException");
+      throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - IllegalAccessException");
     } catch (NoSuchMethodException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - NoSuchMethodException");
+      throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - NoSuchMethodException");
     } catch (InvocationTargetException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - InvocationTargetException");
+      throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - InvocationTargetException");
     } catch (ClassCastException ex) {
-      throw new INDIException("Problem instantiating driver (not an INDIfor Java Driver?) - ClassCastException");
+      throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - ClassCastException");
     }
 
     driver.startListening();
