@@ -41,7 +41,7 @@ import laazotea.indi.INDIException;
  * may contain according to the INDI protocol.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, Novemeber 8, 2013
+ * @version 1.34, November 8, 2013
  */
 public abstract class INDIProperty implements Serializable {
 
