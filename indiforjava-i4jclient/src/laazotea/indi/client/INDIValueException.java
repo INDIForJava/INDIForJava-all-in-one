@@ -23,7 +23,7 @@ import laazotea.indi.INDIException;
  * A class representing an exception on the value of a
  * <code>INDIElement</code>.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public class INDIValueException extends INDIException {

@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 /**
  * A class representing a INDI BLOB Element.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, February 4, 2012
  */
 public class INDIBLOBElement extends INDIElement {

@@ -31,7 +31,7 @@ import laazotea.indi.client.INDIServerConnection;
  * A INDI Client that listens to a particular BLOB Element and saves it to a
  * file whenever it is updated.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 11, 2012
  */
 public class AutoBLOBSaver implements INDIElementListener {

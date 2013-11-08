@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
  * point for any INDI Client to connect to the server, retrieve all devices and
  * properties and so on.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 27, 2013
  */
 public class INDIServerConnection implements INDIProtocolParser {

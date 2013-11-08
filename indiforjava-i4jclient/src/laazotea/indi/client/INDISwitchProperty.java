@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * A class representing a INDI Switch Property. <p> It implements a listener
  * mechanism to notify changes in its Elements.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, December 3, 2012
  */
 public class INDISwitchProperty extends INDIProperty {

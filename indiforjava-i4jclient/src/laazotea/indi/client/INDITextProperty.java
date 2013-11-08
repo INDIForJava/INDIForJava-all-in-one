@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  * A class representing a INDI Text Property.<p> It implements a listener
  * mechanism to notify changes in its Elements.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, April 18, 2012
  */
 public class INDITextProperty extends INDIProperty {

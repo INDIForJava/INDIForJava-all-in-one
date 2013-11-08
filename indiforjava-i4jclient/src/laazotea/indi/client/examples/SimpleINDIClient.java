@@ -26,7 +26,7 @@ import laazotea.indi.client.*;
  * A simple INDI Client that listens to a particular INDI Server and prints any
  * message received (listens to all possible events).
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 11, 2012
  */
 public class SimpleINDIClient implements INDIServerConnectionListener, INDIDeviceListener, INDIPropertyListener {

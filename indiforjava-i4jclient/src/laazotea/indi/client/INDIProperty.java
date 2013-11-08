@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
  * may contain according to the INDI protocol. <p> It implements a listener
  * mechanism to notify changes in its Elements.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 27, 2013
  */
 public abstract class INDIProperty {
