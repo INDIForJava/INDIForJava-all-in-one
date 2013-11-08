@@ -1,18 +1,18 @@
 /*
- *  This file is part of INDI for Java Driver.
+ *  This file is part of INDI for Java QHY Filter Wheel Driver.
  * 
- *  INDI for Java Driver is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
+ *  INDI for Java QHY Filter Wheel Driver is free software: you can 
+ *  redistribute it and/or modify it under the terms of the GNU General Public 
+ *  License as published by the Free Software Foundation, either version 3 of 
  *  the License, or (at your option) any later version.
  * 
- *  INDI for Java Driver is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  INDI for Java QHY Filter Wheel Driver is distributed in the hope that it
+ *  will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  * 
  *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Driver.  If not, see 
+ *  along with INDI for Java QHY Filter Wheel Driver.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
 package laazotea.indi.qhyfilterwheel;
@@ -46,8 +46,8 @@ import laazotea.indi.driver.INDITextProperty;
 /**
  * A class that acts as a INDI for Java Driver for the QHY Filter Wheel.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.33, October 6, 2013
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 8, 2013
  */
 public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements INDIConnectionHandler, Runnable {
 
@@ -96,6 +96,8 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
   public I4JQHYFilterWheelDriver(InputStream inputStream, OutputStream outputStream) {
     super(inputStream, outputStream);
 
+    initializeStandardProperties();
+
     portP = new INDIPortProperty(this, "/dev/ttyUSB0");
 
     filterPositionsP = new INDINumberProperty(this, "filter_positions", "Filter Positions", "Expert Configuration", PropertyStates.IDLE, PropertyPermissions.RW, 0);
@@ -124,12 +126,6 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     super.processNewTextValue(property, timestamp, elementsAndValues);
 
     portP.processTextValue(property, elementsAndValues);
-
-    //this.addProperty(portP);
-
-    if (property != portP) {
-      getSetupPositions();
-    }
   }
 
   @Override
@@ -137,10 +133,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     if (property == factorySettingsP) {
       sendMessageToFilterWheel("SEF");
 
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-      }
+      sleep(10);
 
       getSetupPositions();
 
@@ -171,10 +164,9 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
       }
 
       sendSetupPositions(positions);
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-      }
+
+      sleep(10);
+
       getSetupPositions();
     }
   }
@@ -224,10 +216,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         readingThread = null;
       }
 
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-      }
+      sleep(200);
 
       if (fwInput != null) {
         fwInput.close();
@@ -267,7 +256,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
   /**
    * Sets the positions for each filter slot.
-   * 
+   *
    * @param newPositions The new positions.
    */
   private void setSetupPositions(int[] newPositions) {
@@ -294,9 +283,9 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     sendMessageToFilterWheel("SEG");
   }
 
-    /**
+  /**
    * Sets the position for each of the 5 filter slots.
-   * 
+   *
    * @param positions The positions for each slot.
    */
   private void sendSetupPositions(int[] positions) {
@@ -347,17 +336,13 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     try {
       for (int i = 0 ; i < message.length ; i++) {
         fwOutput.write(message[i]);
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-        }
+        sleep(10);
       }
       fwOutput.flush();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
-  
   /**
    * Used to signal when the thread must end.
    */
@@ -410,14 +395,23 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         readerEnd = true;
       }
 
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-      }
+      sleep(200);
     }
 
     System.out.println("QHY Filter Wheel Reader Thread Ending");
 
     readerEnded = true;
+  }
+
+  /**
+   * Sleeps for a certain amount of time.
+   *
+   * @param milis The number of milliseconds to sleep
+   */
+  private void sleep(int milis) {
+    try {
+      Thread.sleep(milis);
+    } catch (InterruptedException e) {
+    }
   }
 }
