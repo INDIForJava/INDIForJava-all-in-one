@@ -17,7 +17,6 @@
  */
 package laazotea.indi.driver;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -35,7 +34,7 @@ import laazotea.indi.INDIException;
  * <li>FILTER_NAME -> FILTER_NAME_VALUE (text)</li>
  * </ul>
  *
- * It is <strong>VERY IMPORTANT</strong> that any subclasses implement a
+ * It is <strong>VERY IMPORTANT</strong> that any subclasses use
  * <code>super.processNewTextValue(property, timestamp, elementsAndValues);</code>
  * and
  * <code>super.processNewNumberValue(property, timestamp, elementsAndValues);</code>
@@ -44,8 +43,8 @@ import laazotea.indi.INDIException;
  * <code>processNewNumberValue</code> to handle the generic filter wheel
  * properties correctly.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.33, October 6, 2013
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 7, 2013
  */
 public abstract class INDIFilterWheelDriver extends INDIDriver {
 
@@ -69,10 +68,6 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
    * The FILTER_NAME_VALUE element property
    */
   private INDITextElement filterNameValueE;
-  /**
-   * The file to which the FILTER_NAMES property will be stored
-   */
-  private String filterNamesFileName;
 
   /**
    * Indicates how many filters does the filter wheel manage.
@@ -91,23 +86,24 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
    */
   public INDIFilterWheelDriver(InputStream inputStream, OutputStream outputStream) {
     super(inputStream, outputStream);
+  }
 
-    filterNamesFileName = getName() + ".filterNames";
-
+  /**
+   * Initializes the standard properties. MUST BE CALLED BY SUBDRIVERS.
+   */
+  protected void initializeStandardProperties() {
     try {
-      filterNamesP = (INDITextProperty)INDIProperty.loadFromFile(this, filterNamesFileName);
+      filterNamesP = (INDITextProperty)INDIProperty.loadFromFile(this, "filter_names");
     } catch (INDIException ex) {
       System.out.println(ex.getMessage());
     }
 
     if (filterNamesP == null) {
-      filterNamesP = new INDITextProperty(this, "filter_names", "Filter Names", "Configuration", Constants.PropertyStates.OK, Constants.PropertyPermissions.RW, 0);
+      filterNamesP = INDITextProperty.createSaveableTextProperty(this, "filter_names", "Filter Names", "Configuration", Constants.PropertyStates.OK, Constants.PropertyPermissions.RW, 0);
 
       for (int i = 0 ; i < getNumberOfFilters() ; i++) {
         INDITextElement te = new INDITextElement(filterNamesP, "filter_name_" + (i + 1), "Filter " + (i + 1), "Filter " + (i + 1));
       }
-
-      saveFilterNames();
     }
 
     filterSlotP = new INDINumberProperty(this, "FILTER_SLOT", "Filter Slot", "Control", Constants.PropertyStates.IDLE, Constants.PropertyPermissions.RW, 0);
@@ -136,8 +132,6 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
       } catch (INDIException e) {
         e.printStackTrace();
       }
-
-      saveFilterNames();
     }
   }
 
@@ -166,17 +160,6 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
   }
 
   /**
-   * Saves the filter names into a particular file.
-   */
-  private void saveFilterNames() {
-    try {
-      INDIProperty.saveToFile(filterNamesP, filterNamesFileName);
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  /**
    * Implements the actual changing of the filter on the wheel.
    *
    * @param filterNumber The filter that must be setted on the filer wheel
@@ -191,7 +174,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
    */
   protected void filterHasBeenChanged(int filterSlot) {
     System.out.println("Filter has been changed " + filterSlot);
-    
+
     filterSlotP.setState(Constants.PropertyStates.OK);
     filterNameP.setState(Constants.PropertyStates.OK);
 
@@ -210,7 +193,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
   protected void setBusy() {
     filterSlotP.setState(Constants.PropertyStates.BUSY);
     filterNameP.setState(Constants.PropertyStates.BUSY);
-    
+
     try {
       updateProperty(filterNameP);
       updateProperty(filterSlotP);
@@ -218,6 +201,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
       e.printStackTrace();
     }
   }
+
   /**
    * Shows the FILTER_SLOT and FILTER_NAME properties. Usually called when the
    * driver connects to the wheel.

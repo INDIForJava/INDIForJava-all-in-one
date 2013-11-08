@@ -23,16 +23,22 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * A class to initialize and launch a <code>INDIDriver</code>. It just contain a <code>main</code> method to initialize the appropriate Driver.
+ * A class to initialize and launch a
+ * <code>INDIDriver</code>. It just contain a
+ * <code>main</code> method to initialize the appropriate Driver.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public class INDIDriverRunner {
 
   /**
-   * Initializes a <code>INDIDriver</code>.
-   * @param args the command line arguments. The first argument must be the complete name of the class of the <code>INDIDriver</code>. That class must be in the class path in order to be loaded.
+   * Initializes a
+   * <code>INDIDriver</code>.
+   *
+   * @param args the command line arguments. The first argument must be the
+   * complete name of the class of the <code>INDIDriver</code>. That class must
+   * be in the class path in order to be loaded.
    * @see INDIDriver
    */
   public static void main(String[] args) {
@@ -46,7 +52,7 @@ public class INDIDriverRunner {
     try {
       Class theClass = Class.forName(args[0]);
       Constructor c = theClass.getConstructor(InputStream.class, OutputStream.class);
-      driver = (INDIDriver) c.newInstance(System.in, System.out);
+      driver = (INDIDriver)c.newInstance(System.in, System.out);
     } catch (ClassNotFoundException ex) {
       System.err.println(ex + " class must be in class path.");
       System.exit(-1);

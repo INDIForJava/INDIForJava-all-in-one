@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 /**
  * A class representing a INDI Text Element.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public class INDITextElement extends INDIElement {
@@ -33,7 +33,12 @@ public class INDITextElement extends INDIElement {
   private String value;
 
   /**
-   * Constructs an instance of a <code>INDITextElement</code> with a <code>name</code>, a <code>label</code> and its initial <code>value</code>.
+   * Constructs an instance of a
+   * <code>INDITextElement</code> with a
+   * <code>name</code>, a
+   * <code>label</code> and its initial
+   * <code>value</code>.
+   *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
    * @param label The label of the Element.
@@ -44,30 +49,35 @@ public class INDITextElement extends INDIElement {
 
     this.value = value.trim();
   }
-  
+
   /**
-   * Constructs an instance of a <code>INDITextElement</code> with a <code>name</code>, a <code>label</code> and its initial <code>value</code>. The label of the Element will be a copy of the <code>name</code>.
+   * Constructs an instance of a
+   * <code>INDITextElement</code> with a
+   * <code>name</code>, a
+   * <code>label</code> and its initial
+   * <code>value</code>. The label of the Element will be a copy of the
+   * <code>name</code>.
+   *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
    * @param value The initial value of the Element
-   * @throws IllegalArgumentException  
+   * @throws IllegalArgumentException
    */
   public INDITextElement(INDITextProperty property, String name, String value) throws IllegalArgumentException {
     super(property, name);
 
     this.value = value.trim();
-  }  
-
-    @Override
-  public INDITextProperty getProperty() {
-    return (INDITextProperty)super.getProperty();  
   }
-    
+
+  @Override
+  public INDITextProperty getProperty() {
+    return (INDITextProperty)super.getProperty();
+  }
+
   @Override
   public String getValue() {
     return value;
   }
-
 
   @Override
   public void setValue(Object newValue) throws IllegalArgumentException {
@@ -75,15 +85,12 @@ public class INDITextElement extends INDIElement {
 
     try {
       v = (String)newValue;
-    } catch(ClassCastException e) {
+    } catch (ClassCastException e) {
       throw new IllegalArgumentException("Value for a Text Element must be a String");
     }
-    
+
     this.value = v;
   }
-
-
-
 
   @Override
   public String getXMLOneElement() {

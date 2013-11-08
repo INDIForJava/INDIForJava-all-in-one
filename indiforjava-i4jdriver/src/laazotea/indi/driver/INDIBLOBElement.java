@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 /**
  * A class representing a INDI BLOB Element.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public class INDIBLOBElement extends INDIElement {
@@ -34,7 +34,11 @@ public class INDIBLOBElement extends INDIElement {
   private INDIBLOBValue value;
 
   /**
-   * Constructs an instance of a <code>INDIBLOBElement</code> with a <code>name</code> and a <code>label</code>.
+   * Constructs an instance of a
+   * <code>INDIBLOBElement</code> with a
+   * <code>name</code> and a
+   * <code>label</code>.
+   *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
    * @param label The label of the Element.
@@ -47,7 +51,10 @@ public class INDIBLOBElement extends INDIElement {
   }
 
   /**
-   * Constructs an instance of a <code>INDIBLOBElement</code> with a <code>name</code>.
+   * Constructs an instance of a
+   * <code>INDIBLOBElement</code> with a
+   * <code>name</code>.
+   *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
    * @throws IllegalArgumentException
@@ -56,13 +63,13 @@ public class INDIBLOBElement extends INDIElement {
     super(property, name);
 
     value = new INDIBLOBValue(new byte[0], "");
-  }  
-  
+  }
+
   @Override
   public INDIBLOBProperty getProperty() {
-    return (INDIBLOBProperty) super.getProperty();
+    return (INDIBLOBProperty)super.getProperty();
   }
-  
+
   @Override
   public INDIBLOBValue getValue() {
     return value;
@@ -73,7 +80,7 @@ public class INDIBLOBElement extends INDIElement {
     INDIBLOBValue b = null;
     try {
       b = (INDIBLOBValue)newValue;
-    } catch(ClassCastException e) {
+    } catch (ClassCastException e) {
       throw new IllegalArgumentException("Value for a BLOB Element must be a INDIBLOBValue");
     }
 
@@ -99,7 +106,7 @@ public class INDIBLOBElement extends INDIElement {
   @Override
   protected String getXMLDefElement() {
     String xml = "<defBLOB name=\"" + this.getName() + "\" label=\"" + getLabel() + "\" />";
-    
+
     return xml;
   }
 

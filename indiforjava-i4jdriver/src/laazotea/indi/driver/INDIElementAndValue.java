@@ -20,17 +20,21 @@ package laazotea.indi.driver;
 /**
  * A interface representing a pair of a INDIElement and a value for the Element.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public interface INDIElementAndValue {
+
   /**
    * Gets the Element of the pair.
+   *
    * @return The element of the pair.
    */
   public INDIElement getElement();
+
   /**
    * Gets the value of the pair.
+   *
    * @return The value of the pair.
    */
   public Object getValue();

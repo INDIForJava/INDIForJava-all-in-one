@@ -17,28 +17,13 @@
  */
 package laazotea.indi.driver;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 /**
- * A class representing a Not Loadable Driver in the INDI Protocol. 
- * INDI Drivers which should not be directly instantiated by a server should
- * extend this class. It is in charge of stablishing the connection to the
- * clients and parsing / formating any incoming / leaving messages.
+ * An interface representing a NOT Loadable Driver in the INDI Protocol. INDI
+ * Drivers which should not be directly instantiated by a server should
+ * implement this interface.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, January 18, 2013
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 8, 2013
  */
-public abstract class INDINotLoadableDriver extends INDIDriver {
-  /**
-   * Constructs a INDINotLoadableDriver with a particular
-   * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-   * <code>outputStream</code> to write the messages to the clients.
-   *
-   * @param inputStream The stream from which to read messages.
-   * @param outputStream The stream to which to write the messages.
-   */  
-  public INDINotLoadableDriver(InputStream inputStream, OutputStream outputStream) {
-    super(inputStream, outputStream);
-  }
+public interface INDINotLoadableDriver {
 }

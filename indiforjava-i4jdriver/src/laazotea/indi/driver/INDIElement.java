@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * <code>INDITextElement</code> define the basic Elements that a INDI Property
  * may contain according to the INDI protocol.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, July 23, 2013
  */
 public abstract class INDIElement implements Serializable {
@@ -55,8 +55,7 @@ public abstract class INDIElement implements Serializable {
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element
    * @param label The label of the Element
-   * @throws IllegalArgumentException if the <code>name</code>
-   * is <code>null</code>.
+   * @throws IllegalArgumentException if the <code>name</code>    * is <code>null</code>.
    */
   protected INDIElement(INDIProperty property, String name, String label) throws IllegalArgumentException {
     this.property = property;
@@ -95,8 +94,7 @@ public abstract class INDIElement implements Serializable {
    *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
-   * @throws IllegalArgumentException if the <code>name</code>
-   * is <code>null</code>.
+   * @throws IllegalArgumentException if the <code>name</code>    * is <code>null</code>.
    */
   protected INDIElement(INDIProperty property, String name) throws IllegalArgumentException {
     this.property = property;

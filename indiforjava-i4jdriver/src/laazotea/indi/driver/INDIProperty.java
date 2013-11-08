@@ -17,6 +17,7 @@
  */
 package laazotea.indi.driver;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,8 +40,8 @@ import laazotea.indi.INDIException;
  * <code>INDITextProperty</code> define the basic Properties that a INDI Drivers
  * may contain according to the INDI protocol.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, July 23, 2013
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, Novemeber 8, 2013
  */
 public abstract class INDIProperty implements Serializable {
 
@@ -80,6 +81,14 @@ public abstract class INDIProperty implements Serializable {
    * <code>true</code> if property has completely init (sent to any client).
    */
   private boolean isInit;
+  /**
+   * To save / retrieve properties from dis directory
+   */
+  private static final String PROPERTIES_DIR_NAME = "properties";
+  /**
+   * It marks if the property should be saved each time that it is changed.
+   */
+  private boolean saveable;
 
   /**
    * Constructs an instance of a
@@ -102,7 +111,6 @@ public abstract class INDIProperty implements Serializable {
    * <code>null</code> or empty.
    */
   protected INDIProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) throws IllegalArgumentException {
-
     this.driver = driver;
 
     // Name
@@ -155,7 +163,19 @@ public abstract class INDIProperty implements Serializable {
 
     this.elements = new LinkedHashMap<String, INDIElement>();
 
+    this.saveable = false;
+
     isInit = false;
+  }
+
+  /**
+   * Set the property to be saveable. Should only be called by property
+   * factories.
+   *
+   * @param saveable
+   */
+  protected void setSaveable(boolean saveable) {
+    this.saveable = saveable;
   }
 
   /**
@@ -409,6 +429,13 @@ public abstract class INDIProperty implements Serializable {
    * @return The XML code to set the values of the property.
    */
   protected String getXMLPropertySet(String message) {
+    if (saveable) {
+      try {
+        saveToFile();
+      } catch (IOException e) {
+      }
+    }
+
     String xml;
 
     if (message == null) {
@@ -475,37 +502,93 @@ public abstract class INDIProperty implements Serializable {
   protected abstract String getXMLPropertySetEnd();
 
   /**
-   * Saves a property and its elements to a file. Ideal to later restore it on
+   * Saves the property and its elements to a file. Ideal to later restore it on
    * subsecuent executions of the driver.
    *
-   * @param property The property to save.
-   * @param fileName The name of the file where the property will be stored.
+   * @throws IOException
    */
-  protected static void saveToFile(INDIProperty property, String fileName) throws IOException {
-    FileOutputStream fos = new FileOutputStream(fileName);
+  private void saveToFile() throws IOException {
+    File propertiesDir = new File(PROPERTIES_DIR_NAME);
 
-    ObjectOutputStream oos = new ObjectOutputStream(fos);
+    if (!propertiesDir.exists()) {
+      propertiesDir.mkdir();
+    }
 
-    oos.writeObject(property);
+    if (propertiesDir.exists()) {
+      if (propertiesDir.isDirectory()) {
+        File file = new File(propertiesDir, getPropertyNameForFile());
+        FileOutputStream fos = new FileOutputStream(file);
 
-    oos.close();
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeObject(this);
+
+        oos.close();
+      }
+    }
   }
 
-  protected static INDIProperty loadFromFile(INDIDriver driver, String fileName) throws INDIException {
+  /**
+   * Convenience method to get the name of the file for a particular property to
+   * be saved / retrieved.
+   *
+   * @param property The property
+   * @return A name for a file in which a property will be saved / restored
+   */
+  private String getPropertyNameForFile() {
+    return removeCharacters(getDriver().getName()) + "_" + getName() + ".prop";
+  }
+
+  /**
+   * Convenience method to get the name of the file for a particular property to
+   * be saved / retrieved.
+   *
+   * @param driver The driver of the property
+   * @param propertyName The name of the property
+   * @return A name for a file in which a property will be saved / restored
+   */
+  private static String getPropertyNameForFile(INDIDriver driver, String propertyName) {
+    return removeCharacters(driver.getName()) + "_" + propertyName + ".prop";
+  }
+
+  /**
+   * Removes all non letters / numbers from a String.
+   *
+   * @param str An input string
+   * @return The same <code>str</code>string without any non letter / numbers.
+   */
+  private static String removeCharacters(String str) {
+    return str.replaceAll("[^a-zA-Z0-9]", "");
+  }
+
+  /**
+   * Loads a property from a file.
+   *
+   * @param driver The driver which will include the property
+   * @param propertyName The name of the property to load
+   * @return A property loaded from a file
+   * @throws INDIException If there is some problem loading it (for example if
+   * the file does not exist)
+   */
+  protected static INDIProperty loadFromFile(INDIDriver driver, String propertyName) throws INDIException {
+    File propertiesDir = new File(PROPERTIES_DIR_NAME);
+
+    File file = new File(propertiesDir, getPropertyNameForFile(driver, propertyName));
+
     INDIProperty prop = null;
 
     try {
-      FileInputStream fis = new FileInputStream(fileName);
+      FileInputStream fis = new FileInputStream(file);
 
       ObjectInputStream ois = new ObjectInputStream(fis);
 
-      prop = (INDIProperty) ois.readObject();
+      prop = (INDIProperty)ois.readObject();
 
       ois.close();
     } catch (ClassNotFoundException ex) {
-      throw new INDIException("Problem when loading a property from file " + fileName + " - ClassNotFoundException");
+      throw new INDIException("Problem when loading a property from file " + file.getName() + " - ClassNotFoundException");
     } catch (IOException ex) {
-      throw new INDIException("Problem when loading a property from file " + fileName + " - IOException");
+      throw new INDIException("Problem when loading a property from file " + file.getName() + " - IOException");
     }
 
     prop.setDriver(driver);

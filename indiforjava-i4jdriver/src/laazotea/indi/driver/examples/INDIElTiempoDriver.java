@@ -39,7 +39,7 @@ import laazotea.indi.driver.*;
  * The Switch Property can be used to ask for the current images (for example
  * once the client connects to the driver).
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 5, 2012
  */
 public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConnectionHandler {

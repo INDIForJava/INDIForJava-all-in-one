@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
 /**
  * A class representing a INDI Light Element.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public class INDILightElement extends INDIElement {
@@ -72,7 +72,7 @@ public class INDILightElement extends INDIElement {
 
   @Override
   public INDILightProperty getProperty() {
-    return (INDILightProperty) super.getProperty();
+    return (INDILightProperty)super.getProperty();
   }
 
   @Override
@@ -84,7 +84,7 @@ public class INDILightElement extends INDIElement {
   public void setValue(Object newValue) throws IllegalArgumentException {
     LightStates ns = null;
     try {
-      ns = (LightStates) newValue;
+      ns = (LightStates)newValue;
     } catch (ClassCastException e) {
       throw new IllegalArgumentException("Value for a Light Element must be a INDILightElement.LightStates");
     }

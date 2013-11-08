@@ -18,17 +18,29 @@
 package laazotea.indi.driver;
 
 /**
- * A class representing a pair of a <code>INDINumberElement</code> and a <code>Double</code>. 
+ * A class representing a pair of a
+ * <code>INDINumberElement</code> and a
+ * <code>Double</code>.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.10, March 19, 2012
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 8, 2013
  */
 public class INDINumberElementAndValue implements INDIElementAndValue {
+
+  /**
+   * The Number element
+   */
   private final INDINumberElement element;
+  /**
+   * The Number value
+   */
   private final Double value;
 
   /**
-   * Constructs an instance of a <code>INDINumberElementAndValue</code>.  This class should not usually be instantiated by specific Drivers.
+   * Constructs an instance of a
+   * <code>INDINumberElementAndValue</code>. This class should not usually be
+   * instantiated by specific Drivers.
+   *
    * @param element The Number Element
    * @param value The number
    */

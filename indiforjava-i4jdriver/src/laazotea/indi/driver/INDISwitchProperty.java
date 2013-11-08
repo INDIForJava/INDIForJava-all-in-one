@@ -25,12 +25,13 @@ import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.INDIDateFormat;
+import laazotea.indi.INDIException;
 
 /**
  * A class representing a INDI Switch Property.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, July 24, 2013
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 7, 2013
  */
 public class INDISwitchProperty extends INDIProperty {
 
@@ -42,7 +43,7 @@ public class INDISwitchProperty extends INDIProperty {
   /**
    * Constructs an instance of
    * <code>INDISwitchProperty</code> with a particular
-   * <code>Driver</code>,
+   * <code>driver</code>,
    * <code>name</code>,
    * <code>label</code>,
    * <code>group</code>,
@@ -73,14 +74,79 @@ public class INDISwitchProperty extends INDIProperty {
   }
 
   /**
-   * Constructs an instance of
-   * <code>INDISwitchProperty</code> with a particular
-   * <code>Driver</code>,
+   * Loads an instance of
+   * <code>INDISwitchProperty</code> from a file or, if it cannot be loaded,
+   * constructs it with a particular
+   * <code>driver</code>,
    * <code>name</code>,
    * <code>label</code>,
    * <code>group</code>,
    * <code>state</code>,
-   * <code>permission</code> and a 0 timeout.
+   * <code>permission</code>,
+   * <code>timeout</code> and
+   * <code>rule</code>. The property will autosave its status to a file every
+   * time that it is changed.
+   *
+   * @param driver The Driver to which this property is associated.
+   * @param name The name of the Property
+   * @param label The label of the Property
+   * @param group The group of the Property
+   * @param state The initial state of the Property
+   * @param permission The permission of the Property
+   * @param timeout The timeout of the Property
+   * @param rule The rule of the Switch Property
+   * @throws IllegalArgumentException
+   * @return The loaded switch property or a new constructed one if cannot be
+   * loaded.
+   * @see INDIProperty
+   */
+  public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, SwitchRules rule) throws IllegalArgumentException {
+    INDISwitchProperty sp = loadSwitchProperty(driver, name);
+
+    if (sp == null) {
+      sp = new INDISwitchProperty(driver, name, label, group, state, permission, timeout, rule);
+      sp.setSaveable(true);
+    }
+
+    return sp;
+  }
+
+  /**
+   * Loads a Switch Property from a file.
+   *
+   * @param driver The Driver to which this property is associated
+   * @param name The name of the property
+   * @return The loaded switch property or <code>null</code> if it could not be
+   * loaded.
+   */
+  private static INDISwitchProperty loadSwitchProperty(INDIDriver driver, String name) {
+    INDIProperty prop;
+
+    try {
+      prop = INDIProperty.loadFromFile(driver, name);
+    } catch (INDIException e) {  // Was not correctly loaded
+      return null;
+    }
+
+    if (!(prop instanceof INDISwitchProperty)) {
+      return null;
+    }
+
+    INDISwitchProperty sp = (INDISwitchProperty)prop;
+    sp.setSaveable(true);
+    return sp;
+  }
+
+  /**
+   * Constructs an instance of
+   * <code>INDISwitchProperty</code> with a particular
+   * <code>driver</code>,
+   * <code>name</code>,
+   * <code>label</code>,
+   * <code>group</code>,
+   * <code>state</code>,
+   * <code>permission</code>,
+   * <code>rule</code>, and a 0 timeout.
    *
    * @param driver The Driver to which this property is associated.
    * @param name The name of the Property
@@ -103,13 +169,50 @@ public class INDISwitchProperty extends INDIProperty {
   }
 
   /**
+   * Loads an instance of
+   * <code>INDISwitchProperty</code> from a file or, if it cannot be loaded,
+   * constructs it with a particular
+   * <code>driver</code>,
+   * <code>name</code>,
+   * <code>label</code>,
+   * <code>group</code>,
+   * <code>state</code>,
+   * <code>permission</code> and
+   * <code>rule</code>. The property will autosave its status to a file every
+   * time that it is changed.
+   *
+   * @param driver The Driver to which this property is associated.
+   * @param name The name of the Property
+   * @param label The label of the Property
+   * @param group The group of the Property
+   * @param state The initial state of the Property
+   * @param permission The permission of the Property
+   * @param rule The rule of the Switch Property
+   * @throws IllegalArgumentException
+   * @return The loaded switch property or a new constructed one if cannot be
+   * loaded.
+   * @see INDIProperty
+   */
+  public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, SwitchRules rule) throws IllegalArgumentException {
+    INDISwitchProperty sp = loadSwitchProperty(driver, name);
+
+    if (sp == null) {
+      sp = new INDISwitchProperty(driver, name, label, group, state, permission, rule);
+      sp.setSaveable(true);
+    }
+
+    return sp;
+  }
+
+  /**
    * Constructs an instance of
    * <code>INDISwitchProperty</code> with a particular
-   * <code>Driver</code>,
+   * <code>driver</code>,
    * <code>name</code>,
    * <code>label</code>,
    * <code>state</code>,
-   * <code>permission</code> and a 0 timeout and default group.
+   * <code>permission</code>,
+   * <code>rule</code>, and a 0 timeout and default group.
    *
    * @param driver The Driver to which this property is associated.
    * @param name The name of the Property
@@ -131,13 +234,48 @@ public class INDISwitchProperty extends INDIProperty {
   }
 
   /**
+   * Loads an instance of
+   * <code>INDISwitchProperty</code> from a file or, if it cannot be loaded,
+   * constructs it with a particular
+   * <code>driver</code>,
+   * <code>name</code>,
+   * <code>label</code>,
+   * <code>state</code>,
+   * <code>permission</code> and
+   * <code>rule</code>. The property will autosave its status to a file every
+   * time that it is changed.
+   *
+   * @param driver The Driver to which this property is associated.
+   * @param name The name of the Property
+   * @param label The label of the Property
+   * @param state The initial state of the Property
+   * @param permission The permission of the Property
+   * @param rule The rule of the Switch Property
+   * @throws IllegalArgumentException
+   * @return The loaded switch property or a new constructed one if cannot be
+   * loaded.
+   * @see INDIProperty
+   */
+  public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, SwitchRules rule) throws IllegalArgumentException {
+    INDISwitchProperty sp = loadSwitchProperty(driver, name);
+
+    if (sp == null) {
+      sp = new INDISwitchProperty(driver, name, label, state, permission, rule);
+      sp.setSaveable(true);
+    }
+
+    return sp;
+  }
+
+  /**
    * Constructs an instance of
    * <code>INDISwitchProperty</code> with a particular
-   * <code>Driver</code>,
+   * <code>driver</code>,
    * <code>name</code>,
    * <code>state</code>,
-   * <code>permission</code> and a 0 timeout, a default group and a label equal
-   * to its
+   * <code>permission</code>,
+   * <code>rule</code>, and a 0 timeout, a default group and a label equal to
+   * its
    * <code>name</code>
    *
    * @param driver The Driver to which this property is associated.
@@ -156,6 +294,38 @@ public class INDISwitchProperty extends INDIProperty {
     }
 
     this.rule = rule;
+  }
+
+  /**
+   * Loads an instance of
+   * <code>INDISwitchProperty</code> from a file or, if it cannot be loaded,
+   * constructs it with a particular
+   * <code>driver</code>,
+   * <code>name</code>,
+   * <code>state</code>,
+   * <code>permission</code> and
+   * <code>rule</code>. The property will autosave its status to a file every
+   * time that it is changed.
+   *
+   * @param driver The Driver to which this property is associated.
+   * @param name The name of the Property
+   * @param state The initial state of the Property
+   * @param permission The permission of the Property
+   * @param rule The rule of the Switch Property
+   * @throws IllegalArgumentException
+   * @return The loaded switch property or a new constructed one if cannot be
+   * loaded.
+   * @see INDIProperty
+   */
+  public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, SwitchRules rule) throws IllegalArgumentException {
+    INDISwitchProperty sp = loadSwitchProperty(driver, name);
+
+    if (sp == null) {
+      sp = new INDISwitchProperty(driver, name, state, permission, rule);
+      sp.setSaveable(true);
+    }
+
+    return sp;
   }
 
   /**
@@ -241,7 +411,7 @@ public class INDISwitchProperty extends INDIProperty {
     List<INDIElement> list = getElementsAsList();
 
     for (int i = 0 ; i < list.size() ; i++) {
-      INDISwitchElement el = (INDISwitchElement) list.get(i);
+      INDISwitchElement el = (INDISwitchElement)list.get(i);
       //     System.out.println("-->" + el.getName() + el.getValue());
       if (el.getValue() == SwitchStatus.ON) {
         selectedCount++;
@@ -253,7 +423,7 @@ public class INDISwitchProperty extends INDIProperty {
 
   @Override
   public INDISwitchElement getElement(String name) {
-    return (INDISwitchElement) super.getElement(name);
+    return (INDISwitchElement)super.getElement(name);
   }
 
   @Override

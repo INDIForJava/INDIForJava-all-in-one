@@ -20,11 +20,17 @@ package laazotea.indi.driver;
 /**
  * A class representing a pair of a <code>INDITextElement</code> and a <code>String</code>. 
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.10, March 19, 2012
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 8, 2013
  */
 public class INDITextElementAndValue implements INDIElementAndValue {
+  /**
+   * The Text Element
+   */
   private final INDITextElement element;
+  /**
+   * The Text Value
+   */
   private final String value;
 
   /**

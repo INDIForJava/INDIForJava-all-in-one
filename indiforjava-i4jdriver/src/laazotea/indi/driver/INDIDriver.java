@@ -38,8 +38,8 @@ import org.w3c.dom.NodeList;
  * extend this class. It is in charge of stablishing the connection to the
  * clients and parsing / formating any incoming / leaving messages.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.32, July 25, 2013
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 6, 2013
  */
 public abstract class INDIDriver implements INDIProtocolParser {
 
@@ -47,6 +47,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
   private OutputStream outputStream;
   private PrintWriter out;
   private INDIProtocolReader reader;
+  /**
+   * A list of subdrivers
+   */
+  private ArrayList<INDIDriver> subdrivers;
   /**
    * A Switch Element for the CONNECTION property
    */
@@ -80,6 +84,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     this.out = new PrintWriter(outputStream);
     this.inputStream = inputStream;
     this.outputStream = outputStream;
+    this.subdrivers = new ArrayList<INDIDriver>();
 
     started = false;
 
@@ -88,6 +93,44 @@ public abstract class INDIDriver implements INDIProtocolParser {
     if (this instanceof INDIConnectionHandler) {
       addConnectionProperty();
     }
+  }
+
+  /**
+   * Registers a subdriver that may receive messages.
+   *
+   * @param driver The subdriver to register.
+   */
+  protected void registerSubdriver(INDIDriver driver) {
+    subdrivers.add(driver);
+  }
+
+  /**
+   * Unregister a subdriver that may not receive any other message.
+   *
+   * @param driver The subdriver to unregister.
+   */
+  protected void unregisterSubdriver(INDIDriver driver) {
+    subdrivers.remove(driver);
+  }
+
+  /**
+   * Gets a device by its name. Returns
+   * <code>null</code> if there is no subdriver with that name.
+   *
+   * @param name The name of the subdriver to return
+   * @return The subdriver or <code>null</code> if there is no subdrive with
+   * this name.
+   */
+  private INDIDriver getSubdriver(String name) {
+    for (int i = 0 ; i < subdrivers.size() ; i++) {
+      INDIDriver d = subdrivers.get(i);
+
+      if (d.getName().compareTo(name) == 0) {
+        return d;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -102,7 +145,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * readings. Thus, the normal execution of the code is not stopped. This
    * method is not usually called by the Driver itself but the encapsulating
    * class (for example
-   * <code>INDIDriverRunner</code>.
+   * <code>INDIDriverRunner</code>).
    *
    * @see INDIDriverRunner
    */
@@ -239,21 +282,36 @@ public abstract class INDIDriver implements INDIProtocolParser {
       Node n = nodes.item(i);
 
       if (n instanceof Element) {
-        Element child = (Element) n;
+        Element child = (Element)n;
 
-        String name = child.getNodeName();
+        parseXMLElement(child);
+      }
+    }
+  }
 
-        if (name.equals("getProperties")) {
-          processGetProperties(child);
-        } else if (name.equals("newTextVector")) {
-          processNewTextVector(child);
-        } else if (name.equals("newSwitchVector")) {
-          processNewSwitchVector(child);
-        } else if (name.equals("newNumberVector")) {
-          processNewNumberVector(child);
-        } else if (name.equals("newBLOBVector")) {
-          processNewBLOBVector(child);
-        }
+  /**
+   * Parses a particular XML Element.
+   *
+   * @param xml The XML element to be parsed.
+   */
+  private void parseXMLElement(Element xml) {
+    INDIDriver subd = getSubdriver(xml);
+
+    if (subd != null) {
+      subd.parseXMLElement(xml);
+    } else {
+      String name = xml.getNodeName();
+
+      if (name.equals("getProperties")) {
+        processGetProperties(xml);
+      } else if (name.equals("newTextVector")) {
+        processNewTextVector(xml);
+      } else if (name.equals("newSwitchVector")) {
+        processNewSwitchVector(xml);
+      } else if (name.equals("newNumberVector")) {
+        processNewNumberVector(xml);
+      } else if (name.equals("newBLOBVector")) {
+        processNewBLOBVector(xml);
       }
     }
   }
@@ -281,10 +339,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     INDITextElementAndValue[] newEvs = new INDITextElementAndValue[evs.length];
 
     for (int i = 0 ; i < newEvs.length ; i++) {
-      newEvs[i] = (INDITextElementAndValue) evs[i];
+      newEvs[i] = (INDITextElementAndValue)evs[i];
     }
 
-    processNewTextValue((INDITextProperty) prop, timestamp, newEvs);
+    processNewTextValue((INDITextProperty)prop, timestamp, newEvs);
   }
 
   /**
@@ -328,13 +386,13 @@ public abstract class INDIDriver implements INDIProtocolParser {
     INDISwitchElementAndValue[] newEvs = new INDISwitchElementAndValue[evs.length];
 
     for (int i = 0 ; i < newEvs.length ; i++) {
-      newEvs[i] = (INDISwitchElementAndValue) evs[i];
+      newEvs[i] = (INDISwitchElementAndValue)evs[i];
     }
 
     if ((this instanceof INDIConnectionHandler) && (prop == connectionP)) { // If it is the CONNECTION property
       handleConnectionProperty(newEvs, timestamp);
     } else {  // if it is any other property
-      processNewSwitchValue((INDISwitchProperty) prop, timestamp, newEvs);
+      processNewSwitchValue((INDISwitchProperty)prop, timestamp, newEvs);
     }
   }
 
@@ -354,7 +412,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (s == SwitchStatus.ON) {
           if (connectedE.getValue() != SwitchStatus.ON) {
             try {
-              ((INDIConnectionHandler) this).driverConnect(timestamp);
+              ((INDIConnectionHandler)this).driverConnect(timestamp);
 
               setConnectionProperty(true);
             } catch (INDIException e) {
@@ -368,7 +426,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (s == SwitchStatus.ON) {
           if (disconnectedE.getValue() != SwitchStatus.ON) {
             try {
-              ((INDIConnectionHandler) this).driverDisconnect(timestamp);
+              ((INDIConnectionHandler)this).driverDisconnect(timestamp);
 
               setConnectionProperty(false);
             } catch (INDIException e) {
@@ -419,10 +477,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     INDINumberElementAndValue[] newEvs = new INDINumberElementAndValue[evs.length];
 
     for (int i = 0 ; i < newEvs.length ; i++) {
-      newEvs[i] = (INDINumberElementAndValue) evs[i];
+      newEvs[i] = (INDINumberElementAndValue)evs[i];
     }
 
-    processNewNumberValue((INDINumberProperty) prop, timestamp, newEvs);
+    processNewNumberValue((INDINumberProperty)prop, timestamp, newEvs);
   }
 
   /**
@@ -462,10 +520,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     INDIBLOBElementAndValue[] newEvs = new INDIBLOBElementAndValue[evs.length];
 
     for (int i = 0 ; i < newEvs.length ; i++) {
-      newEvs[i] = (INDIBLOBElementAndValue) evs[i];
+      newEvs[i] = (INDIBLOBElementAndValue)evs[i];
     }
 
-    processNewBLOBValue((INDIBLOBProperty) prop, timestamp, newEvs);
+    processNewBLOBValue((INDIBLOBProperty)prop, timestamp, newEvs);
   }
 
   /**
@@ -512,7 +570,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
       Node n = nodes.item(i);
 
       if (n instanceof Element) {
-        Element child = (Element) n;
+        Element child = (Element)n;
 
         String name = child.getNodeName();
 
@@ -558,16 +616,33 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     if (el instanceof INDITextElement) {
-      return new INDITextElementAndValue((INDITextElement) el, (String) value);
+      return new INDITextElementAndValue((INDITextElement)el, (String)value);
     } else if (el instanceof INDISwitchElement) {
-      return new INDISwitchElementAndValue((INDISwitchElement) el, (SwitchStatus) value);
+      return new INDISwitchElementAndValue((INDISwitchElement)el, (SwitchStatus)value);
     } else if (el instanceof INDINumberElement) {
-      return new INDINumberElementAndValue((INDINumberElement) el, (Double) value);
+      return new INDINumberElementAndValue((INDINumberElement)el, (Double)value);
     } else if (el instanceof INDIBLOBElement) {
-      return new INDIBLOBElementAndValue((INDIBLOBElement) el, (INDIBLOBValue) value);
+      return new INDIBLOBElementAndValue((INDIBLOBElement)el, (INDIBLOBValue)value);
     }
 
     return null;
+  }
+
+  /**
+   * Returns the subdriver to which a xml message is sent (if any).
+   * <code>null</code> if it is not directed to any subdriver.
+   *
+   * @param xml The XML message
+   * @return The subdriver to which the message is directed.
+   */
+  private INDIDriver getSubdriver(Element xml) {
+    if (!xml.hasAttribute("device")) {
+      return null;
+    }
+
+    String deviceName = xml.getAttribute("device").trim();
+
+    return getSubdriver(deviceName);
   }
 
   /**
@@ -621,12 +696,29 @@ public abstract class INDIDriver implements INDIProtocolParser {
         sendDefXXXVectorMessage(p, null);
       }
     } else {  // Send all of them
-      ArrayList<INDIProperty> props = getPropertiesAsList();
-
-      for (int i = 0 ; i < props.size() ; i++) {
-        sendDefXXXVectorMessage(props.get(i), null);
-      }
+      sendAllProperties();
     }
+  }
+
+  /**
+   * Sends all the properties to the clients.
+   */
+  public void sendAllProperties() {
+    ArrayList<INDIProperty> props = getPropertiesAsList();
+
+    for (int i = 0 ; i < props.size() ; i++) {
+      sendDefXXXVectorMessage(props.get(i), null);
+    }
+
+    propertiesRequested();
+  }
+
+  /**
+   * This method is called when all the properties are requested. A driver with
+   * subdrivers may override it to be notified about this kind of requests (and
+   * ask the subdriver to also send the properties).
+   */
+  protected void propertiesRequested() {
   }
 
   /**
@@ -683,7 +775,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
   protected void updateProperty(INDIProperty property, String message) throws INDIException {
     if (properties.containsValue(property)) {
       if (property instanceof INDISwitchProperty) {
-        INDISwitchProperty sp = (INDISwitchProperty) property;
+        INDISwitchProperty sp = (INDISwitchProperty)property;
 
         if (!sp.checkCorrectValues()) {
           throw new INDIException("Switch (" + property.getName() + ") value not value (not following its rule).");
@@ -877,18 +969,5 @@ public abstract class INDIDriver implements INDIProtocolParser {
   public void isBeingDestroyed() {
     finishReader();
     removeDevice("Removing " + getName());
-  }
-
-  /**
-   * Checks if the driver has any subdriver with a particular name. Should be
-   * overriden by Drivers with subdrivers.
-   *
-   * @param subdriverName The possible name of the subdriver
-   *
-   * @return <code>true</code> if the driver has a subdriver with a particular
-   * name. <code>false</code> otherwise.
-   */
-  public boolean hasSubDriver(String subdriverName) {
-    return false;
   }
 }

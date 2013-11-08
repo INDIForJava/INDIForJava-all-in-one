@@ -33,7 +33,7 @@ import laazotea.indi.driver.*;
  * read only Number Property that shows a pseudo random number that changes each
  * second.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 4, 2012
  */
 public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable {

@@ -20,17 +20,29 @@ package laazotea.indi.driver;
 import laazotea.indi.Constants.SwitchStatus;
 
 /**
- * A class representing a pair of a <code>INDISwitchElement</code> and a <code>SwitchStatus</code>. 
+ * A class representing a pair of a
+ * <code>INDISwitchElement</code> and a
+ * <code>SwitchStatus</code>.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.10, March 19, 2012
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 8, 2013
  */
 public class INDISwitchElementAndValue implements INDIElementAndValue {
+
+  /**
+   * The Switch element
+   */
   private final INDISwitchElement element;
+  /**
+   * The Switch status
+   */
   private final SwitchStatus status;
 
   /**
-   * Constructs an instance of a <code>INDISwitchElementAndValue</code>.  This class should not usually be instantiated by specific Drivers.
+   * Constructs an instance of a
+   * <code>INDISwitchElementAndValue</code>. This class should not usually be
+   * instantiated by specific Drivers.
+   *
    * @param element The Switch Element
    * @param status The Switch Status
    */

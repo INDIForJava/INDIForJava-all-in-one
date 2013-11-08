@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 /**
  * A class representing a INDI Switch Element.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public class INDISwitchElement extends INDIElement {
@@ -75,7 +75,7 @@ public class INDISwitchElement extends INDIElement {
 
   @Override
   public INDISwitchProperty getProperty() {
-    return (INDISwitchProperty) super.getProperty();
+    return (INDISwitchProperty)super.getProperty();
   }
 
   @Override
@@ -92,15 +92,14 @@ public class INDISwitchElement extends INDIElement {
    * <code>OFF</code>.
    *
    * @param newValue The new value.
-   * @throws IllegalArgumentException If the
-   * <code>newValue</code> is not a valid
-   * <code>SwitchStatus</code>.
+   * @throws IllegalArgumentException If the <code>newValue</code> is not a
+   * valid <code>SwitchStatus</code>.
    */
   @Override
   public void setValue(Object newValue) throws IllegalArgumentException {
     SwitchStatus ss = null;
     try {
-      ss = (SwitchStatus) newValue;
+      ss = (SwitchStatus)newValue;
     } catch (ClassCastException e) {
       throw new IllegalArgumentException("Value for a Switch Element must be a SwitchStatus");
     }

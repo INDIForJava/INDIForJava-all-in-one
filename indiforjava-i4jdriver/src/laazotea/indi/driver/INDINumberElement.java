@@ -25,8 +25,8 @@ import org.w3c.dom.Element;
 /**
  * A class representing a INDI Number Element.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.11, March 26, 2012
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, November 8, 2013
  */
 public class INDINumberElement extends INDIElement {
 
@@ -74,12 +74,9 @@ public class INDINumberElement extends INDIElement {
    * @param maximum The maximum of the Element.
    * @param step The step of the Element.
    * @param numberFormat The number format of the element.
-   * @throws IllegalArgumentException if any of the
-   * <code>value</code>,
-   * <code>minimum</code>,
-   * <code>maximum</code> or
-   * <code>step</code> are not well formatted or if the initial Value is not in
-   * [minimum, maximum].
+   * @throws IllegalArgumentException if any of the <code>value</code>,
+   * <code>minimum</code>, <code>maximum</code> or <code>step</code> are not
+   * well formatted or if the initial Value is not in [minimum, maximum].
    */
   public INDINumberElement(INDINumberProperty property, String name, String label, String value, String minimum, String maximum, String step, String numberFormat) throws IllegalArgumentException {
     super(property, name, label);
@@ -149,12 +146,9 @@ public class INDINumberElement extends INDIElement {
    * @param maximum The maximum of the Element.
    * @param step The step of the Element.
    * @param numberFormat The number format of the element.
-   * @throws IllegalArgumentException if any of the
-   * <code>value</code>,
-   * <code>minimum</code>,
-   * <code>maximum</code> or
-   * <code>step</code> are not well formatted or if the initial Value is not in
-   * [minimum, maximum].
+   * @throws IllegalArgumentException if any of the <code>value</code>,
+   * <code>minimum</code>, <code>maximum</code> or <code>step</code> are not
+   * well formatted or if the initial Value is not in [minimum, maximum].
    */
   public INDINumberElement(INDINumberProperty property, String name, String value, String minimum, String maximum, String step, String numberFormat) throws IllegalArgumentException {
     super(property, name);
@@ -207,7 +201,7 @@ public class INDINumberElement extends INDIElement {
 
   @Override
   public INDINumberProperty getProperty() {
-    return (INDINumberProperty) super.getProperty();
+    return (INDINumberProperty)super.getProperty();
   }
 
   /**
@@ -307,7 +301,7 @@ public class INDINumberElement extends INDIElement {
    * @return The value of this Number Element formatted as a String.
    */
   public String getValueAsString() {
-    return getNumberAsString((Double) getValue());
+    return getNumberAsString((Double)getValue());
   }
 
   /**
@@ -339,9 +333,9 @@ public class INDINumberElement extends INDIElement {
   @Override
   public void setValue(Object newValue) throws IllegalArgumentException {
     if (newValue instanceof String) {
-      setValueAsString((String) newValue);
+      setValueAsString((String)newValue);
     } else if (newValue instanceof Double) {
-      setValueAsdouble(((Double) newValue).doubleValue());
+      setValueAsdouble(((Double)newValue).doubleValue());
     } else {
       throw new IllegalArgumentException("Value for a Number Element must be a String or a Double");
     }
@@ -374,6 +368,11 @@ public class INDINumberElement extends INDIElement {
     step = parseNumber(stepS);
   }
 
+  /**
+   * A convenience method to set the value represented by a String.
+   * @param valueS The value
+   * @throws IllegalArgumentException if it is not a value within the limits.
+   */
   private void setValueAsString(String valueS) throws IllegalArgumentException {
     value = parseNumber(valueS);
 
@@ -382,6 +381,11 @@ public class INDINumberElement extends INDIElement {
     }
   }
 
+  /**
+   * A covenience method to set the value represented by a double
+   * @param value The value
+   * @throws IllegalArgumentException if it is not a value within the limits.
+   */
   private void setValueAsdouble(double value) throws IllegalArgumentException {
     this.value = value;
 
@@ -394,8 +398,9 @@ public class INDINumberElement extends INDIElement {
    * Parses a number according to the Number Format of this Number Element.
    *
    * @param number The number to be parsed.
-   * @return the parsed number @throw IllegalArgumentException if the
-   * <code>number</code> is not correctly formatted.
+   * @return the parsed number
+   * @throw IllegalArgumentException if the <code>number</code> is not correctly
+   * formatted.
    */
   private double parseNumber(String number) throws IllegalArgumentException {
     double res;

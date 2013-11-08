@@ -30,7 +30,7 @@ import laazotea.indi.driver.*;
 /**
  * An example class representing a very basic INDI Driver.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 5, 2012
  */
 public class INDIDriverExample extends INDIDriver implements INDIConnectionHandler {
