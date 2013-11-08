@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * usual Clients and Devices, as Drivers can also snoop Properties from other
  * Devices according to the INDI protocol.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 12, 2012
  */
 public abstract class INDIDeviceListener {

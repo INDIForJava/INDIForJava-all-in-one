@@ -42,8 +42,8 @@ import org.w3c.dom.Element;
  * New INDI Servers that implement additional functionality may inherit from
  * this class.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
- * @version 1.31, April 12, 2012
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @version 1.34, October 13, 2012
  */
 public abstract class AbstractINDIServer implements Runnable {
 
@@ -514,13 +514,12 @@ public abstract class AbstractINDIServer implements Runnable {
    * <code>false</code> otherwise.
    */
   private boolean isINDIDriver(Class c) {
+if (INDINotLoadableDriver.class.isAssignableFrom(c)) {
+  return false; 
+}
     Class s = c.getSuperclass();
 
     while (s != null) {
-      if (s == INDINotLoadableDriver.class) {
-        return false;  
-      }
-      
       if (s == INDIDriver.class) {
         return true;
       }

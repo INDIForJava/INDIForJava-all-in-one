@@ -33,7 +33,7 @@ import laazotea.indi.server.INDIDevice;
  * It allows to dinamically load / unload different kinds of Devices with simple
  * shell commands.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, July 23, 2013
  */
 public class INDIBasicServer extends DefaultINDIServer {

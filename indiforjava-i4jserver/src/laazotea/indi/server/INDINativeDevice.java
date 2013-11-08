@@ -24,7 +24,7 @@ import laazotea.indi.INDIException;
 
 /**
  * A class that represent a Native Device (created with the usual INDI library).
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 13, 2013
  */
 public class INDINativeDevice extends INDIDevice {

@@ -28,7 +28,7 @@ import laazotea.indi.INDIException;
 /**
  * A class that represent a Network Device (another INDI server).
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 19, 2013
  */
 public class INDINetworkDevice extends INDIDevice {

@@ -32,7 +32,7 @@ import org.w3c.dom.NodeList;
 /**
  * A class to represent a Client that connects to the Server.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 12, 2012
  */
 public class INDIClient extends INDIDeviceListener implements INDIProtocolParser {

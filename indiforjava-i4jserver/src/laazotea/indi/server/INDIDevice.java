@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  * A class that represents a generic INDI Device to which the server connects
  * and parses its messages.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 13, 2013
  */
 public abstract class INDIDevice extends INDIDeviceListener implements INDIProtocolParser {

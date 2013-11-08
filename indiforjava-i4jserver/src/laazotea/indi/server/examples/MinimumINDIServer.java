@@ -27,7 +27,7 @@ import laazotea.indi.server.DefaultINDIServer;
  * RandomNumberGeneratorDriver (please check the INDI for Java Driver examples)
  * and it only accepts connections from 127.0.0.1 (localhost).
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.21, April 4, 2012
  */
 public class MinimumINDIServer extends DefaultINDIServer {

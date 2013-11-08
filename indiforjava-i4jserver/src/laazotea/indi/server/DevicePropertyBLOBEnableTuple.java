@@ -22,7 +22,7 @@ import laazotea.indi.Constants.BLOBEnables;
 /**
  * A class that represents a tuple of Device and Property names and a BLOBEnable.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 12, 2012
  */
 public class DevicePropertyBLOBEnableTuple {

@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * any device that the Server loads. New Servers that do not implement specific
  * restrictions may extend this class instead of the AbstractINDIServer.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 12, 2012
  * @see AbstractINDIServer
  */
