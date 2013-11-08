@@ -28,7 +28,7 @@ import laazotea.indi.client.INDITextElement;
  * A panel to represent a
  * <code>INDITextElement</code>.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 9, 2012
  * @see INDITextElement
  */

@@ -23,7 +23,7 @@ import javax.swing.ButtonModel;
 /**
  * A class to allow Radio Buttons to have zero elements selected.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public class ButtonGroupZeroOrOne extends ButtonGroup {

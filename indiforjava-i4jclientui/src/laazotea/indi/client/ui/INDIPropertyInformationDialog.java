@@ -25,7 +25,7 @@ import laazotea.indi.client.INDIProperty;
 /**
  * A dialog to show information about a INDIProperty.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  * @see INDIProperty
  */

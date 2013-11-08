@@ -30,7 +30,7 @@ import laazotea.indi.client.INDISwitchElement;
  * A panel to represent a
  * <code>INDISwitchElement</code>.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 9, 2012
  * @see INDISwitchElement
  */

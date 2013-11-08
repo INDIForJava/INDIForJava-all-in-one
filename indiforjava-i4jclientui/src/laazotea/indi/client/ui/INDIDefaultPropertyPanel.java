@@ -34,7 +34,7 @@ import laazotea.indi.client.INDIValueException;
  * A default panel to represent a
  * <code>INDIProperty</code>.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 8, 2012
  * @see INDIProperty
  */

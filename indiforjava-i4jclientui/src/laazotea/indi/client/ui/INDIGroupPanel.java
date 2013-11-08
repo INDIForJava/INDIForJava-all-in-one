@@ -24,7 +24,7 @@ import laazotea.indi.client.INDIProperty;
  * A panel to join a group of
  * <code>INDIDefaultPropertyPanel</code>s.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.21, April 4, 2012
  * @see INDIDefaultPropertyPanel
  */

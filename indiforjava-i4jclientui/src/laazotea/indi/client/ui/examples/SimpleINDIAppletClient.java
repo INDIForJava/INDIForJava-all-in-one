@@ -28,7 +28,7 @@ import laazotea.indi.client.ui.INDIDevicePanel;
 /**
  * A simple GUI INDI Client using the library.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.21, April 4, 2012
  */
 public class SimpleINDIAppletClient extends javax.swing.JApplet implements INDIServerConnectionListener {

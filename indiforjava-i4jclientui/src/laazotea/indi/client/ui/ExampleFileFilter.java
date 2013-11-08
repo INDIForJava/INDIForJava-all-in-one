@@ -38,7 +38,7 @@ import javax.swing.filechooser.FileFilter;
  *
  * @version 1.9, March 19, 2012
  * @author Jeff Dinkins
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class ExampleFileFilter extends FileFilter {
 

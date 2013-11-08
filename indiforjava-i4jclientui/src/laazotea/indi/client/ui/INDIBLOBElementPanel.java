@@ -33,7 +33,7 @@ import laazotea.indi.client.INDIElement;
  * A panel to represent a
  * <code>INDIBLOBElement</code>.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 9, 2012
  * @see INDIBLOBElement
  */
