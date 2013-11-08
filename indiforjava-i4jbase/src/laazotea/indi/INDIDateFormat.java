@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * A simple class to format and parse INDI timestamps.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public class INDIDateFormat {

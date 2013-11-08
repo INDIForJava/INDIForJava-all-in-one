@@ -32,7 +32,7 @@ import org.xml.sax.SAXParseException;
 /**
  * A class that reads from a input stream and sends the read messages to a parser.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.2, April 1, 2012
  */
 public class INDIProtocolReader extends Thread {

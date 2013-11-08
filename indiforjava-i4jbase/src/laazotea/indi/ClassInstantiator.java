@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
  * A class to instantiate other classes based on their name and constructor
  * parameters.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.13, April 4, 2012
  */
 public class ClassInstantiator {

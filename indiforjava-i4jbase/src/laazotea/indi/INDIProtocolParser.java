@@ -23,7 +23,7 @@ import org.w3c.dom.Document;
 /**
  * A interface representing a generic INDI Protocol Parser
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.2, April 1, 2012
  */
 public interface INDIProtocolParser {

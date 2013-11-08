@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
 /**
  * A class to format and parse numbers in sexagesimal format.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public class INDISexagesimalFormatter {

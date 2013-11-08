@@ -21,7 +21,7 @@ package laazotea.indi;
  * A class representing a some Constants and convenience functions to deal with
  * them used in several parts of the INDI for Java libraries.
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 10, 2012
  */
 public class Constants {

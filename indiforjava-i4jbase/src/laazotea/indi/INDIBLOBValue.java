@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 /**
  * A class representing a INDI BLOB Value (some bytes and a format).
  *
- * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public class INDIBLOBValue {
