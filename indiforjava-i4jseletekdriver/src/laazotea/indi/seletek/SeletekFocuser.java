@@ -31,14 +31,10 @@ import laazotea.indi.driver.*;
  * to a Seletek.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.35, November 11, 2013
  */
 public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadableDriver, Runnable {
 
-  /**
-   * A name suffix for the driver (Main or Exp).
-   */
-  private String nameSuffix;
   /**
    * The Seletek port number to which the focuser is attached.
    */
@@ -68,6 +64,18 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
    * The Half Step Property
    */
   private INDISwitchOneOrNoneProperty halfStepP;
+  /**
+   * The Move Power Property
+   */
+  private INDINumberProperty powerSettingsP;
+  /**
+   * The Move Power Element
+   */
+  private INDINumberElement movePowerE;
+  /**
+   * The Move Power Element
+   */
+  private INDINumberElement stopPowerE;
 
   /**
    * Constructs an instance of a
@@ -86,12 +94,6 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
     this.seletekPort = seletekPort;
     this.driver = driver;
 
-    if (seletekPort == 1) {
-      nameSuffix = "Exp";
-    } else {
-      nameSuffix = "Main";
-    }
-
     initializeStandardProperties();
     showSpeedProperty();
     speedHasBeenChanged(); // To set the possibly saved speed
@@ -108,7 +110,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
     int mode = wireModeP.getSelectedIndex();
     driver.setStepperWireMode(seletekPort, mode);
 
-    modelP = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "model", "Model", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"Unipolar", "Bipolar", "Step and Dir"});
+    modelP = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "model", "Model", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"Unipolar", "Bipolar", "DC", "Step and Dir"});
     addProperty(modelP);
     int model = modelP.getSelectedIndex();
     driver.setStepperModel(seletekPort, model);
@@ -118,13 +120,23 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
     boolean half = (halfStepP.getStatus() == SwitchStatus.ON);
     driver.setStepperHalfStep(seletekPort, half);
 
+    powerSettingsP = INDINumberProperty.createSaveableNumberProperty(this, "stepper_pow", "Power Settings", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW);
+    movePowerE = new INDINumberElement(powerSettingsP, "move_power", "Moving Power", 1023, 0, 1023, 1, "%1.0f");
+    stopPowerE = new INDINumberElement(powerSettingsP, "stop_power", "Stopped Power", 0, 0, 1023, 1, "%1.0f");
+    movePowerE = powerSettingsP.getElement("move_power");
+    stopPowerE = powerSettingsP.getElement("stop_power");
+    addProperty(powerSettingsP);
+    
+    driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());
+    driver.setStepperStopPower(seletekPort, stopPowerE.getValue().intValue());
+
     Thread readerThread = new Thread(this);
     readerThread.start();
   }
 
   @Override
   public String getName() {
-    return "Seletek Focuser (" + nameSuffix + ")";
+    return "Seletek Focuser (" + Utils.getSeletekPortName(seletekPort) + ")";
   }
 
   @Override
@@ -176,6 +188,20 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
   @Override
   public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
     super.processNewNumberValue(property, timestamp, elementsAndValues);
+
+    if (property == powerSettingsP) {
+      powerSettingsP.setValues(elementsAndValues);
+
+      driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());
+      driver.setStepperStopPower(seletekPort, stopPowerE.getValue().intValue());
+
+      powerSettingsP.setState(PropertyStates.OK);
+
+      try {
+        updateProperty(powerSettingsP);
+      } catch (INDIException e) {
+      }
+    }
   }
 
   @Override
@@ -255,7 +281,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
   public void isBeingDestroyed() {
     stopPositionReaderThread = true;
 
-    sleep(200);
+    Utils.sleep(200);
 
     super.isBeingDestroyed();
   }
@@ -271,19 +297,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
         driver.getStepperPos(seletekPort);
       }
 
-      sleep(200);
-    }
-  }
-
-  /**
-   * Sleep for some time.
-   *
-   * @param milis The number of miliseconds to sleep
-   */
-  private void sleep(int milis) {
-    try {
-      Thread.sleep(milis);
-    } catch (InterruptedException e) {
+      Utils.sleep(200);
     }
   }
 }

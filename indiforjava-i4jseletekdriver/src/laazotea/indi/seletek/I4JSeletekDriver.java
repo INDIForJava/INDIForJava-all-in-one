@@ -30,7 +30,7 @@ import laazotea.indi.driver.*;
  * [http://lunatico.es]).
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.35, November 11, 2013
  */
 public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandler {
 
@@ -58,6 +58,10 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
    * The Exp Device Property
    */
   private INDISwitchOneOfManyProperty expDeviceP;
+  /**
+   * The Third Device Property
+   */
+  private INDISwitchOneOfManyProperty thirdDeviceP;
   /**
    * The Temperature Sensors Property
    */
@@ -118,6 +122,10 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
    * The exp subdriver
    */
   private INDIDriver expSubdriver;
+  /**
+   * The third subdriver
+   */
+  private INDIDriver thirdSubdriver;
 
   /**
    * Constructs an instance of a
@@ -153,6 +161,8 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
     expDeviceP = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "expDevice", "Exp. Device", "Main Control", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"None", "Focuser"});
 
+    thirdDeviceP = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "thirdDevice", "Third Device", "Main Control", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"None", "Focuser"});
+
     this.addProperty(portP);
   }
 
@@ -164,6 +174,10 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
     if (expSubdriver != null) {
       expSubdriver.sendAllProperties();
+    }
+
+    if (thirdSubdriver != null) {
+      thirdSubdriver.sendAllProperties();
     }
   }
 
@@ -222,6 +236,28 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       } catch (INDIException e) {
       }
     }
+
+
+    if (property == thirdDeviceP) {
+      int newPos = thirdDeviceP.getSelectedIndex(elementsAndValues);
+
+      if (thirdDeviceP.getSelectedIndex() != newPos) {
+        destroyThirdSubdriver();
+
+        thirdDeviceP.setSelectedIndex(elementsAndValues);
+
+        if (thirdDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
+          thirdSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 2, this);
+          registerSubdriver(thirdSubdriver);
+        }
+      }
+      thirdDeviceP.setState(PropertyStates.OK);
+
+      try {
+        updateProperty(thirdDeviceP);
+      } catch (INDIException e) {
+      }
+    }
   }
 
   /**
@@ -246,9 +282,19 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     }
   }
 
+  /**
+   * Destroys the Third subdriver
+   */
+  private void destroyThirdSubdriver() {
+    if (thirdSubdriver != null) {
+      unregisterSubdriver(thirdSubdriver);
+      thirdSubdriver.isBeingDestroyed();
+      thirdSubdriver = null;
+    }
+  }
+
   @Override
   public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-    System.out.println("**>" + property.getName() + " ");
   }
 
   @Override
@@ -309,11 +355,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
       destroyMainSubdriver();
       destroyExpSubdriver();
+      destroyThirdSubdriver();
 
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-      }
+      Utils.sleep(200);
 
       if (seletekInput != null) {
         seletekInput.close();
@@ -328,6 +372,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     this.removeProperty(seletekInfoP);
     this.removeProperty(mainDeviceP);
     this.removeProperty(expDeviceP);
+    this.removeProperty(thirdDeviceP);
     this.removeProperty(temperatureSensorsP);
     this.removeProperty(powerOkP);
 
@@ -374,7 +419,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   /**
    * Sends the command to the Seletek to get the position of a focuser.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    */
   void getStepperPos(int port) {
     sendCommandToSeletek("!step getpos " + port + "#");
@@ -383,7 +428,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   /**
    * Sends the command to the Seletek to set the focuser speed.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    * @param speed The new speed for the focuser
    */
   void setStepperSpeed(int port, int speed) {
@@ -400,7 +445,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
    * Sends the command to the Seletek to ask the focuser to go to a particular
    * position.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    * @param position The desired position for the focuser
    */
   void stepperGotoAbs(int port, int position) {
@@ -410,7 +455,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   /**
    * Sends the command to the Seletek to stop the focuser.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    */
   void stopStepper(int port) {
     sendCommandToSeletek("!step stop " + port + "#");
@@ -419,7 +464,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   /**
    * Sends the command to the Seletek to set the wire mode of the focuser.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    * @param wireMode 0 - Lunático, 1 - Lunático Inverted, 2 - RF/Moonlite, 3 -
    * RF/Moonlite Inverted
    */
@@ -430,8 +475,8 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   /**
    * Sends the command to the Seletek to set the model of the focuser.
    *
-   * @param port 0 for Main port, 1 for Exp port
-   * @param model 0 - Unipolar, 1 - Bipolar, 2 - Step and Dir
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
+   * @param model 0 - Unipolar, 1 - Bipolar, 2 - DC, 3 - Step and Dir
    */
   void setStepperModel(int port, int model) {
     sendCommandToSeletek("!step model " + port + " " + model + "#");
@@ -440,7 +485,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   /**
    * Sends the command to the Seletek to set the focuser to half step.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    * @param halfStep <code>true</code> if the ficuser must be set at half step
    * mode.
    */
@@ -451,6 +496,42 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     }
 
     sendCommandToSeletek("!step halfstep " + port + " " + h + "#");
+  }
+
+  /**
+   * Sends the command to the Seletek to set the moving power for the focuser.
+   *
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
+   * @param speed The new power for the focuser when moving
+   */
+  void setStepperMovePower(int port, int power) {
+    if (power < 0) {
+      power = 0;
+    }
+
+    if (power > 1023) {
+      power = 1023;
+    }
+
+    sendCommandToSeletek("!step movepow " + port + " " + power + "#");
+  }
+
+  /**
+   * Sends the command to the Seletek to set the stopped power for the focuser.
+   *
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
+   * @param speed The new power for the focuser when stopped
+   */
+  void setStepperStopPower(int port, int power) {
+    if (power < 0) {
+      power = 0;
+    }
+
+    if (power > 1023) {
+      power = 1023;
+    }
+
+    sendCommandToSeletek("!step stoppow " + port + " " + power + "#");
   }
 
   /**
@@ -502,7 +583,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
     String returnParam = buffer.substring(dotsPos + 1, endPos);
 
-    //   System.out.println(buffer.substring(0, endPos));
+ //   System.out.println(buffer.substring(0, endPos));
 
     if (buffer.startsWith("!seletek version:")) {
       parseVersion(returnParam);
@@ -518,7 +599,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       parseStepperPos(port, returnParam);
     } else if (buffer.startsWith("!step speed")) {
       parseStepperSpeed(port, returnParam);
-    } else if (buffer.startsWith("!step stop")) {
+    } else if (buffer.startsWith("!step stop ")) {
       parseStepperStop(port);
     }
 
@@ -599,49 +680,61 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   }
 
   /**
-   * Parses the stop focuser message.
+   * Gets the subdriver by the port number.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
+   * @return The subdriver for the specified port
    */
-  private void parseStepperStop(int port) {
-    if ((port == 0) && (mainSubdriver instanceof SeletekFocuser)) {
-      ((SeletekFocuser)mainSubdriver).stopFocuser();
+  private INDIDriver getDriverForPort(int port) {
+    if (port == 0) {
+      return mainSubdriver;
     }
 
-    if ((port == 1) && (expSubdriver instanceof SeletekFocuser)) {
-      ((SeletekFocuser)expSubdriver).stopFocuser();
+    if (port == 1) {
+      return expSubdriver;
+    }
+
+    return thirdSubdriver;
+  }
+
+  /**
+   * Parses the stop focuser message.
+   *
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
+   */
+  private void parseStepperStop(int port) {
+    INDIDriver subdriver = getDriverForPort(port);
+
+    if (subdriver instanceof SeletekFocuser) {
+      ((SeletekFocuser)subdriver).stopFocuser();
     }
   }
 
   /**
    * Parses the current position of the focuser message.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    * @param stepperPos The current position of the focuser
    */
   private void parseStepperPos(int port, String stepperPos) {
-    if ((port == 0) && (mainSubdriver instanceof SeletekFocuser)) {
-      ((SeletekFocuser)mainSubdriver).showFocusPosition(Integer.parseInt(stepperPos));
-    }
+    INDIDriver subdriver = getDriverForPort(port);
 
-    if ((port == 1) && (expSubdriver instanceof SeletekFocuser)) {
-      ((SeletekFocuser)expSubdriver).showFocusPosition(Integer.parseInt(stepperPos));
+    if (subdriver instanceof SeletekFocuser) {
+      ((SeletekFocuser)subdriver).showFocusPosition(Integer.parseInt(stepperPos));
     }
   }
 
   /**
    * Parses the speed of the focuser message.
    *
-   * @param port 0 for Main port, 1 for Exp port
+   * @param port 0 for Main port, 1 for Exp port, 2 for Third port
    * @param stepperSpeed The current speed of the focuser
    */
   private void parseStepperSpeed(int port, String stepperSpeed) {
-    if ((port == 0) && (mainSubdriver instanceof SeletekFocuser)) {
-      ((SeletekFocuser)mainSubdriver).setDesiredSpeed();
-    }
+    INDIDriver subdriver = getDriverForPort(port);
 
-    if ((port == 1) && (expSubdriver instanceof SeletekFocuser)) {
-      ((SeletekFocuser)expSubdriver).setDesiredSpeed();
+    if (subdriver instanceof SeletekFocuser) {
+      ((SeletekFocuser)subdriver).setDesiredSpeed();
     }
   }
 
@@ -692,6 +785,12 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       version += "Armadillo Seletek";
     } else if (versionParam.charAt(0) == '3') {
       version += "Platypus Seletek";
+
+      this.addProperty(thirdDeviceP);
+      if (thirdDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
+        thirdSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 2, this);
+        registerSubdriver(thirdSubdriver);
+      }
     } else {
       version += "Unknown Seletek";
     }

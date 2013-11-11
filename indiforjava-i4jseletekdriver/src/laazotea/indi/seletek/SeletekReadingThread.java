@@ -24,7 +24,7 @@ import java.io.IOException;
  * A thread that reads messages from the Seletek.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.35, November 11, 2013
  */
 public class SeletekReadingThread extends Thread {
 
@@ -67,8 +67,7 @@ public class SeletekReadingThread extends Thread {
   /**
    * Gets if the thread has already ended.
    *
-   * @return <code>true</code> if the thread has already *
-   * ended, <code>false</code> otherwise
+   * @return <code>true</code> if the thread has already *    * ended, <code>false</code> otherwise
    */
   protected boolean hasEnded() {
     return ended;
@@ -96,10 +95,7 @@ public class SeletekReadingThread extends Thread {
         stopReading = true;
       }
 
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-      }
+      Utils.sleep(200);
     }
 
     System.out.println("Seletek Reader Thread Ending");

@@ -21,7 +21,7 @@ package laazotea.indi.seletek;
  * A thread that asks for the readings of the sensors of the Seletek.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.35, November 11, 2013
  */
 public class SeletekSensorStatusRequesterThread extends Thread {
 
@@ -63,37 +63,25 @@ public class SeletekSensorStatusRequesterThread extends Thread {
       for (int i = 0 ; i < TEMPERATURE_READINGS ; i++) {
         if (!stopRequesting) {
           driver.askForInternalTemperature();
-          sleep(100);
+          Utils.sleep(100);
         }
 
         if (!stopRequesting) {
           driver.askForExternalTemperature();
-          sleep(100);
+          Utils.sleep(100);
         }
       }
 
       if (!stopRequesting) {
         driver.askForPowerOk();
-        sleep(100);
+        Utils.sleep(100);
       }
 
       if (!stopRequesting) {
-        sleep(60000);
+        Utils.sleep(60000);
       }
     }
 
     System.out.println("Seletek Sensor Status Reader Thread Ending");
-  }
-
-  /**
-   * Sleep for some time.
-   *
-   * @param milis The number of miliseconds to sleep
-   */
-  private void sleep(int milis) {
-    try {
-      Thread.sleep(milis);
-    } catch (InterruptedException e) {
-    }
   }
 }
