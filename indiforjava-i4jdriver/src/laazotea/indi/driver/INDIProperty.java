@@ -41,7 +41,7 @@ import laazotea.indi.INDIException;
  * may contain according to the INDI protocol.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.35, November 11, 2013
  */
 public abstract class INDIProperty implements Serializable {
 
@@ -407,6 +407,8 @@ public abstract class INDIProperty implements Serializable {
 
     xml += getXMLPropertyDefinitionEnd();
 
+    isInit = true; // The property now is initialized. No further changes allowed
+    
     return xml;
   }
 
@@ -593,5 +595,21 @@ public abstract class INDIProperty implements Serializable {
 
     prop.setDriver(driver);
     return prop;
+  }
+
+  /**
+   * Sets all the values in the Elements of and array of elements and values. 
+   * Please note that this method does not make any assumtion about the values
+   * that are going to be set, so an <code>IllegalArgumentException</code> or an
+   * <code>INDIValueException</code> might be thrown.
+   *
+   * @param elementsAndValues The array of elements and values
+   */
+  public void setValues(INDIElementAndValue[] elementsAndValues) {
+    for (int i = 0 ; i < elementsAndValues.length ; i++) {
+      INDIElement element = elementsAndValues[i].getElement();
+
+      element.setValue(elementsAndValues[i].getValue());
+    }
   }
 }
