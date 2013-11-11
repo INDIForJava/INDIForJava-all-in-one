@@ -47,7 +47,7 @@ import laazotea.indi.driver.INDITextProperty;
  * A class that acts as a INDI for Java Driver for the QHY Filter Wheel.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.35, November 11, 2013
  */
 public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements INDIConnectionHandler, Runnable {
 
@@ -98,7 +98,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
     initializeStandardProperties();
 
-    portP = new INDIPortProperty(this, "/dev/ttyUSB0");
+    portP = INDIPortProperty.createSaveablePortProperty(this, "/dev/ttyUSB0");
 
     filterPositionsP = new INDINumberProperty(this, "filter_positions", "Filter Positions", "Expert Configuration", PropertyStates.IDLE, PropertyPermissions.RW, 0);
 
