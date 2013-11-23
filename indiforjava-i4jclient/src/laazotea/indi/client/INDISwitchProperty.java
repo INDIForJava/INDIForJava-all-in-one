@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, December 3, 2012
+ * @version 1.36, November 18, 2013
  */
 public class INDISwitchProperty extends INDIProperty {
 
@@ -55,10 +55,9 @@ public class INDISwitchProperty extends INDIProperty {
    * Usually used by
    * <code>INDIDevice</code>.
    *
-   * @param xml A XML Element
-   * <code>&lt;defSwitchVector&gt;</code> describing the Property.
-   * @param device The
-   * <code>INDIDevice</code> to which this Property belongs.
+   * @param xml A XML Element <code>&lt;defSwitchVector&gt;</code> describing
+   * the Property.
+   * @param device The <code>INDIDevice</code> to which this Property belongs.
    * @throws IllegalArgumentException if the XML Property is not well formed
    * (for example if the Elements are not well formed or if the Rule is not
    * valid).
@@ -80,10 +79,10 @@ public class INDISwitchProperty extends INDIProperty {
 
     NodeList list = xml.getElementsByTagName("defSwitch");
 
-    for (int i = 0; i < list.getLength(); i++) {
-      Element child = (Element) list.item(i);
+    for (int i = 0 ; i < list.getLength() ; i++) {
+      Element child = (Element)list.item(i);
 
-      String name = xml.getAttribute("name");
+      String name = child.getAttribute("name");
 
       INDIElement iel = getElement(name);
 
@@ -139,10 +138,8 @@ public class INDISwitchProperty extends INDIProperty {
   /**
    * Checks if the Rule of this Switch property holds.
    *
-   * @return
-   * <code>true</code> if the values of the Elements of this Property comply
-   * with the Rule.
-   * <code>false</code> otherwise.
+   * @return <code>true</code> if the values of the Elements of this Property
+   * comply with the Rule. <code>false</code> otherwise.
    */
   private boolean checkCorrectValues() {
     if (getState() == PropertyStates.OK) {
@@ -171,8 +168,8 @@ public class INDISwitchProperty extends INDIProperty {
 
     List<INDIElement> list = getElementsAsList();
 
-    for (int i = 0; i < list.size(); i++) {
-      INDISwitchElement el = (INDISwitchElement) list.get(i);
+    for (int i = 0 ; i < list.size() ; i++) {
+      INDISwitchElement el = (INDISwitchElement)list.get(i);
       //     System.out.println("-->" + el.getName() + el.getValue());
       if (el.getValue() == SwitchStatus.ON) {
         selectedCount++;
@@ -217,12 +214,14 @@ public class INDISwitchProperty extends INDIProperty {
 
     if (getName().equals("CONNECTION")) {
       possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIConnectionPropertyPanel", "laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
+    } else if (rule == SwitchRules.ONE_OF_MANY) {
+      possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDISwitchOneOfManyPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
     } else {
       possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
     }
 
     try {
-      UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+      UIComponent = (INDIPropertyListener)ClassInstantiator.instantiate(possibleUIClassNames, arguments);
     } catch (ClassCastException e) {
       throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
     }
@@ -236,14 +235,12 @@ public class INDISwitchProperty extends INDIProperty {
    * Gets a particular Element of this Property by its name.
    *
    * @param name The name of the Element to be returned
-   * @return The Element of this Property with the given
-   * <code>name</code>.
-   * <code>null</code> if there is no Element with that
-   * <code>name</code>.
+   * @return The Element of this Property with the given <code>name</code>.
+   * <code>null</code> if there is no Element with that <code>name</code>.
    */
   @Override
   public final INDISwitchElement getElement(String name) {
-    return (INDISwitchElement) super.getElement(name);
+    return (INDISwitchElement)super.getElement(name);
   }
 
   /**
@@ -258,7 +255,7 @@ public class INDISwitchProperty extends INDIProperty {
     ArrayList<INDIElement> l = this.getElementsAsList();
     int n = 0;
 
-    for (int i = 0; i < l.size(); i++) {
+    for (int i = 0 ; i < l.size() ; i++) {
       if (l.get(i).getValue() == SwitchStatus.ON) {
         if (n == 0) {
           aux += l.get(i).getLabel();

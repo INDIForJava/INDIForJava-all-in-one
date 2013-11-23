@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  * mechanism to notify changes in its Elements.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, April 18, 2012
+ * @version 1.36, November 17, 2013
  */
 public class INDIBLOBProperty extends INDIProperty {
 
@@ -45,10 +45,9 @@ public class INDIBLOBProperty extends INDIProperty {
    * Usually used by
    * <code>INDIDevice</code>.
    *
-   * @param xml A XML Element
-   * <code>&lt;defBLOBVector&gt;</code> describing the Property.
-   * @param device The
-   * <code>INDIDevice</code> to which this Property belongs.
+   * @param xml A XML Element <code>&lt;defBLOBVector&gt;</code> describing the
+   * Property.
+   * @param device The <code>INDIDevice</code> to which this Property belongs.
    * @throws IllegalArgumentException if the XML Property is not well formed
    * (for example if the Elements are not well formed).
    */
@@ -57,10 +56,10 @@ public class INDIBLOBProperty extends INDIProperty {
 
     NodeList list = xml.getElementsByTagName("defBLOB");
 
-    for (int i = 0; i < list.getLength(); i++) {
-      Element child = (Element) list.item(i);
+    for (int i = 0 ; i < list.getLength() ; i++) {
+      Element child = (Element)list.item(i);
 
-      String name = xml.getAttribute("name");
+      String name = child.getAttribute("name");
 
       INDIElement iel = getElement(name);
 
@@ -111,7 +110,7 @@ public class INDIBLOBProperty extends INDIProperty {
     String[] possibleUIClassNames = new String[]{"laazotea.indi.client.ui.INDIDefaultPropertyPanel", "laazotea.indi.androidui.INDIDefaultPropertyView"};
 
     try {
-      UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+      UIComponent = (INDIPropertyListener)ClassInstantiator.instantiate(possibleUIClassNames, arguments);
     } catch (ClassCastException e) {
       throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
     }
@@ -125,15 +124,11 @@ public class INDIBLOBProperty extends INDIProperty {
    * Gets a particular Element of this Property by its name.
    *
    * @param name The name of the Element to be returned
-   * @return The Element of this Property with the given
-   * <code>name</code>.
-   * <code>null</code> if there is no Element with that
-   * <code>name</code>.
+   * @return The Element of this Property with the given <code>name</code>.
+   * <code>null</code> if there is no Element with that <code>name</code>.
    */
   @Override
   public INDIBLOBElement getElement(String name) {
-    return (INDIBLOBElement) super.getElement(name);
+    return (INDIBLOBElement)super.getElement(name);
   }
-  
-  
 }
