@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Text Element.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.11, March 26, 2012
+ * @version 1.36, November 17, 2013
  */
 public class INDITextElement extends INDIElement {
 
@@ -53,8 +53,7 @@ public class INDITextElement extends INDIElement {
   /**
    * Constructs an instance of a
    * <code>INDITextElement</code> with a
-   * <code>name</code>, a
-   * <code>label</code> and its initial
+   * <code>name</code> and its initial
    * <code>value</code>. The label of the Element will be a copy of the
    * <code>name</code>.
    *

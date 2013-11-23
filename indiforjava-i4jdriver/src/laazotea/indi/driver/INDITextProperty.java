@@ -227,7 +227,7 @@ public class INDITextProperty extends INDIProperty {
 
   /**
    * Constructs an instance of
-   * <code>INDINumberProperty</code> with a particular
+   * <code>INDITextProperty</code> with a particular
    * <code>driver</code>,
    * <code>name</code>,
    * <code>state</code>,
