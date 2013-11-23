@@ -39,6 +39,9 @@
         <Component class="javax.swing.JLabel" name="name">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="11"/>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[100, 0]"/>
+            </Property>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel1">

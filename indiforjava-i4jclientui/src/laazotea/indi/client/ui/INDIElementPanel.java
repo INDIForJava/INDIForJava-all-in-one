@@ -22,13 +22,15 @@ import laazotea.indi.client.INDIElement;
 import laazotea.indi.client.INDIElementListener;
 
 /**
- * A panel to represent a <code>INDIElement</code>.
+ * A panel to represent a
+ * <code>INDIElement</code>.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.3, April 9, 2012
+ * @version 1.36, November 18, 2013
  * @see INDIElement
  */
 public abstract class INDIElementPanel extends javax.swing.JPanel implements INDIElementListener {
+
   private boolean changed;
   private boolean writable;
   private INDIPropertyPanel ipp;
@@ -42,39 +44,47 @@ public abstract class INDIElementPanel extends javax.swing.JPanel implements IND
     } else {
       this.writable = false;
     }
-    
+
     ipp = null;
-    
+
     changed = false;
   }
-  
+
   protected void setINDIPropertyPanel(INDIPropertyPanel ipp) {
     this.ipp = ipp;
   }
-  
+
   protected void checkSetButton() {
     if (ipp != null) {
-      ipp.checkSetButton(); 
+      ipp.checkSetButton();
     }
   }
-  
+
   protected void setChanged(boolean changed) {
     this.changed = changed;
   }
-  
+
   protected boolean isChanged() {
-    return changed; 
+    return changed;
   }
 
   protected boolean isWritable() {
     return writable;
   }
-  
+
   protected abstract Object getDesiredValue();
+
   protected abstract INDIElement getElement();
+
   protected abstract void setError(boolean erroneous, String errorMessage);
+
   protected abstract boolean isDesiredValueErroneous();
+
   protected abstract void cleanDesiredValue();
+
+  protected abstract int getNameSize();
+
+  protected abstract void setNameSize(int size);
 
   /**
    * This method is called from within the constructor to initialize the form.
