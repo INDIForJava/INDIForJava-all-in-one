@@ -105,7 +105,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
   /**
    * Number of Readings property
    */
-  private INDIOneElementNumberProperty nReadingsP;
+//  private INDIOneElementNumberProperty nReadingsP;
   /**
    * Do Readings Property
    */
@@ -138,7 +138,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
     sensorPeriodSP = new INDIOneElementNumberProperty(this, "sensorPeriodS", "Sensor Period (s)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0, 10000000, 0.001, "%10.3f", 0);
     sensorTempP = new INDIOneElementNumberProperty(this, "sensorTemperature", "Sensor Temperature (C)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0, 10000000, 0.1, "%4.1f", 0);
 
-    nReadingsP = INDIOneElementNumberProperty.createSaveableOneElementNumberProperty(this, "nReadings", "Number of Readings", "Settings", PropertyStates.IDLE, PropertyPermissions.RW, 1, 100, 1, "%1.0f", 50);
+//    nReadingsP = INDIOneElementNumberProperty.createSaveableOneElementNumberProperty(this, "nReadings", "Number of Readings", "Settings", PropertyStates.IDLE, PropertyPermissions.RW, 1, 100, 1, "%1.0f", 50);
 
     doReadingP = new INDISwitchOneOrNoneProperty(this, "doReading", "Do Reading", "Main Control", PropertyStates.IDLE, PropertyPermissions.RW, "Do Reading", SwitchStatus.OFF);
 
@@ -171,24 +171,24 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
   @Override
   public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
 
-    if (property == nReadingsP) {
-      int aux = elementsAndValues[0].getValue().intValue();
-      if (aux < 1) {
-        aux = 1;
-      }
+    /*    if (property == nReadingsP) {
+     int aux = elementsAndValues[0].getValue().intValue();
+     if (aux < 1) {
+     aux = 1;
+     }
 
-      if (aux > 100) {
-        aux = 100;
-      }
+     if (aux > 100) {
+     aux = 100;
+     }
 
-      nReadingsP.setValue(aux + "");
-      nReadingsP.setState(PropertyStates.OK);
-      try {
-        updateProperty(nReadingsP);
-      } catch (INDIException e) {
-        e.printStackTrace();
-      }
-    }
+     nReadingsP.setValue(aux + "");
+     nReadingsP.setState(PropertyStates.OK);
+     try {
+     updateProperty(nReadingsP);
+     } catch (INDIException e) {
+     e.printStackTrace();
+     }
+     }*/
   }
 
   @Override
@@ -226,7 +226,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
     this.addProperty(sensorPeriodSP);
     this.addProperty(sensorTempP);
 
-    this.addProperty(nReadingsP);
+//    this.addProperty(nReadingsP);
     this.addProperty(doReadingP);
 
     getDeviceInfo();
@@ -258,69 +258,72 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
     this.removeProperty(sensorPeriodSP);
     this.removeProperty(sensorTempP);
 
-    this.removeProperty(nReadingsP);
+//    this.removeProperty(nReadingsP);
     this.removeProperty(doReadingP);
   }
 
   /**
-   * Performs a number of readings (stablished by the Number of Readings
-   * property) and then performs a Sigma-Clipping average over them. This method
-   * populates the measurements properties.
+   * Performs a reading of the sensor. This method populates the measurements
+   * properties.
    */
   private void doReading() {
-    int nR = nReadingsP.getValue().intValue();
-    double[][] measurements = new double[nR][];
+//    int nR = nReadingsP.getValue().intValue();
 
-    double initialAvg = 0.0;
+    /*    double[][] measurements = new double[nR][];
 
-    for (int i = 0 ; i < nR ; i++) {
-      measurements[i] = getMeasurement();
+     double initialAvg = 0.0;
 
-      initialAvg += measurements[i][0];
-    }
+     for (int i = 0 ; i < nR ; i++) {
+     measurements[i] = getMeasurement();
 
-    initialAvg /= nR;
+     initialAvg += measurements[i][0];
+     }
 
-    // Compute standard deviation
-    double sigma = 0.0;
-    for (int i = 0 ; i < nR ; i++) {
-      sigma += (measurements[i][0] - initialAvg) * (measurements[i][0] - initialAvg);
-    }
+     initialAvg /= nR;
 
-    sigma /= nR;
-    sigma = Math.sqrt(sigma);
+     // Compute standard deviation
+     double sigma = 0.0;
+     for (int i = 0 ; i < nR ; i++) {
+     sigma += (measurements[i][0] - initialAvg) * (measurements[i][0] - initialAvg);
+     }
 
-    // Compute sigma clipped average
-    double[] sigmaClippedAverage = new double[5];
-    int addedData = 0;
+     sigma /= nR;
+     sigma = Math.sqrt(sigma);
 
-    for (int i = 0 ; i < nR ; i++) {
-      if (Math.abs(measurements[i][0] - initialAvg) <= sigma) {
-        addedData++;
+     // Compute sigma clipped average
+     double[] sigmaClippedAverage = new double[5];
+     int addedData = 0;
 
-        sigmaClippedAverage[0] += measurements[i][0];
-        sigmaClippedAverage[1] += measurements[i][1];
-        sigmaClippedAverage[2] += measurements[i][2];
-        sigmaClippedAverage[3] += measurements[i][3];
-        sigmaClippedAverage[4] += measurements[i][4];
-      }
-    }
+     for (int i = 0 ; i < nR ; i++) {
+     if (Math.abs(measurements[i][0] - initialAvg) <= sigma) {
+     addedData++;
 
-    sigmaClippedAverage[0] /= addedData;
-    sigmaClippedAverage[1] /= addedData;
-    sigmaClippedAverage[2] /= addedData;
-    sigmaClippedAverage[3] /= addedData;
-    sigmaClippedAverage[4] /= addedData;
+     sigmaClippedAverage[0] += measurements[i][0];
+     sigmaClippedAverage[1] += measurements[i][1];
+     sigmaClippedAverage[2] += measurements[i][2];
+     sigmaClippedAverage[3] += measurements[i][3];
+     sigmaClippedAverage[4] += measurements[i][4];
+     }
+     }
 
-    sensorReadingP.setValue(sigmaClippedAverage[0]);
+     sigmaClippedAverage[0] /= addedData;
+     sigmaClippedAverage[1] /= addedData;
+     sigmaClippedAverage[2] /= addedData;
+     sigmaClippedAverage[3] /= addedData;
+     sigmaClippedAverage[4] /= addedData;
+
+     */
+
+    double[] measurements = getMeasurement();
+    sensorReadingP.setValue(measurements[0]);
     sensorReadingP.setState(PropertyStates.OK);
-    sensorFreqP.setValue(sigmaClippedAverage[1]);
+    sensorFreqP.setValue(measurements[1]);
     sensorFreqP.setState(PropertyStates.OK);
-    sensorPeriodCP.setValue(sigmaClippedAverage[2]);
+    sensorPeriodCP.setValue(measurements[2]);
     sensorPeriodCP.setState(PropertyStates.OK);
-    sensorPeriodSP.setValue(sigmaClippedAverage[3]);
+    sensorPeriodSP.setValue(measurements[3]);
     sensorPeriodSP.setState(PropertyStates.OK);
-    sensorTempP.setValue(sigmaClippedAverage[4]);
+    sensorTempP.setValue(measurements[4]);
     sensorTempP.setState(PropertyStates.OK);
 
     try {
@@ -347,7 +350,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
       do {
         writeToSQM("rx");
         answer = readFromSQM();
-        answer = "r, 06.70m,0000022921Hz,0000000020c,0000000.000s, 039.4C\n";
+       // answer = "r, 06.70m,0000022921Hz,0000000020c,0000000.000s, 039.4C\n";
 
         answer = answer.trim();
       } while (!answer.startsWith("r,"));
@@ -394,7 +397,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
       do {
         writeToSQM("ix");
         answer = readFromSQM();
-        answer = "i,00000002,00000003,00000001,00000413\n";
+      //  answer = "i,00000002,00000003,00000001,00000413\n";
 
         answer = answer.trim();
       } while (!answer.startsWith("i,"));
@@ -428,7 +431,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
   /**
    * Reads a line from the SQM.
-   * 
+   *
    * @return The readed line
    * @throws IOException If there is any problem in the communication.
    */
@@ -444,7 +447,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
   /**
    * Writes a String to the SQM.
-   * 
+   *
    * @param msg The String to be sent to the SQM.
    * @throws IOException If there is any problem in the communication.
    */
