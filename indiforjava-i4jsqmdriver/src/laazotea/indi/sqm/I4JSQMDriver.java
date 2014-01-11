@@ -120,8 +120,8 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
    * @param inputStream The stream from which to read messages.
    * @param outputStream The stream to which to write the messages.
    */
-  public I4JSQMDriver(InputStream is, OutputStream os) {
-    super(is, os);
+  public I4JSQMDriver(InputStream inputStream, OutputStream outputStream) {
+    super(inputStream, outputStream);
 
     serialPort = null;
 
