@@ -25,10 +25,10 @@ import laazotea.indi.INDIException;
 
 /**
  * A class representing a INDI One or None Switch Property (aka a simple
- * button). It simplifie dealing with Switch elements and so on.
+ * button). It simplifies dealing with Switch elements and so on.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.34, January 11, 2014
  */
 public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
 
