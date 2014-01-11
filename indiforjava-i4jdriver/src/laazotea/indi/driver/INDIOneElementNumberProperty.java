@@ -26,7 +26,7 @@ import laazotea.indi.INDIException;
  * (with the same name and label of the Property).
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 23, 2013
+ * @version 1.37, January 11, 2014
  */
 public class INDIOneElementNumberProperty extends INDINumberProperty {
 
@@ -140,7 +140,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {
@@ -185,7 +185,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {
@@ -324,7 +324,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {
@@ -367,7 +367,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {
@@ -474,7 +474,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {
@@ -515,7 +515,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {
@@ -616,7 +616,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {
@@ -655,7 +655,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
    * loaded.
    * @see INDINumberProperty
    */
-  public static INDIOneElementNumberProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+  public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
     INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
     if (np == null) {

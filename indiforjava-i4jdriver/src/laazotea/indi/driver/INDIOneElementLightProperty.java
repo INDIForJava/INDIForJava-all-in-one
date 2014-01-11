@@ -18,7 +18,6 @@
 package laazotea.indi.driver;
 
 import laazotea.indi.Constants.LightStates;
-import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.INDIException;
 
@@ -27,7 +26,7 @@ import laazotea.indi.INDIException;
  * the same name and label of the Property).
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 23, 2013
+ * @version 1.36, January 11, 2014
  */
 public class INDIOneElementLightProperty extends INDILightProperty {
 
