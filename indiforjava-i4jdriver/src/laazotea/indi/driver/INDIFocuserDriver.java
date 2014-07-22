@@ -104,7 +104,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
   }
 
   /**
-   * Gets the maximum speed of the focuse. Note that 0 is the minimum speed for
+   * Gets the maximum speed of the focuser. Note that 0 is the minimum speed for
    * any focuser. Must be overloaded if the driver uses the
    * <code>FOCUS_SPEED</code> property.
    *
@@ -284,6 +284,21 @@ public abstract class INDIFocuserDriver extends INDIDriver {
 
     try {
       updateProperty(absFocusPositionP);
+    } catch (INDIException e) {
+    }
+  }
+  
+  /**
+   * Should be called by the drivers when the focuser speed changes (if for
+   * example the device has a potentiometer to control the speed). 
+   *
+   * @param currentSpeed The current speed of the focuser.
+   */
+  protected void speedChanged(int currentSpeed) {
+    focusSpeedValueE.setValue("" + currentSpeed);
+
+    try {
+      updateProperty(focusSpeedP);
     } catch (INDIException e) {
     }
   }
