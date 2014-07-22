@@ -35,7 +35,8 @@ public class INDISexagesimalFormatter {
   private int fractionLength;
 
   /**
-   * Constructs an instance of <code>INDISexagesimalFormatter</code> with a particular format.
+   * Constructs an instance of
+   * <code>INDISexagesimalFormatter</code> with a particular format.
    *
    * @param format The desired format
    * @throws IllegalArgumentException if the format is not correct: begins with
@@ -51,6 +52,7 @@ public class INDISexagesimalFormatter {
 
   /**
    * Gets the format of this formatter.
+   *
    * @return the format of this formatter.
    */
   public String getFormat() {
@@ -105,7 +107,7 @@ public class INDISexagesimalFormatter {
    * @param number NOT USED
    * @return NOT USED
    * @throws IllegalArgumentException
-   * @deprecated 
+   * @deprecated
    */
   @Deprecated
   public double parseSexagesimal2(String number) throws IllegalArgumentException {
@@ -237,7 +239,7 @@ public class INDISexagesimalFormatter {
     }
 
     double res = degrees;
-    if (degrees > 0) {
+    if (Double.valueOf(degrees).compareTo(-0.) > 0) {
       res += (minutes / 60.0) + (seconds / 3600.0);
     } else {
       res -= (minutes / 60.0) + (seconds / 3600.0);
@@ -248,23 +250,25 @@ public class INDISexagesimalFormatter {
 
   /**
    * Fomats a number according to the number format os this formatter.
+   *
    * @param number the number to be formatted.
    * @return The formatted number as a <code>String</code>.
    */
   public String format(Double number) {
+    int sign = 1;
+    if (number < 0) {
+      sign = -1;
+    }
+
+    number = Math.abs(number);
+
     String fractionalPart = ":";
 
     int integerPart;
 
-    if (number > 0) {
-      integerPart = (int) Math.floor(number);
-    } else {
-      integerPart = (int) Math.ceil(number);
-    }
+    integerPart = ((int)Math.floor(number));
 
     double fractional = Math.abs(number - integerPart);
-
-    //   System.out.println(fractional);
 
     if (fractionLength < 6) {
       double minutes = fractional * 60;
@@ -279,11 +283,7 @@ public class INDISexagesimalFormatter {
 
       if (Double.parseDouble(newMinutes) >= 60.0) {
         minutes = 0.0;
-        if (integerPart >= 0) {
-          integerPart++;
-        } else {
-          integerPart--;
-        }
+        integerPart++;
       }
 
       formatter = new Formatter(Locale.US);
@@ -291,7 +291,7 @@ public class INDISexagesimalFormatter {
     } else {
       double minutes = Math.floor(fractional * 60);
 
-      double rest = fractional - ((double) minutes / 60.0);
+      double rest = fractional - ((double)minutes / 60.0);
 
       double seconds = rest * 3600;
 
@@ -315,19 +315,18 @@ public class INDISexagesimalFormatter {
 
       if (Double.parseDouble(newMinutes) >= 60.0) {
         minutes = 0.0;
-        if (integerPart >= 0) {
-          integerPart++;
-        } else {
-          integerPart--;
-        }
+        integerPart++;
       }
 
       formatter = new Formatter(Locale.US);
       fractionalPart += formatter.format("%02.0f:" + form, minutes, seconds);
     }
 
-
     String res = integerPart + fractionalPart;
+
+    if (sign < 0) {
+      res = "-" + res;
+    }
 
     res = padLeft(res, length);
 
@@ -336,20 +335,21 @@ public class INDISexagesimalFormatter {
 
   /**
    * Pads a String to the left with spaces.
+   *
    * @param s The <code>String</code> to be padded.
    * @param n The maximum size of the padded <code>String</code>.
    * @return The padded <code>String</code>
    */
   private String padLeft(String s, int n) {
     if (s.length() >= n) {
-      return s; 
+      return s;
     }
     String spaces = "";
-    
+
     for (int i = 0 ; i < n - s.length() ; i++) {
-      spaces += " ";  
+      spaces += " ";
     }
-    
+
     return spaces + s;
   }
 }
