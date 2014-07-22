@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * A class representing a INDI Number Element.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.XX, April 5, 2014
+ * @version 1.38, July 22, 2014
  */
 public class INDINumberElement extends INDIElement {
 
