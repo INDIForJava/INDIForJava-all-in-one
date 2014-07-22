@@ -45,7 +45,7 @@ import laazotea.indi.INDIException;
  * correctly.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.38, July 22, 2014
  */
 public abstract class INDIFocuserDriver extends INDIDriver {
 
