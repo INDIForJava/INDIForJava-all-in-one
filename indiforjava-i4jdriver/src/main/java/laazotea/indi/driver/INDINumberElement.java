@@ -327,8 +327,12 @@ public class INDINumberElement extends INDIElement {
 
   @Override
   public Double getValue() {
-    return value;
-  }
+      return value;
+    }
+  
+  public int getIntValue() {
+      return (int) Math.round(value);
+    }
 
   @Override
   public void setValue(Object newValue) throws IllegalArgumentException {
@@ -418,12 +422,16 @@ public class INDINumberElement extends INDIElement {
     return res;
   }
 
-  @Override
-  public String getXMLOneElement() {
-    String xml = "<oneNumber name=\"" + this.getName() + "\">" + value + "</oneNumber>";
-
-    return xml;
-  }
+    @Override
+    public String getXMLOneElement(boolean includeMinMaxStep) {
+        String xml;
+        if (includeMinMaxStep) {
+            xml = "<oneNumber name=\"" + this.getName() + "\" min=\"" + min + "\" max=\"" + max + "\">" + value + "</oneNumber>";
+        } else {
+            xml = "<oneNumber name=\"" + this.getName() + "\">" + value + "</oneNumber>";
+        }
+        return xml;
+    }
 
   @Override
   public String getNameAndValueAsString() {
@@ -447,4 +455,19 @@ public class INDINumberElement extends INDIElement {
 
     return v;
   }
+
+
+public void setMin(double min) {
+    this.min = min;
+}
+
+
+public void setMax(double max) {
+    this.max = max;
+}
+
+
+public void setStep(double step) {
+    this.step = step;
+}
 }

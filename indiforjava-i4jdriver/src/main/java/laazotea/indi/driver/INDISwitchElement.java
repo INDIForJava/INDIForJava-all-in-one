@@ -116,7 +116,7 @@ public class INDISwitchElement extends INDIElement {
   }
 
   @Override
-  public String getXMLOneElement() {
+  public String getXMLOneElement(boolean includeMinMaxStep) {
     String stat = Constants.getSwitchStatusAsString(status);
 
     String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";

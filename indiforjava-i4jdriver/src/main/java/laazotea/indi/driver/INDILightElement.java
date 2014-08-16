@@ -17,101 +17,106 @@
  */
 package laazotea.indi.driver;
 
-import laazotea.indi.INDIBLOBValue;
+import laazotea.indi.Constants;
+import laazotea.indi.Constants.LightStates;
 import org.w3c.dom.Element;
 
 /**
- * A class representing a INDI BLOB Element.
+ * A class representing a INDI Light Element.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
-public class INDIBLOBElement extends INDIElement {
+public class INDILightElement extends INDIElement {
 
   /**
-   * The current value of the BLOB Element
+   * Current State value for this Light Element.
    */
-  private INDIBLOBValue value;
+  private LightStates state;
 
   /**
    * Constructs an instance of a
-   * <code>INDIBLOBElement</code> with a
-   * <code>name</code> and a
-   * <code>label</code>.
+   * <code>INDILightElement</code> with a
+   * <code>name</code>, a
+   * <code>label</code> and its initial
+   * <code>state</code>.
    *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
    * @param label The label of the Element.
-   * @throws IllegalArgumentException
+   * @param state The initial state of the Element.
    */
-  public INDIBLOBElement(INDIBLOBProperty property, String name, String label) throws IllegalArgumentException {
+  public INDILightElement(INDILightProperty property, String name, String label, LightStates state) {
     super(property, name, label);
 
-    value = new INDIBLOBValue(new byte[0], "");
+    this.state = state;
   }
 
   /**
    * Constructs an instance of a
-   * <code>INDIBLOBElement</code> with a
+   * <code>INDILightElement</code> with a
+   * <code>name</code> and its initial
+   * <code>state</code>. The label of the Element will be a copy of the
    * <code>name</code>.
    *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
+   * @param state The initial state of the Element.
    * @throws IllegalArgumentException
    */
-  public INDIBLOBElement(INDIBLOBProperty property, String name) throws IllegalArgumentException {
+  public INDILightElement(INDILightProperty property, String name, LightStates state) {
     super(property, name);
 
-    value = new INDIBLOBValue(new byte[0], "");
+    this.state = state;
   }
 
   @Override
-  public INDIBLOBProperty getProperty() {
-    return (INDIBLOBProperty)super.getProperty();
+  public INDILightProperty getProperty() {
+    return (INDILightProperty)super.getProperty();
   }
 
   @Override
-  public INDIBLOBValue getValue() {
-    return value;
+  public LightStates getValue() {
+    return state;
   }
 
   @Override
   public void setValue(Object newValue) throws IllegalArgumentException {
-    INDIBLOBValue b = null;
+    LightStates ns = null;
     try {
-      b = (INDIBLOBValue)newValue;
+      ns = (LightStates)newValue;
     } catch (ClassCastException e) {
-      throw new IllegalArgumentException("Value for a BLOB Element must be a INDIBLOBValue");
+      throw new IllegalArgumentException("Value for a Light Element must be a INDILightElement.LightStates");
     }
 
-    this.value = b;
+    this.state = ns;
   }
 
   @Override
-  public String getXMLOneElement() {
-    int size = value.getSize();
+  public String getXMLOneElement(boolean includeMinMaxStep) {
+    String v = Constants.getLightStateAsString(state);
 
-    String data = value.getBase64BLOBData();
-
-    String xml = "<oneBLOB name=\"" + this.getName() + "\" size=\"" + size + "\" format=\"" + value.getFormat() + "\">" + data + "</oneBLOB>";
+    String xml = "<oneLight name=\"" + this.getName() + "\">" + v + "</oneLight>";
 
     return xml;
   }
 
   @Override
   public String getNameAndValueAsString() {
-    return getName() + " - BLOB format: " + this.getValue().getFormat() + " - BLOB Size: " + this.getValue().getSize();
+    return getName() + " - " + getValue();
   }
 
   @Override
   protected String getXMLDefElement() {
-    String xml = "<defBLOB name=\"" + this.getName() + "\" label=\"" + getLabel() + "\" />";
+    String v = Constants.getLightStateAsString(state);
+
+    String xml = "<defLight name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + v + "</defLight>";
 
     return xml;
   }
 
   @Override
   public Object parseOneValue(Element xml) {
-    return new INDIBLOBValue(xml);
+    return Constants.parseLightState(xml.getTextContent().trim());
   }
 }

@@ -175,8 +175,8 @@ public abstract class INDIElement implements Serializable {
    * @return the &lt;oneXXX&gt; XML string describing the current value of the
    * Element.
    */
-  protected abstract String getXMLOneElement();
-
+  protected abstract String getXMLOneElement(boolean includeMinMaxStep);
+  
   /**
    * Gets a &lt;defXXX&gt; XML string describing the current value and
    * properties of the Element.

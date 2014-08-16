@@ -271,6 +271,10 @@ public abstract class INDIProperty implements Serializable {
     return permission;
   }
 
+    public void setPermission(PropertyPermissions permission) {
+        this.permission = permission;
+    }
+
   /**
    * Gets the State of this Property.
    *
@@ -419,7 +423,7 @@ public abstract class INDIProperty implements Serializable {
    * @return The XML code to set the values of the property.
    */
   protected String getXMLPropertySet() {
-    return getXMLPropertySet(null);
+    return getXMLPropertySet(false, null);
   }
 
   /**
@@ -430,7 +434,7 @@ public abstract class INDIProperty implements Serializable {
    * of the property.
    * @return The XML code to set the values of the property.
    */
-  protected String getXMLPropertySet(String message) {
+  protected String getXMLPropertySet(boolean includeMinMax, String message) {
     if (saveable) {
       try {
         saveToFile();
@@ -449,7 +453,7 @@ public abstract class INDIProperty implements Serializable {
     List<INDIElement> elem = getElementsAsList();
 
     for (int i = 0 ; i < elem.size() ; i++) {
-      xml += elem.get(i).getXMLOneElement();
+      xml += elem.get(i).getXMLOneElement(includeMinMax);
     }
 
     xml += getXMLPropertySetEnd();

@@ -17,101 +17,101 @@
  */
 package laazotea.indi.driver;
 
+import laazotea.indi.INDIBLOBValue;
 import org.w3c.dom.Element;
 
 /**
- * A class representing a INDI Text Element.
+ * A class representing a INDI BLOB Element.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 17, 2013
+ * @version 1.11, March 26, 2012
  */
-public class INDITextElement extends INDIElement {
+public class INDIBLOBElement extends INDIElement {
 
   /**
-   * The current value of the Text Element
+   * The current value of the BLOB Element
    */
-  private String value;
+  private INDIBLOBValue value;
 
   /**
    * Constructs an instance of a
-   * <code>INDITextElement</code> with a
-   * <code>name</code>, a
-   * <code>label</code> and its initial
-   * <code>value</code>.
+   * <code>INDIBLOBElement</code> with a
+   * <code>name</code> and a
+   * <code>label</code>.
    *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
    * @param label The label of the Element.
-   * @param value The initial value of the Element
+   * @throws IllegalArgumentException
    */
-  public INDITextElement(INDITextProperty property, String name, String label, String value) {
+  public INDIBLOBElement(INDIBLOBProperty property, String name, String label) throws IllegalArgumentException {
     super(property, name, label);
 
-    this.value = value.trim();
+    value = new INDIBLOBValue(new byte[0], "");
   }
 
   /**
    * Constructs an instance of a
-   * <code>INDITextElement</code> with a
-   * <code>name</code> and its initial
-   * <code>value</code>. The label of the Element will be a copy of the
+   * <code>INDIBLOBElement</code> with a
    * <code>name</code>.
    *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
-   * @param value The initial value of the Element
    * @throws IllegalArgumentException
    */
-  public INDITextElement(INDITextProperty property, String name, String value) throws IllegalArgumentException {
+  public INDIBLOBElement(INDIBLOBProperty property, String name) throws IllegalArgumentException {
     super(property, name);
 
-    this.value = value.trim();
+    value = new INDIBLOBValue(new byte[0], "");
   }
 
   @Override
-  public INDITextProperty getProperty() {
-    return (INDITextProperty)super.getProperty();
+  public INDIBLOBProperty getProperty() {
+    return (INDIBLOBProperty)super.getProperty();
   }
 
   @Override
-  public String getValue() {
+  public INDIBLOBValue getValue() {
     return value;
   }
 
   @Override
   public void setValue(Object newValue) throws IllegalArgumentException {
-    String v = null;
-
+    INDIBLOBValue b = null;
     try {
-      v = (String)newValue;
+      b = (INDIBLOBValue)newValue;
     } catch (ClassCastException e) {
-      throw new IllegalArgumentException("Value for a Text Element must be a String");
+      throw new IllegalArgumentException("Value for a BLOB Element must be a INDIBLOBValue");
     }
 
-    this.value = v;
+    this.value = b;
   }
 
   @Override
-  public String getXMLOneElement() {
-    String xml = "<oneText name=\"" + this.getName() + "\">" + value + "</oneText>";
+  public String getXMLOneElement(boolean includeMinMaxStep) {
+    int size = value.getSize();
+
+    String data = value.getBase64BLOBData();
+
+    String xml = "<oneBLOB name=\"" + this.getName() + "\" size=\"" + size + "\" format=\"" + value.getFormat() + "\">" + data + "</oneBLOB>";
 
     return xml;
   }
 
   @Override
   public String getNameAndValueAsString() {
-    return getName() + " - " + getValue();
+    return getName() + " - BLOB format: " + this.getValue().getFormat() + " - BLOB Size: " + this.getValue().getSize();
   }
 
   @Override
   protected String getXMLDefElement() {
-    String xml = "<defText name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + value + "</defText>";
+    String xml = "<defBLOB name=\"" + this.getName() + "\" label=\"" + getLabel() + "\" />";
 
     return xml;
   }
 
   @Override
-  public String parseOneValue(Element xml) {
-    return xml.getTextContent().trim();
+  public Object parseOneValue(Element xml) {
+    return new INDIBLOBValue(xml);
   }
 }

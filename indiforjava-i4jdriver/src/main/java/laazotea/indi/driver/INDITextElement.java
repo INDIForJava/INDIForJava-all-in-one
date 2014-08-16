@@ -17,86 +17,83 @@
  */
 package laazotea.indi.driver;
 
-import laazotea.indi.Constants;
-import laazotea.indi.Constants.LightStates;
 import org.w3c.dom.Element;
 
 /**
- * A class representing a INDI Light Element.
+ * A class representing a INDI Text Element.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.11, March 26, 2012
+ * @version 1.36, November 17, 2013
  */
-public class INDILightElement extends INDIElement {
+public class INDITextElement extends INDIElement {
 
   /**
-   * Current State value for this Light Element.
+   * The current value of the Text Element
    */
-  private LightStates state;
+  private String value;
 
   /**
    * Constructs an instance of a
-   * <code>INDILightElement</code> with a
+   * <code>INDITextElement</code> with a
    * <code>name</code>, a
    * <code>label</code> and its initial
-   * <code>state</code>.
+   * <code>value</code>.
    *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
    * @param label The label of the Element.
-   * @param state The initial state of the Element.
+   * @param value The initial value of the Element
    */
-  public INDILightElement(INDILightProperty property, String name, String label, LightStates state) {
+  public INDITextElement(INDITextProperty property, String name, String label, String value) {
     super(property, name, label);
 
-    this.state = state;
+    this.value = value.trim();
   }
 
   /**
    * Constructs an instance of a
-   * <code>INDILightElement</code> with a
+   * <code>INDITextElement</code> with a
    * <code>name</code> and its initial
-   * <code>state</code>. The label of the Element will be a copy of the
+   * <code>value</code>. The label of the Element will be a copy of the
    * <code>name</code>.
    *
    * @param property The Property to which this Element belongs.
    * @param name The name of the Element.
-   * @param state The initial state of the Element.
+   * @param value The initial value of the Element
    * @throws IllegalArgumentException
    */
-  public INDILightElement(INDILightProperty property, String name, LightStates state) {
+  public INDITextElement(INDITextProperty property, String name, String value) throws IllegalArgumentException {
     super(property, name);
 
-    this.state = state;
+    this.value = value.trim();
   }
 
   @Override
-  public INDILightProperty getProperty() {
-    return (INDILightProperty)super.getProperty();
+  public INDITextProperty getProperty() {
+    return (INDITextProperty)super.getProperty();
   }
 
   @Override
-  public LightStates getValue() {
-    return state;
+  public String getValue() {
+    return value;
   }
 
   @Override
   public void setValue(Object newValue) throws IllegalArgumentException {
-    LightStates ns = null;
+    String v = null;
+
     try {
-      ns = (LightStates)newValue;
+      v = (String)newValue;
     } catch (ClassCastException e) {
-      throw new IllegalArgumentException("Value for a Light Element must be a INDILightElement.LightStates");
+      throw new IllegalArgumentException("Value for a Text Element must be a String");
     }
 
-    this.state = ns;
+    this.value = v;
   }
 
   @Override
-  public String getXMLOneElement() {
-    String v = Constants.getLightStateAsString(state);
-
-    String xml = "<oneLight name=\"" + this.getName() + "\">" + v + "</oneLight>";
+  public String getXMLOneElement(boolean includeMinMaxStep) {
+    String xml = "<oneText name=\"" + this.getName() + "\">" + value + "</oneText>";
 
     return xml;
   }
@@ -108,15 +105,13 @@ public class INDILightElement extends INDIElement {
 
   @Override
   protected String getXMLDefElement() {
-    String v = Constants.getLightStateAsString(state);
-
-    String xml = "<defLight name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + v + "</defLight>";
+    String xml = "<defText name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + value + "</defText>";
 
     return xml;
   }
 
   @Override
-  public Object parseOneValue(Element xml) {
-    return Constants.parseLightState(xml.getTextContent().trim());
+  public String parseOneValue(Element xml) {
+    return xml.getTextContent().trim();
   }
 }

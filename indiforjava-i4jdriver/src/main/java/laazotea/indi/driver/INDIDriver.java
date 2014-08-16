@@ -773,6 +773,20 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * message.
    */
   protected void updateProperty(INDIProperty property, String message) throws INDIException {
+      updateProperty(property, false, message);
+  }
+  /**
+   * Notifies the clients about the property and its values with an additional
+   * <code>message</code>. Drivres must call this method when the values of the
+   * Elements of the property are updated in order to notify the clients.
+   *
+   * @param property The Property whose values have change and about which the
+   * clients must be notified.
+   * @param includeMinMax sould the Min Max Step values be included.
+   * @param message The message to be sended to the clients with the udpate
+   * message.
+   */
+  protected void updateProperty(INDIProperty property, boolean includeMinMax, String message) throws INDIException {
     if (properties.containsValue(property)) {
       if (property instanceof INDISwitchProperty) {
         INDISwitchProperty sp = (INDISwitchProperty)property;
@@ -782,7 +796,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         }
       }
 
-      String msg = property.getXMLPropertySet(message);
+      String msg = property.getXMLPropertySet(includeMinMax,message);
 
       sendXML(msg);
     } else {
