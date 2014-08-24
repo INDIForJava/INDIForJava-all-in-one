@@ -21,7 +21,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 import laazotea.indi.INDIException;
+import laazotea.indi.driver.INDIDriver;
 import laazotea.indi.server.DefaultINDIServer;
 import laazotea.indi.server.INDIClient;
 import laazotea.indi.server.INDIDevice;
@@ -83,6 +85,22 @@ public class INDIBasicServer extends DefaultINDIServer {
     }
   }
 
+  /**
+   * Loads the Java Drivers in Form the current classpath
+   *
+   * @param class name of the driver
+   */
+  public void loadJavaClass(String className) {
+    try {
+      Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(className);
+      if (INDIDriver.class.isAssignableFrom(cls) ){
+    	  loadJavaDriver(cls);
+      }
+    } catch (Exception e) {
+      System.err.println(e.getMessage());
+    }
+  }
+  
   /**
    * Unloads the Java Drivers in a JAR file.
    *
@@ -256,10 +274,14 @@ public class INDIBasicServer extends DefaultINDIServer {
       server.loadJava(s[1]);
 
       return true;
-    } else if (s[0].equals("-addn")) {
-      server.loadNative(s[1]);
+    } else if (s[0].equals("-addc")) {
+        server.loadJavaClass(s[1]);
 
-      return true;
+        return true;
+    } else if (s[0].equals("-addn")) {
+        server.loadNative(s[1]);
+
+        return true;
     } else if (s[0].equals("-connect")) {
       int port = 7624;
       String host;
@@ -290,7 +312,8 @@ public class INDIBasicServer extends DefaultINDIServer {
     return false;
   }
 
-  /**
+
+/**
    * Prints some help about the possible arguments of the program to the error
    * stream.
    */
@@ -312,6 +335,7 @@ public class INDIBasicServer extends DefaultINDIServer {
     System.err.println("  help                    Shows this help.");
     System.err.println("  list                    Lists all loaded drivers.");
     System.err.println("  add jarFile             Loads all INDIDrivers in the jarFile.");
+    System.err.println("  addc class              Loads the INDIDriver specified by the class.");
     System.err.println("  remove jarFile          Removes all INDIDrivers in the jarFile");
     System.err.println("  reload jarFile          Reloads all INDIDrivers in the jarFile");
     System.err.println("  r                       Reloads all INDIDrivers in jarFiles (useful for testing)");
@@ -349,6 +373,7 @@ public class INDIBasicServer extends DefaultINDIServer {
    * <code>reload jarFile</code>,
    * <code>r</code>,
    * <code>addn driverPath</code>,
+   * <code>addc driverClass</code>,
    * <code>removen driverPath</code>,
    * <code>reloadn driverPath</code>,
    * <code>connect host[:port]</code>,
@@ -422,11 +447,17 @@ public class INDIBasicServer extends DefaultINDIServer {
 
       return;
     } else if ((args[0].equals("addN")) || (args[0].equals("addn"))) {
-      String f = args[1];
+        String f = args[1];
 
-      server.loadNative(f);
+        server.loadNative(f);
 
-      return;
+        return;
+    } else if ((args[0].equals("addC")) || (args[0].equals("addc"))) {
+        String className = args[1];
+
+        server.loadJavaClass(className);;
+
+        return;
     } else if ((args[0].equals("removeN")) || (args[0].equals("removen"))) {
       String f = args[1];
 

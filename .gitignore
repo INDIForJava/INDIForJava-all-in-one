@@ -3,3 +3,7 @@
 /dist/
 /properties/
 /javadoc/
+/target
+/.project
+/.classpath
+/.settings/
