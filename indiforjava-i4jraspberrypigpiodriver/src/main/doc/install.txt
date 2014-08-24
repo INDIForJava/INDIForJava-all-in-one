@@ -1,0 +1,4 @@
+notwendige pakete
+
+sudo apt-get install netpbm
+sudo apt-get install dcraw
