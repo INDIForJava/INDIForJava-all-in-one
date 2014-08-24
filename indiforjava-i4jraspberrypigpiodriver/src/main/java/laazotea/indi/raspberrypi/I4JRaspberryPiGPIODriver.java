@@ -30,6 +30,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.system.SystemInfo;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+
 import laazotea.indi.Constants.LightStates;
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
@@ -208,7 +210,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
       new INDITextElement(board, "serial", "Serial Number", SystemInfo.getSerial());
       addProperty(board);
 
-      INDIOneElementTextProperty bogoMIPS = new INDIOneElementTextProperty(this, "bogo_mips", "Bogo MIPS", "System Info", PropertyStates.OK, PropertyPermissions.RO, SystemInfo.getBogoMIPS());
+      INDIOneElementTextProperty bogoMIPS = new INDIOneElementTextProperty(this, "bogo_mips", "Bogo MIPS", "System Info", PropertyStates.OK, PropertyPermissions.RO, getBogoMIPS());
       addProperty(bogoMIPS);
 
       INDINumberProperty clockFrequencies = new INDINumberProperty(this, "clock_frequencies", "Clock Frequencies (MHz)", "System Info", PropertyStates.OK, PropertyPermissions.RO);
@@ -234,7 +236,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
       addProperty(codecs);
 
       INDITextProperty cpu = new INDITextProperty(this, "cpu", "CPU", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-      new INDITextElement(cpu, "processor", "Processor", SystemInfo.getProcessor());
+      new INDITextElement(cpu, "processor", "Processor", getProcessor());
       new INDITextElement(cpu, "features", "Features", Arrays.toString(SystemInfo.getCpuFeatures()));
       new INDITextElement(cpu, "hardware", "Hardware", SystemInfo.getHardware());
       new INDITextElement(cpu, "architecture", "Architecture", SystemInfo.getCpuArchitecture());
@@ -290,6 +292,23 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     uptimeIdleTextE = new INDITextElement(uptimeTextP, "uptime_idlet", "Idle Uptime", "0");
   }
 
+  /**
+   * Currently buggy in p4j 0.0.5 so disabled 
+   * @return
+   */
+  private String getBogoMIPS() {
+	 // return SystemInfo.getBogoMIPS();
+	 return "n/a";
+  }
+  
+  /**
+   * Currently buggy in p4j 0.0.5 so disabled 
+   * @return
+   */
+  private String getProcessor() {
+	 // return SystemInfo.getProcessor();
+	 return "n/a";
+  }
   @Override
   public String getName() {
     return "Raspberry Pi GPIO";
