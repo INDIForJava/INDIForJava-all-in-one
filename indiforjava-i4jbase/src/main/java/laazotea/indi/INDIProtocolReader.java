@@ -124,7 +124,7 @@ public class INDIProtocolReader extends Thread {
         }
       }
     } catch (IOException e) {
-      //   e.printStackTrace();
+         e.printStackTrace();
     }
 
     parser.finishReader();
