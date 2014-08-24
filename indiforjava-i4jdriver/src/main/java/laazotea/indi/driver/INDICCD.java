@@ -3,29 +3,50 @@ package laazotea.indi.driver;
 import static laazotea.indi.Constants.PropertyPermissions.RW;
 import static laazotea.indi.Constants.PropertyStates.IDLE;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DeflaterOutputStream;
 
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
+import laazotea.indi.INDIBLOBValue;
 import laazotea.indi.INDIException;
+import nom.tam.fits.BasicHDU;
+import nom.tam.fits.Fits;
+import nom.tam.fits.HeaderCardException;
 
 public abstract class INDICCD extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface {
 
     private static final Logger LOG = Logger.getLogger(INDICCD.class.getName());
 
     protected enum CCD_FRAME {
-        LIGHT_FRAME,
-        BIAS_FRAME,
-        DARK_FRAME,
-        FLAT_FRAME
+        LIGHT_FRAME("Light"),
+        BIAS_FRAME("Bias"),
+        DARK_FRAME("Dark"),
+        FLAT_FRAME("Flat Field");
+
+        private CCD_FRAME(String fitsName) {
+            this.fitsName = fitsName;
+        }
+
+        private final String fitsName;
+
+        public String fitsValue() {
+            return fitsName;
+        }
+
     }
 
     protected enum CCD_FRAME_INDEX {
@@ -137,7 +158,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
         private final INDINumberElement imageFrameHeigth;
 
         private final INDISwitchProperty frameType;
-        
+
         private final INDISwitchElement frameTypeLight;
 
         private final INDISwitchElement frameTypeDark;
@@ -153,6 +174,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
         private final INDISwitchProperty abort;
 
         private final INDISwitchElement abortSwitch;
+
         private final INDINumberProperty imageBin;
 
         private final INDINumberElement imageBinX;
@@ -179,7 +201,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
 
         private final INDISwitchElement compressRaw;
 
-        private final boolean sendCompressed;
+        private boolean sendCompressed = false;
 
         private final INDIBLOBProperty fits;
 
@@ -235,8 +257,6 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
 
         int RawFrameSize = 0;
 
-        boolean SendCompressed = false;
-
         CCD_FRAME FrameType = CCD_FRAME.LIGHT_FRAME;
 
         double exposureDuration;
@@ -247,10 +267,9 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
 
         int lastRapidY;
 
+        INDICCDImage ccdImage;
+
         String imageExtention = "fits";
-
-
-
 
         /**
          * @brief getXRes Get the horizontal resolution in pixels of the CCD
@@ -379,8 +398,8 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
          * @brief getFrameBuffer Get raw frame buffer of the CCD chip.
          * @return raw frame buffer of the CCD chip.
          */
-        byte[] getFrameBuffer() {
-            return null;
+        INDICCDImage getFrameBuffer() {
+            return ccdImage;
         }
 
         /**
@@ -393,7 +412,8 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
          *            then you must call this function to set the pointer to the
          *            raw frame buffer.
          */
-        void setFrameBuffer(byte[] buffer) {
+        void setFrameBuffer(INDICCDImage ccdImage) {
+            this.ccdImage = ccdImage;
         }
 
         /**
@@ -401,7 +421,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
          * @return True if frame is compressed, false otherwise.
          */
         boolean isCompressed() {
-            return SendCompressed;
+            return sendCompressed;
         }
 
         /**
@@ -672,12 +692,13 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             this.imageFrameY = new INDINumberElement(INDICCD.this.temperature, "Y", "Top", 0, 0, 1040, 0, "%4.0f");
             this.imageFrameWidth = new INDINumberElement(INDICCD.this.temperature, "WIDTH", "Width", 1392, 0, 1392, 0, "%4.0f");
             this.imageFrameHeigth = new INDINumberElement(INDICCD.this.temperature, "HEIGHT", "Height", 1392, 0, 1392, 0, "%4.0f");
+            this.imageFrame.setSaveable(true);
 
             this.frameType = new INDISwitchProperty(INDICCD.this, prefix + "FRAME_TYPE", "Frame Type", INDICCD.IMAGE_SETTINGS_TAB, IDLE, RW, 60, SwitchRules.ONE_OF_MANY);
-            this.frameTypeLight =  new INDISwitchElement(this.frameType, "FRAME_LIGHT", "Light", SwitchStatus.ON);
-            this.frameTypeBais =  new INDISwitchElement(this.frameType, "FRAME_BIAS", "Bias", SwitchStatus.OFF);
-            this.frameTypeDark =  new INDISwitchElement(this.frameType, "FRAME_DARK", "Dark", SwitchStatus.OFF);
-            this.frameTypeFlat =  new INDISwitchElement(this.frameType, "FRAME_FLAT", "Flat", SwitchStatus.OFF);
+            this.frameTypeLight = new INDISwitchElement(this.frameType, "FRAME_LIGHT", "Light", SwitchStatus.ON);
+            this.frameTypeBais = new INDISwitchElement(this.frameType, "FRAME_BIAS", "Bias", SwitchStatus.OFF);
+            this.frameTypeDark = new INDISwitchElement(this.frameType, "FRAME_DARK", "Dark", SwitchStatus.OFF);
+            this.frameTypeFlat = new INDISwitchElement(this.frameType, "FRAME_FLAT", "Flat", SwitchStatus.OFF);
 
             this.imageExposure = new INDINumberProperty(INDICCD.this, prefix + "EXPOSURE", "Expose", INDICCD.MAIN_CONTROL_TAB, IDLE, RW, 60);
             this.imageExposureDuration = new INDINumberElement(this.imageExposure, "CCD_EXPOSURE_VALUE", "Duration (s)", 1, 0, 36000, 0, "%5.2f");
@@ -688,6 +709,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             this.imageBin = new INDINumberProperty(INDICCD.this, prefix + "BINNING", "Binning", INDICCD.IMAGE_SETTINGS_TAB, IDLE, RW, 60);
             this.imageBinX = new INDINumberElement(this.imageBin, "HOR_BIN", "X", 1, 4, 1, 1, "%2.0f");
             this.imageBinY = new INDINumberElement(this.imageBin, "VER_BIN", "X", 1, 4, 1, 1, "%2.0f");
+            this.imageBin.setSaveable(true);
 
             this.imagePixelSize = new INDINumberProperty(INDICCD.this, prefix + "INFO", "CCD Information", INDICCD.IMAGE_INFO_TAB, IDLE, PropertyPermissions.RO, 60);
             this.imagePixelSizeMaxX = new INDINumberElement(this.imagePixelSize, "CCD_MAX_X", "Resolution x", 1392.0, 1, 16000, 0, "%4.0f");
@@ -700,6 +722,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             this.compress = new INDISwitchProperty(INDICCD.this, prefix + "COMPRESSION", "Image", INDICCD.IMAGE_SETTINGS_TAB, IDLE, RW, 60, SwitchRules.ONE_OF_MANY);
             this.compressCompress = new INDISwitchElement(this.compress, "COMPRESS", "Compress", SwitchStatus.ON);
             this.compressRaw = new INDISwitchElement(this.compress, "RAW", "Raw", SwitchStatus.OFF);
+            this.compress.setSaveable(true);
             this.sendCompressed = true;
 
             this.fits = new INDIBLOBProperty(INDICCD.this, "CCD" + nr, "Image Data", INDICCD.IMAGE_INFO_TAB, IDLE, PropertyPermissions.RO, 60);
@@ -821,14 +844,17 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
         this.uploadClient = new INDISwitchElement(this.upload, "UPLOAD_CLIENT", "Client", SwitchStatus.ON);
         this.uploadLocal = new INDISwitchElement(this.upload, "UPLOAD_LOCAL", "Local", SwitchStatus.OFF);
         this.uploadBoth = new INDISwitchElement(this.upload, "UPLOAD_BOTH", "Both", SwitchStatus.OFF);
+        this.upload.setSaveable(true);
 
         this.uploadSettings = new INDITextProperty(this, "UPLOAD_SETTINGS", "Upload Settings", INDICCD.OPTIONS_TAB, IDLE, RW, 60);
         this.uploadSettingsDir = new INDITextElement(this.uploadSettings, "UPLOAD_DIR", "Dir", "");
         this.uploadSettingsPrefix = new INDITextElement(this.uploadSettings, "UPLOAD_PREFIX", "Prefix", "IMAGE_XX");
+        this.uploadSettings.setSaveable(true);
 
         this.activeDevice = new INDITextProperty(this, "ACTIVE_DEVICES", "Snoop devices", INDICCD.OPTIONS_TAB, IDLE, RW, 60);
         this.activeDeviceTelescope = new INDITextElement(this.uploadSettings, "ACTIVE_TELESCOPE", "Telescope", "Telescope Simulator");
         this.activeDeviceFocuser = new INDITextElement(this.uploadSettings, "ACTIVE_FOCUSER", "Focuser", "Focuser Simulator");
+        this.activeDevice.setSaveable(true);
 
         this.eqn = new INDINumberProperty(this, "EQUATORIAL_EOD_COORD", "EQ Coord", INDICCD.MAIN_CONTROL_TAB, IDLE, RW, 60);
         this.eqnRa = new INDINumberElement(this.eqn, "RA", "Ra (hh:mm:ss)", 0, 0, 24, 0, "%010.6m");
@@ -1013,7 +1039,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             property.setValues(elementsAndValues);
             primaryCCD.BinX = primaryCCD.imageBinX.getIntValue();
             primaryCCD.BinY = primaryCCD.imageBinY.getIntValue();
-            
+
             if (updateCCDBin(primaryCCD.BinX, primaryCCD.BinY)) {
                 primaryCCD.imageBin.setState(PropertyStates.OK);
 
@@ -1158,8 +1184,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
 
     @Override
     public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-        if (property==upload)
-        {
+        if (property == upload) {
             property.setValues(elementsAndValues);
             property.setState(PropertyStates.OK);
 
@@ -1167,26 +1192,22 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
                 updateProperty(property);
             } catch (INDIException e) {
             }
-            if (uploadClient.getValue()==SwitchStatus.ON)
-                LOG.log(Level.FINE, String.format( "Upload settings set to client only."));
-            else if (uploadLocal.getValue()==SwitchStatus.ON)
-                LOG.log(Level.FINE, String.format( "Upload settings set to local only."));
+            if (uploadClient.getValue() == SwitchStatus.ON)
+                LOG.log(Level.FINE, String.format("Upload settings set to client only."));
+            else if (uploadLocal.getValue() == SwitchStatus.ON)
+                LOG.log(Level.FINE, String.format("Upload settings set to local only."));
             else
                 LOG.log(Level.FINE, String.format("Upload settings set to client and local."));
-     
+
         }
 
-        if(property==primaryCCD.abort)
-        {
+        if (property == primaryCCD.abort) {
             primaryCCD.abortSwitch.setValue(SwitchStatus.OFF);
-            if (abortExposure())
-            {
+            if (abortExposure()) {
                 primaryCCD.abort.setState(PropertyStates.OK);
                 primaryCCD.imageExposure.setState(IDLE);
                 primaryCCD.imageExposureDuration.setValue(0.0);
-            }
-            else
-            {
+            } else {
                 primaryCCD.abort.setState(PropertyStates.ALERT);
                 primaryCCD.imageExposure.setState(PropertyStates.ALERT);
             }
@@ -1197,17 +1218,13 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             }
         }
 
-        if(property==guiderCCD.abort)
-        {
+        if (property == guiderCCD.abort) {
             guiderCCD.abortSwitch.setValue(SwitchStatus.OFF);
-            if (abortGuideExposure())
-            {
+            if (abortGuideExposure()) {
                 guiderCCD.abort.setState(PropertyStates.OK);
                 guiderCCD.imageExposure.setState(IDLE);
                 guiderCCD.imageExposureDuration.setValue(0.0);
-            }
-            else
-            {
+            } else {
                 guiderCCD.abort.setState(PropertyStates.ALERT);
                 guiderCCD.imageExposure.setState(PropertyStates.ALERT);
             }
@@ -1218,17 +1235,14 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             }
         }
 
-        if(property==primaryCCD.compress)
-        {
+        if (property == primaryCCD.compress) {
 
             property.setValues(elementsAndValues);
 
-            if(primaryCCD.compressCompress.getValue()==SwitchStatus.ON    )
-            {
-                primaryCCD.SendCompressed=true;
-            } else
-            {
-                primaryCCD.SendCompressed=false;
+            if (primaryCCD.compressCompress.getValue() == SwitchStatus.ON) {
+                primaryCCD.sendCompressed = true;
+            } else {
+                primaryCCD.sendCompressed = false;
             }
             try {
                 updateProperty(property);
@@ -1236,16 +1250,13 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             }
         }
 
-        if(property==guiderCCD.compress)
-        {
+        if (property == guiderCCD.compress) {
             property.setValues(elementsAndValues);
 
-            if(guiderCCD.compressCompress.getValue()==SwitchStatus.ON    )
-            {
-                guiderCCD.SendCompressed=true;
-            } else
-            {
-                guiderCCD.SendCompressed=false;
+            if (guiderCCD.compressCompress.getValue() == SwitchStatus.ON) {
+                guiderCCD.sendCompressed = true;
+            } else {
+                guiderCCD.sendCompressed = false;
             }
             try {
                 updateProperty(property);
@@ -1253,128 +1264,123 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
             }
         }
 
-        if(property==primaryCCD.frameType)
-        {
+        if (property == primaryCCD.frameType) {
             property.setValues(elementsAndValues);
             primaryCCD.frameType.setState(PropertyStates.OK);
-            
-            if(primaryCCD.frameTypeLight.getValue()==SwitchStatus.ON)
+
+            if (primaryCCD.frameTypeLight.getValue() == SwitchStatus.ON) {
                 primaryCCD.setFrameType(CCD_FRAME.LIGHT_FRAME);
-            else if(primaryCCD.frameTypeBais.getValue()==SwitchStatus.ON)
+            } else if (primaryCCD.frameTypeBais.getValue() == SwitchStatus.ON) {
                 primaryCCD.setFrameType(CCD_FRAME.BIAS_FRAME);
-                if (capability.hasShutter == false)
-                    DEBUG(INDI::Logger::DBG_WARNING, "The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
+                if (capability.hasShutter == false) {
+                    LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
+                }
+            } else if (primaryCCD.frameTypeDark.getValue() == SwitchStatus.ON) {
+                primaryCCD.setFrameType(CCD_FRAME.DARK_FRAME);
+                if (capability.hasShutter == false) {
+                    LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
+                }
+            } else if (primaryCCD.frameTypeFlat.getValue() == SwitchStatus.ON) {
+                primaryCCD.setFrameType(CCD_FRAME.FLAT_FRAME);
             }
-            else if(PrimaryCCD.FrameTypeS[2].s==ISS_ON)
-            {
-                PrimaryCCD.setFrameType(CCDChip::DARK_FRAME);
-                if (capability.hasShutter == false)
-                    DEBUG(INDI::Logger::DBG_WARNING, "The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
+            if (updateCCDFrameType(primaryCCD.getFrameType()) == false)
+                primaryCCD.frameType.setState(PropertyStates.ALERT);
+            try {
+                updateProperty(property);
+            } catch (INDIException e) {
             }
-            else if(PrimaryCCD.FrameTypeS[3].s==ISS_ON)
-                PrimaryCCD.setFrameType(CCDChip::FLAT_FRAME);
-
-            if (UpdateCCDFrameType(PrimaryCCD.getFrameType()) == false)
-                PrimaryCCD.FrameTypeSP->s = IPS_ALERT;
-
-            IDSetSwitch(PrimaryCCD.FrameTypeSP,NULL);
-
-            return true;
         }
 
-        if(strcmp(name,GuideCCD.FrameTypeSP->name)==0)
-        {
-            //  Compression Update
-            IUUpdateSwitch(GuideCCD.FrameTypeSP,states,names,n);
-            GuideCCD.FrameTypeSP->s=IPS_OK;
-            if(GuideCCD.FrameTypeS[0].s==ISS_ON)
-                GuideCCD.setFrameType(CCDChip::LIGHT_FRAME);
-            else if(GuideCCD.FrameTypeS[1].s==ISS_ON)
-            {
-                GuideCCD.setFrameType(CCDChip::BIAS_FRAME);
-                if (capability.hasShutter == false)
-                    DEBUG(INDI::Logger::DBG_WARNING, "The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
+        if (property == guiderCCD.frameType) {
+            property.setValues(elementsAndValues);
+            guiderCCD.frameType.setState(PropertyStates.OK);
+
+            if (guiderCCD.frameTypeLight.getValue() == SwitchStatus.ON) {
+                guiderCCD.setFrameType(CCD_FRAME.LIGHT_FRAME);
+            } else if (guiderCCD.frameTypeBais.getValue() == SwitchStatus.ON) {
+                guiderCCD.setFrameType(CCD_FRAME.BIAS_FRAME);
+                if (capability.hasShutter == false) {
+                    LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
+                }
+            } else if (guiderCCD.frameTypeDark.getValue() == SwitchStatus.ON) {
+                guiderCCD.setFrameType(CCD_FRAME.DARK_FRAME);
+                if (capability.hasShutter == false) {
+                    LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
+                }
+            } else if (guiderCCD.frameTypeFlat.getValue() == SwitchStatus.ON) {
+                guiderCCD.setFrameType(CCD_FRAME.FLAT_FRAME);
             }
-            else if(GuideCCD.FrameTypeS[2].s==ISS_ON)
-            {
-                GuideCCD.setFrameType(CCDChip::DARK_FRAME);
-                if (capability.hasShutter == false)
-                    DEBUG(INDI::Logger::DBG_WARNING, "The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
+            if (updateCCDFrameType(guiderCCD.getFrameType()) == false)
+                guiderCCD.frameType.setState(PropertyStates.ALERT);
+            try {
+                updateProperty(property);
+            } catch (INDIException e) {
             }
-            else if(GuideCCD.FrameTypeS[3].s==ISS_ON)
-                GuideCCD.setFrameType(CCDChip::FLAT_FRAME);
-
-            if (UpdateGuiderFrameType(GuideCCD.getFrameType()) == false)
-                GuideCCD.FrameTypeSP->s = IPS_ALERT;
-
-            IDSetSwitch(GuideCCD.FrameTypeSP,NULL);
-
-            return true;
         }
-        
-        
-        if (strcmp(name, PrimaryCCD.RapidGuideSP->name)==0)
-        {
-            IUUpdateSwitch(PrimaryCCD.RapidGuideSP, states, names, n);
-            PrimaryCCD.RapidGuideSP->s=IPS_OK;
-            RapidGuideEnabled=(PrimaryCCD.RapidGuideS[0].s==ISS_ON);
-            
+
+        if (property == primaryCCD.rapidGuide) {
+            property.setValues(elementsAndValues);
+            primaryCCD.rapidGuide.setState(PropertyStates.OK);
+            RapidGuideEnabled = (primaryCCD.rapidGuideEnable.getValue() == SwitchStatus.ON);
+
             if (RapidGuideEnabled) {
-              defineSwitch(PrimaryCCD.RapidGuideSetupSP);
-              defineNumber(PrimaryCCD.RapidGuideDataNP);
+                addProperty(primaryCCD.rapidGuideSetup);
+                addProperty(primaryCCD.rapidGuideData);
+            } else {
+                removeProperty(primaryCCD.rapidGuideSetup);
+                removeProperty(primaryCCD.rapidGuideData);
             }
-            else {
-              deleteProperty(PrimaryCCD.RapidGuideSetupSP->name);
-              deleteProperty(PrimaryCCD.RapidGuideDataNP->name);
+
+            try {
+                updateProperty(property);
+            } catch (INDIException e) {
             }
-            
-            IDSetSwitch(PrimaryCCD.RapidGuideSP,NULL);
-            return true;
         }
 
-        if (strcmp(name, GuideCCD.RapidGuideSP->name)==0)
-        {
-            IUUpdateSwitch(GuideCCD.RapidGuideSP, states, names, n);
-            GuideCCD.RapidGuideSP->s=IPS_OK;
-            GuiderRapidGuideEnabled=(GuideCCD.RapidGuideS[0].s==ISS_ON);
-            
-            if (GuiderRapidGuideEnabled) {
-              defineSwitch(GuideCCD.RapidGuideSetupSP);
-              defineNumber(GuideCCD.RapidGuideDataNP);
-            }
-            else {
-              deleteProperty(GuideCCD.RapidGuideSetupSP->name);
-              deleteProperty(GuideCCD.RapidGuideDataNP->name);
-            }
+        if (property == guiderCCD.rapidGuide) {
+            property.setValues(elementsAndValues);
+            guiderCCD.rapidGuide.setState(PropertyStates.OK);
+            RapidGuideEnabled = (guiderCCD.rapidGuideEnable.getValue() == SwitchStatus.ON);
 
-            IDSetSwitch(GuideCCD.RapidGuideSP,NULL);
-            return true;
+            if (RapidGuideEnabled) {
+                addProperty(guiderCCD.rapidGuideSetup);
+                addProperty(guiderCCD.rapidGuideData);
+            } else {
+                removeProperty(guiderCCD.rapidGuideSetup);
+                removeProperty(guiderCCD.rapidGuideData);
+            }
+            try {
+                updateProperty(property);
+            } catch (INDIException e) {
+            }
         }
 
-        if (strcmp(name, PrimaryCCD.RapidGuideSetupSP->name)==0)
-        {
-            IUUpdateSwitch(PrimaryCCD.RapidGuideSetupSP, states, names, n);
-            PrimaryCCD.RapidGuideSetupSP->s=IPS_OK;
+        if (property == primaryCCD.rapidGuideSetup) {
+            property.setValues(elementsAndValues);
+            primaryCCD.rapidGuideSetup.setState(PropertyStates.OK);
 
-            AutoLoop=(PrimaryCCD.RapidGuideSetupS[0].s==ISS_ON);
-            SendImage=(PrimaryCCD.RapidGuideSetupS[1].s==ISS_ON);
-            ShowMarker=(PrimaryCCD.RapidGuideSetupS[2].s==ISS_ON);
-            
-            IDSetSwitch(PrimaryCCD.RapidGuideSetupSP,NULL);
-            return true;
+            AutoLoop = primaryCCD.rapidGuideSetupAutoLoop.getValue() == SwitchStatus.ON;
+            SendImage = primaryCCD.rapidGuideSetupSendImage.getValue() == SwitchStatus.ON;
+            ShowMarker = primaryCCD.rapidGuideSetupShowMarker.getValue() == SwitchStatus.ON;
+
+            try {
+                updateProperty(property);
+            } catch (INDIException e) {
+            }
         }
 
-        if (strcmp(name, GuideCCD.RapidGuideSetupSP->name)==0)
-        {
-            IUUpdateSwitch(GuideCCD.RapidGuideSetupSP, states, names, n);
-            GuideCCD.RapidGuideSetupSP->s=IPS_OK;
+        if (property == guiderCCD.rapidGuideSetup) {
+            property.setValues(elementsAndValues);
+            guiderCCD.rapidGuideSetup.setState(PropertyStates.OK);
 
-            GuiderAutoLoop=(GuideCCD.RapidGuideSetupS[0].s==ISS_ON);
-            GuiderSendImage=(GuideCCD.RapidGuideSetupS[1].s==ISS_ON);
-            GuiderShowMarker=(GuideCCD.RapidGuideSetupS[2].s==ISS_ON);
-            
-            IDSetSwitch(GuideCCD.RapidGuideSetupSP,NULL);
-            return true;
+            AutoLoop = guiderCCD.rapidGuideSetupAutoLoop.getValue() == SwitchStatus.ON;
+            SendImage = guiderCCD.rapidGuideSetupSendImage.getValue() == SwitchStatus.ON;
+            ShowMarker = guiderCCD.rapidGuideSetupShowMarker.getValue() == SwitchStatus.ON;
+
+            try {
+                updateProperty(property);
+            } catch (INDIException e) {
+            }
         }
     }
 
@@ -1383,7 +1389,6 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
         // This is for our device
         // Now lets see if it's something we process here
         if (property == activeDevice) {
-            int rc;
             activeDevice.setState(PropertyStates.OK);
             property.setValues(elementsAndValues);
             try {
@@ -1491,6 +1496,110 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
      */
     abstract protected boolean startExposure(double duration);
 
+    static double P0 = 0.906, P1 = 0.584, P2 = 0.365, P3 = 0.117, P4 = 0.049, P5 = -0.05, P6 = -0.064, P7 = -0.074, P8 = -0.094;
+
+    static private int[][] PROXIMITY_MATRIX = {
+        {
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+        },
+        {
+            8,
+            8,
+            8,
+            7,
+            6,
+            7,
+            8,
+            8,
+            8
+        },
+        {
+            8,
+            8,
+            5,
+            4,
+            3,
+            4,
+            5,
+            8,
+            8
+        },
+        {
+            8,
+            7,
+            4,
+            2,
+            1,
+            2,
+            4,
+            8,
+            8
+        },
+        {
+            8,
+            6,
+            3,
+            1,
+            0,
+            1,
+            3,
+            6,
+            8
+        },
+        {
+            8,
+            7,
+            4,
+            2,
+            1,
+            2,
+            4,
+            8,
+            8
+        },
+        {
+            8,
+            8,
+            5,
+            4,
+            3,
+            4,
+            5,
+            8,
+            8
+        },
+        {
+            8,
+            8,
+            8,
+            7,
+            6,
+            7,
+            8,
+            8,
+            8
+        },
+        {
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8,
+            8
+        }
+    };
+
     /**
      * Uploads target Chip exposed buffer as FITS to the client. Dervied classes
      * should call this functon when an exposure is complete. This function must
@@ -1499,7 +1608,196 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
      * @param targetChip
      *            chip that contains upload image data
      */
-    abstract protected boolean exposureComplete(CCD targetChip);
+    protected boolean exposureComplete(CCD targetChip) {
+        boolean sendImage = (uploadClient.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON);
+        boolean saveImage = (uploadLocal.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON);
+        boolean showMarker = false;
+        boolean sendData = false;
+        boolean autoLoop = false;
+        if (RapidGuideEnabled && targetChip == primaryCCD) {
+            autoLoop = AutoLoop;
+            sendImage = SendImage;
+            showMarker = ShowMarker;
+            sendData = true;
+            saveImage = false;
+        }
+        if (GuiderRapidGuideEnabled && targetChip == guiderCCD) {
+            autoLoop = GuiderAutoLoop;
+            sendImage = GuiderSendImage;
+            showMarker = GuiderShowMarker;
+            sendData = true;
+            saveImage = false;
+        }
+        if (sendData) {
+            targetChip.rapidGuideData.setState(PropertyStates.BUSY);
+            int width = targetChip.getSubW() / targetChip.getBinX();
+            int height = targetChip.getSubH() / targetChip.getBinY();
+            INDICCDImage ccdImage = targetChip.getFrameBuffer();
+            int i[] = new int[9];
+            int ix = 0, iy = 0;
+            double average, fit, bestFit = 0;
+            int minx = 4;
+            int maxx = width - 4;
+            int miny = 4;
+            int maxy = height - 4;
+            if (targetChip.lastRapidX > 0 && targetChip.lastRapidY > 0) {
+                minx = Math.max(targetChip.lastRapidX - 20, 4);
+                maxx = Math.min(targetChip.lastRapidX + 20, width - 4);
+                miny = Math.max(targetChip.lastRapidY - 20, 4);
+                maxy = Math.min(targetChip.lastRapidY + 20, height - 4);
+            }
+            int[][] src = ccdImage.subImageInt(minx - 4, miny - 4, maxx + 4, maxy + 4);
+            for (int y = 4; y < (src.length - 4); y++) {
+                for (int x = 4; x < (src[x].length - 4); x++) {
+                    i[0] = i[1] = i[2] = i[3] = i[4] = i[5] = i[6] = i[7] = i[8] = 0;
+                    for (int My = 0; My < PROXIMITY_MATRIX.length; My++) {
+                        for (int Mx = 0; Mx < PROXIMITY_MATRIX[My].length; Mx++) {
+                            i[PROXIMITY_MATRIX[My][Mx]] = src[y + My - 4][x + Mx - 4];
+                        }
+                    }
+                    average = (i[0] + i[1] + i[2] + i[3] + i[4] + i[5] + i[6] + i[7] + i[8]) / 85.0;
+                    fit = P0 * (i[0] - average) + //
+                            P1 * (i[1] - 4 * average) + //
+                            P2 * (i[2] - 4 * average) + //
+                            P3 * (i[3] - 4 * average) + //
+                            P4 * (i[4] - 8 * average) + //
+                            P5 * (i[5] - 4 * average) + //
+                            P6 * (i[6] - 4 * average) + //
+                            P7 * (i[7] - 8 * average) + //
+                            P8 * (i[8] - 48 * average);
+                    if (bestFit < fit) {
+                        bestFit = fit;
+                        ix = x;
+                        iy = y;
+                    }
+                }
+            }
+            double sumX = 0;
+            double sumY = 0;
+            double total = 0;
+            for (int y = iy - 4; y <= iy + 4; y++) {
+                for (int x = ix - 4; x <= ix + 4; x++) {
+                    double w = src[y][x];
+                    sumX += x * w;
+                    sumY += y * w;
+                    total += w;
+                }
+            }
+
+            ix = ix + (minx - 4);
+            iy = iy + (miny - 4);
+
+            targetChip.rapidGuideDataX.setValue(ix);
+            targetChip.rapidGuideDataY.setValue(iy);
+            targetChip.rapidGuideDataFIT.setValue(bestFit);
+            targetChip.lastRapidX = ix;
+            targetChip.lastRapidY = iy;
+            if (bestFit > 50) {
+                if (total > 0) {
+                    targetChip.rapidGuideDataX.setValue(sumX / total);
+                    targetChip.rapidGuideDataY.setValue(sumY / total);
+                    targetChip.rapidGuideData.setState(PropertyStates.OK);
+
+                    LOG.log(Level.FINE, String.format("Guide Star X: %g Y: %g FIT: %g", targetChip.rapidGuideDataX.getValue(), targetChip.rapidGuideDataY.getValue(),
+                            targetChip.rapidGuideDataFIT.getValue()));
+                } else {
+                    targetChip.rapidGuideData.setState(PropertyStates.ALERT);
+                    targetChip.lastRapidX = targetChip.lastRapidY = -1;
+                }
+            } else {
+                targetChip.rapidGuideData.setState(PropertyStates.ALERT);
+                targetChip.lastRapidX = targetChip.lastRapidY = -1;
+            }
+            try {
+                updateProperty(targetChip.rapidGuideData);
+            } catch (INDIException e) {
+            }
+
+            if (showMarker) {
+                ccdImage.drawMarker(ix, iy);
+            }
+            if (sendImage || saveImage) {
+                try {
+                    if ("fits".equals((targetChip.getImageExtension()))) {
+                        Fits f = ccdImage.asFitsImage();
+                        addFITSKeywords(targetChip, f.getHDU(0));
+                    }
+                    uploadFile(targetChip, ccdImage, sendImage, saveImage);
+                } catch (Exception e) {
+                    LOG.log(Level.SEVERE, "could not send or save image", e);
+                    return false;
+                }
+            }
+        }
+        targetChip.imageExposure.setState(PropertyStates.OK);
+        try {
+            updateProperty(targetChip.imageExposure);
+        } catch (INDIException e) {
+        }
+        if (autoLoop) {
+            targetChip.imageExposureDuration.setValue(primaryCCD == targetChip ? ExposureTime : GuiderExposureTime);
+            targetChip.imageExposure.setState(PropertyStates.BUSY);
+            if (primaryCCD == targetChip ? startExposure(ExposureTime) : startGuideExposure(GuiderExposureTime))
+                targetChip.imageExposure.setState(PropertyStates.BUSY);
+            else {
+                LOG.log(Level.SEVERE, "Autoloop: Primary CCD Exposure Error!");
+                targetChip.imageExposure.setState(PropertyStates.ALERT);
+            }
+            try {
+                updateProperty(targetChip.imageExposure);
+            } catch (INDIException e) {
+            }
+        }
+        return true;
+    }
+
+    private int getFileIndex(String dir, String prefix, String extension) throws IOException {
+        int indexOfXX = prefix.indexOf("XX");
+        String uptoXX = prefix.substring(0, indexOfXX);
+        String afterXX = prefix.substring(indexOfXX + 2) + "." + extension;
+
+        int maxNumber = 0;
+        for (File file : new File(dir).listFiles()) {
+            if (file.getName().startsWith(uptoXX) && file.getName().endsWith(afterXX)) {
+                int number = Integer.valueOf(file.getName().substring(indexOfXX));
+                if (number > maxNumber) {
+                    maxNumber = number;
+                }
+            }
+        }
+        return maxNumber;
+    }
+
+    protected void uploadFile(CCD targetChip, INDICCDImage ccdImage, boolean sendImage, boolean saveImage) throws Exception {
+        if (saveImage) {
+            int maxIndex = getFileIndex(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue(), targetChip.getImageExtension());
+            maxIndex++;
+            File fp = new File(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue().replace("XX", Integer.toString(maxIndex)) + "." + targetChip.getImageExtension());
+            try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fp)))) {
+                ccdImage.write(os, targetChip.getImageExtension());
+            }
+        }
+        if (sendImage) {
+            if (targetChip.sendCompressed) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new BufferedOutputStream(out))))) {
+                    ccdImage.write(os, targetChip.getImageExtension());
+                }
+                targetChip.fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + targetChip.getImageExtension() + ".z"));
+            } else {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(out))) {
+                    ccdImage.write(os, targetChip.getImageExtension());
+                }
+                targetChip.fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + targetChip.getImageExtension()));
+            }
+            targetChip.fits.setState(PropertyStates.OK);
+            try {
+                updateProperty(targetChip.fits);
+            } catch (INDIException e) {
+            }
+        }
+    }
 
     /**
      * Abort ongoing exposure
@@ -1697,7 +1995,53 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
      *            pointer to a valid FITS file.
      * @param targetChip
      *            The target chip to extract the keywords from.
+     * @throws HeaderCardException
      */
-    abstract protected Map<String, String> addFITSKeywords(CCD targetChip);
+    protected void addFITSKeywords(CCD targetChip, BasicHDU fitsHeader) throws HeaderCardException {
+        fitsHeader.addValue("EXPTIME", targetChip.exposureDuration, "Total Exposure Time (s)");
+
+        if (targetChip.getFrameType() == CCD_FRAME.DARK_FRAME)
+            fitsHeader.addValue("DARKTIME", targetChip.exposureDuration, "Total Exposure Time (s)");
+
+        fitsHeader.addValue("PIXSIZE1", targetChip.getPixelSizeX(), "Pixel Size 1 (microns)");
+        fitsHeader.addValue("PIXSIZE2", targetChip.getPixelSizeY(), "Pixel Size 2 (microns)");
+        fitsHeader.addValue("XBINNING", targetChip.BinX, "Binning factor in width");
+        fitsHeader.addValue("YBINNING", targetChip.BinY, "Binning factor in height");
+        fitsHeader.addValue("FRAME", targetChip.getFrameType().fitsValue(), "Frame Type");
+
+        if (targetChip.getNAxis() == 2) {
+            // should de done in the image processing
+            // fitsHeader.addValue("DATAMIN", &min_val, "Minimum value");
+            // fitsHeader.addValue("DATAMAX", &max_val, "Maximum value");
+        }
+
+        if (RA > -999d && Dec > -999d) {
+            fitsHeader.addValue("OBJCTRA", this.RA, "Object RA");
+            fitsHeader.addValue("OBJCTDEC", this.Dec, "Object DEC");
+        }
+
+        fitsHeader.addValue("INSTRUME", getName(), "CCD Name");
+        fitsHeader.addValue("DATE-OBS", targetChip.getExposureStartTime(), "UTC start date of observation");
+
+    }
+
+    void SetCCDParams(int x, int y, int bpp, float xf, float yf) throws INDIException {
+        primaryCCD.setResolution(x, y);
+        primaryCCD.setFrame(0, 0, x, y);
+        primaryCCD.setBin(1, 1);
+        primaryCCD.setPixelSize(xf, yf);
+        primaryCCD.setBPP(bpp);
+
+    }
+
+    void SetGuiderParams(int x, int y, int bpp, float xf, float yf) throws INDIException {
+        capability.hasGuideHead = true;
+
+        guiderCCD.setResolution(x, y);
+        guiderCCD.setFrame(0, 0, x, y);
+        guiderCCD.setPixelSize(xf, yf);
+        guiderCCD.setBPP(bpp);
+
+    }
 
 }
