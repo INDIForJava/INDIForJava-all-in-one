@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.indilib.i4j</groupId>
+		<artifactId>i4j</artifactId>
+		<version>1.39-SNAPSHOT</version>
+	</parent>
+	<artifactId>ostermillerutils</artifactId>
+	<version>1.08.02</version>
+	<packaging>jar</packaging>
+	<inceptionYear>2001</inceptionYear>
+	<name>Ostermiller Java Utilities</name>
+	<url>http://ostermiller.org/utils/</url>
+	<description>
+		Open source (GPL) Java utilities maintained by Stephen Ostermiller with 
+		help from many contributors.
+	</description>
+	<licenses>
+		<license>
+			<name>GNU General Public License, version 2</name>
+			<url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<issueManagement>
+		<system>Bugzilla</system>
+		<url>https://bugzilla.ostermiller.com/</url>
+	</issueManagement>
+	<scm>
+		<connection>scm:git:ssh://steveo@source.ostermiller.org/git/ostermillerutils.git</connection>
+	</scm>
+	<developers>
+		<developer>
+			<name>Stephen Ostermiller</name>
+		</developer>
+	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>unpack-dependencies</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.ostermiller</groupId>
+			<artifactId>ostermillerutils</artifactId>
+			<version>1.08.02</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/ostermillerutils-1.08.02.jar</systemPath>
+		</dependency>
+	</dependencies>
+</project>

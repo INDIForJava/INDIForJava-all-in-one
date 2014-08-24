@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.indilib.i4j</groupId>
+		<artifactId>i4j</artifactId>
+		<version>1.39-SNAPSHOT</version>
+	</parent>
+	<artifactId>nom.tam.fits</artifactId>
+	<version>1.11.1</version>
+	<packaging>jar</packaging>
+	<name>nom.tam FITS library</name>
+	<url>http://heasarc.gsfc.nasa.gov/docs/heasarc/fits/java/</url>
+	<description>a full function Java library for reading and writing FITS files</description>
+	<licenses>
+		<license>
+			<name>public domain</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>T.A. McGlynn</name>
+			<organization>NASA/GSFC</organization>
+		</developer>
+	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>unpack-dependencies</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.9</version>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.basedir}/fits_src.jar</file>
+									<type>jar</type>
+									<classifier>sources</classifier>
+								</artifact>
+								...
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>nom.tam.fitsr</groupId>
+			<artifactId>nom.tam.fits</artifactId>
+			<version>1.11.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/fits.jar</systemPath>
+		</dependency>
+	</dependencies>
+</project>
