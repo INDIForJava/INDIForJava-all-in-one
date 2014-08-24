@@ -1,3 +1,7 @@
 /gen/
 /nbandroid/
 /bin/
+/target
+/.settings/
+/.classpath
+/.project
