@@ -18,5 +18,10 @@
 			<artifactId>i4jbase</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.indilib.i4j</groupId>
+			<artifactId>nom.tam.fits</artifactId>
+			<version>1.11.1</version>
+		</dependency>
 	</dependencies>
 </project>
