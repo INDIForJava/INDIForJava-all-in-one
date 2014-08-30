@@ -64,8 +64,8 @@ public class INDIGuider {
         this.guideSouth = new INDINumberElement(guideNS, "TIMED_GUIDE_S", "South (msec)", 0, 0, 60000, 10, "%g");
 
         this.guideWE = new INDINumberProperty(dirver, "TELESCOPE_TIMED_GUIDE_WE", "Guide East/West", groupName, IDLE, RW, 60);
-        this.guideEast = new INDINumberElement(guideNS, "TIMED_GUIDE_E", "East (msec)", 0, 0, 60000, 10, "%g");
-        this.guideWest = new INDINumberElement(guideNS, "TIMED_GUIDE_W", "West (msec)", 0, 0, 60000, 10, "%g");
+        this.guideEast = new INDINumberElement(guideWE, "TIMED_GUIDE_E", "East (msec)", 0, 0, 60000, 10, "%g");
+        this.guideWest = new INDINumberElement(guideWE, "TIMED_GUIDE_W", "West (msec)", 0, 0, 60000, 10, "%g");
         this.guiderInterface = guiderInterface;
     }
 
