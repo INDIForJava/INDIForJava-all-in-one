@@ -26,6 +26,8 @@ package laazotea.indi;
  */
 public class Constants {
 
+  public static final String MOTION_TAB = "Motion Control";
+    
   /**
    * Possible Light State Values.
    */
