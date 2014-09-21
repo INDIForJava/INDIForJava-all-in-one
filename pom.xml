@@ -208,6 +208,7 @@
 		<module>../indiforjava-i4jsqmdriver</module>
 		<module>ostermillerutils</module>
 		<module>fits</module>
+		<module>gsl</module>
 	</modules>
 	<dependencies>
 	</dependencies>
