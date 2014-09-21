@@ -343,6 +343,16 @@ public abstract class INDIProperty implements Serializable {
   }
 
   /**
+   * Gets a
+   * <code>List</code> with all the Elements of this Property.
+   *
+   * @return the <code>List</code> of Elements belonging to this Property.
+   */
+  public INDIElement firstElement() {
+    return elements.values().iterator().next();
+  }
+  
+  /**
    * Gets the names of the Elements of this Property.
    *
    * @return the names of the Elements of this Property.

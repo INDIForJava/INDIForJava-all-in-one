@@ -235,6 +235,11 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     }
 
+    @Override
+    public void addProperty(INDIProperty property) {
+        super.addProperty(property);
+    }
+
     protected boolean abort() {
         return false;
     }
@@ -538,5 +543,13 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     protected boolean updateTime(Date utc, double d) {
         return true;
+    }
+    @Override
+    public void updateProperty(INDIProperty property) throws INDIException {
+        super.updateProperty(property);
+    }
+    @Override
+    public void updateProperty(INDIProperty property, String message) throws INDIException {
+        super.updateProperty(property, message);
     }
 }

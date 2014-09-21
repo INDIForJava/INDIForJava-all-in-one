@@ -19,6 +19,7 @@ package laazotea.indi.driver;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import laazotea.indi.Constants;
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
@@ -467,4 +468,34 @@ public class INDISwitchProperty extends INDIProperty {
 
     return xml;
   }
+
+    /**
+     * get the selected Element when the rule is ONE_OF_MANY
+     * 
+     * @return
+     */
+    public INDISwitchElement getOnElement() {
+        if (rule == SwitchRules.ONE_OF_MANY) {
+            throw new UnsupportedOperationException("getOnElement() is only valid with SwitchRules.ONE_OF_MANY");
+        } else {
+            for (INDIElement element : getElementsAsList()) {
+                if (element.getValue() == SwitchStatus.ON) {
+                    return (INDISwitchElement) element;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * reset all elements to off
+     * @return
+     */
+    public void reset() {
+        for (INDIElement element : getElementsAsList()) {
+            if (element.getValue() == SwitchStatus.ON) {
+                ((INDISwitchElement) element).setValue(SwitchStatus.OFF);
+            }
+        }
+    }
 }
