@@ -1,0 +1,118 @@
+The Seletek uses the CP210x USB to UART Bridge in order to communicate with the computer. Despite being officially supported by modern 3.x.x by the Linux Kernel team, it seems that the USB ID that is used in the Seletek is not officially detected by the default kernel driver. To solve this problem you can follow the following steps in a shell (tested in KUbuntu 13.04, but probably working in many other distros):
+
+Find out the USB ID of the Seletek. To do so, with the USB cable UNPLUGGED run the following command:
+
+> lsusb
+
+In my case, the output was:
+
+Bus 001 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+Bus 002 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 003: ID 04f3:0018 Elan Microelectronics Corp. 
+Bus 001 Device 006: ID 0489:e036 Foxconn / Hon Hai 
+Bus 001 Device 005: ID 05ca:18c4 Ricoh Co., Ltd
+
+
+Then attach the USB cable an re-run the command:
+
+> lsusb
+
+A new line should appear with a new USB ID. In my case:
+
+Bus 001 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+Bus 002 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+Bus 003 Device 012: ID 16c0:09b1 VOTI 
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 003: ID 04f3:0018 Elan Microelectronics Corp. 
+Bus 001 Device 006: ID 0489:e036 Foxconn / Hon Hai 
+Bus 001 Device 005: ID 05ca:18c4 Ricoh Co., Ltd
+
+Im my case, the USB ID for the Seletek appears in the "VOTI" line and it is: 16c0:09b1
+
+
+Then we shoud install some dependencies in order to be able to re-compile the driver:
+ 
+> sudo apt-get install build-essential linux-source
+> cp /usr/src/linux-source-3.x.x.tar.bz2 .
+> bunzip2 linux-source-3.x.x.tar.bz2
+> tar xf linux-source-3.x.x.tar
+> cd linux-source-3.x.x/
+
+(please replace 3.x.x with the exact version of your kernel sources).
+
+We are going to make a backup of the driver sources in case that something goes really wrong:
+
+
+> cp drivers/usb/serial/cp210x.c drivers/usb/serial/cp210x.c.orig
+
+Open the drivers/usb/serial/cp210x.c file (for example with kate editor) and add the following line (with the USB ID that you obtained earlier to the lists of devices (no matter between which other lines of he list):
+
+> kate drivers/usb/serial/cp210x.c
+
+In my case I added the following line:
+
+	{ USB_DEVICE(0x16C0, 0x09B1) }, /* Seletek */
+
+I added it between the "Clipsal 5560884 C-Bus Multi-room Audio Matrix Switcher" and the "Jablotron serial interface". Therefore my file now cointains these three lines:
+
+	{ USB_DEVICE(0x166A, 0x0101) }, /* Clipsal 5560884 C-Bus Multi-room Audio Matrix Switcher */
+	{ USB_DEVICE(0x16C0, 0x09B1) }, /* Seletek */
+	{ USB_DEVICE(0x16D6, 0x0001) }, /* Jablotron serial interface */
+
+Save the file (and close your editor). Now we have to compile
+
+Code:
+
+> make oldconfig
+> make prepare
+> make scripts
+> cp /usr/src/linux-headers-3.x.x-xx-generic/Module.symvers .
+> make -i M=./drivers/usb/serial
+
+Remember to replace 3.x.x-xx with your current kernel version.
+
+Now that the module is compiled, we will make a backup of the original one:
+
+> sudo cp /lib/modules/3.x.x-xx-generic/kernel/drivers/usb/serial/cp210x.ko /lib/modules/3.x.x-xx-generic/kernel/drivers/usb/serial/cp210x.ko.orig
+
+We override it with the new one:
+
+> sudo cp drivers/usb/serial/cp210x.ko /lib/modules/3.x.x-xx-generic/kernel/drivers/usb/serial/cp210x.ko
+
+Finally we unload the old module ad load the new one module:
+
+> sudo modprobe -r cp210x
+> sudo modprobe cp210x
+
+If I then unplug and plug the USB cable and I run
+
+> dmesg
+
+I obtain
+
+[ 8576.089574] usb 3-1.2: new full-speed USB device number 29 using xhci_hcd
+[ 8576.108007] usb 3-1.2: New USB device found, idVendor=16c0, idProduct=09b1
+[ 8576.108019] usb 3-1.2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[ 8576.108025] usb 3-1.2: Product: Lunatico Astronomia Seletek Controller
+[ 8576.108029] usb 3-1.2: Manufacturer: Silicon Labs
+[ 8576.108034] usb 3-1.2: SerialNumber: Armadillo 0022
+[ 8576.109133] cp210x 3-1.2:1.0: cp210x converter detected
+[ 8576.193783] usb 3-1.2: reset full-speed USB device number 29 using xhci_hcd
+[ 8576.210734] xhci_hcd 0000:00:14.0: xHCI xhci_drop_endpoint called with disabled ep ffff88022e5728c0
+[ 8576.210746] xhci_hcd 0000:00:14.0: xHCI xhci_drop_endpoint called with disabled ep ffff88022e572880
+[ 8576.211409] usb 3-1.2: cp210x converter now attached to ttyUSB0
+
+which confirms that the device can now be accessed via /dev/ttyUSB0.
+
+Last but not least, to ensure that the cp210x driver is loaded at every time, just execute
+
+sudo tee -a /etc/modules <<< cp210x
+
+
