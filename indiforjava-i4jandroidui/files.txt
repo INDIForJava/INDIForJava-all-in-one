@@ -1,0 +1,11 @@
+./src/laazotea/indi/androidui/I4JAndroidConfig.java
+./src/laazotea/indi/androidui/INDILightElementView.java
+./src/laazotea/indi/androidui/INDIBLOBElementView.java
+./src/laazotea/indi/androidui/INDISwitchElementView.java
+./src/laazotea/indi/androidui/INDIDefaultPropertyView.java
+./src/laazotea/indi/androidui/INDIPropertyView.java
+./src/laazotea/indi/androidui/INDIAndroidBasicActivity.java
+./src/laazotea/indi/androidui/INDIElementView.java
+./src/laazotea/indi/androidui/INDINumberElementView.java
+./src/laazotea/indi/androidui/INDIDeviceView.java
+./src/laazotea/indi/androidui/INDITextElementView.java

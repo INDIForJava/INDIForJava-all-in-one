@@ -1,4 +1,14 @@
+<<<<<<< HEAD
 /target/
 /.classpath
 /.project
 /.settings/
+=======
+/gen/
+/nbandroid/
+/bin/
+/target
+/.settings/
+/.classpath
+/.project
+>>>>>>> indiforjava-i4jandroidui/master
