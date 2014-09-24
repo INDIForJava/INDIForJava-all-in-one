@@ -197,15 +197,15 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>../indiforjava-i4jbase</module>
-		<module>../indiforjava-i4jclient</module>
-		<module>../indiforjava-i4jdriver</module>
-		<module>../indiforjava-i4jraspberrypigpiodriver</module>
-		<module>../indiforjava-i4jclientui</module>
-		<module>../indiforjava-i4jqhyfilterwheeldriver</module>
-		<module>../indiforjava-i4jseletekdriver</module>
-		<module>../indiforjava-i4jserver</module>
-		<module>../indiforjava-i4jsqmdriver</module>
+		<module>indiforjava-i4jbase</module>
+		<module>indiforjava-i4jclient</module>
+		<module>indiforjava-i4jdriver</module>
+		<module>indiforjava-i4jraspberrypigpiodriver</module>
+		<module>indiforjava-i4jclientui</module>
+		<module>indiforjava-i4jqhyfilterwheeldriver</module>
+		<module>indiforjava-i4jseletekdriver</module>
+		<module>indiforjava-i4jserver</module>
+		<module>indiforjava-i4jsqmdriver</module>
 		<module>ostermillerutils</module>
 		<module>fits</module>
 		<module>gsl</module>
@@ -228,7 +228,7 @@
 				<android.sdk.path>/home/nir/ws/nexstar/android-sdk-linux</android.sdk.path>
 			</properties>
 			<modules>
-				<module>../indiforjava-i4jandroidui</module>
+				<module>indiforjava-i4jandroidui</module>
 			</modules>
 		</profile>
 		<profile>
@@ -238,7 +238,7 @@
 				</property>
 			</activation>
 			<modules>
-				<module>../indiforjava-i4jandroidui</module>
+				<module>indiforjava-i4jandroidui</module>
 			</modules>
 		</profile>
 	</profiles>
