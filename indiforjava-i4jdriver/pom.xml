@@ -22,15 +22,5 @@
 			<artifactId>nom.tam.fits</artifactId>
 			<version>1.11.1</version>
 		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.novaforjava</groupId>
-			<artifactId>novaforjava</artifactId>
-			<version>0.15.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.indilib.i4j</groupId>
-			<artifactId>org.gnu.savannah.gsl</artifactId>
-			<version>1.16.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 </project>
