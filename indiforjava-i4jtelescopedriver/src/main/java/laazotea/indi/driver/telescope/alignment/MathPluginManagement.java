@@ -1,4 +1,4 @@
-package laazotea.indi.alignment;
+package laazotea.indi.driver.telescope.alignment;
 
 import static laazotea.indi.Constants.PropertyPermissions.RW;
 import static laazotea.indi.Constants.PropertyStates.IDLE;
@@ -16,10 +16,10 @@ import laazotea.indi.INDIException;
 import laazotea.indi.driver.INDISwitchElement;
 import laazotea.indi.driver.INDISwitchElementAndValue;
 import laazotea.indi.driver.INDISwitchProperty;
-import laazotea.indi.driver.INDITelescope;
 import laazotea.indi.driver.INDITextElement;
 import laazotea.indi.driver.INDITextElementAndValue;
 import laazotea.indi.driver.INDITextProperty;
+import laazotea.indi.driver.telescope.INDITelescope;
 
 public class MathPluginManagement {
 

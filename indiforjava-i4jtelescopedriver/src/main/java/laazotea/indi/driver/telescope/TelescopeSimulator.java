@@ -1,4 +1,4 @@
-package laazotea.indi.driver;
+package laazotea.indi.driver.telescope;
 
 import static laazotea.indi.Constants.PropertyPermissions.RW;
 import static laazotea.indi.Constants.PropertyStates.IDLE;
@@ -14,6 +14,14 @@ import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
+import laazotea.indi.driver.INDIGuider;
+import laazotea.indi.driver.INDIGuiderInterface;
+import laazotea.indi.driver.INDINumberElement;
+import laazotea.indi.driver.INDINumberElementAndValue;
+import laazotea.indi.driver.INDINumberProperty;
+import laazotea.indi.driver.INDISwitchElement;
+import laazotea.indi.driver.INDISwitchElementAndValue;
+import laazotea.indi.driver.INDISwitchProperty;
 import laazotea.indi.INDIException;
 
 public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface {

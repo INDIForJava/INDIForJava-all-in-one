@@ -335,7 +335,7 @@ public class INDISwitchProperty extends INDIProperty {
    * <code>INDISwitchElement.setValue()</code> to ensure that if the Switch rule
    * allows only one ON simultaneous value the condition is hold.
    */
-  protected void resetAllSwitches() {
+  public void resetAllSwitches() {
     ArrayList<INDIElement> list = getElementsAsList();
 
     for (int i = 0 ; i < list.size() ; i++) {

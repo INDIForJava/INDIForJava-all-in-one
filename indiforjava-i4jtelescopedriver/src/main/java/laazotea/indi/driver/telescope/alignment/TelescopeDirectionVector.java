@@ -1,4 +1,4 @@
-package laazotea.indi.alignment;
+package laazotea.indi.driver.telescope.alignment;
 
 import org.gnu.savannah.gsl.CBLAS_TRANSPOSE;
 import org.gnu.savannah.gsl.Gsl;

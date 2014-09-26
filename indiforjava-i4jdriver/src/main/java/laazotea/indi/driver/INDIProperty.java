@@ -174,7 +174,7 @@ public abstract class INDIProperty implements Serializable {
    *
    * @param saveable
    */
-  protected void setSaveable(boolean saveable) {
+  public void setSaveable(boolean saveable) {
     this.saveable = saveable;
   }
 

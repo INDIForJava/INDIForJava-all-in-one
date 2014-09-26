@@ -1,4 +1,4 @@
-package laazotea.indi.alignment;
+package laazotea.indi.driver.telescope.alignment;
 
 public class DoubleRef {
 
