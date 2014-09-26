@@ -138,11 +138,6 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     protected final INDINumberElement locationElev;
 
-    /*
-     * (non-Javadoc)
-     * @see laazotea.indi.driver.INDIDriver#getName()
-     */
-
     private PropertyStates last_state = null;
 
     private final SimpleDateFormat extractISOTimeFormat1 = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ss");
@@ -544,10 +539,12 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     protected boolean updateTime(Date utc, double d) {
         return true;
     }
+
     @Override
     public void updateProperty(INDIProperty property) throws INDIException {
         super.updateProperty(property);
     }
+
     @Override
     public void updateProperty(INDIProperty property, String message) throws INDIException {
         super.updateProperty(property, message);

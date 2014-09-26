@@ -85,7 +85,11 @@ public class InMemoryDatabase {
             return false;
         } finally {
             for (LoadDatabaseCallback loadDatabaseCallback : callbacks) {
-                loadDatabaseCallback.loadDatabaseCallback();
+                try {
+                    loadDatabaseCallback.loadDatabaseCallback();
+                } catch (Exception e) {
+                    LOG.log(Level.SEVERE, "Callback has thrown a exception", e);
+                }
             }
         }
     }

@@ -7,9 +7,9 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jqhyfilterwheeldriver</artifactId>
-	<name>INDI for Java Driver for the QHY Filter Wheel</name>
-	<description>INDI for Java Driver for the QHY Filter Wheel</description>
+	<artifactId>i4jtelescopedriver</artifactId>
+	<name>INDI for Java Abstract Telescope Driver</name>
+	<description>INDI for Java Abstract Telescope Driver</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>

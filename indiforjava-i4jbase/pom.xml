@@ -6,7 +6,6 @@
 		<groupId>org.indilib.i4j</groupId>
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
-		<relativePath>../indiforjava</relativePath>
 	</parent>
 	<artifactId>i4jbase</artifactId>
 	<name>INDI for Java Base Library</name>
