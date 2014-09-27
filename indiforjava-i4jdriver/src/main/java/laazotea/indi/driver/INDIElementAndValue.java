@@ -23,19 +23,37 @@ package laazotea.indi.driver;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
-public interface INDIElementAndValue {
+public class INDIElementAndValue<Element extends INDIElement, Type> {
 
-  /**
-   * Gets the Element of the pair.
-   *
-   * @return The element of the pair.
-   */
-  public INDIElement getElement();
+    /**
+     * The Number element
+     */
+    private final Element element;
 
-  /**
-   * Gets the value of the pair.
-   *
-   * @return The value of the pair.
-   */
-  public Object getValue();
+    /**
+     * The Number value
+     */
+    private final Type value;
+
+    /**
+     * Constructs an instance of a <code>INDINumberElementAndValue</code>. This
+     * class should not usually be instantiated by specific Drivers.
+     *
+     * @param element
+     *            The Number Element
+     * @param value
+     *            The number
+     */
+    public INDIElementAndValue(Element element, Type value) {
+        this.element = element;
+        this.value = value;
+    }
+
+    public Element getElement() {
+        return element;
+    }
+
+    public Type getValue() {
+        return value;
+    }
 }

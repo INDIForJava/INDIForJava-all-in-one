@@ -17,17 +17,26 @@
  */
 package laazotea.indi.driver;
 
+import static laazotea.indi.Constants.PropertyPermissions.RW;
+import static laazotea.indi.Constants.PropertyStates.IDLE;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.*;
+import laazotea.indi.driver.annotation.INDIe;
+import laazotea.indi.driver.annotation.INDIp;
+import laazotea.indi.driver.event.IEventHandler;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -72,34 +81,76 @@ public abstract class INDIDriver implements INDIProtocolParser {
    */
   private boolean started;
 
-  /**
-   * Constructs a INDIDriver with a particular
-   * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-   * <code>outputStream</code> to write the messages to the clients.
-   *
-   * @param inputStream The stream from which to read messages.
-   * @param outputStream The stream to which to write the messages.
-   */
-  protected INDIDriver(InputStream inputStream, OutputStream outputStream) {
-    this.out = new PrintWriter(outputStream);
-    this.inputStream = inputStream;
-    this.outputStream = outputStream;
-    this.subdrivers = new ArrayList<INDIDriver>();
+    /**
+     * Constructs a INDIDriver with a particular
+     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
+     * <code>outputStream</code> to write the messages to the clients.
+     *
+     * @param inputStream
+     *            The stream from which to read messages.
+     * @param outputStream
+     *            The stream to which to write the messages.
+     */
+    protected INDIDriver(InputStream inputStream, OutputStream outputStream) {
+        this.out = new PrintWriter(outputStream);
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
+        this.subdrivers = new ArrayList<INDIDriver>();
 
-    started = false;
+        started = false;
 
-    properties = new LinkedHashMap<String, INDIProperty>();
+        properties = new LinkedHashMap<String, INDIProperty>();
 
-    if (this instanceof INDIConnectionHandler) {
-      addConnectionProperty();
+        if (this instanceof INDIConnectionHandler) {
+            addConnectionProperty();
+        }
+
+        initializeAnnotatedProperties();
     }
-  }
 
-  /**
-   * Registers a subdriver that may receive messages.
-   *
-   * @param driver The subdriver to register.
-   */
+    private void initializeAnnotatedProperties() {
+        Class<?> clazz = getClass();
+        INDIProperty<?> lastProperty = null;
+        INDIElement lastElement = null;
+        while (clazz != null) {
+            for (Field field : clazz.getDeclaredFields()) {
+                INDIp prop = field.getAnnotation(INDIp.class);
+                if (prop != null) {
+                    if (INDINumberProperty.class.isAssignableFrom(field.getType())) {
+                        lastProperty = new INDINumberProperty(this, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout());
+                    }
+                    field.setAccessible(true);
+                    try {
+                        field.set(this, lastProperty);
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("could not set indi property", e);
+                    }
+                }
+                INDIe elem = field.getAnnotation(INDIe.class);
+                if (elem != null) {
+                    if (INDINumberElement.class.isAssignableFrom(field.getType())) {
+                        lastElement =
+                                new INDINumberElement((INDINumberProperty)lastProperty, elem.name(), elem.label(), elem.valueD(), elem.minimumD(), elem.maximumD(), elem.stepD(),
+                                        elem.numberFormat());
+                    }
+                    field.setAccessible(true);
+                    try {
+                        field.set(this, lastElement);
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("could not set indi element", e);
+                    }
+                }
+            }
+            clazz=clazz.getSuperclass();
+        }
+    }
+
+    /**
+     * Registers a subdriver that may receive messages.
+     *
+     * @param driver
+     *            The subdriver to register.
+     */
   protected void registerSubdriver(INDIDriver driver) {
     subdrivers.add(driver);
   }
@@ -341,7 +392,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     for (int i = 0 ; i < newEvs.length ; i++) {
       newEvs[i] = (INDITextElementAndValue)evs[i];
     }
-
+    IEventHandler handler = prop.getEventHandler();
+    if (handler != null) {
+        handler.processNewValue(prop, timestamp, newEvs);
+    }
     processNewTextValue((INDITextProperty)prop, timestamp, newEvs);
   }
 
@@ -392,6 +446,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     if ((this instanceof INDIConnectionHandler) && (prop == connectionP)) { // If it is the CONNECTION property
       handleConnectionProperty(newEvs, timestamp);
     } else {  // if it is any other property
+      IEventHandler handler = prop.getEventHandler();
+      if (handler != null) {
+          handler.processNewValue(prop, timestamp, newEvs);
+      }
       processNewSwitchValue((INDISwitchProperty)prop, timestamp, newEvs);
     }
   }
@@ -479,7 +537,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
     for (int i = 0 ; i < newEvs.length ; i++) {
       newEvs[i] = (INDINumberElementAndValue)evs[i];
     }
-
+    
+    IEventHandler handler = prop.getEventHandler();
+    if (handler != null) {
+        handler.processNewValue(prop, timestamp, newEvs);
+    }
     processNewNumberValue((INDINumberProperty)prop, timestamp, newEvs);
   }
 
@@ -522,7 +584,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     for (int i = 0 ; i < newEvs.length ; i++) {
       newEvs[i] = (INDIBLOBElementAndValue)evs[i];
     }
-
+    IEventHandler handler = prop.getEventHandler();
+    if (handler != null) {
+        handler.processNewValue(prop, timestamp, newEvs);
+    }
     processNewBLOBValue((INDIBLOBProperty)prop, timestamp, newEvs);
   }
 

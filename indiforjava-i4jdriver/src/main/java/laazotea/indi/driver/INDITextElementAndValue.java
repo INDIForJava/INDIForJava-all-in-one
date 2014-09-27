@@ -18,38 +18,16 @@
 package laazotea.indi.driver;
 
 /**
- * A class representing a pair of a <code>INDITextElement</code> and a <code>String</code>. 
+ * A class representing a pair of a <code>INDITextElement</code> and a
+ * <code>String</code>.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */
-public class INDITextElementAndValue implements INDIElementAndValue {
-  /**
-   * The Text Element
-   */
-  private final INDITextElement element;
-  /**
-   * The Text Value
-   */
-  private final String value;
+public class INDITextElementAndValue extends INDIElementAndValue<INDITextElement, String> {
 
-  /**
-   * Constructs an instance of a <code>INDITextElementAndValue</code>.  This class should not usually be instantiated by specific Drivers.
-   * @param element The Text Element
-   * @param value The String
-   */
-  public INDITextElementAndValue(INDITextElement element, String value) {
-    this.element = element;
-    this.value = value;
-  }
+    public INDITextElementAndValue(INDITextElement element, String value) {
+        super(element, value);
+    }
 
-  @Override
-  public INDITextElement getElement() {
-    return element;
-  }
-
-  @Override
-  public String getValue() {
-    return value;
-  }
 }

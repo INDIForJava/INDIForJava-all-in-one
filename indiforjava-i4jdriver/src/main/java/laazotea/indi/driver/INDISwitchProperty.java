@@ -34,7 +34,7 @@ import laazotea.indi.INDIException;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 7, 2013
  */
-public class INDISwitchProperty extends INDIProperty {
+public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
   /**
    * The current Rule for this Switch Property.
@@ -336,10 +336,10 @@ public class INDISwitchProperty extends INDIProperty {
    * allows only one ON simultaneous value the condition is hold.
    */
   public void resetAllSwitches() {
-    ArrayList<INDIElement> list = getElementsAsList();
+    List<INDISwitchElement> list = getElementsAsList();
 
     for (int i = 0 ; i < list.size() ; i++) {
-      INDIElement e = list.get(i);
+        INDISwitchElement e = list.get(i);
 
       e.setValue(SwitchStatus.OFF);
     }
@@ -409,10 +409,10 @@ public class INDISwitchProperty extends INDIProperty {
   private int getSelectedCount() {
     int selectedCount = 0;
 
-    List<INDIElement> list = getElementsAsList();
+    List<INDISwitchElement> list = getElementsAsList();
 
     for (int i = 0 ; i < list.size() ; i++) {
-      INDISwitchElement el = (INDISwitchElement)list.get(i);
+      INDISwitchElement el = list.get(i);
       //     System.out.println("-->" + el.getName() + el.getValue());
       if (el.getValue() == SwitchStatus.ON) {
         selectedCount++;

@@ -18,44 +18,16 @@
 package laazotea.indi.driver;
 
 /**
- * A class representing a pair of a
- * <code>INDINumberElement</code> and a
+ * A class representing a pair of a <code>INDINumberElement</code> and a
  * <code>Double</code>.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */
-public class INDINumberElementAndValue implements INDIElementAndValue {
+public class INDINumberElementAndValue extends INDIElementAndValue<INDINumberElement, Double> {
 
-  /**
-   * The Number element
-   */
-  private final INDINumberElement element;
-  /**
-   * The Number value
-   */
-  private final Double value;
+    public INDINumberElementAndValue(INDINumberElement element, Double value) {
+        super(element, value);
+    }
 
-  /**
-   * Constructs an instance of a
-   * <code>INDINumberElementAndValue</code>. This class should not usually be
-   * instantiated by specific Drivers.
-   *
-   * @param element The Number Element
-   * @param value The number
-   */
-  public INDINumberElementAndValue(INDINumberElement element, Double value) {
-    this.element = element;
-    this.value = value;
-  }
-
-  @Override
-  public INDINumberElement getElement() {
-    return element;
-  }
-
-  @Override
-  public Double getValue() {
-    return value;
-  }
 }

@@ -27,9 +27,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.INDIException;
+import laazotea.indi.driver.event.IEventHandler;
 
 /**
  * A class representing a INDI Property. The subclasses
@@ -43,7 +45,7 @@ import laazotea.indi.INDIException;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.35, November 11, 2013
  */
-public abstract class INDIProperty implements Serializable {
+public abstract class INDIProperty<Element extends INDIElement> implements Serializable {
 
   /**
    * The Driver to which this property belongs
@@ -76,7 +78,7 @@ public abstract class INDIProperty implements Serializable {
   /**
    * A list of Elements for this Property
    */
-  private LinkedHashMap<String, INDIElement> elements;
+  private LinkedHashMap<String, Element> elements;
   /**
    * <code>true</code> if property has completely init (sent to any client).
    */
@@ -89,6 +91,11 @@ public abstract class INDIProperty implements Serializable {
    * It marks if the property should be saved each time that it is changed.
    */
   private boolean saveable;
+  
+    /**
+     * Event handlere for simpler event definitions
+     */
+    private IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler;
 
   /**
    * Constructs an instance of a
@@ -161,7 +168,7 @@ public abstract class INDIProperty implements Serializable {
       this.timeout = timeout;
     }
 
-    this.elements = new LinkedHashMap<String, INDIElement>();
+    this.elements = new LinkedHashMap<String, Element>();
 
     this.saveable = false;
 
@@ -293,7 +300,7 @@ public abstract class INDIProperty implements Serializable {
    * @param element the Element to be added.
    * @throws IllegalArgumentException
    */
-  protected void addElement(INDIElement element) throws IllegalArgumentException {
+  protected void addElement(Element element) throws IllegalArgumentException {
     if ((this instanceof INDITextProperty) && (!(element instanceof INDITextElement))) {
       throw new IllegalArgumentException("Text Element cannot be added to Text Property");
     }
@@ -328,7 +335,7 @@ public abstract class INDIProperty implements Serializable {
    * @return The Element of this Property with the given <code>name</code>.
    * <code>null</code> if there is no Element with that <code>name</code>.
    */
-  public INDIElement getElement(String name) {
+  public Element getElement(String name) {
     return elements.get(name);
   }
 
@@ -338,8 +345,8 @@ public abstract class INDIProperty implements Serializable {
    *
    * @return the <code>List</code> of Elements belonging to this Property.
    */
-  public ArrayList<INDIElement> getElementsAsList() {
-    return new ArrayList<INDIElement>(elements.values());
+  public List<Element> getElementsAsList() {
+    return new ArrayList<Element>(elements.values());
   }
 
   /**
@@ -348,7 +355,7 @@ public abstract class INDIProperty implements Serializable {
    *
    * @return the <code>List</code> of Elements belonging to this Property.
    */
-  public INDIElement firstElement() {
+  public Element firstElement() {
     return elements.values().iterator().next();
   }
   
@@ -358,7 +365,7 @@ public abstract class INDIProperty implements Serializable {
    * @return the names of the Elements of this Property.
    */
   public String[] getElementNames() {
-    List<INDIElement> l = getElementsAsList();
+    List<Element> l = getElementsAsList();
 
     String[] names = new String[l.size()];
 
@@ -377,7 +384,7 @@ public abstract class INDIProperty implements Serializable {
    */
   public String getNameStateAndValuesAsString() {
     String aux = getName() + " - " + getState() + "\n";
-    List<INDIElement> l = getElementsAsList();
+    List<Element> l = getElementsAsList();
 
     for (int i = 0 ; i < l.size() ; i++) {
       aux += "  " + l.get(i).getNameAndValueAsString() + "\n";
@@ -413,7 +420,7 @@ public abstract class INDIProperty implements Serializable {
       xml = getXMLPropertyDefinitionInit(message);
     }
 
-    List<INDIElement> elem = getElementsAsList();
+    List<Element> elem = getElementsAsList();
 
     for (int i = 0 ; i < elements.size() ; i++) {
       xml += elem.get(i).getXMLDefElement();
@@ -460,7 +467,7 @@ public abstract class INDIProperty implements Serializable {
       xml = getXMLPropertySetInit(message);
     }
 
-    List<INDIElement> elem = getElementsAsList();
+    List<Element> elem = getElementsAsList();
 
     for (int i = 0 ; i < elem.size() ; i++) {
       xml += elem.get(i).getXMLOneElement(includeMinMax);
@@ -619,11 +626,28 @@ public abstract class INDIProperty implements Serializable {
    *
    * @param elementsAndValues The array of elements and values
    */
-  public void setValues(INDIElementAndValue[] elementsAndValues) {
+  public void setValues(INDIElementAndValue<Element,?>[] elementsAndValues) {
     for (int i = 0 ; i < elementsAndValues.length ; i++) {
       INDIElement element = elementsAndValues[i].getElement();
 
       element.setValue(elementsAndValues[i].getValue());
     }
-  }
+    }
+
+    /**
+     * set the event handler that will be invoked on a client change.
+     * 
+     * @param eventHandler
+     */
+    public void setEventHandler(IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler) {
+        this.eventHandler = eventHandler;
+    }
+
+    /**
+     * @return event handler for this property
+     */
+    public IEventHandler<? extends INDIProperty<Element>, Element, ?> getEventHandler() {
+        return eventHandler;
+    }
+    
 }

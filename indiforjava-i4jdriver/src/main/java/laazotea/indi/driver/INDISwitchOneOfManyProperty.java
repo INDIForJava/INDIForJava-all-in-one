@@ -18,6 +18,8 @@
 package laazotea.indi.driver;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
@@ -588,10 +590,10 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
    * @return The selected element
    */
   private INDISwitchElement getSelectedElement() {
-    ArrayList<INDIElement> list = getElementsAsList();
+    List<INDISwitchElement> list = getElementsAsList();
 
     for (int i = 0 ; i < list.size() ; i++) {
-      INDISwitchElement e = (INDISwitchElement)list.get(i);
+      INDISwitchElement e = list.get(i);
 
       if (e.getValue() == SwitchStatus.ON) {
         return e;
@@ -607,10 +609,10 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
    * @return The index of the selected element
    */
   public int getSelectedIndex() {
-    ArrayList<INDIElement> list = getElementsAsList();
+    List<INDISwitchElement> list = getElementsAsList();
 
     for (int i = 0 ; i < list.size() ; i++) {
-      INDISwitchElement e = (INDISwitchElement)list.get(i);
+      INDISwitchElement e = list.get(i);
 
       if (e.getValue() == SwitchStatus.ON) {
         return i;
@@ -631,7 +633,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
       return;
     }
 
-    ArrayList<INDIElement> list = getElementsAsList();
+    List<INDISwitchElement> list = getElementsAsList();
 
     INDISwitchElement e = (INDISwitchElement)list.get(index);
 
@@ -650,7 +652,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
   public int getSelectedIndex(INDISwitchElementAndValue[] ev) {
     for (int i = 0 ; i < ev.length ; i++) {
       if (ev[i].getValue() == SwitchStatus.ON) {
-        ArrayList<INDIElement> list = getElementsAsList();
+        List<INDISwitchElement> list = getElementsAsList();
 
         for (int h = 0 ; h < list.size() ; h++) {
           if (list.get(h) == ev[i].getElement()) {
@@ -675,7 +677,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
   public String getSelectedValue(INDISwitchElementAndValue[] ev) {
     for (int i = 0 ; i < ev.length ; i++) {
       if (ev[i].getValue() == SwitchStatus.ON) {
-        ArrayList<INDIElement> list = getElementsAsList();
+        List<INDISwitchElement> list = getElementsAsList();
 
         for (int h = 0 ; h < list.size() ; h++) {
           if (list.get(h) == ev[i].getElement()) {

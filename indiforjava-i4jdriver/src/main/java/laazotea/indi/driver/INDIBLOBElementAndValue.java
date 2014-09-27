@@ -20,44 +20,16 @@ package laazotea.indi.driver;
 import laazotea.indi.INDIBLOBValue;
 
 /**
- * A class representing a pair of a
- * <code>INDIBLOBElement</code> and a
+ * A class representing a pair of a <code>INDIBLOBElement</code> and a
  * <code>INDIBLOBValue</code>.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */
-public class INDIBLOBElementAndValue implements INDIElementAndValue {
+public class INDIBLOBElementAndValue extends INDIElementAndValue<INDIBLOBElement, INDIBLOBValue> {
 
-  /**
-   * The BLOB Element
-   */
-  private final INDIBLOBElement element;
-  /**
-   * The BLOB Value
-   */
-  private final INDIBLOBValue value;
+    public INDIBLOBElementAndValue(INDIBLOBElement element, INDIBLOBValue value) {
+        super(element, value);
+    }
 
-  /**
-   * Constructs an instance of a
-   * <code>INDIBLOBElementAndValue</code>. This class should not usually be
-   * instantiated by specific Drivers.
-   *
-   * @param element The BLOB Element
-   * @param value The BLOB Value
-   */
-  protected INDIBLOBElementAndValue(INDIBLOBElement element, INDIBLOBValue value) {
-    this.element = element;
-    this.value = value;
-  }
-
-  @Override
-  public INDIBLOBElement getElement() {
-    return element;
-  }
-
-  @Override
-  public INDIBLOBValue getValue() {
-    return value;
-  }
 }

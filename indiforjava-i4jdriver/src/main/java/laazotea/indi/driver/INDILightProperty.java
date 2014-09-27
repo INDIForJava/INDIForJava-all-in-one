@@ -29,7 +29,7 @@ import laazotea.indi.INDIException;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 7, 2013
  */
-public class INDILightProperty extends INDIProperty {
+public class INDILightProperty extends INDIProperty<INDILightElement> {
 
   /**
    * Constructs an instance of

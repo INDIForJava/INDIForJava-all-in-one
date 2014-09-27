@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.driver.INDIBLOBElementAndValue;
@@ -37,6 +38,7 @@ import laazotea.indi.driver.INDIBLOBProperty;
 import laazotea.indi.driver.INDIConnectionHandler;
 import laazotea.indi.driver.INDIDriver;
 import laazotea.indi.driver.INDIElement;
+import laazotea.indi.driver.INDIElementAndValue;
 import laazotea.indi.driver.INDINumberElement;
 import laazotea.indi.driver.INDINumberElementAndValue;
 import laazotea.indi.driver.INDINumberProperty;
@@ -47,6 +49,9 @@ import laazotea.indi.driver.INDISwitchProperty;
 import laazotea.indi.driver.INDITextElement;
 import laazotea.indi.driver.INDITextElementAndValue;
 import laazotea.indi.driver.INDITextProperty;
+import laazotea.indi.driver.annotation.INDIe;
+import laazotea.indi.driver.annotation.INDIp;
+import laazotea.indi.driver.event.IEventHandler;
 import laazotea.indi.INDIException;
 
 /**
@@ -83,21 +88,88 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     }
 
     protected enum TelescopeMotionWE {
-        MOTION_WEST,
-        MOTION_EAST
+        MOTION_EAST,
+        MOTION_WEST
     }
 
     protected enum TelescopeStatus {
         SCOPE_IDLE,
-        SCOPE_SLEWING,
-        SCOPE_TRACKING,
+        SCOPE_PARKED,
         SCOPE_PARKING,
-        SCOPE_PARKED
+        SCOPE_SLEWING,
+        SCOPE_TRACKING
     };
 
     private static Logger LOG = Logger.getLogger(INDITelescope.class.getName());;
 
     protected static final String MAIN_CONTROL_TAB = "Main Control";;
+
+    protected INDISwitchProperty abort;
+
+    protected INDISwitchProperty config;
+
+    protected INDISwitchProperty coord;
+
+    protected INDISwitchElement coordSync;
+
+    @INDIp(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDITelescope.MAIN_CONTROL_TAB)
+    protected INDINumberProperty eqn;
+
+    @INDIe(name = "RA", label = "RA (hh:mm:ss)", maximumD = 24d, numberFormat = "%010.6m")
+    protected INDINumberElement eqnRa;
+
+    @INDIe(name = "DEC", label = "DEC (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    protected INDINumberElement eqnDec;
+
+    private final SimpleDateFormat extractISOTimeFormat1 = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ss");
+
+    private final SimpleDateFormat extractISOTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    private PropertyStates last_state = null;
+
+    protected INDINumberProperty location;
+
+    protected INDINumberElement locationElev;
+
+    protected INDINumberElement locationLat;
+
+    protected INDINumberElement locationLong;
+
+    protected INDISwitchProperty movementNSS;
+
+    protected INDISwitchElement movementNSSNorth;
+
+    protected INDISwitchElement movementNSSSouth;
+
+    protected INDISwitchProperty movementWES;
+
+    protected INDISwitchElement movementWESEast;
+
+    protected INDISwitchElement movementWESWest;
+
+    protected INDISwitchProperty park;
+
+    protected INDISwitchElement parkElement;
+
+    protected INDITextProperty port;
+
+    protected INDINumberProperty scopeParameters;
+
+    protected INDINumberElement scopeParametersAperture;
+
+    protected INDINumberElement scopeParametersFocalLength;
+
+    protected INDINumberElement scopeParametersGuiderAperture;
+
+    protected INDINumberElement scopeParametersGuiderFocalLength;
+
+    private ScopeStaturUpdater scopStatusUpdater;
+
+    protected INDITextProperty time;
+
+    protected INDITextElement timeOffset;
+
+    protected INDITextElement timeutc;
 
     /**
      * This is a variable filled in by the ReadStatus telescope low level code,
@@ -105,75 +177,15 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      */
     protected TelescopeStatus trackState;
 
-    protected INDINumberProperty eqn;
-
-    protected INDITextProperty time;
-
-    protected INDINumberProperty location;
-
-    protected INDISwitchProperty coord;
-
-    protected INDISwitchProperty config;
-
-    protected INDISwitchProperty park;
-
-    protected INDISwitchProperty abort;
-
-    protected INDITextProperty port;
-
-    protected INDISwitchProperty movementNSS;
-
-    protected INDISwitchProperty movementWES;
-
-    protected INDINumberProperty scopeParameters;
-
-    protected final INDINumberElement eqnRa;
-
-    protected final INDINumberElement eqnDec;
-
-    protected INDISwitchElement coordSync;
-
-    protected final INDISwitchElement movementNSSNorth;
-
-    protected final INDISwitchElement movementNSSSouth;
-
-    protected final INDISwitchElement movementWESWest;
-
-    protected final INDISwitchElement movementWESEast;
-
-    protected INDISwitchElement parkElement;
-
-    protected final INDITextElement timeutc;
-
-    protected final INDITextElement timeOffset;
-
-    protected final INDINumberElement locationLat;
-
-    protected final INDINumberElement locationLong;
-
-    protected final INDINumberElement locationElev;
-
-    private PropertyStates last_state = null;
-
-    private final SimpleDateFormat extractISOTimeFormat1 = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ss");
-
-    private final SimpleDateFormat extractISOTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-    protected final INDINumberElement scopeParametersAperture;
-
-    protected final INDINumberElement scopeParametersFocalLength;
-
-    protected final INDINumberElement scopeParametersGuiderAperture;
-
-    protected final INDINumberElement scopeParametersGuiderFocalLength;
-
-    private ScopeStaturUpdater scopStatusUpdater;
-
     public INDITelescope(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
-        this.eqn = new INDINumberProperty(this, "EQUATORIAL_EOD_COORD", "Eq. Coordinates", INDITelescope.MAIN_CONTROL_TAB, IDLE, RW, 60);
-        this.eqnRa = new INDINumberElement(this.eqn, "RA", "RA (hh:mm:ss)", 0d, 0d, 24d, 0d, "%010.6m");
-        this.eqnDec = new INDINumberElement(this.eqn, "DEC", "DEC (dd:mm:ss)", 0d, -90d, 90d, 0d, "%010.6m");
+        this.eqn.setEventHandler(new IEventHandler<INDINumberProperty, INDINumberElement, Double>() {
+
+            @Override
+            public void processNewValue(INDINumberProperty property, Date date, INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
+                newEqnValue(elementsAndValues);
+            }
+        });
 
         this.time = new INDITextProperty(this, "TIME_UTC", "UTC", "Site", IDLE, RW, 60);
         this.timeutc = new INDITextElement(this.time, "UTC", "UTC Time", "");
@@ -245,22 +257,18 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     }
 
+    protected boolean abort() {
+        return false;
+    }
+
     @Override
     public void addProperty(INDIProperty property) {
         super.addProperty(property);
     }
 
-    protected boolean abort() {
-        return false;
-    }
-
-    protected abstract boolean canSync();
-
     protected abstract boolean canPark();
 
-    protected long updateInterfall() {
-        return 1000L;
-    }
+    protected abstract boolean canSync();
 
     protected void doGoto(double ra, double dec) {
 
@@ -358,42 +366,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @Override
     public void processNewNumberValue(INDINumberProperty property, Date date, INDINumberElementAndValue[] elementsAndValues) {
         if (property == this.eqn) {
-            // this is for us, and it is a goto
-            double ra = -1;
-            double dec = -100;
-
-            for (INDINumberElementAndValue indiNumberElementAndValue : elementsAndValues) {
-                if (indiNumberElementAndValue.getElement() == this.eqnRa) {
-                    ra = indiNumberElementAndValue.getValue();
-                } else if (indiNumberElementAndValue.getElement() == this.eqnDec) {
-                    dec = indiNumberElementAndValue.getValue();
-                }
-            }
-
-            if (ra >= 0d && ra <= 24d && dec >= -90d && dec <= 90d) {
-                // we got an ra and a dec, both in range
-                // And now we let the underlying hardware specific class
-                // perform the goto
-                // Ok, lets see if we should be doing a goto
-                // or a sync
-                if (canSync() && this.coordSync.getValue() == SwitchStatus.ON) {
-                    sync(ra, dec);
-                    return;
-                }
-
-                // Ensure we are not showing Parked status
-                this.park.setState(IDLE);
-                resetSwitch(this.park);
-                try {
-                    updateProperty(this.park);
-                } catch (INDIException e) {
-                }
-                doGoto(ra, dec);
-                return;
-            } else {
-                this.eqn.setState(PropertyStates.ALERT);
-                INDITelescope.LOG.log(Level.SEVERE, "eqn data missing or corrupted.");
-            }
+            newEqnValue(elementsAndValues);
         } else if (property == this.location) {
 
             Double targetLat = null;
@@ -424,8 +397,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 updateProperty(this.location);
             } catch (INDIException e) {
             }
-        }
-        if (property == this.scopeParameters) {
+        } else if (property == this.scopeParameters) {
             this.scopeParameters.setState(OK);
             property.setValues(elementsAndValues);
 
@@ -433,6 +405,44 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 updateProperty(this.scopeParameters);
             } catch (INDIException e) {
             }
+        }
+    }
+
+    private void newEqnValue(INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
+        // this is for us, and it is a goto
+        double ra = -1;
+        double dec = -100;
+
+        for (INDIElementAndValue<INDINumberElement, Double> indiNumberElementAndValue : elementsAndValues) {
+            if (indiNumberElementAndValue.getElement() == this.eqnRa) {
+                ra = indiNumberElementAndValue.getValue();
+            } else if (indiNumberElementAndValue.getElement() == this.eqnDec) {
+                dec = indiNumberElementAndValue.getValue();
+            }
+        }
+
+        if (ra >= 0d && ra <= 24d && dec >= -90d && dec <= 90d) {
+            // we got an ra and a dec, both in range
+            // And now we let the underlying hardware specific class
+            // perform the goto
+            // Ok, lets see if we should be doing a goto
+            // or a sync
+            if (canSync() && this.coordSync.getValue() == SwitchStatus.ON) {
+                sync(ra, dec);
+                return;
+            }
+
+            // Ensure we are not showing Parked status
+            this.park.setState(IDLE);
+            resetSwitch(this.park);
+            try {
+                updateProperty(this.park);
+            } catch (INDIException e) {
+            }
+            doGoto(ra, dec);
+        } else {
+            this.eqn.setState(PropertyStates.ALERT);
+            INDITelescope.LOG.log(Level.SEVERE, "eqn data missing or corrupted.");
         }
     }
 
@@ -547,11 +557,11 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         return false;
     }
 
-    protected boolean updateLocation(double targetLat, double targetLong, double targetElev) {
-        return true;
+    protected long updateInterfall() {
+        return 1000L;
     }
 
-    protected boolean updateTime(Date utc, double d) {
+    protected boolean updateLocation(double targetLat, double targetLong, double targetElev) {
         return true;
     }
 
@@ -563,5 +573,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @Override
     public void updateProperty(INDIProperty property, String message) throws INDIException {
         super.updateProperty(property, message);
+    }
+
+    protected boolean updateTime(Date utc, double d) {
+        return true;
     }
 }

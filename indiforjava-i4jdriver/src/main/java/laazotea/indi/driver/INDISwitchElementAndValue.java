@@ -27,37 +27,10 @@ import laazotea.indi.Constants.SwitchStatus;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */
-public class INDISwitchElementAndValue implements INDIElementAndValue {
+public class INDISwitchElementAndValue extends INDIElementAndValue<INDISwitchElement,SwitchStatus> {
 
-  /**
-   * The Switch element
-   */
-  private final INDISwitchElement element;
-  /**
-   * The Switch status
-   */
-  private final SwitchStatus status;
+    public INDISwitchElementAndValue(INDISwitchElement element, SwitchStatus value) {
+        super(element, value);
+    }
 
-  /**
-   * Constructs an instance of a
-   * <code>INDISwitchElementAndValue</code>. This class should not usually be
-   * instantiated by specific Drivers.
-   *
-   * @param element The Switch Element
-   * @param status The Switch Status
-   */
-  public INDISwitchElementAndValue(INDISwitchElement element, SwitchStatus status) {
-    this.element = element;
-    this.status = status;
-  }
-
-  @Override
-  public INDISwitchElement getElement() {
-    return element;
-  }
-
-  @Override
-  public SwitchStatus getValue() {
-    return status;
-  }
 }
