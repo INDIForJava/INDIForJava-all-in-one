@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
+import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.driver.INDIBLOBElementAndValue;
 import laazotea.indi.driver.INDIBLOBProperty;
@@ -52,6 +53,9 @@ import laazotea.indi.driver.INDITextProperty;
 import laazotea.indi.driver.annotation.INDIe;
 import laazotea.indi.driver.annotation.INDIp;
 import laazotea.indi.driver.event.IEventHandler;
+import laazotea.indi.driver.event.NumberEvent;
+import laazotea.indi.driver.event.SwitchEvent;
+import laazotea.indi.driver.event.TextEvent;
 import laazotea.indi.INDIException;
 
 /**
@@ -102,38 +106,21 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     private static Logger LOG = Logger.getLogger(INDITelescope.class.getName());;
 
-    protected static final String MAIN_CONTROL_TAB = "Main Control";;
+    protected static final String MAIN_CONTROL_TAB = "Main Control";
+
+    protected static final String SITE_TAB = "Site";
 
     protected INDISwitchProperty abort;
 
     protected INDISwitchProperty config;
 
-    protected INDISwitchProperty coord;
-
     protected INDISwitchElement coordSync;
-
-    @INDIp(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDITelescope.MAIN_CONTROL_TAB)
-    protected INDINumberProperty eqn;
-
-    @INDIe(name = "RA", label = "RA (hh:mm:ss)", maximumD = 24d, numberFormat = "%010.6m")
-    protected INDINumberElement eqnRa;
-
-    @INDIe(name = "DEC", label = "DEC (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
-    protected INDINumberElement eqnDec;
 
     private final SimpleDateFormat extractISOTimeFormat1 = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ss");
 
     private final SimpleDateFormat extractISOTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     private PropertyStates last_state = null;
-
-    protected INDINumberProperty location;
-
-    protected INDINumberElement locationElev;
-
-    protected INDINumberElement locationLat;
-
-    protected INDINumberElement locationLong;
 
     protected INDISwitchProperty movementNSS;
 
@@ -165,11 +152,44 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     private ScopeStaturUpdater scopStatusUpdater;
 
+    @INDIp(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDITelescope.MAIN_CONTROL_TAB)
+    protected INDINumberProperty eqn;
+
+    @INDIe(name = "RA", label = "RA (hh:mm:ss)", maximumD = 24d, numberFormat = "%010.6m")
+    protected INDINumberElement eqnRa;
+
+    @INDIe(name = "DEC", label = "DEC (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    protected INDINumberElement eqnDec;
+
+    @INDIp(name = "TIME_UTC", label = "UTC", group = SITE_TAB)
     protected INDITextProperty time;
 
+    @INDIe(name = "UTC", label = "UTC Time")
+    protected INDITextElement timeutc;
+
+    @INDIe(name = "OFFSET", label = "UTC Offset")
     protected INDITextElement timeOffset;
 
-    protected INDITextElement timeutc;
+    @INDIp(name = "GEOGRAPHIC_COORD", label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
+    protected INDINumberProperty location;
+
+    @INDIe(name = "LAT", label = "Lat (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    protected INDINumberElement locationLat;
+
+    @INDIe(name = "LONG", label = "Lon (dd:mm:ss)", maximumD = 360d, numberFormat = "%010.6m")
+    protected INDINumberElement locationLong;
+
+    @INDIe(name = "ELEV", label = "Elevation (m)", minimumD = -200d, maximumD = 10000d)
+    protected INDINumberElement locationElev;
+
+    @INDIp(name = "ON_COORD_SET", label = "On Set", group = INDITelescope.MAIN_CONTROL_TAB)
+    protected INDISwitchProperty coord;
+
+    @INDIe(name = "TRACK", label = "Track")
+    protected INDISwitchElement coordTrack;
+
+    @INDIe(name = "SLEW", label = "Slew")
+    protected INDISwitchElement coordSlew;
 
     /**
      * This is a variable filled in by the ReadStatus telescope low level code,
@@ -179,27 +199,35 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     public INDITelescope(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
-        this.eqn.setEventHandler(new IEventHandler<INDINumberProperty, INDINumberElement, Double>() {
+        this.eqn.setEventHandler(new NumberEvent() {
 
             @Override
-            public void processNewValue(INDINumberProperty property, Date date, INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
                 newEqnValue(elementsAndValues);
             }
         });
-
-        this.time = new INDITextProperty(this, "TIME_UTC", "UTC", "Site", IDLE, RW, 60);
-        this.timeutc = new INDITextElement(this.time, "UTC", "UTC Time", "");
-        this.timeOffset = new INDITextElement(this.time, "OFFSET", "UTC Offset", "");
-
-        this.location = new INDINumberProperty(this, "GEOGRAPHIC_COORD", "Scope Location", "Site", OK, RW, 60);
-        this.locationLat = new INDINumberElement(this.location, "LAT", "Lat (dd:mm:ss)", 0d, -90d, 90d, 0d, "%010.6m");
-        this.locationLong = new INDINumberElement(this.location, "LONG", "Lon (dd:mm:ss)", 0d, 0d, 360d, 0d, "%010.6m");
-        this.locationElev = new INDINumberElement(this.location, "ELEV", "Elevation (m)", 0d, -200d, 10000d, 0d, "%g");
-        this.location.setSaveable(true);
-
-        this.coord = new INDISwitchProperty(this, "ON_COORD_SET", "On Set", INDITelescope.MAIN_CONTROL_TAB, IDLE, RW, 60, laazotea.indi.Constants.SwitchRules.ONE_OF_MANY);
-        new INDISwitchElement(this.coord, "TRACK", "Track", SwitchStatus.OFF);
-        new INDISwitchElement(this.coord, "SLEW", "Slew", SwitchStatus.OFF);
+        this.location.setEventHandler(new NumberEvent() {
+            
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newLocationValue(property, elementsAndValues);
+            }
+        });
+        this.time.setEventHandler(new TextEvent() {
+            
+            @Override
+            public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
+                newTimeValue(property, elementsAndValues);
+            }
+        });
+        this.coord.setEventHandler(new SwitchEvent() {
+            
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                property.setState(OK);
+                property.setValues(elementsAndValues);
+            }
+        });
         if (canSync()) {
             this.coordSync = new INDISwitchElement(this.coord, "SYNC", "Sync", SwitchStatus.OFF);
         }
@@ -365,39 +393,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     @Override
     public void processNewNumberValue(INDINumberProperty property, Date date, INDINumberElementAndValue[] elementsAndValues) {
-        if (property == this.eqn) {
-            newEqnValue(elementsAndValues);
-        } else if (property == this.location) {
-
-            Double targetLat = null;
-            Double targetLong = null;
-            Double targetElev = null;
-
-            for (INDINumberElementAndValue indiNumberElementAndValue : elementsAndValues) {
-                if (this.locationLat == indiNumberElementAndValue.getElement()) {
-                    targetLat = indiNumberElementAndValue.getValue();
-                } else if (this.locationLong == indiNumberElementAndValue.getElement()) {
-                    targetLong = indiNumberElementAndValue.getValue();
-                } else if (this.locationElev == indiNumberElementAndValue.getElement()) {
-                    targetElev = indiNumberElementAndValue.getValue();
-                }
-            }
-            if (targetLat == null || targetLong == null || targetElev == null) {
-                this.location.setState(PropertyStates.ALERT);
-                INDITelescope.LOG.log(Level.SEVERE, "Location data missing or corrupted.");
-            } else {
-                if (updateLocation(targetLat, targetLong, targetElev)) {
-                    property.setValues(elementsAndValues);
-                    this.location.setState(PropertyStates.OK);
-                } else {
-                    this.location.setState(PropertyStates.ALERT);
-                }
-            }
-            try {
-                updateProperty(this.location);
-            } catch (INDIException e) {
-            }
-        } else if (property == this.scopeParameters) {
+        if (property == this.scopeParameters) {
             this.scopeParameters.setState(OK);
             property.setValues(elementsAndValues);
 
@@ -405,6 +401,37 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 updateProperty(this.scopeParameters);
             } catch (INDIException e) {
             }
+        }
+    }
+
+    private void newLocationValue(INDINumberProperty property, INDINumberElementAndValue[] elementsAndValues) {
+        Double targetLat = null;
+        Double targetLong = null;
+        Double targetElev = null;
+
+        for (INDINumberElementAndValue indiNumberElementAndValue : elementsAndValues) {
+            if (this.locationLat == indiNumberElementAndValue.getElement()) {
+                targetLat = indiNumberElementAndValue.getValue();
+            } else if (this.locationLong == indiNumberElementAndValue.getElement()) {
+                targetLong = indiNumberElementAndValue.getValue();
+            } else if (this.locationElev == indiNumberElementAndValue.getElement()) {
+                targetElev = indiNumberElementAndValue.getValue();
+            }
+        }
+        if (targetLat == null || targetLong == null || targetElev == null) {
+            this.location.setState(PropertyStates.ALERT);
+            INDITelescope.LOG.log(Level.SEVERE, "Location data missing or corrupted.");
+        } else {
+            if (updateLocation(targetLat, targetLong, targetElev)) {
+                property.setValues(elementsAndValues);
+                this.location.setState(PropertyStates.OK);
+            } else {
+                this.location.setState(PropertyStates.ALERT);
+            }
+        }
+        try {
+            updateProperty(this.location);
+        } catch (INDIException e) {
         }
     }
 
@@ -448,10 +475,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     @Override
     public void processNewSwitchValue(INDISwitchProperty property, Date date, INDISwitchElementAndValue[] elementsAndValues) {
-        if (this.coord == property) {
-            this.coord.setState(OK);
-            property.setValues(elementsAndValues);
-        } else if (this.park == property) {
+      if (this.park == property) {
             park();
         } else if (this.movementNSS == property) {
             property.setValues(elementsAndValues);
@@ -505,39 +529,41 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 updateProperty(this.port);
             } catch (INDIException e) {
             }
-        } else if (property == this.time) {
-            String utcString = "";
-            String offsetString = "0";
-            for (INDITextElementAndValue indiTextElementAndValue : elementsAndValues) {
-                if (this.timeutc == indiTextElementAndValue.getElement()) {
-                    utcString = indiTextElementAndValue.getValue();
-                } else if (this.timeOffset == indiTextElementAndValue.getElement()) {
-                    offsetString = indiTextElementAndValue.getValue();
-                }
-            }
-            Double offset;
-            try {
-                offset = Double.valueOf(NumberFormat.getNumberInstance().parse(offsetString).doubleValue());
-            } catch (ParseException e1) {
-                offset = null;
-            }
-            Date utc = extractISOTime(utcString);
-            if (utc != null && offset != null) {
-                property.setValues(elementsAndValues);
-                if (updateTime(utc, offset.doubleValue())) {
-                    this.time.setState(PropertyStates.OK);
+        } 
+    }
 
-                } else {
-                    this.time.setState(PropertyStates.ALERT);
-                }
+    private void newTimeValue(INDITextProperty property, INDITextElementAndValue[] elementsAndValues) {
+        String utcString = "";
+        String offsetString = "0";
+        for (INDITextElementAndValue indiTextElementAndValue : elementsAndValues) {
+            if (this.timeutc == indiTextElementAndValue.getElement()) {
+                utcString = indiTextElementAndValue.getValue();
+            } else if (this.timeOffset == indiTextElementAndValue.getElement()) {
+                offsetString = indiTextElementAndValue.getValue();
+            }
+        }
+        Double offset;
+        try {
+            offset = Double.valueOf(NumberFormat.getNumberInstance().parse(offsetString).doubleValue());
+        } catch (ParseException e1) {
+            offset = null;
+        }
+        Date utc = extractISOTime(utcString);
+        if (utc != null && offset != null) {
+            property.setValues(elementsAndValues);
+            if (updateTime(utc, offset.doubleValue())) {
+                this.time.setState(PropertyStates.OK);
+
             } else {
-                INDITelescope.LOG.log(Level.SEVERE, "Date/Time is invalid: " + utcString + " offset " + offsetString + ".");
                 this.time.setState(PropertyStates.ALERT);
             }
-            try {
-                updateProperty(this.time);
-            } catch (INDIException e) {
-            }
+        } else {
+            INDITelescope.LOG.log(Level.SEVERE, "Date/Time is invalid: " + utcString + " offset " + offsetString + ".");
+            this.time.setState(PropertyStates.ALERT);
+        }
+        try {
+            updateProperty(this.time);
+        } catch (INDIException e) {
         }
     }
 

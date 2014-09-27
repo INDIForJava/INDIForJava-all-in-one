@@ -118,6 +118,14 @@ public abstract class INDIDriver implements INDIProtocolParser {
                 if (prop != null) {
                     if (INDINumberProperty.class.isAssignableFrom(field.getType())) {
                         lastProperty = new INDINumberProperty(this, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout());
+                    } else if (INDITextProperty.class.isAssignableFrom(field.getType())) {
+                        lastProperty = new INDITextProperty(this, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout());
+                    } else if (INDISwitchProperty.class.isAssignableFrom(field.getType())) {
+                        lastProperty =
+                                new INDISwitchProperty(this, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout(), prop.switchRule());
+                    }
+                    if (prop.saveable()) {
+                        lastProperty.setSaveable(true);
                     }
                     field.setAccessible(true);
                     try {
@@ -130,8 +138,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
                 if (elem != null) {
                     if (INDINumberElement.class.isAssignableFrom(field.getType())) {
                         lastElement =
-                                new INDINumberElement((INDINumberProperty)lastProperty, elem.name(), elem.label(), elem.valueD(), elem.minimumD(), elem.maximumD(), elem.stepD(),
-                                        elem.numberFormat());
+                                new INDINumberElement((INDINumberProperty) lastProperty, elem.name(), elem.label(), elem.valueD(), elem.minimumD(), elem.maximumD(),
+                                        elem.stepD(), elem.numberFormat());
+                    } else if (INDITextElement.class.isAssignableFrom(field.getType())) {
+                        lastElement = new INDITextElement((INDITextProperty) lastProperty, elem.name(), elem.label(), elem.valueT());
+                    } else if (INDISwitchElement.class.isAssignableFrom(field.getType())) {
+                        lastElement = new INDISwitchElement((INDISwitchProperty) lastProperty, elem.name(), elem.label(), elem.switchValue());
                     }
                     field.setAccessible(true);
                     try {
@@ -141,7 +153,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
                     }
                 }
             }
-            clazz=clazz.getSuperclass();
+            clazz = clazz.getSuperclass();
         }
     }
 

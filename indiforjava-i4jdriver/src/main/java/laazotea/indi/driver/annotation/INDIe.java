@@ -5,15 +5,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) 
-@Target({ElementType.FIELD})     
+import laazotea.indi.Constants.SwitchStatus;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({
+    ElementType.FIELD
+})
 public @interface INDIe {
 
-    String name() default "";
+    String name();
 
-    String label() default "";
+    String label();
 
     double valueD() default 0d;
+
+    String valueT() default "";
 
     double minimumD() default 0d;
 
@@ -21,6 +27,9 @@ public @interface INDIe {
 
     double stepD() default 0d;
 
-    String numberFormat() default "";
+    String numberFormat() default "%g";
+
+    SwitchStatus switchValue() default SwitchStatus.OFF;
+
 
 }
