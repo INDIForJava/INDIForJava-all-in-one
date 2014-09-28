@@ -8,7 +8,9 @@ public abstract class INDIDriverExtention<Driver extends INDIDriver> {
 
     public INDIDriverExtention(Driver driver) {
         this.driver = driver;
-        AnnotatedFieldInitializer.initialize(this.driver, this);
+        if (isActive()) {
+            AnnotatedFieldInitializer.initialize(this.driver, this);
+        }
     }
 
     public boolean isActive() {
