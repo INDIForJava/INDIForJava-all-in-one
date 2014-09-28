@@ -36,6 +36,7 @@ import laazotea.indi.*;
 import laazotea.indi.driver.annotation.INDIe;
 import laazotea.indi.driver.annotation.INDIp;
 import laazotea.indi.driver.event.IEventHandler;
+import laazotea.indi.driver.util.AnnotatedFieldInitializer;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -104,57 +105,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (this instanceof INDIConnectionHandler) {
             addConnectionProperty();
         }
-
-        initializeAnnotatedProperties();
-    }
-
-    private void initializeAnnotatedProperties() {
-        Class<?> clazz = getClass();
-        INDIProperty<?> lastProperty = null;
-        INDIElement lastElement = null;
-        while (clazz != null) {
-            for (Field field : clazz.getDeclaredFields()) {
-                INDIp prop = field.getAnnotation(INDIp.class);
-                if (prop != null) {
-                    if (INDINumberProperty.class.isAssignableFrom(field.getType())) {
-                        lastProperty = new INDINumberProperty(this, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout());
-                    } else if (INDITextProperty.class.isAssignableFrom(field.getType())) {
-                        lastProperty = new INDITextProperty(this, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout());
-                    } else if (INDISwitchProperty.class.isAssignableFrom(field.getType())) {
-                        lastProperty =
-                                new INDISwitchProperty(this, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout(), prop.switchRule());
-                    }
-                    if (prop.saveable()) {
-                        lastProperty.setSaveable(true);
-                    }
-                    field.setAccessible(true);
-                    try {
-                        field.set(this, lastProperty);
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException("could not set indi property", e);
-                    }
-                }
-                INDIe elem = field.getAnnotation(INDIe.class);
-                if (elem != null) {
-                    if (INDINumberElement.class.isAssignableFrom(field.getType())) {
-                        lastElement =
-                                new INDINumberElement((INDINumberProperty) lastProperty, elem.name(), elem.label(), elem.valueD(), elem.minimumD(), elem.maximumD(),
-                                        elem.stepD(), elem.numberFormat());
-                    } else if (INDITextElement.class.isAssignableFrom(field.getType())) {
-                        lastElement = new INDITextElement((INDITextProperty) lastProperty, elem.name(), elem.label(), elem.valueT());
-                    } else if (INDISwitchElement.class.isAssignableFrom(field.getType())) {
-                        lastElement = new INDISwitchElement((INDISwitchProperty) lastProperty, elem.name(), elem.label(), elem.switchValue());
-                    }
-                    field.setAccessible(true);
-                    try {
-                        field.set(this, lastElement);
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException("could not set indi element", e);
-                    }
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
+        AnnotatedFieldInitializer.initialize(this, this);
     }
 
     /**
@@ -805,7 +756,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    *
    * @param property The Property to be added.
    */
-  protected void addProperty(INDIProperty property) {
+  public void addProperty(INDIProperty property) {
     addProperty(property, null);
   }
 
@@ -835,7 +786,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * @param property The Property whose values have change and about which the
    * clients must be notified.
    */
-  protected void updateProperty(INDIProperty property) throws INDIException {
+  public void updateProperty(INDIProperty property) throws INDIException {
     updateProperty(property, null);
   }
 
@@ -849,7 +800,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * @param message The message to be sended to the clients with the udpate
    * message.
    */
-  protected void updateProperty(INDIProperty property, String message) throws INDIException {
+  public void updateProperty(INDIProperty property, String message) throws INDIException {
       updateProperty(property, false, message);
   }
   /**
@@ -920,7 +871,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    *
    * @param property The property to be removed
    */
-  protected void removeProperty(INDIProperty property) {
+  public void removeProperty(INDIProperty property) {
     removeProperty(property, null);
   }
 

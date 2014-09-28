@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import laazotea.indi.INDIException;
 import net.sourceforge.novaforjava.api.LnLnlatPosn;
 
 public class InMemoryDatabase {

@@ -14,6 +14,7 @@ import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
+import laazotea.indi.INDIException;
 import laazotea.indi.driver.INDIGuider;
 import laazotea.indi.driver.INDIGuiderInterface;
 import laazotea.indi.driver.INDINumberElement;
@@ -22,7 +23,6 @@ import laazotea.indi.driver.INDINumberProperty;
 import laazotea.indi.driver.INDISwitchElement;
 import laazotea.indi.driver.INDISwitchElementAndValue;
 import laazotea.indi.driver.INDISwitchProperty;
-import laazotea.indi.INDIException;
 
 public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface {
 
@@ -608,13 +608,8 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
             } catch (INDIException e) {
             }
         }
-        if (park.getState() == PropertyStates.BUSY) {
-            park.resetAllSwitches();
-            park.setState(IDLE);
-            try {
-                updateProperty(park);
-            } catch (INDIException e) {
-            }
+        if (parkExtention.isBusy()) {
+            parkExtention.setIdle();
         }
         if (eqn.getState() == PropertyStates.BUSY) {
             eqn.setState(IDLE);

@@ -17,7 +17,6 @@
  */
 package laazotea.indi.driver.telescope;
 
-import static laazotea.indi.Constants.PropertyPermissions.RW;
 import static laazotea.indi.Constants.PropertyStates.IDLE;
 import static laazotea.indi.Constants.PropertyStates.OK;
 
@@ -30,10 +29,9 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
-import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
+import laazotea.indi.INDIException;
 import laazotea.indi.driver.INDIBLOBElementAndValue;
 import laazotea.indi.driver.INDIBLOBProperty;
 import laazotea.indi.driver.INDIConnectionHandler;
@@ -52,11 +50,9 @@ import laazotea.indi.driver.INDITextElementAndValue;
 import laazotea.indi.driver.INDITextProperty;
 import laazotea.indi.driver.annotation.INDIe;
 import laazotea.indi.driver.annotation.INDIp;
-import laazotea.indi.driver.event.IEventHandler;
 import laazotea.indi.driver.event.NumberEvent;
 import laazotea.indi.driver.event.SwitchEvent;
 import laazotea.indi.driver.event.TextEvent;
-import laazotea.indi.INDIException;
 
 /**
  * A class that acts as a abstract INDI for Java Driver for a Telescope.
@@ -110,45 +106,15 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     protected static final String SITE_TAB = "Site";
 
-    protected INDISwitchProperty abort;
+    protected static final String OPTIONS_TAB = "Options";
 
-    protected INDISwitchProperty config;
-
-    protected INDISwitchElement coordSync;
+    protected static final String MOTION_TAB = "Motion";
 
     private final SimpleDateFormat extractISOTimeFormat1 = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ss");
 
     private final SimpleDateFormat extractISOTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     private PropertyStates last_state = null;
-
-    protected INDISwitchProperty movementNSS;
-
-    protected INDISwitchElement movementNSSNorth;
-
-    protected INDISwitchElement movementNSSSouth;
-
-    protected INDISwitchProperty movementWES;
-
-    protected INDISwitchElement movementWESEast;
-
-    protected INDISwitchElement movementWESWest;
-
-    protected INDISwitchProperty park;
-
-    protected INDISwitchElement parkElement;
-
-    protected INDITextProperty port;
-
-    protected INDINumberProperty scopeParameters;
-
-    protected INDINumberElement scopeParametersAperture;
-
-    protected INDINumberElement scopeParametersFocalLength;
-
-    protected INDINumberElement scopeParametersGuiderAperture;
-
-    protected INDINumberElement scopeParametersGuiderFocalLength;
 
     private ScopeStaturUpdater scopStatusUpdater;
 
@@ -191,6 +157,67 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @INDIe(name = "SLEW", label = "Slew")
     protected INDISwitchElement coordSlew;
 
+    @INDIp(name = "CONFIG_PROCESS", label = "Configuration", group = INDITelescope.OPTIONS_TAB)
+    protected INDISwitchProperty config;
+
+    @INDIe(name = "CONFIG_LOAD", label = "Load")
+    protected INDISwitchElement configLoad;
+
+    @INDIe(name = "CONFIG_SAVE", label = "Save")
+    protected INDISwitchElement configSave;
+
+    @INDIe(name = "CONFIG_DEFAULT", label = "Default")
+    protected INDISwitchElement configDefault;
+
+    protected INDITelescopeParkExtention parkExtention;
+
+    @INDIp(name = "TELESCOPE_ABORT_MOTION", label = "Abort Motion", group = INDITelescope.MAIN_CONTROL_TAB)
+    protected INDISwitchProperty abort;
+
+    @INDIe(name = "ABORT", label = "Abort")
+    protected INDISwitchElement abordElement;
+
+    @INDIp(name = "PORTS", label = "Ports", group = OPTIONS_TAB, saveable = true)
+    protected INDITextProperty port;
+
+    @INDIe(name = "PORT", label = "Port", valueT = "/dev/ttyUSB0")
+    protected INDITextElement portElement;
+
+    @INDIp(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
+    protected INDISwitchProperty movementNSS;
+
+    @INDIe(name = "MOTION_NORTH", label = "North")
+    protected INDISwitchElement movementNSSNorth;
+
+    @INDIe(name = "MOTION_SOUTH", label = "South")
+    protected INDISwitchElement movementNSSSouth;
+
+    @INDIp(name = "TELESCOPE_MOTION_WE", label = "West/East", group = MOTION_TAB)
+    protected INDISwitchProperty movementWES;
+
+    @INDIe(name = "MOTION_WEST", label = "West")
+    protected INDISwitchElement movementWESWest;
+
+    @INDIe(name = "MOTION_EAST", label = "East")
+    protected INDISwitchElement movementWESEast;
+
+    @INDIp(name = "TELESCOPE_INFO", label = "Scope Properties", group = OPTIONS_TAB, state = OK, saveable = true)
+    protected INDINumberProperty scopeParameters;
+
+    @INDIe(name = "TELESCOPE_APERTURE", label = "Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
+    protected INDINumberElement scopeParametersAperture;
+
+    @INDIe(name = "TELESCOPE_FOCAL_LENGTH", label = "Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
+    protected INDINumberElement scopeParametersFocalLength;
+
+    @INDIe(name = "GUIDER_APERTURE", label = "Guider Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
+    protected INDINumberElement scopeParametersGuiderAperture;
+
+    @INDIe(name = "GUIDER_FOCAL_LENGTH", label = "Guider Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
+    protected INDINumberElement scopeParametersGuiderFocalLength;
+
+    protected INDITelescopeSyncExtention syncExtention;
+
     /**
      * This is a variable filled in by the ReadStatus telescope low level code,
      * used to report current state are we slewing, tracking, or parked.
@@ -207,91 +234,59 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             }
         });
         this.location.setEventHandler(new NumberEvent() {
-            
+
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
                 newLocationValue(property, elementsAndValues);
             }
         });
         this.time.setEventHandler(new TextEvent() {
-            
+
             @Override
             public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
                 newTimeValue(property, elementsAndValues);
             }
         });
         this.coord.setEventHandler(new SwitchEvent() {
-            
+
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
                 property.setState(OK);
                 property.setValues(elementsAndValues);
             }
         });
-        if (canSync()) {
-            this.coordSync = new INDISwitchElement(this.coord, "SYNC", "Sync", SwitchStatus.OFF);
-        }
+        this.port.setEventHandler(new TextEvent() {
 
-        this.config = new INDISwitchProperty(this, "CONFIG_PROCESS", "Configuration", "Options", IDLE, RW, 60, laazotea.indi.Constants.SwitchRules.ONE_OF_MANY);
-        new INDISwitchElement(this.config, "CONFIG_LOAD", "Load", SwitchStatus.OFF);
-        new INDISwitchElement(this.config, "CONFIG_SAVE", "Save", SwitchStatus.OFF);
-        new INDISwitchElement(this.config, "CONFIG_DEFAULT", "Default", SwitchStatus.OFF);
+            @Override
+            public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
+                property.setValues(elementsAndValues);
+                property.setState(PropertyStates.OK);
+                try {
+                    updateProperty(property);
+                } catch (INDIException e) {
+                }
+            }
+        });
+        this.abort.setEventHandler(new SwitchEvent() {
 
-        if (canPark()) {
-            this.park = new INDISwitchProperty(this, "TELESCOPE_PARK", "Park", INDITelescope.MAIN_CONTROL_TAB, IDLE, RW, 60, laazotea.indi.Constants.SwitchRules.ONE_OF_MANY);
-            this.parkElement = new INDISwitchElement(this.park, "PARK", "Park", SwitchStatus.OFF);
-        }
-        this.abort =
-                new INDISwitchProperty(this, "TELESCOPE_ABORT_MOTION", "Abort Motion", INDITelescope.MAIN_CONTROL_TAB, IDLE, RW, 60,
-                        laazotea.indi.Constants.SwitchRules.ONE_OF_MANY);
-        new INDISwitchElement(this.abort, "ABORT", "Abort", SwitchStatus.OFF);
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newAbortValue();
+            }
+        });
+        this.scopeParameters.setEventHandler(new NumberEvent() {
 
-        this.port = new INDITextProperty(this, "Ports", "Ports", "Options", IDLE, RW, 60);
-        new INDITextElement(this.port, "PORT", "Port", "/dev/ttyUSB0");
-        this.port.setSaveable(true);
-
-        this.movementNSS = new INDISwitchProperty(this, "TELESCOPE_MOTION_NS", "North/South", "Motion", IDLE, RW, 60, laazotea.indi.Constants.SwitchRules.ONE_OF_MANY);
-        this.movementNSSNorth = new INDISwitchElement(this.movementNSS, "MOTION_NORTH", "North", SwitchStatus.OFF);
-        this.movementNSSSouth = new INDISwitchElement(this.movementNSS, "MOTION_SOUTH", "South", SwitchStatus.OFF);
-
-        this.movementWES = new INDISwitchProperty(this, "TELESCOPE_MOTION_WE", "West/East", "Motion", IDLE, RW, 60, laazotea.indi.Constants.SwitchRules.ONE_OF_MANY);
-        this.movementWESWest = new INDISwitchElement(this.movementWES, "MOTION_WEST", "West", SwitchStatus.OFF);
-        this.movementWESEast = new INDISwitchElement(this.movementWES, "MOTION_EAST", "East", SwitchStatus.OFF);
-
-        this.scopeParameters = new INDINumberProperty(this, "TELESCOPE_INFO", "Scope Properties", "Options", OK, RW, 60);
-        this.scopeParametersAperture = new INDINumberElement(this.scopeParameters, "TELESCOPE_APERTURE", "Aperture (mm)", 50d, 50d, 4000d, 0d, "%g");
-        this.scopeParametersFocalLength = new INDINumberElement(this.scopeParameters, "TELESCOPE_FOCAL_LENGTH", "Focal Length (mm)", 100d, 100d, 10000d, 0d, "%g");
-        this.scopeParametersGuiderAperture = new INDINumberElement(this.scopeParameters, "GUIDER_APERTURE", "Guider Aperture (mm)", 50d, 50d, 4000d, 0d, "%g");
-        this.scopeParametersGuiderFocalLength = new INDINumberElement(this.scopeParameters, "GUIDER_FOCAL_LENGTH", "Guider Focal Length (mm)", 100d, 100d, 10000d, 0d, "%g");
-        this.scopeParameters.setSaveable(true);
-
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newScopeParameter(property, elementsAndValues);
+            }
+        });
         this.trackState = TelescopeStatus.SCOPE_PARKED;
-
-        addProperty(this.eqn);
-        addProperty(this.time);
-        addProperty(this.location);
-        if (canSync()) {
-            addProperty(this.coord);
-        }
-        addProperty(this.config);
-        if (canPark()) {
-            addProperty(this.park);
-        }
-        addProperty(this.abort);
-        addProperty(this.port);
-        addProperty(this.movementNSS);
-        addProperty(this.movementWES);
-        addProperty(this.scopeParameters);
 
     }
 
     protected boolean abort() {
         return false;
-    }
-
-    @Override
-    public void addProperty(INDIProperty property) {
-        super.addProperty(property);
     }
 
     protected abstract boolean canPark();
@@ -305,11 +300,37 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @Override
     public void driverConnect(Date timestamp) throws INDIException {
         new Thread(this.scopStatusUpdater = new ScopeStaturUpdater(), "Scope status").start();
+        addProperty(this.eqn);
+        addProperty(this.time);
+        addProperty(this.location);
+        addProperty(this.coord);
+        addProperty(this.config);
+        parkExtention.connect();
+        addProperty(this.abort);
+        addProperty(this.port);
+
+        addProperty(this.movementNSS);
+        addProperty(this.movementWES);
+        addProperty(this.scopeParameters);
+
     }
 
     @Override
     public void driverDisconnect(Date timestamp) throws INDIException {
         scopStatusUpdater.stop();
+        removeProperty(this.eqn);
+        removeProperty(this.time);
+        removeProperty(this.location);
+        removeProperty(this.coord);
+        removeProperty(this.config);
+        parkExtention.disconnect();
+        removeProperty(this.abort);
+        removeProperty(this.port);
+        newAbortValue();
+
+        removeProperty(this.movementNSS);
+        removeProperty(this.movementWES);
+        removeProperty(this.scopeParameters);
     }
 
     private synchronized Date extractISOTime(String isoTime) {
@@ -387,20 +408,25 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     }
 
     @Override
+    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
+    }
+
+    @Override
     public void processNewBLOBValue(INDIBLOBProperty arg0, Date arg1, INDIBLOBElementAndValue[] arg2) {
 
     }
 
     @Override
     public void processNewNumberValue(INDINumberProperty property, Date date, INDINumberElementAndValue[] elementsAndValues) {
-        if (property == this.scopeParameters) {
-            this.scopeParameters.setState(OK);
-            property.setValues(elementsAndValues);
+    }
 
-            try {
-                updateProperty(this.scopeParameters);
-            } catch (INDIException e) {
-            }
+    private void newScopeParameter(INDINumberProperty property, INDINumberElementAndValue[] elementsAndValues) {
+        this.scopeParameters.setState(OK);
+        property.setValues(elementsAndValues);
+
+        try {
+            updateProperty(this.scopeParameters);
+        } catch (INDIException e) {
         }
     }
 
@@ -454,18 +480,12 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             // perform the goto
             // Ok, lets see if we should be doing a goto
             // or a sync
-            if (canSync() && this.coordSync.getValue() == SwitchStatus.ON) {
-                sync(ra, dec);
+            if (syncExtention.doSync(ra, dec)) {
                 return;
             }
 
             // Ensure we are not showing Parked status
-            this.park.setState(IDLE);
-            resetSwitch(this.park);
-            try {
-                updateProperty(this.park);
-            } catch (INDIException e) {
-            }
+            parkExtention.setIdle();
             doGoto(ra, dec);
         } else {
             this.eqn.setState(PropertyStates.ALERT);
@@ -475,9 +495,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     @Override
     public void processNewSwitchValue(INDISwitchProperty property, Date date, INDISwitchElementAndValue[] elementsAndValues) {
-      if (this.park == property) {
-            park();
-        } else if (this.movementNSS == property) {
+        if (this.movementNSS == property) {
             property.setValues(elementsAndValues);
             property.setState(PropertyStates.BUSY);
             if (this.movementNSSNorth.getValue() == SwitchStatus.ON) {
@@ -495,41 +513,28 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
             }
 
-        } else if (this.abort == property) {
-            resetSwitch(this.abort);
-            if (abort()) {
-                this.abort.setState(OK);
-                if (this.park.getState() == PropertyStates.BUSY) {
-                    this.park.setState(IDLE);
-                }
-                if (this.eqn.getState() == PropertyStates.BUSY) {
-                    this.eqn.setState(IDLE);
-                }
-                if (this.movementWES.getState() == PropertyStates.BUSY) {
-                    this.movementWES.setState(IDLE);
-                }
-                if (this.movementNSS.getState() == PropertyStates.BUSY) {
-                    this.movementNSS.setState(IDLE);
-                }
-                this.trackState = TelescopeStatus.SCOPE_IDLE;
-            } else {
-                this.abort.setState(PropertyStates.ALERT);
-            }
         }
 
     }
 
-    @Override
-    public void processNewTextValue(INDITextProperty property, Date date, INDITextElementAndValue[] elementsAndValues) {
-        if (property == this.port) {
-            property.setValues(elementsAndValues);
-            this.port.setState(PropertyStates.OK);
-
-            try {
-                updateProperty(this.port);
-            } catch (INDIException e) {
+    private void newAbortValue() {
+        resetSwitch(this.abort);
+        if (abort()) {
+            this.abort.setState(OK);
+            parkExtention.setNotBussy();
+            if (this.eqn.getState() == PropertyStates.BUSY) {
+                this.eqn.setState(IDLE);
             }
-        } 
+            if (this.movementWES.getState() == PropertyStates.BUSY) {
+                this.movementWES.setState(IDLE);
+            }
+            if (this.movementNSS.getState() == PropertyStates.BUSY) {
+                this.movementNSS.setState(IDLE);
+            }
+            this.trackState = TelescopeStatus.SCOPE_IDLE;
+        } else {
+            this.abort.setState(PropertyStates.ALERT);
+        }
     }
 
     private void newTimeValue(INDITextProperty property, INDITextElementAndValue[] elementsAndValues) {

@@ -31,5 +31,5 @@ public @interface INDIe {
 
     SwitchStatus switchValue() default SwitchStatus.OFF;
 
-
+    String property() default "";
 }
