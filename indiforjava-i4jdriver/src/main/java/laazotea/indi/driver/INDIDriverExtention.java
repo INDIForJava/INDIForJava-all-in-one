@@ -1,6 +1,6 @@
 package laazotea.indi.driver;
 
-import laazotea.indi.driver.util.AnnotatedFieldInitializer;
+import laazotea.indi.driver.util.INDIPropertyInjector;
 
 public abstract class INDIDriverExtention<Driver extends INDIDriver> {
 
@@ -9,7 +9,7 @@ public abstract class INDIDriverExtention<Driver extends INDIDriver> {
     public INDIDriverExtention(Driver driver) {
         this.driver = driver;
         if (isActive()) {
-            AnnotatedFieldInitializer.initialize(this.driver, this);
+            INDIPropertyInjector.initialize(this.driver, this);
         }
     }
 

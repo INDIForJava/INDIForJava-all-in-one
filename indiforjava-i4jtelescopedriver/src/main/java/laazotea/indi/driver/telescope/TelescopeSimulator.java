@@ -15,7 +15,7 @@ import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.INDIException;
-import laazotea.indi.driver.INDIGuider;
+import laazotea.indi.driver.INDIGuiderExtention;
 import laazotea.indi.driver.INDIGuiderInterface;
 import laazotea.indi.driver.INDINumberElement;
 import laazotea.indi.driver.INDINumberElementAndValue;
@@ -23,6 +23,7 @@ import laazotea.indi.driver.INDINumberProperty;
 import laazotea.indi.driver.INDISwitchElement;
 import laazotea.indi.driver.INDISwitchElementAndValue;
 import laazotea.indi.driver.INDISwitchProperty;
+import laazotea.indi.driver.annotation.InjectExtention;
 
 public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface {
 
@@ -113,7 +114,8 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
     private final INDINumberElement guideRateNS;
 
-    private INDIGuider guider;
+    @InjectExtention(group = Constants.MOTION_TAB)
+    private INDIGuiderExtention guider;
 
     private double[] guiderNSTarget = new double[2];
 
@@ -162,7 +164,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
         trackState = TelescopeStatus.SCOPE_IDLE;
 
-        this.guider = new INDIGuider(this, this, Constants.MOTION_TAB);
+        this.guider.setGuiderInterface(this);
     }
 
     @Override
@@ -183,8 +185,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     public void driverConnect(Date timestamp) throws INDIException {
         super.driverConnect(timestamp);
         LOG.log(Level.INFO, "Telescope simulator is online.");
-        addProperty(guider.getGuideNS());
-        addProperty(guider.getGuideWE());
+        guider.connect();
         addProperty(guideRate);
         addProperty(eqPen);
         addProperty(PErrNS);
@@ -194,8 +195,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     public void driverDisconnect(Date timestamp) throws INDIException {
         super.driverDisconnect(timestamp);
         LOG.log(Level.INFO, "Telescope simulator is offline.");
-        removeProperty(guider.getGuideNS());
-        removeProperty(guider.getGuideWE());
+        guider.disconnect();
         removeProperty(guideRate);
         removeProperty(eqPen);
         removeProperty(PErrNS);
@@ -533,12 +533,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
             guideRate.setState(PropertyStates.OK);
             try {
                 updateProperty(this.guideRate);
-            } catch (INDIException e) {
-            }
-        }
-        if (property == guider.getGuideNS() || property == guider.getGuideNS()) {
-            try {
-                guider.processNewNumberValue(property, timestamp, elementsAndValues);
             } catch (INDIException e) {
             }
         }

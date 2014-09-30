@@ -48,8 +48,8 @@ import laazotea.indi.driver.INDISwitchProperty;
 import laazotea.indi.driver.INDITextElement;
 import laazotea.indi.driver.INDITextElementAndValue;
 import laazotea.indi.driver.INDITextProperty;
-import laazotea.indi.driver.annotation.INDIe;
-import laazotea.indi.driver.annotation.INDIp;
+import laazotea.indi.driver.annotation.InjectElement;
+import laazotea.indi.driver.annotation.InjectProperty;
 import laazotea.indi.driver.event.NumberEvent;
 import laazotea.indi.driver.event.SwitchEvent;
 import laazotea.indi.driver.event.TextEvent;
@@ -118,102 +118,102 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     private ScopeStaturUpdater scopStatusUpdater;
 
-    @INDIp(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDITelescope.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDITelescope.MAIN_CONTROL_TAB)
     protected INDINumberProperty eqn;
 
-    @INDIe(name = "RA", label = "RA (hh:mm:ss)", maximumD = 24d, numberFormat = "%010.6m")
+    @InjectElement(name = "RA", label = "RA (hh:mm:ss)", maximumD = 24d, numberFormat = "%010.6m")
     protected INDINumberElement eqnRa;
 
-    @INDIe(name = "DEC", label = "DEC (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    @InjectElement(name = "DEC", label = "DEC (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
     protected INDINumberElement eqnDec;
 
-    @INDIp(name = "TIME_UTC", label = "UTC", group = SITE_TAB)
+    @InjectProperty(name = "TIME_UTC", label = "UTC", group = SITE_TAB)
     protected INDITextProperty time;
 
-    @INDIe(name = "UTC", label = "UTC Time")
+    @InjectElement(name = "UTC", label = "UTC Time")
     protected INDITextElement timeutc;
 
-    @INDIe(name = "OFFSET", label = "UTC Offset")
+    @InjectElement(name = "OFFSET", label = "UTC Offset")
     protected INDITextElement timeOffset;
 
-    @INDIp(name = "GEOGRAPHIC_COORD", label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
+    @InjectProperty(name = "GEOGRAPHIC_COORD", label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
     protected INDINumberProperty location;
 
-    @INDIe(name = "LAT", label = "Lat (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    @InjectElement(name = "LAT", label = "Lat (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
     protected INDINumberElement locationLat;
 
-    @INDIe(name = "LONG", label = "Lon (dd:mm:ss)", maximumD = 360d, numberFormat = "%010.6m")
+    @InjectElement(name = "LONG", label = "Lon (dd:mm:ss)", maximumD = 360d, numberFormat = "%010.6m")
     protected INDINumberElement locationLong;
 
-    @INDIe(name = "ELEV", label = "Elevation (m)", minimumD = -200d, maximumD = 10000d)
+    @InjectElement(name = "ELEV", label = "Elevation (m)", minimumD = -200d, maximumD = 10000d)
     protected INDINumberElement locationElev;
 
-    @INDIp(name = "ON_COORD_SET", label = "On Set", group = INDITelescope.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "ON_COORD_SET", label = "On Set", group = INDITelescope.MAIN_CONTROL_TAB)
     protected INDISwitchProperty coord;
 
-    @INDIe(name = "TRACK", label = "Track")
+    @InjectElement(name = "TRACK", label = "Track")
     protected INDISwitchElement coordTrack;
 
-    @INDIe(name = "SLEW", label = "Slew")
+    @InjectElement(name = "SLEW", label = "Slew")
     protected INDISwitchElement coordSlew;
 
-    @INDIp(name = "CONFIG_PROCESS", label = "Configuration", group = INDITelescope.OPTIONS_TAB)
+    @InjectProperty(name = "CONFIG_PROCESS", label = "Configuration", group = INDITelescope.OPTIONS_TAB)
     protected INDISwitchProperty config;
 
-    @INDIe(name = "CONFIG_LOAD", label = "Load")
+    @InjectElement(name = "CONFIG_LOAD", label = "Load")
     protected INDISwitchElement configLoad;
 
-    @INDIe(name = "CONFIG_SAVE", label = "Save")
+    @InjectElement(name = "CONFIG_SAVE", label = "Save")
     protected INDISwitchElement configSave;
 
-    @INDIe(name = "CONFIG_DEFAULT", label = "Default")
+    @InjectElement(name = "CONFIG_DEFAULT", label = "Default")
     protected INDISwitchElement configDefault;
 
     protected INDITelescopeParkExtention parkExtention;
 
-    @INDIp(name = "TELESCOPE_ABORT_MOTION", label = "Abort Motion", group = INDITelescope.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "TELESCOPE_ABORT_MOTION", label = "Abort Motion", group = INDITelescope.MAIN_CONTROL_TAB)
     protected INDISwitchProperty abort;
 
-    @INDIe(name = "ABORT", label = "Abort")
+    @InjectElement(name = "ABORT", label = "Abort")
     protected INDISwitchElement abordElement;
 
-    @INDIp(name = "PORTS", label = "Ports", group = OPTIONS_TAB, saveable = true)
+    @InjectProperty(name = "PORTS", label = "Ports", group = OPTIONS_TAB, saveable = true)
     protected INDITextProperty port;
 
-    @INDIe(name = "PORT", label = "Port", valueT = "/dev/ttyUSB0")
+    @InjectElement(name = "PORT", label = "Port", valueT = "/dev/ttyUSB0")
     protected INDITextElement portElement;
 
-    @INDIp(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
+    @InjectProperty(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
     protected INDISwitchProperty movementNSS;
 
-    @INDIe(name = "MOTION_NORTH", label = "North")
+    @InjectElement(name = "MOTION_NORTH", label = "North")
     protected INDISwitchElement movementNSSNorth;
 
-    @INDIe(name = "MOTION_SOUTH", label = "South")
+    @InjectElement(name = "MOTION_SOUTH", label = "South")
     protected INDISwitchElement movementNSSSouth;
 
-    @INDIp(name = "TELESCOPE_MOTION_WE", label = "West/East", group = MOTION_TAB)
+    @InjectProperty(name = "TELESCOPE_MOTION_WE", label = "West/East", group = MOTION_TAB)
     protected INDISwitchProperty movementWES;
 
-    @INDIe(name = "MOTION_WEST", label = "West")
+    @InjectElement(name = "MOTION_WEST", label = "West")
     protected INDISwitchElement movementWESWest;
 
-    @INDIe(name = "MOTION_EAST", label = "East")
+    @InjectElement(name = "MOTION_EAST", label = "East")
     protected INDISwitchElement movementWESEast;
 
-    @INDIp(name = "TELESCOPE_INFO", label = "Scope Properties", group = OPTIONS_TAB, state = OK, saveable = true)
+    @InjectProperty(name = "TELESCOPE_INFO", label = "Scope Properties", group = OPTIONS_TAB, state = OK, saveable = true)
     protected INDINumberProperty scopeParameters;
 
-    @INDIe(name = "TELESCOPE_APERTURE", label = "Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
+    @InjectElement(name = "TELESCOPE_APERTURE", label = "Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersAperture;
 
-    @INDIe(name = "TELESCOPE_FOCAL_LENGTH", label = "Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
+    @InjectElement(name = "TELESCOPE_FOCAL_LENGTH", label = "Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersFocalLength;
 
-    @INDIe(name = "GUIDER_APERTURE", label = "Guider Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
+    @InjectElement(name = "GUIDER_APERTURE", label = "Guider Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersGuiderAperture;
 
-    @INDIe(name = "GUIDER_FOCAL_LENGTH", label = "Guider Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
+    @InjectElement(name = "GUIDER_FOCAL_LENGTH", label = "Guider Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersGuiderFocalLength;
 
     protected INDITelescopeSyncExtention syncExtention;

@@ -5,13 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import laazotea.indi.Constants.LightStates;
 import laazotea.indi.Constants.SwitchStatus;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
     ElementType.FIELD
 })
-public @interface INDIe {
+public @interface InjectElement {
 
     String name();
 
@@ -32,4 +33,6 @@ public @interface INDIe {
     SwitchStatus switchValue() default SwitchStatus.OFF;
 
     String property() default "";
+
+    LightStates state() default LightStates.IDLE;
 }

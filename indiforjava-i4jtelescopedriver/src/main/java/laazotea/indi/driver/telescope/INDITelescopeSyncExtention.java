@@ -3,7 +3,7 @@ package laazotea.indi.driver.telescope;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.driver.INDIDriverExtention;
 import laazotea.indi.driver.INDISwitchElement;
-import laazotea.indi.driver.annotation.INDIe;
+import laazotea.indi.driver.annotation.InjectElement;
 
 public class INDITelescopeSyncExtention extends INDIDriverExtention<INDITelescope> {
 
@@ -16,7 +16,7 @@ public class INDITelescopeSyncExtention extends INDIDriverExtention<INDITelescop
         return driver.canSync();
     }
 
-    @INDIe(property = "ON_COORD_SET", name = "SYNC", label = "Sync")
+    @InjectElement(property = "ON_COORD_SET", name = "SYNC", label = "Sync")
     private INDISwitchElement coordSync;
 
     public boolean doSync(double ra, double dec) {

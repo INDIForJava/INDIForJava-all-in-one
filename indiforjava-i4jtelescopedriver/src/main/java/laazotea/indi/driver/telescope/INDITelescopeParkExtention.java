@@ -10,8 +10,8 @@ import laazotea.indi.driver.INDIDriverExtention;
 import laazotea.indi.driver.INDISwitchElement;
 import laazotea.indi.driver.INDISwitchElementAndValue;
 import laazotea.indi.driver.INDISwitchProperty;
-import laazotea.indi.driver.annotation.INDIe;
-import laazotea.indi.driver.annotation.INDIp;
+import laazotea.indi.driver.annotation.InjectElement;
+import laazotea.indi.driver.annotation.InjectProperty;
 import laazotea.indi.driver.event.SwitchEvent;
 
 public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescope> {
@@ -27,10 +27,10 @@ public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescop
         });
     }
 
-    @INDIp(name = "TELESCOPE_PARK", label = "Park", group = INDITelescope.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "TELESCOPE_PARK", label = "Park", group = INDITelescope.MAIN_CONTROL_TAB)
     private INDISwitchProperty park;
 
-    @INDIe(name = "PARK", label = "Park")
+    @InjectElement(name = "PARK", label = "Park")
     private INDISwitchElement parkElement;
 
     @Override

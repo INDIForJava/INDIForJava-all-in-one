@@ -13,7 +13,7 @@ import laazotea.indi.Constants.SwitchRules;
 @Target({
     ElementType.FIELD
 })
-public @interface INDIp {
+public @interface InjectProperty {
 
     PropertyPermissions permission() default PropertyPermissions.RW;
 

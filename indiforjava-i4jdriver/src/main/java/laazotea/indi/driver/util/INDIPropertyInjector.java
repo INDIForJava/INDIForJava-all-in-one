@@ -7,9 +7,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import laazotea.indi.driver.INDIBLOBElement;
+import laazotea.indi.driver.INDIBLOBProperty;
 import laazotea.indi.driver.INDIDriver;
 import laazotea.indi.driver.INDIDriverExtention;
 import laazotea.indi.driver.INDIElement;
+import laazotea.indi.driver.INDILightElement;
+import laazotea.indi.driver.INDILightProperty;
 import laazotea.indi.driver.INDINumberElement;
 import laazotea.indi.driver.INDINumberProperty;
 import laazotea.indi.driver.INDIProperty;
@@ -17,16 +21,18 @@ import laazotea.indi.driver.INDISwitchElement;
 import laazotea.indi.driver.INDISwitchProperty;
 import laazotea.indi.driver.INDITextElement;
 import laazotea.indi.driver.INDITextProperty;
-import laazotea.indi.driver.annotation.INDIe;
-import laazotea.indi.driver.annotation.INDIp;
+import laazotea.indi.driver.annotation.InjectElement;
+import laazotea.indi.driver.annotation.InjectExtention;
+import laazotea.indi.driver.annotation.InjectProperty;
+import laazotea.indi.driver.annotation.Rename;
 
-public class AnnotatedFieldInitializer {
+public class INDIPropertyInjector {
 
-    private static ThreadLocal<AnnotatedFieldInitializer> current = new ThreadLocal<AnnotatedFieldInitializer>();
+    private static ThreadLocal<INDIPropertyInjector> current = new ThreadLocal<INDIPropertyInjector>();
 
     private Map<String, INDIProperty<?>> properties = new HashMap<String, INDIProperty<?>>();
 
-    private static Logger LOG = Logger.getLogger(AnnotatedFieldInitializer.class.getName());;
+    private static Logger LOG = Logger.getLogger(INDIPropertyInjector.class.getName());;
 
     private final INDIDriver driver;
 
@@ -34,12 +40,18 @@ public class AnnotatedFieldInitializer {
 
     private INDIElement lastElement = null;
 
+    private String currentGroup;
+
+    private String currentPrefix;
+
+    private Rename[] currentRenamings;
+
     public static void initialize(INDIDriver driver, Object object) {
-        AnnotatedFieldInitializer original = current.get();
+        INDIPropertyInjector original = current.get();
         try {
-            AnnotatedFieldInitializer running = original;
+            INDIPropertyInjector running = original;
             if (running == null) {
-                running = new AnnotatedFieldInitializer(driver);
+                running = new INDIPropertyInjector(driver);
                 current.set(running);
             }
             running.initializeAnnotatedProperties(object);
@@ -49,8 +61,8 @@ public class AnnotatedFieldInitializer {
             }
         }
     }
-    
-    private AnnotatedFieldInitializer(INDIDriver driver) {
+
+    private INDIPropertyInjector(INDIDriver driver) {
         this.driver = driver;
     }
 
@@ -85,7 +97,7 @@ public class AnnotatedFieldInitializer {
     }
 
     private void initializeAnnotatedElement(Object instance, Field field) {
-        INDIe elem = field.getAnnotation(INDIe.class);
+        InjectElement elem = field.getAnnotation(InjectElement.class);
         if (elem != null) {
             INDIProperty<?> lastProperty = this.lastProperty;
             lastProperty = findNamedProperty(elem.property(), lastProperty);
@@ -98,6 +110,12 @@ public class AnnotatedFieldInitializer {
                     lastElement = new INDITextElement((INDITextProperty) lastProperty, elem.name(), elem.label(), elem.valueT());
                 } else if (INDISwitchElement.class.isAssignableFrom(field.getType())) {
                     lastElement = new INDISwitchElement((INDISwitchProperty) lastProperty, elem.name(), elem.label(), elem.switchValue());
+                } else if (INDIBLOBElement.class.isAssignableFrom(field.getType())) {
+                    lastElement = new INDIBLOBElement((INDIBLOBProperty) lastProperty, elem.name(), elem.label());
+                } else if (INDILightElement.class.isAssignableFrom(field.getType())) {
+                    lastElement = new INDILightElement((INDILightProperty) lastProperty, elem.name(), elem.label(), elem.state());
+                } else {
+                    LOG.log(Level.SEVERE, "Unknown property type" + elem.property() + " for element " + field);
                 }
                 setFieldValue(instance, field, lastElement);
             } else {
@@ -111,14 +129,25 @@ public class AnnotatedFieldInitializer {
     }
 
     private void initializeAnnotatedProperty(Object instance, Field field) {
-        INDIp prop = field.getAnnotation(INDIp.class);
+        InjectProperty prop = field.getAnnotation(InjectProperty.class);
         if (prop != null) {
+            String group = prop.group();
+            if (group.isEmpty() && currentGroup != null) {
+                group = currentGroup;
+            }
+            String name = rename(prop.name());
             if (INDINumberProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDINumberProperty(driver, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout());
+                lastProperty = new INDINumberProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout());
             } else if (INDITextProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDITextProperty(driver, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout());
+                lastProperty = new INDITextProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout());
             } else if (INDISwitchProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDISwitchProperty(driver, prop.name(), prop.label(), prop.group(), prop.state(), prop.permission(), prop.timeout(), prop.switchRule());
+                lastProperty = new INDISwitchProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout(), prop.switchRule());
+            } else if (INDIBLOBProperty.class.isAssignableFrom(field.getType())) {
+                lastProperty = new INDIBLOBProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout());
+            } else if (INDILightProperty.class.isAssignableFrom(field.getType())) {
+                lastProperty = new INDILightProperty(driver, name, prop.label(), group, prop.state());
+            } else {
+                LOG.log(Level.SEVERE, "Unknown property type for element " + field);
             }
             if (prop.saveable()) {
                 lastProperty.setSaveable(true);
@@ -128,10 +157,43 @@ public class AnnotatedFieldInitializer {
         }
     }
 
+    private String rename(String name) {
+        if (currentRenamings != null) {
+            for (Rename rename : currentRenamings) {
+                if (rename.name().equals(name)) {
+                    return rename.to();
+                }
+            }
+        }
+        if (currentPrefix != null) {
+            return currentPrefix + name;
+        }
+        return name;
+    }
+
     private void initializeDriverExtention(Object instance, Field field) {
         if (INDIDriverExtention.class.isAssignableFrom(field.getType())) {
-            INDIDriverExtention<?> driverExtention = instanciateDriverExtention(instance, field);
-            setFieldValue(instance, field, driverExtention);
+            InjectExtention extentionAnnot = field.getAnnotation(InjectExtention.class);
+            String oldValue = currentGroup;
+            String oldPrefix = currentGroup;
+            Rename[] oldRenamings = currentRenamings;
+            try {
+                if (!extentionAnnot.group().isEmpty()) {
+                    currentGroup = extentionAnnot.group();
+                }
+                if (!extentionAnnot.prefix().isEmpty()) {
+                    currentPrefix = extentionAnnot.prefix();
+                }
+                if (extentionAnnot.rename().length > 0) {
+                    currentRenamings = extentionAnnot.rename();
+                }
+                INDIDriverExtention<?> driverExtention = instanciateDriverExtention(instance, field);
+                setFieldValue(instance, field, driverExtention);
+            } finally {
+                currentGroup = oldValue;
+                currentPrefix = oldPrefix;
+                currentRenamings = oldRenamings;
+            }
         }
     }
 

@@ -33,10 +33,10 @@ import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.*;
-import laazotea.indi.driver.annotation.INDIe;
-import laazotea.indi.driver.annotation.INDIp;
+import laazotea.indi.driver.annotation.InjectElement;
+import laazotea.indi.driver.annotation.InjectProperty;
 import laazotea.indi.driver.event.IEventHandler;
-import laazotea.indi.driver.util.AnnotatedFieldInitializer;
+import laazotea.indi.driver.util.INDIPropertyInjector;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -105,7 +105,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (this instanceof INDIConnectionHandler) {
             addConnectionProperty();
         }
-        AnnotatedFieldInitializer.initialize(this, this);
+        INDIPropertyInjector.initialize(this, this);
     }
 
     /**

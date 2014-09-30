@@ -7,25 +7,20 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jtelescopedriver</artifactId>
-	<name>INDI for Java Abstract Telescope Driver</name>
-	<description>INDI for Java Abstract Telescope Driver</description>
+	<artifactId>i4jccddriver</artifactId>
+	<name>INDI for Java Abstract CCD Driver</name>
+	<description>INDI for Java Abstract CCD Driver</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jccddriver</artifactId>
+			<artifactId>i4jdriver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.indilib.i4j</groupId>
-			<artifactId>org.gnu.savannah.gsl</artifactId>
-			<version>1.16.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.novaforjava</groupId>
-			<artifactId>novaforjava</artifactId>
-			<version>0.15.0.0</version>
+			<artifactId>nom.tam.fits</artifactId>
+			<version>1.11.1</version>
 		</dependency>
 	</dependencies>
 </project>
