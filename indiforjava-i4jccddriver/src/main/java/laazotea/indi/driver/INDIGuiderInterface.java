@@ -1,6 +1,5 @@
 package laazotea.indi.driver;
 
-
 public interface INDIGuiderInterface {
 
     /**

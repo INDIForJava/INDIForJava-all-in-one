@@ -151,11 +151,11 @@ public abstract class INDICCDImage {
 
     }
 
-    public void write(DataOutputStream os,String extention) throws FitsException {
+    public void write(DataOutputStream os, String extention) throws FitsException {
         if ("fits".equals(extention)) {
             asFitsImage().write(os);
-        }else {
-            //todo
+        } else {
+            // todo
         }
     }
 }

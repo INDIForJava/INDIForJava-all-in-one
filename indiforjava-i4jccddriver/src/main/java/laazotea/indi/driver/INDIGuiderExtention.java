@@ -30,7 +30,6 @@ public class INDIGuiderExtention extends INDIDriverExtention<INDIDriver> {
 
     private INDIGuiderInterface guiderInterface;
 
-    
     public void setGuiderInterface(INDIGuiderInterface guiderInterface) {
         this.guiderInterface = guiderInterface;
     }

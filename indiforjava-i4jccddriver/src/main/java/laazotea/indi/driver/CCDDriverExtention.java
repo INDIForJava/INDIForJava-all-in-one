@@ -1,7 +1,11 @@
 package laazotea.indi.driver;
 
+import static laazotea.indi.Constants.PropertyStates.IDLE;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
@@ -10,8 +14,12 @@ import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.INDIException;
 import laazotea.indi.driver.annotation.InjectElement;
 import laazotea.indi.driver.annotation.InjectProperty;
+import laazotea.indi.driver.event.NumberEvent;
+import laazotea.indi.driver.event.SwitchEvent;
 
 public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
+
+    private static final Logger LOG = Logger.getLogger(CCDDriverExtention.class.getName());
 
     private final SimpleDateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
@@ -135,6 +143,12 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "GUIDESTAR_FIT", label = "GUIDESTAR_FIT", maximumD = 1024, numberFormat = "%5.2f")
     protected INDINumberElement rapidGuideDataFIT;
 
+    CCDDriverInterface driverInterface;
+
+    public void setDriverInterface(CCDDriverInterface driverInterface) {
+        this.driverInterface = driverInterface;
+    }
+
     boolean sendCompressed = false;
 
     int XRes; // native resolution of the ccd
@@ -178,6 +192,14 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     INDICCDImage ccdImage;
 
     String imageExtention = "fits";
+
+    protected boolean RapidGuideEnabled = false;
+
+    protected boolean AutoLoop = false;
+
+    protected boolean SendImage = false;
+
+    protected boolean ShowMarker = false;
 
     /**
      * @brief getXRes Get the horizontal resolution in pixels of the CCD Chip.
@@ -594,5 +616,293 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
 
     public CCDDriverExtention(INDICCD indiccd) {
         super(indiccd);
+        imageExposure.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newImageExposureValue(elementsAndValues);
+            }
+        });
+        imageBin.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newImageBinValue(elementsAndValues);
+
+            }
+
+        });
+        imageFrame.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newImageFrameValue(elementsAndValues);
+            }
+        });
+        rapidGuideData.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newRapidGuideDataValue(elementsAndValues);
+            }
+        });
+        imagePixelSize.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newImagePixelSize(elementsAndValues);
+            }
+        });
+        abort.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newAbortValue();
+            }
+
+        });
+        compress.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newCompressedValue(elementsAndValues);
+            }
+        });
+        frameType.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newFrameTypeValue(elementsAndValues);
+            }
+        });
+
+        rapidGuide.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newRapidGuideValue(elementsAndValues);
+            }
+
+        });
+
+        rapidGuideSetup.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newRapidGuideSetupValue(elementsAndValues);
+            }
+        });
+
+    }
+
+    @Override
+    public void connect() {
+        driver.addProperty(this.imageExposure);
+        if (driver.capability.canAbort)
+            driver.addProperty(this.abort);
+        if (!driver.capability.canSubFrame) {
+            this.imageFrame.setPermission(PropertyPermissions.RO);
+        }
+        driver.addProperty(this.imageFrame);
+        if (driver.capability.canBin)
+            driver.addProperty(this.imageBin);
+        driver.addProperty(this.imagePixelSize);
+        driver.addProperty(this.compress);
+        driver.addProperty(this.fits);
+        driver.addProperty(this.frameType);
+        driver.addProperty(this.rapidGuide);
+        if (RapidGuideEnabled) {
+            driver.addProperty(this.rapidGuideSetup);
+            driver.addProperty(this.rapidGuideData);
+        }
+    }
+
+    @Override
+    public void disconnect() {
+        driver.removeProperty(this.imageExposure);
+        if (driver.capability.canAbort)
+            driver.removeProperty(this.abort);
+        if (!driver.capability.canSubFrame) {
+            this.imageFrame.setPermission(PropertyPermissions.RO);
+        }
+        driver.removeProperty(this.imageFrame);
+        if (driver.capability.canBin)
+            driver.removeProperty(this.imageBin);
+        driver.removeProperty(this.imagePixelSize);
+        driver.removeProperty(this.compress);
+        driver.removeProperty(this.fits);
+        driver.removeProperty(this.frameType);
+        driver.removeProperty(this.rapidGuide);
+        if (RapidGuideEnabled) {
+            driver.removeProperty(this.rapidGuideSetup);
+            driver.removeProperty(this.rapidGuideData);
+        }
+    }
+
+    private void newImageBinValue(INDINumberElementAndValue[] elementsAndValues) {
+        // We are being asked to set camera binning
+        if (!driver.canBin()) {
+            imageBin.setState(PropertyStates.ALERT);
+            try {
+                driver.updateProperty(imageBin);
+            } catch (INDIException e) {
+            }
+            return;
+        }
+        imageBin.setValues(elementsAndValues);
+        BinX = imageBinX.getIntValue();
+        BinY = imageBinY.getIntValue();
+
+        if (driverInterface.updateCCDBin(BinX, BinY)) {
+            imageBin.setState(PropertyStates.OK);
+
+        } else
+            imageBin.setState(PropertyStates.ALERT);
+        try {
+            driver.updateProperty(imageBin);
+        } catch (INDIException e) {
+        }
+        return;
+    }
+
+    private void newImageExposureValue(INDINumberElementAndValue[] elementsAndValues) {
+        imageExposure.setValues(elementsAndValues);
+        if (imageExposure.getState() == PropertyStates.BUSY)
+            driverInterface.abortExposure();
+        if (driverInterface.startExposure(exposureDuration))
+            imageExposure.setState(PropertyStates.BUSY);
+        else
+            imageExposure.setState(PropertyStates.ALERT);
+        try {
+            driver.updateProperty(imageExposure);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
+        imageFrame.setValues(elementsAndValues);
+
+        imageFrame.setState(PropertyStates.OK);
+
+        LOG.log(Level.FINE, String.format("Requested CCD Frame is %4.0f,%4.0f %4.0f x %4.0f", imageFrameX.getIntValue(), imageFrameY.getIntValue(),
+                imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()));
+
+        if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()))
+            imageFrame.setState(PropertyStates.ALERT);
+        try {
+            driver.updateProperty(imageFrame);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newRapidGuideDataValue(INDINumberElementAndValue[] elementsAndValues) {
+        rapidGuideData.setState(PropertyStates.OK);
+        rapidGuideData.setValues(elementsAndValues);
+        try {
+            driver.updateProperty(rapidGuideData);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newImagePixelSize(INDINumberElementAndValue[] elementsAndValues) {
+        imagePixelSize.setValues(elementsAndValues);
+        imagePixelSize.setState(PropertyStates.OK);
+        XRes = imagePixelSizeMaxX.getIntValue();
+        YRes = imagePixelSizeMaxY.getIntValue();
+        PixelSizex = imagePixelSizePixelSizeX.getValue().floatValue();
+        PixelSizey = imagePixelSizePixelSizeY.getValue().floatValue();
+        try {
+            driver.updateProperty(imagePixelSize);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newAbortValue() {
+        abortSwitch.setValue(SwitchStatus.OFF);
+        if (driverInterface.abortExposure()) {
+            abort.setState(PropertyStates.OK);
+            imageExposure.setState(IDLE);
+            imageExposureDuration.setValue(0.0);
+        } else {
+            abort.setState(PropertyStates.ALERT);
+            imageExposure.setState(PropertyStates.ALERT);
+        }
+        try {
+            driver.updateProperty(abort);
+            driver.updateProperty(imageExposure);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newCompressedValue(INDISwitchElementAndValue[] elementsAndValues) {
+        compress.setValues(elementsAndValues);
+        if (compressCompress.getValue() == SwitchStatus.ON) {
+            sendCompressed = true;
+        } else {
+            sendCompressed = false;
+        }
+        try {
+            driver.updateProperty(compress);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newFrameTypeValue(INDISwitchElementAndValue[] elementsAndValues) {
+        frameType.setValues(elementsAndValues);
+        frameType.setState(PropertyStates.OK);
+        if (frameTypeLight.getValue() == SwitchStatus.ON) {
+            setFrameType(CCD_FRAME.LIGHT_FRAME);
+        } else if (frameTypeBais.getValue() == SwitchStatus.ON) {
+            setFrameType(CCD_FRAME.BIAS_FRAME);
+            if (driver.capability.hasShutter == false) {
+                LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
+            }
+        } else if (frameTypeDark.getValue() == SwitchStatus.ON) {
+            setFrameType(CCD_FRAME.DARK_FRAME);
+            if (driver.capability.hasShutter == false) {
+                LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
+            }
+        } else if (frameTypeFlat.getValue() == SwitchStatus.ON) {
+            setFrameType(CCD_FRAME.FLAT_FRAME);
+        }
+        if (driverInterface.updateCCDFrameType(getFrameType()) == false)
+            frameType.setState(PropertyStates.ALERT);
+        try {
+            driver.updateProperty(frameType);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newRapidGuideValue(INDISwitchElementAndValue[] elementsAndValues) {
+        rapidGuide.setValues(elementsAndValues);
+        rapidGuide.setState(PropertyStates.OK);
+        RapidGuideEnabled = (rapidGuideEnable.getValue() == SwitchStatus.ON);
+
+        if (RapidGuideEnabled) {
+            driver.addProperty(rapidGuideSetup);
+            driver.addProperty(rapidGuideData);
+        } else {
+            driver.removeProperty(rapidGuideSetup);
+            driver.removeProperty(rapidGuideData);
+        }
+
+        try {
+            driver.updateProperty(rapidGuide);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newRapidGuideSetupValue(INDISwitchElementAndValue[] elementsAndValues) {
+        rapidGuideSetup.setValues(elementsAndValues);
+        rapidGuideSetup.setState(PropertyStates.OK);
+
+        AutoLoop = rapidGuideSetupAutoLoop.getValue() == SwitchStatus.ON;
+        SendImage = rapidGuideSetupSendImage.getValue() == SwitchStatus.ON;
+        ShowMarker = rapidGuideSetupShowMarker.getValue() == SwitchStatus.ON;
+
+        try {
+            driver.updateProperty(rapidGuideSetup);
+        } catch (INDIException e) {
+        }
     }
 }
