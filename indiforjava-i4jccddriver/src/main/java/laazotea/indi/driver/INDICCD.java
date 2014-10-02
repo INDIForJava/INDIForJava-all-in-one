@@ -348,7 +348,10 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
      */
     public abstract boolean startExposure(double duration);
 
-    private int getFileIndex(String dir, String prefix, String extension) throws IOException {
+    protected File getFileWithIndex(String extension) throws IOException {
+        String dir = uploadSettingsDir.getValue();
+        String prefix = uploadSettingsPrefix.getValue();
+
         int indexOfXX = prefix.indexOf("XX");
         String uptoXX = prefix.substring(0, indexOfXX);
         String afterXX = prefix.substring(indexOfXX + 2) + "." + extension;
@@ -362,38 +365,9 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
                 }
             }
         }
-        return maxNumber;
-    }
-
-    protected void uploadFile(CCDDriverExtention targetChip, INDICCDImage ccdImage, boolean sendImage, boolean saveImage) throws Exception {
-        if (saveImage) {
-            int maxIndex = getFileIndex(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue(), targetChip.getImageExtension());
-            maxIndex++;
-            File fp = new File(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue().replace("XX", Integer.toString(maxIndex)) + "." + targetChip.getImageExtension());
-            try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fp)))) {
-                ccdImage.write(os, targetChip.getImageExtension());
-            }
-        }
-        if (sendImage) {
-            if (targetChip.sendCompressed) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new BufferedOutputStream(out))))) {
-                    ccdImage.write(os, targetChip.getImageExtension());
-                }
-                targetChip.fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + targetChip.getImageExtension() + ".z"));
-            } else {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(out))) {
-                    ccdImage.write(os, targetChip.getImageExtension());
-                }
-                targetChip.fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + targetChip.getImageExtension()));
-            }
-            targetChip.fits.setState(PropertyStates.OK);
-            try {
-                updateProperty(targetChip.fits);
-            } catch (INDIException e) {
-            }
-        }
+        maxNumber++;
+        File fp = new File(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue().replace("XX", Integer.toString(maxNumber)) + "." + extension);
+        return fp;
     }
 
     /**

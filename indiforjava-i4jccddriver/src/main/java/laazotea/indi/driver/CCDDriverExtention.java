@@ -2,15 +2,22 @@ package laazotea.indi.driver;
 
 import static laazotea.indi.Constants.PropertyStates.IDLE;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DeflaterOutputStream;
 
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
+import laazotea.indi.INDIBLOBValue;
 import laazotea.indi.INDIException;
 import laazotea.indi.driver.annotation.InjectElement;
 import laazotea.indi.driver.annotation.InjectProperty;
@@ -250,35 +257,35 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "GUIDESTAR_FIT", label = "GUIDESTAR_FIT", maximumD = 1024, numberFormat = "%5.2f")
     protected INDINumberElement rapidGuideDataFIT;
 
-    CCDDriverInterface driverInterface;
+    private CCDDriverInterface driverInterface;
 
     public void setDriverInterface(CCDDriverInterface driverInterface) {
         this.driverInterface = driverInterface;
     }
 
-    boolean sendCompressed = false;
+    private boolean sendCompressed = false;
 
-    int XRes; // native resolution of the ccd
+    private int xResolution; // native resolution of the ccd
 
-    int YRes; // ditto
+    private int yResolution; // ditto
 
-    int SubX; // left side of the subframe we are requesting
+    private int subframeX; // left side of the subframe we are requesting
 
-    int SubY; // top of the subframe requested
+    private int subframeY; // top of the subframe requested
 
-    int SubW; // UNBINNED width of the subframe
+    private int subframeWidth; // UNBINNED width of the subframe
 
-    int SubH; // UNBINNED height of the subframe
+    private int subframeHeight; // UNBINNED height of the subframe
 
-    int BinX = 1; // Binning requested in the x direction
+    private int binningX = 1; // Binning requested in the x direction
 
-    int BinY = 1; // Binning requested in the Y direction
+    private int binningY = 1; // Binning requested in the Y direction
 
     int NAxis = 2; // # of Axis
 
-    float PixelSizex; // pixel size in microns, x direction
+    private float pixelSizeX; // pixel size in microns, x direction
 
-    float PixelSizey; // pixel size in microns, y direction
+    private float pixelSizeY; // pixel size in microns, y direction
 
     int BPP = 8; // Bytes per Pixel
 
@@ -317,7 +324,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return the horizontal resolution of the CCD Chip.
      */
     int getXRes() {
-        return XRes;
+        return xResolution;
     }
 
     /**
@@ -325,7 +332,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return the horizontal resolution of the CCD Chip.
      */
     int getYRes() {
-        return YRes;
+        return yResolution;
     }
 
     /**
@@ -333,7 +340,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return the starting left coordinates (X) of the image.
      */
     int getSubX() {
-        return SubX;
+        return subframeX;
     }
 
     /**
@@ -341,7 +348,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return the starting top coordinates (Y) of the image.
      */
     int getSubY() {
-        return SubY;
+        return subframeY;
     }
 
     /**
@@ -349,7 +356,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return unbinned width of the frame
      */
     int getSubW() {
-        return SubW;
+        return subframeWidth;
     }
 
     /**
@@ -357,7 +364,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return unbinned height of the frame
      */
     int getSubH() {
-        return SubH;
+        return subframeHeight;
     }
 
     /**
@@ -365,7 +372,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return horizontal binning of the CCD chip.
      */
     int getBinX() {
-        return BinX;
+        return binningX;
     }
 
     /**
@@ -373,7 +380,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return vertical binning of the CCD chip.
      */
     int getBinY() {
-        return BinY;
+        return binningY;
     }
 
     /**
@@ -381,7 +388,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return horizontal pixel size in microns.
      */
     float getPixelSizeX() {
-        return PixelSizex;
+        return pixelSizeX;
     }
 
     /**
@@ -389,7 +396,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @return vertical pixel size in microns.
      */
     float getPixelSizeY() {
-        return PixelSizey;
+        return pixelSizeY;
     }
 
     /**
@@ -506,8 +513,8 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @throws INDIException
      */
     void setResolution(int x, int y) throws INDIException {
-        XRes = x;
-        YRes = y;
+        xResolution = x;
+        yResolution = y;
 
         imagePixelSizeMaxX.setValue(x);
         imagePixelSizeMaxY.setValue(y);
@@ -537,15 +544,15 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @throws INDIException
      */
     void setFrame(int subx, int suby, int subw, int subh) throws INDIException {
-        SubX = subx;
-        SubY = suby;
-        SubW = subw;
-        SubH = subh;
+        subframeX = subx;
+        subframeY = suby;
+        subframeWidth = subw;
+        subframeHeight = subh;
 
-        imageFrameX.setValue(SubX);
-        imageFrameY.setValue(SubY);
-        imageFrameWidth.setValue(SubW);
-        imageFrameHeigth.setValue(SubH);
+        imageFrameX.setValue(subframeX);
+        imageFrameY.setValue(subframeY);
+        imageFrameWidth.setValue(subframeWidth);
+        imageFrameHeigth.setValue(subframeHeight);
         this.driver.updateProperty(imageFrame);
     }
 
@@ -558,11 +565,11 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @throws INDIException
      */
     void setBin(int hor, int ver) throws INDIException {
-        BinX = hor;
-        BinY = ver;
+        binningX = hor;
+        binningY = ver;
 
-        imageBinX.setValue(BinX);
-        imageBinY.setValue(BinY);
+        imageBinX.setValue(binningX);
+        imageBinY.setValue(binningY);
         this.driver.updateProperty(imageBin);
     }
 
@@ -589,8 +596,8 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      * @throws INDIException
      */
     void setPixelSize(float x, float y) throws INDIException {
-        PixelSizex = x;
-        PixelSizey = y;
+        pixelSizeX = x;
+        pixelSizeY = y;
 
         imagePixelSizePixelSize.setValue(x);
         imagePixelSizePixelSizeX.setValue(x);
@@ -861,10 +868,10 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
             return;
         }
         imageBin.setValues(elementsAndValues);
-        BinX = imageBinX.getIntValue();
-        BinY = imageBinY.getIntValue();
+        binningX = imageBinX.getIntValue();
+        binningY = imageBinY.getIntValue();
 
-        if (driverInterface.updateCCDBin(BinX, BinY)) {
+        if (driverInterface.updateCCDBin(binningX, binningY)) {
             imageBin.setState(PropertyStates.OK);
 
         } else
@@ -918,10 +925,10 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     private void newImagePixelSize(INDINumberElementAndValue[] elementsAndValues) {
         imagePixelSize.setValues(elementsAndValues);
         imagePixelSize.setState(PropertyStates.OK);
-        XRes = imagePixelSizeMaxX.getIntValue();
-        YRes = imagePixelSizeMaxY.getIntValue();
-        PixelSizex = imagePixelSizePixelSizeX.getValue().floatValue();
-        PixelSizey = imagePixelSizePixelSizeY.getValue().floatValue();
+        xResolution = imagePixelSizeMaxX.getIntValue();
+        yResolution = imagePixelSizeMaxY.getIntValue();
+        pixelSizeX = imagePixelSizePixelSizeX.getValue().floatValue();
+        pixelSizeY = imagePixelSizePixelSizeY.getValue().floatValue();
         try {
             driver.updateProperty(imagePixelSize);
         } catch (INDIException e) {
@@ -1126,9 +1133,9 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
                 try {
                     if ("fits".equals((getImageExtension()))) {
                         Fits f = ccdImage.asFitsImage();
-                        addFITSKeywords(this, f.getHDU(0));
+                        addFITSKeywords(f.getHDU(0));
                     }
-                    driver.uploadFile(this, ccdImage, sendImage, saveImage);
+                    uploadFile(sendImage, saveImage);
                 } catch (Exception e) {
                     LOG.log(Level.SEVERE, "could not send or save image", e);
                     return false;
@@ -1157,6 +1164,35 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         return true;
     }
 
+    protected void uploadFile(boolean sendImage, boolean saveImage) throws Exception {
+        if (saveImage) {
+            File fp = driver.getFileWithIndex(getImageExtension());
+            try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fp)))) {
+                ccdImage.write(os, getImageExtension());
+            }
+        }
+        if (sendImage) {
+            if (sendCompressed) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new BufferedOutputStream(out))))) {
+                    ccdImage.write(os, getImageExtension());
+                }
+                fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + getImageExtension() + ".z"));
+            } else {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(out))) {
+                    ccdImage.write(os, getImageExtension());
+                }
+                fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + getImageExtension()));
+            }
+            fits.setState(PropertyStates.OK);
+            try {
+                driver.updateProperty(fits);
+            } catch (INDIException e) {
+            }
+        }
+    }
+
     /**
      * Add FITS keywords to a fits file. In additional to the standard FITS
      * keywords, this function write the following keywords the FITS file:
@@ -1181,19 +1217,19 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
      *            The target chip to extract the keywords from.
      * @throws HeaderCardException
      */
-    protected void addFITSKeywords(CCDDriverExtention targetChip, BasicHDU fitsHeader) throws HeaderCardException {
-        fitsHeader.addValue("EXPTIME", targetChip.exposureDuration, "Total Exposure Time (s)");
+    protected void addFITSKeywords(BasicHDU fitsHeader) throws HeaderCardException {
+        fitsHeader.addValue("EXPTIME", exposureDuration, "Total Exposure Time (s)");
 
-        if (targetChip.getFrameType() == CCD_FRAME.DARK_FRAME)
-            fitsHeader.addValue("DARKTIME", targetChip.exposureDuration, "Total Exposure Time (s)");
+        if (getFrameType() == CCD_FRAME.DARK_FRAME)
+            fitsHeader.addValue("DARKTIME", exposureDuration, "Total Exposure Time (s)");
 
-        fitsHeader.addValue("PIXSIZE1", targetChip.getPixelSizeX(), "Pixel Size 1 (microns)");
-        fitsHeader.addValue("PIXSIZE2", targetChip.getPixelSizeY(), "Pixel Size 2 (microns)");
-        fitsHeader.addValue("XBINNING", targetChip.BinX, "Binning factor in width");
-        fitsHeader.addValue("YBINNING", targetChip.BinY, "Binning factor in height");
-        fitsHeader.addValue("FRAME", targetChip.getFrameType().fitsValue(), "Frame Type");
+        fitsHeader.addValue("PIXSIZE1", getPixelSizeX(), "Pixel Size 1 (microns)");
+        fitsHeader.addValue("PIXSIZE2", getPixelSizeY(), "Pixel Size 2 (microns)");
+        fitsHeader.addValue("XBINNING", binningX, "Binning factor in width");
+        fitsHeader.addValue("YBINNING", binningY, "Binning factor in height");
+        fitsHeader.addValue("FRAME", getFrameType().fitsValue(), "Frame Type");
 
-        if (targetChip.getNAxis() == 2) {
+        if (getNAxis() == 2) {
             // should de done in the image processing
             // fitsHeader.addValue("DATAMIN", &min_val, "Minimum value");
             // fitsHeader.addValue("DATAMAX", &max_val, "Maximum value");
@@ -1205,7 +1241,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         }
 
         fitsHeader.addValue("INSTRUME", driver.getName(), "CCD Name");
-        fitsHeader.addValue("DATE-OBS", targetChip.getExposureStartTime(), "UTC start date of observation");
+        fitsHeader.addValue("DATE-OBS", getExposureStartTime(), "UTC start date of observation");
 
     }
 }
