@@ -1,9 +1,14 @@
-package laazotea.indi.driver;
+package laazotea.indi.driver.ccd;
 
 import java.util.Date;
 
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.INDIException;
+import laazotea.indi.driver.INDIDriver;
+import laazotea.indi.driver.INDIDriverExtention;
+import laazotea.indi.driver.INDINumberElement;
+import laazotea.indi.driver.INDINumberElementAndValue;
+import laazotea.indi.driver.INDINumberProperty;
 import laazotea.indi.driver.annotation.InjectElement;
 import laazotea.indi.driver.annotation.InjectProperty;
 import laazotea.indi.driver.event.NumberEvent;

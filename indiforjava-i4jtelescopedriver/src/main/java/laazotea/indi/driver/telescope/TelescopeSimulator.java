@@ -1,6 +1,5 @@
 package laazotea.indi.driver.telescope;
 
-import static laazotea.indi.Constants.PropertyPermissions.RW;
 import static laazotea.indi.Constants.PropertyStates.IDLE;
 
 import java.io.InputStream;
@@ -12,18 +11,25 @@ import java.util.logging.Logger;
 import laazotea.indi.Constants;
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
-import laazotea.indi.Constants.SwitchRules;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.INDIException;
-import laazotea.indi.driver.INDIGuiderExtention;
-import laazotea.indi.driver.INDIGuiderInterface;
+import laazotea.indi.driver.INDIBLOBElementAndValue;
+import laazotea.indi.driver.INDIBLOBProperty;
 import laazotea.indi.driver.INDINumberElement;
 import laazotea.indi.driver.INDINumberElementAndValue;
 import laazotea.indi.driver.INDINumberProperty;
 import laazotea.indi.driver.INDISwitchElement;
 import laazotea.indi.driver.INDISwitchElementAndValue;
 import laazotea.indi.driver.INDISwitchProperty;
+import laazotea.indi.driver.INDITextElementAndValue;
+import laazotea.indi.driver.INDITextProperty;
+import laazotea.indi.driver.annotation.InjectElement;
 import laazotea.indi.driver.annotation.InjectExtention;
+import laazotea.indi.driver.annotation.InjectProperty;
+import laazotea.indi.driver.ccd.INDIGuiderExtention;
+import laazotea.indi.driver.ccd.INDIGuiderInterface;
+import laazotea.indi.driver.event.NumberEvent;
+import laazotea.indi.driver.event.SwitchEvent;
 
 public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface {
 
@@ -90,29 +96,55 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
     private boolean Parked;
 
-    private final INDINumberProperty eqPen;
+    /**
+     * Simulated periodic error in RA, DEC
+     */
+    @InjectProperty(name = "EQUATORIAL_PE", label = "Periodic Error", group = Constants.MOTION_TAB, permission = PropertyPermissions.RO)
+    private INDINumberProperty eqPen;
 
-    private final INDINumberElement eqPenRa;
+    @InjectElement(name = "RA_PE", label = "RA (hh:mm:ss)", valueD = 0.15d, maximumD = 24d, numberFormat = "%010.6m")
+    private INDINumberElement eqPenRa;
 
-    private final INDINumberElement eqPenDec;
+    @InjectElement(name = "DEC_PE", label = "DEC (dd:mm:ss)", valueD = 0.15d, minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    private INDINumberElement eqPenDec;
 
-    private final INDISwitchProperty PErrNS;
+    /**
+     * Enable client to manually add periodic error northward or southward for
+     * simulation purposes
+     */
+    @InjectProperty(name = "PE_NS", label = "PE N/S", group = Constants.MOTION_TAB)
+    private INDISwitchProperty periodicErrorNS;
 
-    private final INDISwitchElement PErrNSNorth;
+    @InjectElement(name = "PE_N", label = "North")
+    private INDISwitchElement periodicErrorNSNorth;
 
-    private final INDISwitchElement PErrNSSouth;
+    @InjectElement(name = "PE_S", label = "South")
+    private INDISwitchElement periodicErrorNSSouth;
 
-    private final INDISwitchProperty PErrWE;
+    /**
+     * Enable client to manually add periodic error westward or easthward for
+     * simulation purposes
+     */
+    @InjectProperty(name = "PE_WE", label = "PE W/E", group = Constants.MOTION_TAB)
+    private INDISwitchProperty periodicErrorWE;
 
-    private final INDISwitchElement PErrWEWest;
+    @InjectElement(name = "PE_W", label = "West")
+    private INDISwitchElement periodicErrorWEWest;
 
-    private final INDISwitchElement PErrWEEast;
+    @InjectElement(name = "PE_E", label = "East")
+    private INDISwitchElement periodicErrorWEEast;
 
-    private final INDINumberProperty guideRate;
+    /**
+     * How fast do we guide compared to sidereal rate
+     */
+    @InjectProperty(name = "GUIDE_RATE", label = "Guiding Rate", group = Constants.MOTION_TAB, timeout = 0)
+    private INDINumberProperty guideRate;
 
-    private final INDINumberElement guideRateWE;
+    @InjectElement(name = "GUIDE_RATE_WE", label = "W/E Rate", valueD = 0.3d, maximumD = 1d, stepD = 0.1d, numberFormat = "%g")
+    private INDINumberElement guideRateWE;
 
-    private final INDINumberElement guideRateNS;
+    @InjectElement(name = "GUIDE_RATE_NS", label = "N/S Rate", valueD = 0.3d, maximumD = 1d, stepD = 0.1d, numberFormat = "%g")
+    private INDINumberElement guideRateNS;
 
     @InjectExtention(group = Constants.MOTION_TAB)
     private INDIGuiderExtention guider;
@@ -121,40 +153,19 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
     private double[] guiderEWTarget = new double[2];
 
-    public String getDefaultName() {
-        return "Telescope Simulator";
-    }
+    private long lastSystime = -1;
+
+    private double last_dx = 0, last_dy = 0;
+
+    TelescopeMotionNS moveNSlast_motion = null;
+
+    TelescopeMotionWE moveWElast_motion = null;
 
     public TelescopeSimulator(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
         currentRA = 0;
         currentDEC = 90;
         Parked = false;
-        /* Simulated periodic error in RA, DEC */
-        this.eqPen = new INDINumberProperty(this, "EQUATORIAL_PE", "Periodic Error", Constants.MOTION_TAB, IDLE, PropertyPermissions.RO, 60);
-        this.eqPenRa = new INDINumberElement(this.eqPen, "RA_PE", "RA (hh:mm:ss)", 0.15d, 0d, 24d, 0d, "%010.6m");
-        this.eqPenDec = new INDINumberElement(this.eqPen, "DEC_PE", "DEC (dd:mm:ss)", 0.15d, -90d, 90d, 0d, "%010.6m");
-
-        /*
-         * Enable client to manually add periodic error northward or southward
-         * for simulation purposes
-         */
-        this.PErrNS = new INDISwitchProperty(this, "PE_NS", "PE N/S", Constants.MOTION_TAB, IDLE, RW, 60, SwitchRules.ONE_OF_MANY);
-        this.PErrNSNorth = new INDISwitchElement(this.PErrNS, "PE_N", "North", SwitchStatus.OFF);
-        this.PErrNSSouth = new INDISwitchElement(this.PErrNS, "PE_S", "South", SwitchStatus.OFF);
-
-        /*
-         * Enable client to manually add periodic error westward or easthward
-         * for simulation purposes
-         */
-        this.PErrWE = new INDISwitchProperty(this, "PE_WE", "PE W/E", Constants.MOTION_TAB, IDLE, RW, 60, SwitchRules.ONE_OF_MANY);
-        this.PErrWEWest = new INDISwitchElement(this.PErrWE, "PE_W", "West", SwitchStatus.OFF);
-        this.PErrWEEast = new INDISwitchElement(this.PErrWE, "PE_E", "East", SwitchStatus.OFF);
-
-        /* How fast do we guide compared to sidereal rate */
-        this.guideRate = new INDINumberProperty(this, "GUIDE_RATE", "Guiding Rate", Constants.MOTION_TAB, IDLE, PropertyPermissions.RW, 0);
-        this.guideRateWE = new INDINumberElement(this.guideRate, "GUIDE_RATE_WE", "W/E Rate", 0.3d, 0d, 1d, 0.1d, "%g");
-        this.guideRateNS = new INDINumberElement(this.guideRate, "GUIDE_RATE_NS", "N/S Rate", 0.3d, 0d, 1d, 0.1d, "%g");
 
         // Let's simulate it to be an F/10 8" telescope
         scopeParametersAperture.setValue(203d);
@@ -163,13 +174,180 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
         scopeParametersGuiderFocalLength.setValue(2000d);
 
         trackState = TelescopeStatus.SCOPE_IDLE;
+        this.guideRate.setEventHandler(new NumberEvent() {
 
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                newGuideRateValue(elementsAndValues);
+            }
+        });
+        periodicErrorNS.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newPErrNSValue(elementsAndValues);
+            }
+        });
+        periodicErrorWE.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newPErrWEValue(elementsAndValues);
+            }
+        });
         this.guider.setGuiderInterface(this);
     }
 
+    /**
+     * This must be replaced by a real java impl
+     */
+    private String fs_sexa(double a, int w, int fracbase) {
+        String out = "";
+        long n;
+        int d;
+        int f;
+        int m;
+        int s;
+        boolean isneg;
+
+        /* save whether it's negative but do all the rest with a positive */
+        isneg = (a < 0);
+        if (isneg)
+            a = -a;
+
+        /* convert to an integral number of whole portions */
+        n = (long) (a * fracbase + 0.5);
+        d = (int) (n / fracbase);
+        f = (int) (n % fracbase);
+
+        /* form the whole part; "negative 0" is a special case */
+        if (isneg && d == 0)
+            out += String.format("%s%s-0", w - 2, "");
+        else
+            out += String.format("%d%d", w, isneg ? -d : d);
+
+        /* do the rest */
+        switch (fracbase) {
+            case 60: /* dd:mm */
+                m = f / (fracbase / 60);
+                out += String.format(":%02d", m);
+                break;
+            case 600: /* dd:mm.m */
+                out += String.format(":%02d.%1d", f / 10, f % 10);
+                break;
+            case 3600: /* dd:mm:ss */
+                m = f / (fracbase / 60);
+                s = f % (fracbase / 60);
+                out += String.format(":%02d:%02d", m, s);
+                break;
+            case 36000: /* dd:mm:ss.s */
+                m = f / (fracbase / 60);
+                s = f % (fracbase / 60);
+                out += String.format(":%02d:%02d.%1d", m, s / 10, s % 10);
+                break;
+            case 360000: /* dd:mm:ss.ss */
+                m = f / (fracbase / 60);
+                s = f % (fracbase / 60);
+                out += String.format(":%02d:%02d.%02d", m, s / 100, s % 100);
+                break;
+            default:
+                throw new IllegalArgumentException("unkown franctionbase");
+        }
+
+        return out;
+    }
+
+    private void newGuideRateValue(INDINumberElementAndValue[] elementsAndValues) {
+        this.guideRate.setValues(elementsAndValues);
+        guideRate.setState(PropertyStates.OK);
+        try {
+            updateProperty(this.guideRate);
+        } catch (INDIException e) {
+        }
+    };
+
+    private void newPErrNSValue(INDISwitchElementAndValue[] elementsAndValues) {
+        periodicErrorNS.setValues(elementsAndValues);
+        periodicErrorNS.setState(PropertyStates.OK);
+
+        if (periodicErrorNSNorth.getValue() == SwitchStatus.ON) {
+            eqPenDec.setValue(eqPenDec.getValue() + (SID_RATE * guideRateNS.getValue()));
+            LOG.log(Level.INFO, String.format("Simulating PE in NORTH direction for value of %g", SID_RATE));
+        } else {
+            eqPenDec.setValue(eqPenDec.getValue() - (SID_RATE * guideRateNS.getValue()));
+            LOG.log(Level.INFO, String.format("Simulating PE in SOUTH direction for value of %g", SID_RATE));
+        }
+        periodicErrorNS.resetAllSwitches();
+        try {
+            updateProperty(periodicErrorNS);
+            updateProperty(this.eqPen);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newPErrWEValue(INDISwitchElementAndValue[] elementsAndValues) {
+        periodicErrorWE.setValues(elementsAndValues);
+        periodicErrorWE.setState(PropertyStates.OK);
+
+        if (periodicErrorWEWest.getValue() == SwitchStatus.ON) {
+            eqPenRa.setValue(eqPenRa.getValue() - (SID_RATE / 15d * guideRateWE.getValue()));
+            LOG.log(Level.INFO, String.format("Simulator PE in WEST direction for value of %g", SID_RATE));
+        } else {
+            eqPenRa.setValue(eqPenRa.getValue() + (SID_RATE / 15d * guideRateWE.getValue()));
+            LOG.log(Level.INFO, String.format("Simulator PE in EAST direction for value of %g", SID_RATE));
+        }
+
+        periodicErrorWE.resetAllSwitches();
+        try {
+            updateProperty(periodicErrorWE);
+            updateProperty(this.eqPen);
+        } catch (INDIException e) {
+        }
+    }
+
     @Override
-    protected long updateInterfall() {
-        return 250L;
+    protected boolean abort() {
+        if (movementNSS.getState() == PropertyStates.BUSY) {
+            movementNSS.resetAllSwitches();
+            movementNSS.setState(IDLE);
+            try {
+                updateProperty(movementNSS);
+            } catch (INDIException e) {
+            }
+        }
+        if (movementWES.getState() == PropertyStates.BUSY) {
+            movementWES.resetAllSwitches();
+            movementWES.setState(IDLE);
+            try {
+                updateProperty(movementWES);
+            } catch (INDIException e) {
+            }
+        }
+        if (parkExtention.isBusy()) {
+            parkExtention.setIdle();
+        }
+        if (eqn.getState() == PropertyStates.BUSY) {
+            eqn.setState(IDLE);
+            try {
+                updateProperty(eqn);
+            } catch (INDIException e) {
+            }
+        }
+        trackState = TelescopeStatus.SCOPE_IDLE;
+        abort.setState(PropertyStates.OK);
+        abort.resetAllSwitches();
+        try {
+            updateProperty(abort);
+        } catch (INDIException e) {
+        }
+        LOG.log(Level.INFO, "Telescope aborted.");
+
+        return true;
+    }
+
+    @Override
+    protected boolean canPark() {
+        return true;
     }
 
     @Override
@@ -178,33 +356,102 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     }
 
     @Override
-    public String getName() {
-        return getDefaultName();
+    protected void doGoto(double r, double d) {
+        // IDLog("ScopeSim Goto\n");
+        targetRA = r;
+        targetDEC = d;
+        String RAStr, DecStr;
+
+        RAStr = fs_sexa(targetRA, 2, 3600);
+        DecStr = fs_sexa(targetDEC, 2, 3600);
+
+        Parked = false;
+        trackState = TelescopeStatus.SCOPE_SLEWING;
+
+        eqn.setState(PropertyStates.BUSY);
+
+        LOG.log(Level.INFO, String.format("Slewing to RA: %s - DEC: %s", RAStr, DecStr));
     }
 
-    public void driverConnect(Date timestamp) throws INDIException {
-        super.driverConnect(timestamp);
-        LOG.log(Level.INFO, "Telescope simulator is online.");
-        guider.connect();
-        addProperty(guideRate);
-        addProperty(eqPen);
-        addProperty(PErrNS);
-        addProperty(PErrWE);
+    @Override
+    protected boolean moveNS(TelescopeMotionNS dir) {
+
+        switch (dir) {
+            case MOTION_NORTH:
+                if (moveNSlast_motion != TelescopeMotionNS.MOTION_NORTH)
+                    moveNSlast_motion = TelescopeMotionNS.MOTION_NORTH;
+                else {
+                    movementNSS.resetAllSwitches();
+                    movementNSS.setState(IDLE);
+                    try {
+                        updateProperty(movementNSS);
+                    } catch (INDIException e) {
+                    }
+                }
+                break;
+
+            case MOTION_SOUTH:
+                if (moveNSlast_motion != TelescopeMotionNS.MOTION_SOUTH)
+                    moveNSlast_motion = TelescopeMotionNS.MOTION_SOUTH;
+                else {
+                    movementNSS.resetAllSwitches();
+                    movementNSS.setState(IDLE);
+                    try {
+                        updateProperty(movementNSS);
+                    } catch (INDIException e) {
+                    }
+                    ;
+                }
+                break;
+        }
+
+        return true;
     }
 
-    public void driverDisconnect(Date timestamp) throws INDIException {
-        super.driverDisconnect(timestamp);
-        LOG.log(Level.INFO, "Telescope simulator is offline.");
-        guider.disconnect();
-        removeProperty(guideRate);
-        removeProperty(eqPen);
-        removeProperty(PErrNS);
-        removeProperty(PErrWE);
-    };
+    @Override
+    protected boolean moveWE(TelescopeMotionWE dir) {
 
-    private long lastSystime = -1;
+        switch (dir) {
+            case MOTION_WEST:
+                if (moveWElast_motion != TelescopeMotionWE.MOTION_WEST)
+                    moveWElast_motion = TelescopeMotionWE.MOTION_WEST;
+                else {
+                    movementWES.resetAllSwitches();
+                    movementWES.setState(IDLE);
+                    try {
+                        updateProperty(movementWES);
+                    } catch (INDIException e) {
+                    }
+                    ;
+                }
+                break;
 
-    private double last_dx = 0, last_dy = 0;
+            case MOTION_EAST:
+                if (moveWElast_motion != TelescopeMotionWE.MOTION_EAST)
+                    moveWElast_motion = TelescopeMotionWE.MOTION_EAST;
+                else {
+                    movementWES.resetAllSwitches();
+                    movementWES.setState(IDLE);
+                    try {
+                        updateProperty(movementWES);
+                    } catch (INDIException e) {
+                    }
+                    ;
+                }
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void park() {
+        targetRA = 0;
+        targetDEC = 90;
+        Parked = true;
+        trackState = TelescopeStatus.SCOPE_PARKING;
+        LOG.log(Level.INFO, "Parking telescope in progress...");
+    }
 
     @Override
     protected void readScopeStatus() {
@@ -418,83 +665,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
         newRaDec(currentRA, currentDEC);
     }
 
-    /**
-     * This must be replaced by a real java impl
-     */
-    private String fs_sexa(double a, int w, int fracbase) {
-        String out = "";
-        long n;
-        int d;
-        int f;
-        int m;
-        int s;
-        boolean isneg;
-
-        /* save whether it's negative but do all the rest with a positive */
-        isneg = (a < 0);
-        if (isneg)
-            a = -a;
-
-        /* convert to an integral number of whole portions */
-        n = (long) (a * fracbase + 0.5);
-        d = (int) (n / fracbase);
-        f = (int) (n % fracbase);
-
-        /* form the whole part; "negative 0" is a special case */
-        if (isneg && d == 0)
-            out += String.format("%s%s-0", w - 2, "");
-        else
-            out += String.format("%d%d", w, isneg ? -d : d);
-
-        /* do the rest */
-        switch (fracbase) {
-            case 60: /* dd:mm */
-                m = f / (fracbase / 60);
-                out += String.format(":%02d", m);
-                break;
-            case 600: /* dd:mm.m */
-                out += String.format(":%02d.%1d", f / 10, f % 10);
-                break;
-            case 3600: /* dd:mm:ss */
-                m = f / (fracbase / 60);
-                s = f % (fracbase / 60);
-                out += String.format(":%02d:%02d", m, s);
-                break;
-            case 36000: /* dd:mm:ss.s */
-                m = f / (fracbase / 60);
-                s = f % (fracbase / 60);
-                out += String.format(":%02d:%02d.%1d", m, s / 10, s % 10);
-                break;
-            case 360000: /* dd:mm:ss.ss */
-                m = f / (fracbase / 60);
-                s = f % (fracbase / 60);
-                out += String.format(":%02d:%02d.%02d", m, s / 100, s % 100);
-                break;
-            default:
-                throw new IllegalArgumentException("unkown franctionbase");
-        }
-
-        return out;
-    }
-
-    @Override
-    protected void doGoto(double r, double d) {
-        // IDLog("ScopeSim Goto\n");
-        targetRA = r;
-        targetDEC = d;
-        String RAStr, DecStr;
-
-        RAStr = fs_sexa(targetRA, 2, 3600);
-        DecStr = fs_sexa(targetDEC, 2, 3600);
-
-        Parked = false;
-        trackState = TelescopeStatus.SCOPE_SLEWING;
-
-        eqn.setState(PropertyStates.BUSY);
-
-        LOG.log(Level.INFO, String.format("Slewing to RA: %s - DEC: %s", RAStr, DecStr));
-    }
-
     @Override
     protected boolean sync(double ra, double dec) {
         currentRA = ra;
@@ -518,184 +688,43 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     }
 
     @Override
-    protected void park() {
-        targetRA = 0;
-        targetDEC = 90;
-        Parked = true;
-        trackState = TelescopeStatus.SCOPE_PARKING;
-        LOG.log(Level.INFO, "Parking telescope in progress...");
+    protected long updateInterfall() {
+        return 250L;
+    }
+
+    public void driverConnect(Date timestamp) throws INDIException {
+        super.driverConnect(timestamp);
+        LOG.log(Level.INFO, "Telescope simulator is online.");
+        guider.connect();
+        addProperty(guideRate);
+        addProperty(eqPen);
+        addProperty(periodicErrorNS);
+        addProperty(periodicErrorWE);
+    }
+
+    public void driverDisconnect(Date timestamp) throws INDIException {
+        super.driverDisconnect(timestamp);
+        LOG.log(Level.INFO, "Telescope simulator is offline.");
+        guider.disconnect();
+        removeProperty(guideRate);
+        removeProperty(eqPen);
+        removeProperty(periodicErrorNS);
+        removeProperty(periodicErrorWE);
+    }
+
+    public String getDefaultName() {
+        return "Telescope Simulator";
     }
 
     @Override
-    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-        if (guideRate == property) {
-            property.setValues(elementsAndValues);
-            guideRate.setState(PropertyStates.OK);
-            try {
-                updateProperty(this.guideRate);
-            } catch (INDIException e) {
-            }
-        }
-        super.processNewNumberValue(property, timestamp, elementsAndValues);
+    public String getName() {
+        return getDefaultName();
     }
 
     @Override
-    public void processNewSwitchValue(INDISwitchProperty property, Date date, INDISwitchElementAndValue[] elementsAndValues) {
-        if (PErrNS == property) {
-            property.setValues(elementsAndValues);
-
-            PErrNS.setState(PropertyStates.OK);
-
-            if (PErrNSNorth.getValue() == SwitchStatus.ON) {
-                eqPenDec.setValue(eqPenDec.getValue() + (SID_RATE * guideRateNS.getValue()));
-                LOG.log(Level.INFO, String.format("Simulating PE in NORTH direction for value of %g", SID_RATE));
-            } else {
-                eqPenDec.setValue(eqPenDec.getValue() - (SID_RATE * guideRateNS.getValue()));
-                LOG.log(Level.INFO, String.format("Simulating PE in SOUTH direction for value of %g", SID_RATE));
-            }
-            PErrNS.resetAllSwitches();
-            try {
-                updateProperty(PErrNS);
-                updateProperty(this.eqPen);
-            } catch (INDIException e) {
-            }
-        }
-        if (PErrWE == property) {
-            property.setValues(elementsAndValues);
-
-            PErrWE.setState(PropertyStates.OK);
-
-            if (PErrWEWest.getValue() == SwitchStatus.ON) {
-                eqPenRa.setValue(eqPenRa.getValue() - (SID_RATE / 15d * guideRateWE.getValue()));
-                LOG.log(Level.INFO, String.format("Simulator PE in WEST direction for value of %g", SID_RATE));
-            } else {
-                eqPenRa.setValue(eqPenRa.getValue() + (SID_RATE / 15d * guideRateWE.getValue()));
-                LOG.log(Level.INFO, String.format("Simulator PE in EAST direction for value of %g", SID_RATE));
-            }
-
-            PErrWE.resetAllSwitches();
-            try {
-                updateProperty(PErrWE);
-                updateProperty(this.eqPen);
-            } catch (INDIException e) {
-            }
-        }
-
-        super.processNewSwitchValue(property, date, elementsAndValues);
-    }
-
-    @Override
-    protected boolean abort() {
-        if (movementNSS.getState() == PropertyStates.BUSY) {
-            movementNSS.resetAllSwitches();
-            movementNSS.setState(IDLE);
-            try {
-                updateProperty(movementNSS);
-            } catch (INDIException e) {
-            }
-        }
-        if (movementWES.getState() == PropertyStates.BUSY) {
-            movementWES.resetAllSwitches();
-            movementWES.setState(IDLE);
-            try {
-                updateProperty(movementWES);
-            } catch (INDIException e) {
-            }
-        }
-        if (parkExtention.isBusy()) {
-            parkExtention.setIdle();
-        }
-        if (eqn.getState() == PropertyStates.BUSY) {
-            eqn.setState(IDLE);
-            try {
-                updateProperty(eqn);
-            } catch (INDIException e) {
-            }
-        }
-        trackState = TelescopeStatus.SCOPE_IDLE;
-        abort.setState(PropertyStates.OK);
-        abort.resetAllSwitches();
-        try {
-            updateProperty(abort);
-        } catch (INDIException e) {
-        }
-        LOG.log(Level.INFO, "Telescope aborted.");
-
-        return true;
-    }
-
-    TelescopeMotionNS moveNSlast_motion = null;
-
-    @Override
-    protected boolean moveNS(TelescopeMotionNS dir) {
-
-        switch (dir) {
-            case MOTION_NORTH:
-                if (moveNSlast_motion != TelescopeMotionNS.MOTION_NORTH)
-                    moveNSlast_motion = TelescopeMotionNS.MOTION_NORTH;
-                else {
-                    movementNSS.resetAllSwitches();
-                    movementNSS.setState(IDLE);
-                    try {
-                        updateProperty(movementNSS);
-                    } catch (INDIException e) {
-                    }
-                }
-                break;
-
-            case MOTION_SOUTH:
-                if (moveNSlast_motion != TelescopeMotionNS.MOTION_SOUTH)
-                    moveNSlast_motion = TelescopeMotionNS.MOTION_SOUTH;
-                else {
-                    movementNSS.resetAllSwitches();
-                    movementNSS.setState(IDLE);
-                    try {
-                        updateProperty(movementNSS);
-                    } catch (INDIException e) {
-                    }
-                    ;
-                }
-                break;
-        }
-
-        return true;
-    }
-
-    TelescopeMotionWE moveWElast_motion = null;
-
-    @Override
-    protected boolean moveWE(TelescopeMotionWE dir) {
-
-        switch (dir) {
-            case MOTION_WEST:
-                if (moveWElast_motion != TelescopeMotionWE.MOTION_WEST)
-                    moveWElast_motion = TelescopeMotionWE.MOTION_WEST;
-                else {
-                    movementWES.resetAllSwitches();
-                    movementWES.setState(IDLE);
-                    try {
-                        updateProperty(movementWES);
-                    } catch (INDIException e) {
-                    }
-                    ;
-                }
-                break;
-
-            case MOTION_EAST:
-                if (moveWElast_motion != TelescopeMotionWE.MOTION_EAST)
-                    moveWElast_motion = TelescopeMotionWE.MOTION_EAST;
-                else {
-                    movementWES.resetAllSwitches();
-                    movementWES.setState(IDLE);
-                    try {
-                        updateProperty(movementWES);
-                    } catch (INDIException e) {
-                    }
-                    ;
-                }
-                break;
-        }
-
+    public boolean guideEast(double ms) {
+        guiderEWTarget[GUIDE_EAST] = ms;
+        guiderEWTarget[GUIDE_WEST] = 0;
         return true;
     }
 
@@ -714,13 +743,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     }
 
     @Override
-    public boolean guideEast(double ms) {
-        guiderEWTarget[GUIDE_EAST] = ms;
-        guiderEWTarget[GUIDE_WEST] = 0;
-        return true;
-    }
-
-    @Override
     public boolean guideWest(double ms) {
         guiderEWTarget[GUIDE_WEST] = ms;
         guiderEWTarget[GUIDE_EAST] = 0;
@@ -728,8 +750,4 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
     }
 
-    @Override
-    protected boolean canPark() {
-        return true;
-    }
 }

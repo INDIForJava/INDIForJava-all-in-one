@@ -178,14 +178,16 @@ public class INDIPropertyInjector {
             String oldPrefix = currentGroup;
             Rename[] oldRenamings = currentRenamings;
             try {
-                if (!extentionAnnot.group().isEmpty()) {
-                    currentGroup = extentionAnnot.group();
-                }
-                if (!extentionAnnot.prefix().isEmpty()) {
-                    currentPrefix = extentionAnnot.prefix();
-                }
-                if (extentionAnnot.rename().length > 0) {
-                    currentRenamings = extentionAnnot.rename();
+                if (extentionAnnot != null) {
+                    if (!extentionAnnot.group().isEmpty()) {
+                        currentGroup = extentionAnnot.group();
+                    }
+                    if (!extentionAnnot.prefix().isEmpty()) {
+                        currentPrefix = extentionAnnot.prefix();
+                    }
+                    if (extentionAnnot.rename().length > 0) {
+                        currentRenamings = extentionAnnot.rename();
+                    }
                 }
                 INDIDriverExtention<?> driverExtention = instanciateDriverExtention(instance, field);
                 setFieldValue(instance, field, driverExtention);

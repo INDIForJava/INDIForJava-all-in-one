@@ -16,6 +16,12 @@ import laazotea.indi.driver.event.SwitchEvent;
 
 public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescope> {
 
+    @InjectProperty(name = "TELESCOPE_PARK", label = "Park", group = INDITelescope.MAIN_CONTROL_TAB)
+    private INDISwitchProperty park;
+
+    @InjectElement(name = "PARK", label = "Park")
+    private INDISwitchElement parkElement;
+
     public INDITelescopeParkExtention(INDITelescope telecopeDriver) {
         super(telecopeDriver);
         park.setEventHandler(new SwitchEvent() {
@@ -25,17 +31,6 @@ public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescop
                 driver.park();
             }
         });
-    }
-
-    @InjectProperty(name = "TELESCOPE_PARK", label = "Park", group = INDITelescope.MAIN_CONTROL_TAB)
-    private INDISwitchProperty park;
-
-    @InjectElement(name = "PARK", label = "Park")
-    private INDISwitchElement parkElement;
-
-    @Override
-    public boolean isActive() {
-        return driver.canPark();
     }
 
     @Override
@@ -52,6 +47,18 @@ public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescop
             return;
         }
         driver.removeProperty(park);
+    }
+
+    @Override
+    public boolean isActive() {
+        return driver.canPark();
+    }
+
+    public boolean isBusy() {
+        if (!isActive()) {
+            return false;
+        }
+        return park.getState() == PropertyStates.BUSY;
     }
 
     public void setIdle() {
@@ -74,13 +81,6 @@ public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescop
             this.park.setState(IDLE);
         }
 
-    }
-
-    public boolean isBusy() {
-        if (!isActive()) {
-            return false;
-        }
-        return park.getState() == PropertyStates.BUSY;
     }
 
 }

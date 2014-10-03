@@ -1,4 +1,4 @@
-package laazotea.indi.driver;
+package laazotea.indi.driver.ccd;
 
 public interface CCDDriverInterface {
 

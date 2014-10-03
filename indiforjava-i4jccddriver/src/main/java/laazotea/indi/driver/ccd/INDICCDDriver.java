@@ -1,4 +1,4 @@
-package laazotea.indi.driver;
+package laazotea.indi.driver.ccd;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +11,19 @@ import java.util.logging.Logger;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.INDIException;
+import laazotea.indi.driver.INDIBLOBElementAndValue;
+import laazotea.indi.driver.INDIBLOBProperty;
+import laazotea.indi.driver.INDIConnectionHandler;
+import laazotea.indi.driver.INDIDriver;
+import laazotea.indi.driver.INDINumberElement;
+import laazotea.indi.driver.INDINumberElementAndValue;
+import laazotea.indi.driver.INDINumberProperty;
+import laazotea.indi.driver.INDISwitchElement;
+import laazotea.indi.driver.INDISwitchElementAndValue;
+import laazotea.indi.driver.INDISwitchProperty;
+import laazotea.indi.driver.INDITextElement;
+import laazotea.indi.driver.INDITextElementAndValue;
+import laazotea.indi.driver.INDITextProperty;
 import laazotea.indi.driver.annotation.InjectElement;
 import laazotea.indi.driver.annotation.InjectExtention;
 import laazotea.indi.driver.annotation.InjectProperty;

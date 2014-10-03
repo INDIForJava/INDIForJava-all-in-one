@@ -1,4 +1,4 @@
-package laazotea.indi.driver;
+package laazotea.indi.driver.ccd;
 
 public enum CcdFrame {
     LIGHT_FRAME("Light"),

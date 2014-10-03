@@ -7,17 +7,12 @@ import laazotea.indi.driver.annotation.InjectElement;
 
 public class INDITelescopeSyncExtention extends INDIDriverExtention<INDITelescope> {
 
+    @InjectElement(property = "ON_COORD_SET", name = "SYNC", label = "Sync")
+    private INDISwitchElement coordSync;
+
     public INDITelescopeSyncExtention(INDITelescope driver) {
         super(driver);
     }
-
-    @Override
-    public boolean isActive() {
-        return driver.canSync();
-    }
-
-    @InjectElement(property = "ON_COORD_SET", name = "SYNC", label = "Sync")
-    private INDISwitchElement coordSync;
 
     public boolean doSync(double ra, double dec) {
         if (isActive() && this.coordSync.getValue() == SwitchStatus.ON) {
@@ -25,5 +20,10 @@ public class INDITelescopeSyncExtention extends INDIDriverExtention<INDITelescop
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean isActive() {
+        return driver.canSync();
     }
 }
