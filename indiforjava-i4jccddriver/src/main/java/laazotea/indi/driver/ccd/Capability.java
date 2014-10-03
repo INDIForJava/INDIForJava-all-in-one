@@ -23,6 +23,11 @@ public class Capability {
         return canAbort;
     }
 
+    public Capability canAbort(boolean canAbort) {
+        this.canAbort = canAbort;
+        return this;
+    }
+
     /**
      * @return True if CCD supports binning. False otherwise.
      */
@@ -30,11 +35,21 @@ public class Capability {
         return canBin;
     }
 
+    public Capability canBin(boolean canBin) {
+        this.canBin = canBin;
+        return this;
+    }
+
     /**
      * @return True if CCD supports subframing. False otherwise.
      */
     public boolean canSubFrame() {
         return canSubFrame;
+    }
+
+    public Capability canSubFrame(boolean canSubFrame) {
+        this.canSubFrame = canSubFrame;
+        return this;
     }
 
     /**
@@ -45,11 +60,21 @@ public class Capability {
         return hasCooler;
     }
 
+    public Capability hasCooler(boolean hasCooler) {
+        this.hasCooler = hasCooler;
+        return this;
+    }
+
     /**
      * @return True if CCD has guide head. False otherwise.
      */
     public boolean hasGuideHead() {
         return hasGuideHead;
+    }
+
+    public Capability hasGuideHead(boolean hasGuideHead) {
+        this.hasGuideHead = hasGuideHead;
+        return this;
     }
 
     /**
@@ -60,41 +85,16 @@ public class Capability {
         return hasShutter;
     }
 
+    public Capability hasShutter(boolean hasShutter) {
+        this.hasShutter = hasShutter;
+        return this;
+    }
+
     /**
      * @return True if CCD has ST4 port for guiding. False otherwise.
      */
     public boolean hasST4Port() {
         return hasST4Port;
-    }
-
-    public Capability canAbort(boolean canAbort) {
-        this.canAbort = canAbort;
-        return this;
-    }
-
-    public Capability canBin(boolean canBin) {
-        this.canBin = canBin;
-        return this;
-    }
-
-    public Capability canSubFrame(boolean canSubFrame) {
-        this.canSubFrame = canSubFrame;
-        return this;
-    }
-
-    public Capability hasCooler(boolean hasCooler) {
-        this.hasCooler = hasCooler;
-        return this;
-    }
-
-    public Capability hasGuideHead(boolean hasGuideHead) {
-        this.hasGuideHead = hasGuideHead;
-        return this;
-    }
-
-    public Capability hasShutter(boolean hasShutter) {
-        this.hasShutter = hasShutter;
-        return this;
     }
 
     public Capability hasST4Port(boolean hasST4Port) {

@@ -35,10 +35,6 @@ public class INDIGuiderExtention extends INDIDriverExtention<INDIDriver> {
 
     private INDIGuiderInterface guiderInterface;
 
-    public void setGuiderInterface(INDIGuiderInterface guiderInterface) {
-        this.guiderInterface = guiderInterface;
-    }
-
     /**
      * Initilize guider properties. It is recommended to call this function
      * within initProperties() of your primary device
@@ -99,6 +95,10 @@ public class INDIGuiderExtention extends INDIDriverExtention<INDIDriver> {
                 return;
             }
         });
+    }
+
+    public void setGuiderInterface(INDIGuiderInterface guiderInterface) {
+        this.guiderInterface = guiderInterface;
     }
 
 }

@@ -32,7 +32,7 @@ import laazotea.indi.driver.event.NumberEvent;
 import laazotea.indi.driver.event.SwitchEvent;
 import laazotea.indi.driver.event.TextEvent;
 
-public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface, CCDDriverInterface {
+public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface, INDICCDDriverInterface {
 
     private static final Logger LOG = Logger.getLogger(INDICCDDriver.class.getName());
 
@@ -89,12 +89,12 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     @InjectExtention(prefix = "CCD_", rename = {
         @Rename(name = "CCD", to = "CCD0")
     })
-    protected CCDDriverExtention primaryCCD;
+    protected INDICCDDriverExtention primaryCCD;
 
     @InjectExtention(prefix = "GUIDER_", rename = {
         @Rename(name = "CCD", to = "CCD1")
     })
-    protected CCDDriverExtention guiderCCD;
+    protected INDICCDDriverExtention guiderCCD;
 
     private final Capability capability = defineCapabilities();
 
@@ -205,7 +205,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * @return a handler instance for the guider. mandatory if the ccd support a
      *         guider head.
      */
-    protected CCDDriverInterface createGuiderDriverHandler() {
+    protected INDICCDDriverInterface createGuiderDriverHandler() {
         return null;
     }
 
@@ -223,7 +223,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * @param targetChip
      *            chip that contains upload image data
      */
-    protected boolean exposureComplete(CCDDriverExtention targetChip) {
+    protected boolean exposureComplete(INDICCDDriverExtention targetChip) {
         if (targetChip == primaryCCD) {
             return primaryCCD.exposureComplete();
         } else {

@@ -3,6 +3,15 @@ package laazotea.indi.driver.ccd;
 public interface INDIGuiderInterface {
 
     /**
+     * Guide easward for ms milliseconds
+     * 
+     * @param ms
+     *            Duration in milliseconds.
+     * @return 0 if successful, -1 otherwise.
+     */
+    boolean guideEast(double ms);
+
+    /**
      * Guide northward for ms milliseconds
      * 
      * @param ms
@@ -19,15 +28,6 @@ public interface INDIGuiderInterface {
      * @return 0 if successful, -1 otherwise.
      */
     boolean guideSouth(double ms);
-
-    /**
-     * Guide easward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return 0 if successful, -1 otherwise.
-     */
-    boolean guideEast(double ms);
 
     /**
      * Guide westward for ms milliseconds

@@ -394,6 +394,27 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
     }
 
+    private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
+        movementNSS.setValues(elementsAndValues);
+        movementNSS.setState(PropertyStates.BUSY);
+        if (this.movementNSSNorth.getValue() == SwitchStatus.ON) {
+            moveNS(TelescopeMotionNS.MOTION_NORTH);
+        } else {
+            moveNS(TelescopeMotionNS.MOTION_SOUTH);
+        }
+    }
+
+    private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
+        movementWES.setValues(elementsAndValues);
+        movementWES.setState(PropertyStates.BUSY);
+        if (this.movementWESWest.getValue() == SwitchStatus.ON) {
+            moveWE(TelescopeMotionWE.MOTION_WEST);
+        } else {
+            moveWE(TelescopeMotionWE.MOTION_WEST);
+
+        }
+    }
+
     private void newScopeParameter(INDINumberProperty property, INDINumberElementAndValue[] elementsAndValues) {
         this.scopeParameters.setState(OK);
         property.setValues(elementsAndValues);
@@ -576,29 +597,8 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         removeProperty(this.scopeParameters);
     }
 
-    private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
-        movementWES.setValues(elementsAndValues);
-        movementWES.setState(PropertyStates.BUSY);
-        if (this.movementWESWest.getValue() == SwitchStatus.ON) {
-            moveWE(TelescopeMotionWE.MOTION_WEST);
-        } else {
-            moveWE(TelescopeMotionWE.MOTION_WEST);
-
-        }
-    }
-
-    private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
-        movementNSS.setValues(elementsAndValues);
-        movementNSS.setState(PropertyStates.BUSY);
-        if (this.movementNSSNorth.getValue() == SwitchStatus.ON) {
-            moveNS(TelescopeMotionNS.MOTION_NORTH);
-        } else {
-            moveNS(TelescopeMotionNS.MOTION_SOUTH);
-        }
-    }
-
     @Override
-    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
+    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
     }
 
     @Override
@@ -606,10 +606,10 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     }
 
     @Override
-    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
+    public void processNewSwitchValue(INDISwitchProperty property, Date date, INDISwitchElementAndValue[] elementsAndValues) {
     }
 
     @Override
-    public void processNewSwitchValue(INDISwitchProperty property, Date date, INDISwitchElementAndValue[] elementsAndValues) {
+    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
     }
 }

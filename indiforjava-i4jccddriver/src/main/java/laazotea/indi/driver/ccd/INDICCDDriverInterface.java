@@ -1,6 +1,6 @@
 package laazotea.indi.driver.ccd;
 
-public interface CCDDriverInterface {
+public interface INDICCDDriverInterface {
 
     boolean abortExposure();
 
