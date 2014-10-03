@@ -10,6 +10,6 @@ public interface CCDDriverInterface {
 
     boolean updateCCDFrame(int x, int y, int w, int h);
 
-    boolean updateCCDFrameType(CCD_FRAME frameType);
+    boolean updateCCDFrameType(CcdFrame frameType);
 
 }

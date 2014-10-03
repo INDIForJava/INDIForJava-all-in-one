@@ -19,9 +19,9 @@ import laazotea.indi.driver.event.NumberEvent;
 import laazotea.indi.driver.event.SwitchEvent;
 import laazotea.indi.driver.event.TextEvent;
 
-public abstract class INDICCD extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface, CCDDriverInterface {
+public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface, CCDDriverInterface {
 
-    private static final Logger LOG = Logger.getLogger(INDICCD.class.getName());
+    private static final Logger LOG = Logger.getLogger(INDICCDDriver.class.getName());
 
     protected static final String MAIN_CONTROL_TAB = "Main Control";
 
@@ -37,13 +37,13 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
 
     protected static final String OPTIONS_TAB = "Options";
 
-    @InjectProperty(name = "CCD_TEMPERATURE", label = "Temperature", group = INDICCD.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "CCD_TEMPERATURE", label = "Temperature", group = INDICCDDriver.MAIN_CONTROL_TAB)
     protected INDINumberProperty temperature;
 
     @InjectElement(name = "CCD_TEMPERATURE_VALUE", label = "Temperature (C)", minimumD = -50d, maximumD = 50d, numberFormat = "%5.2f")
     private INDINumberElement temperatureTemp;
 
-    @InjectProperty(name = "UPLOAD_MODE", label = "Upload", group = INDICCD.OPTIONS_TAB, timeout = 0, saveable = true)
+    @InjectProperty(name = "UPLOAD_MODE", label = "Upload", group = INDICCDDriver.OPTIONS_TAB, timeout = 0, saveable = true)
     private INDISwitchProperty upload;
 
     @InjectElement(name = "UPLOAD_CLIENT", label = "Client", switchValue = SwitchStatus.ON)
@@ -55,7 +55,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
     @InjectElement(name = "UPLOAD_BOTH", label = "Both")
     private INDISwitchElement uploadBoth;
 
-    @InjectProperty(name = "UPLOAD_SETTINGS", label = "Upload Settings", group = INDICCD.OPTIONS_TAB, saveable = true)
+    @InjectProperty(name = "UPLOAD_SETTINGS", label = "Upload Settings", group = INDICCDDriver.OPTIONS_TAB, saveable = true)
     private INDITextProperty uploadSettings;
 
     @InjectElement(name = "UPLOAD_DIR", label = "Dir")
@@ -64,7 +64,7 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
     @InjectElement(name = "UPLOAD_PREFIX", label = "Prefix", valueT = "IMAGE_XX")
     private INDITextElement uploadSettingsPrefix;
 
-    @InjectProperty(name = "ACTIVE_DEVICES", label = "Snoop devices", group = INDICCD.OPTIONS_TAB, saveable = true)
+    @InjectProperty(name = "ACTIVE_DEVICES", label = "Snoop devices", group = INDICCDDriver.OPTIONS_TAB, saveable = true)
     private INDITextProperty activeDevice;
 
     @InjectElement(name = "ACTIVE_TELESCOPE", label = "Telescope", valueT = "Telescope Simulator")
@@ -76,23 +76,19 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
     @InjectExtention(prefix = "CCD_", rename = {
         @Rename(name = "CCD", to = "CCD0")
     })
-    private CCDDriverExtention primaryCCD;
+    protected CCDDriverExtention primaryCCD;
 
     @InjectExtention(prefix = "GUIDER_", rename = {
         @Rename(name = "CCD", to = "CCD1")
     })
-    private CCDDriverExtention guiderCCD;
+    protected CCDDriverExtention guiderCCD;
 
     private final Capability capability = defineCapabilities();
-
-    public Capability capability() {
-        return capability;
-    }
 
     @InjectExtention(group = GUIDE_CONTROL_TAB)
     private INDIGuiderExtention guider;
 
-    public INDICCD(InputStream inputStream, OutputStream outputStream) {
+    public INDICCDDriver(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
         primaryCCD.setDriverInterface(this);
         guiderCCD.setDriverInterface(createGuiderDriverHandler());
@@ -132,6 +128,14 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
         });
     }
 
+    private void connectToTelescope() {
+        // TODO open a indiclient connection to the scope
+    }
+
+    private void disconnectFromTelescope() {
+        // TODO open a indiclient connection to the fokuser
+    }
+
     private void newActiveDeviceValue(INDITextElementAndValue[] elementsAndValues) {
         activeDevice.setState(PropertyStates.OK);
         activeDevice.setValues(elementsAndValues);
@@ -144,6 +148,44 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
 
         // Tell children active devices was updated.
         activeDevicesUpdated();
+    }
+
+    private void newTemperatureValue(INDINumberElementAndValue[] elementsAndValues) {
+        temperature.setValues(elementsAndValues);
+        Boolean rc = setTemperature(temperatureTemp.getValue());
+        if (rc == null)
+            temperature.setState(PropertyStates.ALERT);
+        else if (rc.booleanValue())
+            temperature.setState(PropertyStates.OK);
+        else
+            temperature.setState(PropertyStates.BUSY);
+        try {
+            updateProperty(temperature);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newUploadValue(INDISwitchElementAndValue[] elementsAndValues) {
+        upload.setValues(elementsAndValues);
+        upload.setState(PropertyStates.OK);
+
+        try {
+            updateProperty(upload);
+        } catch (INDIException e) {
+        }
+        if (uploadClient.getValue() == SwitchStatus.ON)
+            LOG.log(Level.FINE, String.format("Upload settings set to client only."));
+        else if (uploadLocal.getValue() == SwitchStatus.ON)
+            LOG.log(Level.FINE, String.format("Upload settings set to local only."));
+        else
+            LOG.log(Level.FINE, String.format("Upload settings set to client and local."));
+    }
+
+    /**
+     * the active telescope was changed!
+     */
+    protected void activeDevicesUpdated() {
+        // disconnect the indi-client and reconnect to the new active device.
     }
 
     /**
@@ -159,6 +201,106 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
      *         driver.
      */
     protected abstract Capability defineCapabilities();
+
+    /**
+     * Uploads target Chip exposed buffer as FITS to the client. Dervied classes
+     * should call this functon when an exposure is complete. This function must
+     * be implemented in the child class
+     * 
+     * @param targetChip
+     *            chip that contains upload image data
+     */
+    protected boolean exposureComplete(CCDDriverExtention targetChip) {
+        if (targetChip == primaryCCD) {
+            return primaryCCD.exposureComplete();
+        } else {
+            return guiderCCD.exposureComplete();
+        }
+    }
+
+    protected File getFileWithIndex(String extension) throws IOException {
+        String dir = uploadSettingsDir.getValue();
+        String prefix = uploadSettingsPrefix.getValue();
+
+        int indexOfXX = prefix.indexOf("XX");
+        String uptoXX = prefix.substring(0, indexOfXX);
+        String afterXX = prefix.substring(indexOfXX + 2) + "." + extension;
+
+        int maxNumber = 0;
+        for (File file : new File(dir).listFiles()) {
+            if (file.getName().startsWith(uptoXX) && file.getName().endsWith(afterXX)) {
+                int number = Integer.valueOf(file.getName().substring(indexOfXX));
+                if (number > maxNumber) {
+                    maxNumber = number;
+                }
+            }
+        }
+        maxNumber++;
+        File fp = new File(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue().replace("XX", Integer.toString(maxNumber)) + "." + extension);
+        return fp;
+    }
+
+    /**
+     * Guide easward for ms milliseconds
+     * 
+     * @param ms
+     *            Duration in milliseconds.
+     * @return 0 if successful, -1 otherwise.
+     */
+    abstract protected boolean guideEast(float ms);
+
+    /**
+     * Guide northward for ms milliseconds
+     * 
+     * @param ms
+     *            Duration in milliseconds.
+     * @return True if successful, false otherwise.
+     */
+    abstract protected boolean guideNorth(float ms);
+
+    /**
+     * Guide southward for ms milliseconds
+     * 
+     * @param ms
+     *            Duration in milliseconds.
+     * @return 0 if successful, -1 otherwise.
+     */
+    abstract protected boolean guideSouth(float ms);
+
+    /**
+     * Guide westward for ms milliseconds
+     * 
+     * @param ms
+     *            Duration in milliseconds.
+     * @return 0 if successful, -1 otherwise.
+     */
+    abstract protected boolean guideWest(float ms);
+
+    /**
+     * Set CCD temperature. Upon returning false, the property becomes BUSY.
+     * Once the temperature reaches the requested value, change the state to OK.
+     * This must be implemented in the child class
+     * 
+     * @param temperature
+     *            CCD temperature in degrees celcius.
+     * @return true or false if setting the temperature call to the hardware is
+     *         successful. null if an error is encountered. Return false if
+     *         setting the temperature to the requested value takes time. Return
+     *         true if setting the temperature to the requested value is
+     *         complete.
+     */
+    abstract protected Boolean setTemperature(double temperature);
+
+    /**
+     * Abort ongoing exposure
+     * 
+     * @return true is abort is successful, false otherwise.
+     */
+    public abstract boolean abortExposure();
+
+    public Capability capability() {
+        return capability;
+    }
 
     @Override
     public void driverConnect(Date timestamp) throws INDIException {
@@ -209,66 +351,21 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
 
     }
 
-    private void newTemperatureValue(INDINumberElementAndValue[] elementsAndValues) {
-        temperature.setValues(elementsAndValues);
-        Boolean rc = setTemperature(temperatureTemp.getValue());
-        if (rc == null)
-            temperature.setState(PropertyStates.ALERT);
-        else if (rc.booleanValue())
-            temperature.setState(PropertyStates.OK);
-        else
-            temperature.setState(PropertyStates.BUSY);
-        try {
-            updateProperty(temperature);
-        } catch (INDIException e) {
-        }
-    }
-
     @Override
     public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-    }
-
-    private void newUploadValue(INDISwitchElementAndValue[] elementsAndValues) {
-        upload.setValues(elementsAndValues);
-        upload.setState(PropertyStates.OK);
-
-        try {
-            updateProperty(upload);
-        } catch (INDIException e) {
-        }
-        if (uploadClient.getValue() == SwitchStatus.ON)
-            LOG.log(Level.FINE, String.format("Upload settings set to client only."));
-        else if (uploadLocal.getValue() == SwitchStatus.ON)
-            LOG.log(Level.FINE, String.format("Upload settings set to local only."));
-        else
-            LOG.log(Level.FINE, String.format("Upload settings set to client and local."));
     }
 
     @Override
     public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
     }
 
-    /**
-     * the active telescope was changed!
-     */
-    protected void activeDevicesUpdated() {
-        // disconnect the indi-client and reconnect to the new active device.
+    public boolean shouldSaveImage() {
+        return uploadLocal.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON;
     }
 
-    /**
-     * Set CCD temperature. Upon returning false, the property becomes BUSY.
-     * Once the temperature reaches the requested value, change the state to OK.
-     * This must be implemented in the child class
-     * 
-     * @param temperature
-     *            CCD temperature in degrees celcius.
-     * @return true or false if setting the temperature call to the hardware is
-     *         successful. null if an error is encountered. Return false if
-     *         setting the temperature to the requested value takes time. Return
-     *         true if setting the temperature to the requested value is
-     *         complete.
-     */
-    abstract protected Boolean setTemperature(double temperature);
+    public boolean shouldSendImage() {
+        return uploadClient.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON;
+    }
 
     /**
      * Start exposing primary CCD chip. This function must be implemented in the
@@ -281,34 +378,17 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
      */
     public abstract boolean startExposure(double duration);
 
-    protected File getFileWithIndex(String extension) throws IOException {
-        String dir = uploadSettingsDir.getValue();
-        String prefix = uploadSettingsPrefix.getValue();
-
-        int indexOfXX = prefix.indexOf("XX");
-        String uptoXX = prefix.substring(0, indexOfXX);
-        String afterXX = prefix.substring(indexOfXX + 2) + "." + extension;
-
-        int maxNumber = 0;
-        for (File file : new File(dir).listFiles()) {
-            if (file.getName().startsWith(uptoXX) && file.getName().endsWith(afterXX)) {
-                int number = Integer.valueOf(file.getName().substring(indexOfXX));
-                if (number > maxNumber) {
-                    maxNumber = number;
-                }
-            }
-        }
-        maxNumber++;
-        File fp = new File(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue().replace("XX", Integer.toString(maxNumber)) + "." + extension);
-        return fp;
-    }
-
     /**
-     * Abort ongoing exposure
+     * INDICCD calls this function when CCD Binning needs to be updated in the
+     * hardware. Derived classes should implement this function
      * 
-     * @return true is abort is successful, false otherwise.
+     * @param hor
+     *            Horizontal binning.
+     * @param ver
+     *            Vertical binning.
+     * @return true is CCD chip update is successful, false otherwise.
      */
-    public abstract boolean abortExposure();
+    public abstract boolean updateCCDBin(int hor, int ver);
 
     /**
      * INDICCD calls this function when CCD Frame dimension needs to be updated
@@ -328,18 +408,6 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
     public abstract boolean updateCCDFrame(int x, int y, int w, int h);
 
     /**
-     * INDICCD calls this function when CCD Binning needs to be updated in the
-     * hardware. Derived classes should implement this function
-     * 
-     * @param hor
-     *            Horizontal binning.
-     * @param ver
-     *            Vertical binning.
-     * @return true is CCD chip update is successful, false otherwise.
-     */
-    public abstract boolean updateCCDBin(int hor, int ver);
-
-    /**
      * INDICCD calls this function when CCD frame type needs to be updated in
      * the hardware.The CCD hardware layer may either set the frame type when
      * this function is called, or (optionally) before an exposure is started.
@@ -348,73 +416,5 @@ public abstract class INDICCD extends INDIDriver implements INDIConnectionHandle
      *            Frame type
      * @return true is CCD chip update is successful, false otherwise.
      */
-    public abstract boolean updateCCDFrameType(CCD_FRAME fType);
-
-    /**
-     * Guide northward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return True if successful, false otherwise.
-     */
-    abstract protected boolean guideNorth(float ms);
-
-    /**
-     * Guide southward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return 0 if successful, -1 otherwise.
-     */
-    abstract protected boolean guideSouth(float ms);
-
-    /**
-     * Guide easward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return 0 if successful, -1 otherwise.
-     */
-    abstract protected boolean guideEast(float ms);
-
-    /**
-     * Guide westward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return 0 if successful, -1 otherwise.
-     */
-    abstract protected boolean guideWest(float ms);
-
-    /**
-     * Uploads target Chip exposed buffer as FITS to the client. Dervied classes
-     * should call this functon when an exposure is complete. This function must
-     * be implemented in the child class
-     * 
-     * @param targetChip
-     *            chip that contains upload image data
-     */
-    protected boolean exposureComplete(CCDDriverExtention targetChip) {
-        if (targetChip == primaryCCD) {
-            return primaryCCD.exposureComplete();
-        } else {
-            return guiderCCD.exposureComplete();
-        }
-    }
-
-    public boolean shouldSendImage() {
-        return uploadClient.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON;
-    }
-
-    public boolean shouldSaveImage() {
-        return uploadLocal.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON;
-    }
-
-    private void connectToTelescope() {
-        // TODO open a indiclient connection to the scope
-    }
-
-    private void disconnectFromTelescope() {
-        // TODO open a indiclient connection to the fokuser
-    }
+    public abstract boolean updateCCDFrameType(CcdFrame fType);
 }

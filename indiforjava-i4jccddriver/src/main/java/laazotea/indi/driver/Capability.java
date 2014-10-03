@@ -1,6 +1,6 @@
 package laazotea.indi.driver;
 
-class Capability {
+public class Capability {
 
     private boolean canAbort = false;
 

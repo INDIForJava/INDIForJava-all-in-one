@@ -27,7 +27,7 @@ import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.HeaderCardException;
 
-public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
+public class CCDDriverExtention extends INDIDriverExtention<INDICCDDriver> {
 
     private static final Logger LOG = Logger.getLogger(CCDDriverExtention.class.getName());
 
@@ -137,7 +137,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
 
     private final SimpleDateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
-    @InjectProperty(name = "FRAME", label = "Frame", group = INDICCD.IMAGE_SETTINGS_TAB, saveable = true)
+    @InjectProperty(name = "FRAME", label = "Frame", group = INDICCDDriver.IMAGE_SETTINGS_TAB, saveable = true)
     protected INDINumberProperty imageFrame;
 
     @InjectElement(name = "X", label = "Left", maximumD = 1392d, numberFormat = "%4.0f")
@@ -152,7 +152,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "HEIGHT", label = "Height", valueD = 1392d, maximumD = 1392d, numberFormat = "%4.0f")
     protected INDINumberElement imageFrameHeigth;
 
-    @InjectProperty(name = "FRAME_TYPE", label = "Frame Type", group = INDICCD.IMAGE_SETTINGS_TAB, saveable = true)
+    @InjectProperty(name = "FRAME_TYPE", label = "Frame Type", group = INDICCDDriver.IMAGE_SETTINGS_TAB, saveable = true)
     protected INDISwitchProperty frameType;
 
     @InjectElement(name = "FRAME_LIGHT", label = "Light", switchValue = SwitchStatus.ON)
@@ -167,19 +167,19 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "FRAME_FLAT", label = "Flat", switchValue = SwitchStatus.OFF)
     protected INDISwitchElement frameTypeFlat;
 
-    @InjectProperty(name = "EXPOSURE", label = "Expose", group = INDICCD.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "EXPOSURE", label = "Expose", group = INDICCDDriver.MAIN_CONTROL_TAB)
     protected INDINumberProperty imageExposure;
 
     @InjectElement(name = "CCD_EXPOSURE_VALUE", label = "Duration (s)", valueD = 1, maximumD = 36000, numberFormat = "%5.2f")
     protected INDINumberElement imageExposureDuration;
 
-    @InjectProperty(name = "ABORT_EXPOSURE", label = "Expose Abort", group = INDICCD.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "ABORT_EXPOSURE", label = "Expose Abort", group = INDICCDDriver.MAIN_CONTROL_TAB)
     protected INDISwitchProperty abort;
 
     @InjectElement(name = "ABORT", label = "Abort")
     protected INDISwitchElement abortSwitch;
 
-    @InjectProperty(name = "BINNING", label = "Binning", group = INDICCD.IMAGE_SETTINGS_TAB, saveable = true)
+    @InjectProperty(name = "BINNING", label = "Binning", group = INDICCDDriver.IMAGE_SETTINGS_TAB, saveable = true)
     protected INDINumberProperty imageBin;
 
     @InjectElement(name = "HOR_BIN", label = "X", valueD = 1, maximumD = 4, minimumD = 1, stepD = 1, numberFormat = "%2.0f")
@@ -188,7 +188,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "VER_BIN", label = "Y", valueD = 1, maximumD = 4, minimumD = 1, stepD = 1, numberFormat = "%2.0f")
     protected INDINumberElement imageBinY;
 
-    @InjectProperty(name = "INFO", label = "CCD Information", group = INDICCD.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
+    @InjectProperty(name = "INFO", label = "CCD Information", group = INDICCDDriver.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
     protected INDINumberProperty imagePixelSize;
 
     @InjectElement(name = "CCD_MAX_X", label = "Resolution x", valueD = 1392, maximumD = 16000, minimumD = 1, numberFormat = "%4.0f")
@@ -209,7 +209,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "CCD_BITSPERPIXEL", label = "Bits per pixel", valueD = 8, maximumD = 64, minimumD = 8, numberFormat = "%4.0f")
     protected INDINumberElement imagePixelSizeBitPerPixel;
 
-    @InjectProperty(name = "COMPRESSION", label = "Image", group = INDICCD.IMAGE_SETTINGS_TAB)
+    @InjectProperty(name = "COMPRESSION", label = "Image", group = INDICCDDriver.IMAGE_SETTINGS_TAB)
     protected INDISwitchProperty compress;
 
     @InjectElement(name = "COMPRESS", label = "Compress", switchValue = SwitchStatus.ON)
@@ -218,13 +218,13 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "RAW", label = "Raw")
     protected INDISwitchElement compressRaw;
 
-    @InjectProperty(name = "CCD", label = "Image Data", group = INDICCD.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
+    @InjectProperty(name = "CCD", label = "Image Data", group = INDICCDDriver.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
     protected INDIBLOBProperty fits;
 
     @InjectElement(name = "CCD", label = "Image")
     protected INDIBLOBElement fitsImage;
 
-    @InjectProperty(name = "RAPID_GUIDE", label = "Rapid Guide", group = INDICCD.OPTIONS_TAB, timeout = 0)
+    @InjectProperty(name = "RAPID_GUIDE", label = "Rapid Guide", group = INDICCDDriver.OPTIONS_TAB, timeout = 0)
     protected INDISwitchProperty rapidGuide;
 
     @InjectElement(name = "ENABLE", label = "Enable")
@@ -233,7 +233,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "DISABLE", label = "Disable", switchValue = SwitchStatus.ON)
     protected INDISwitchElement rapidGuideDisable;
 
-    @InjectProperty(name = "RAPID_GUIDE_SETUP", label = "Rapid Guide Setup", group = INDICCD.RAPIDGUIDE_TAB, timeout = 0, switchRule = SwitchRules.ANY_OF_MANY)
+    @InjectProperty(name = "RAPID_GUIDE_SETUP", label = "Rapid Guide Setup", group = INDICCDDriver.RAPIDGUIDE_TAB, timeout = 0, switchRule = SwitchRules.ANY_OF_MANY)
     protected INDISwitchProperty rapidGuideSetup;
 
     @InjectElement(name = "AUTO_LOOP", label = "Auto loop", switchValue = SwitchStatus.ON)
@@ -245,7 +245,7 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     @InjectElement(name = "SHOW_MARKER", label = "Show marker")
     protected INDISwitchElement rapidGuideSetupSendImage;
 
-    @InjectProperty(name = "RAPID_GUIDE_DATA", label = "Rapid Guide Data", group = INDICCD.RAPIDGUIDE_TAB, permission = PropertyPermissions.RO)
+    @InjectProperty(name = "RAPID_GUIDE_DATA", label = "Rapid Guide Data", group = INDICCDDriver.RAPIDGUIDE_TAB, permission = PropertyPermissions.RO)
     protected INDINumberProperty rapidGuideData;
 
     @InjectElement(name = "GUIDESTAR_X", label = "Guide star position X", maximumD = 1024, numberFormat = "%%5.2f")
@@ -258,10 +258,6 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
     protected INDINumberElement rapidGuideDataFIT;
 
     private CCDDriverInterface driverInterface;
-
-    public void setDriverInterface(CCDDriverInterface driverInterface) {
-        this.driverInterface = driverInterface;
-    }
 
     private boolean sendCompressed = false;
 
@@ -281,467 +277,49 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
 
     private int binningY = 1; // Binning requested in the Y direction
 
-    int NAxis = 2; // # of Axis
+    private int NAxis = 2; // # of Axis
 
     private float pixelSizeX; // pixel size in microns, x direction
 
     private float pixelSizeY; // pixel size in microns, y direction
 
-    int BPP = 8; // Bytes per Pixel
+    private int bitsPerPixel = 8; // Bytes per Pixel
 
-    boolean Interlaced = false;
+    /**
+     * desired frame type for next exposure
+     */
+    private CcdFrame currentFrameType = CcdFrame.LIGHT_FRAME;
 
-    int RawFrameSize = 0;
+    /**
+     * requested exposure duration for the CCD chip in seconds.
+     */
+    private double exposureDuration;
 
-    CCD_FRAME FrameType = CCD_FRAME.LIGHT_FRAME;
+    private Date startExposureTime;
 
-    double exposureDuration;
+    private int lastRapidX;
 
-    Date startExposureTime;
+    private int lastRapidY;
 
-    int lastRapidX;
+    private INDICCDImage ccdImage;
 
-    int lastRapidY;
+    private String imageExtention = "fits";
 
-    INDICCDImage ccdImage;
+    private boolean rapidGuideEnabled = false;
 
-    String imageExtention = "fits";
+    private boolean autoLoop = false;
 
-    protected boolean RapidGuideEnabled = false;
+    private boolean sendImage = false;
 
-    protected boolean AutoLoop = false;
+    private boolean showMarker = false;
 
-    protected boolean SendImage = false;
-
-    protected boolean ShowMarker = false;
-
-    private float ExposureTime = 0.0f;
-
-    private boolean InExposure = false;
+    private float exposureTime = 0.0f;
 
     private double ra = Double.NaN;
 
     private double dec = Double.NaN;
 
-    public void setScopeLocation(double ra, double dec) {
-        this.ra = ra;
-        this.dec = dec;
-    }
-
-    /**
-     * @brief getXRes Get the horizontal resolution in pixels of the CCD Chip.
-     * @return the horizontal resolution of the CCD Chip.
-     */
-    int getXRes() {
-        return xResolution;
-    }
-
-    /**
-     * @brief Get the vertical resolution in pixels of the CCD Chip.
-     * @return the horizontal resolution of the CCD Chip.
-     */
-    int getYRes() {
-        return yResolution;
-    }
-
-    /**
-     * @brief getSubX Get the starting left coordinates (X) of the frame.
-     * @return the starting left coordinates (X) of the image.
-     */
-    int getSubX() {
-        return subframeX;
-    }
-
-    /**
-     * @brief getSubY Get the starting top coordinates (Y) of the frame.
-     * @return the starting top coordinates (Y) of the image.
-     */
-    int getSubY() {
-        return subframeY;
-    }
-
-    /**
-     * @brief getSubW Get the width of the frame
-     * @return unbinned width of the frame
-     */
-    int getSubW() {
-        return subframeWidth;
-    }
-
-    /**
-     * @brief getSubH Get the height of the frame
-     * @return unbinned height of the frame
-     */
-    int getSubH() {
-        return subframeHeight;
-    }
-
-    /**
-     * @brief getBinX Get horizontal binning of the CCD chip.
-     * @return horizontal binning of the CCD chip.
-     */
-    int getBinX() {
-        return binningX;
-    }
-
-    /**
-     * @brief getBinY Get vertical binning of the CCD chip.
-     * @return vertical binning of the CCD chip.
-     */
-    int getBinY() {
-        return binningY;
-    }
-
-    /**
-     * @brief getPixelSizeX Get horizontal pixel size in microns.
-     * @return horizontal pixel size in microns.
-     */
-    float getPixelSizeX() {
-        return pixelSizeX;
-    }
-
-    /**
-     * @brief getPixelSizeY Get vertical pixel size in microns.
-     * @return vertical pixel size in microns.
-     */
-    float getPixelSizeY() {
-        return pixelSizeY;
-    }
-
-    /**
-     * @brief getBPP Get CCD Chip depth (bits per pixel).
-     * @return bits per pixel.
-     */
-    int getBPP() {
-        return BPP;
-    }
-
-    /**
-     * @brief getFrameBufferSize Get allocated frame buffer size to hold the CCD
-     *        image frame.
-     * @return allocated frame buffer size to hold the CCD image frame.
-     */
-    int getFrameBufferSize() {
-        return RawFrameSize;
-    }
-
-    /**
-     * @brief getExposureLeft Get exposure time left in seconds.
-     * @return exposure time left in seconds.
-     */
-    double getExposureLeft() {
-        return imageExposureDuration.getValue();
-    }
-
-    /**
-     * @brief getExposureDuration Get requested exposure duration for the CCD
-     *        chip in seconds.
-     * @return requested exposure duration for the CCD chip in seconds.
-     */
-    double getExposureDuration() {
-        return exposureDuration;
-    }
-
-    /**
-     * @brief getExposureStartTime
-     * @return exposure start time in ISO 8601 format.
-     */
-    String getExposureStartTime() {
-        return dateFormatISO8601.format(startExposureTime);
-    }
-
-    /**
-     * @brief getFrameBuffer Get raw frame buffer of the CCD chip.
-     * @return raw frame buffer of the CCD chip.
-     */
-    INDICCDImage getFrameBuffer() {
-        return ccdImage;
-    }
-
-    /**
-     * @brief setFrameBuffer Set raw frame buffer pointer.
-     * @param buffer
-     *            pointer to frame buffer /note CCD Chip allocates the frame
-     *            buffer internally once SetFrameBufferSize is called with
-     *            allocMem set to true which is the default behavior. If you
-     *            allocated the memory yourself (i.e. allocMem is false), then
-     *            you must call this function to set the pointer to the raw
-     *            frame buffer.
-     */
-    void setFrameBuffer(INDICCDImage ccdImage) {
-        this.ccdImage = ccdImage;
-    }
-
-    /**
-     * @brief isCompressed
-     * @return True if frame is compressed, false otherwise.
-     */
-    boolean isCompressed() {
-        return sendCompressed;
-    }
-
-    /**
-     * @brief isInterlaced
-     * @return True if CCD chip is Interlaced, false otherwise.
-     */
-    boolean isInterlaced() {
-        return Interlaced;
-    }
-
-    /**
-     * @brief getFrameType
-     * @return CCD Frame type
-     */
-    CCD_FRAME getFrameType() {
-        return FrameType;
-    }
-
-    /**
-     * @brief getFrameTypeName returns CCD Frame type name
-     * @param fType
-     *            type of frame
-     * @return CCD Frame type name
-     */
-    String getFrameTypeName(CCD_FRAME fType) {
-        return fType.toString();
-    }
-
-    /**
-     * @brief Make CCD Info writable
-     */
-    void setCCDInfoWritable() {
-        throw new UnsupportedOperationException("can not set property writable");
-    }
-
-    /**
-     * @brief setResolution set CCD Chip resolution
-     * @param x
-     *            width
-     * @param y
-     *            height
-     * @throws INDIException
-     */
-    void setResolution(int x, int y) throws INDIException {
-        xResolution = x;
-        yResolution = y;
-
-        imagePixelSizeMaxX.setValue(x);
-        imagePixelSizeMaxY.setValue(y);
-        this.updateProperty(imagePixelSize);
-
-        imageFrameX.setMin(0);
-        imageFrameX.setMax(x - 1);
-        imageFrameY.setMin(0);
-        imageFrameY.setMax(y - 1);
-        imageFrameWidth.setMin(1);
-        imageFrameWidth.setMax(x);
-        imageFrameHeigth.setMin(1);
-        imageFrameHeigth.setMax(y);
-        this.updateProperty(imageFrame, true, null);
-    }
-
-    /**
-     * @brief setFrame Set desired frame resolutoin for an exposure.
-     * @param subx
-     *            Left position.
-     * @param suby
-     *            Top position.
-     * @param subw
-     *            unbinned width of the frame.
-     * @param subh
-     *            unbinned height of the frame.
-     * @throws INDIException
-     */
-    void setFrame(int subx, int suby, int subw, int subh) throws INDIException {
-        subframeX = subx;
-        subframeY = suby;
-        subframeWidth = subw;
-        subframeHeight = subh;
-
-        imageFrameX.setValue(subframeX);
-        imageFrameY.setValue(subframeY);
-        imageFrameWidth.setValue(subframeWidth);
-        imageFrameHeigth.setValue(subframeHeight);
-        this.updateProperty(imageFrame);
-    }
-
-    /**
-     * @brief setBin Set CCD Chip binnig
-     * @param hor
-     *            Horizontal binning.
-     * @param ver
-     *            Vertical binning.
-     * @throws INDIException
-     */
-    void setBin(int hor, int ver) throws INDIException {
-        binningX = hor;
-        binningY = ver;
-
-        imageBinX.setValue(binningX);
-        imageBinY.setValue(binningY);
-        this.updateProperty(imageBin);
-    }
-
-    /**
-     * @brief setMaxBin Set Maximum CCD Chip binning
-     * @param max_hor
-     *            Maximum horizontal binning
-     * @param max_ver
-     *            Maximum vertical binning
-     * @throws INDIException
-     */
-    void setMaxBin(int max_hor, int max_ver) throws INDIException {
-        imageBinX.setMax(max_hor);
-        imageBinY.setMax(max_ver);
-        this.updateProperty(imageBin, true, null);
-    }
-
-    /**
-     * @brief setPixelSize Set CCD Chip pixel size
-     * @param x
-     *            Horziontal pixel size in microns.
-     * @param y
-     *            Vertical pixel size in microns.
-     * @throws INDIException
-     */
-    void setPixelSize(float x, float y) throws INDIException {
-        pixelSizeX = x;
-        pixelSizeY = y;
-
-        imagePixelSizePixelSize.setValue(x);
-        imagePixelSizePixelSizeX.setValue(x);
-        imagePixelSizePixelSizeY.setValue(y);
-        this.updateProperty(imagePixelSize);
-    }
-
-    /**
-     * @brief setCompressed Set whether a frame is compressed after exposure?
-     * @param cmp
-     *            If true, compress frame.
-     */
-    void setCompressed(boolean cmp) {
-
-    }
-
-    /**
-     * @brief setInterlaced Set whether the CCD chip is interlaced or not?
-     * @param intr
-     *            If true, the CCD chip is interlaced.
-     */
-    void setInterlaced(boolean intr) {
-        this.Interlaced = intr;
-    }
-
-    /**
-     * @brief setFrameBufferSize Set desired frame buffer size. The function
-     *        will allocate memory accordingly. The frame size depends on the
-     *        desired frame resolution (Left, Top, Width, Height), depth of the
-     *        CCD chip (bpp), and binning settings. You must set the frame size
-     *        any time any of the prior parameters gets updated.
-     * @param nbuf
-     *            size of buffer in bytes.
-     * @param allocMem
-     *            if True, it will allocate memory of nbut size bytes.
-     */
-    void setFrameBufferSize(int nbuf) {
-        throw new UnsupportedOperationException("sould not be nessesary");
-    }
-
-    /**
-     * @brief setBPP Set depth of CCD chip.
-     * @param bpp
-     *            bits per pixel
-     * @throws INDIException
-     */
-    void setBPP(int bpp) throws INDIException {
-        BPP = bpp;
-        imagePixelSizeBitPerPixel.setValue(bpp);
-        this.updateProperty(imagePixelSize);
-    }
-
-    /**
-     * @brief setFrameType Set desired frame type for next exposure.
-     * @param type
-     *            desired CCD frame type.
-     */
-    void setFrameType(CCD_FRAME type) {
-
-    }
-
-    /**
-     * @brief setExposureDuration Set desired CCD frame exposure duration for
-     *        next exposure. You must call this function immediately before
-     *        starting the actual exposure as it is used to calculate the
-     *        timestamp used for the FITS header.
-     * @param duration
-     *            exposure duration in seconds.
-     * @throws INDIException
-     */
-    void setExposureDuration(double duration) {
-        exposureDuration = duration;
-        startExposureTime = new Date();
-    }
-
-    /**
-     * @brief setExposureLeft Update exposure time left. Inform the client of
-     *        the new exposure time left value.
-     * @param duration
-     *            exposure duration left in seconds.
-     */
-    void setExposureLeft(double duration) throws INDIException {
-        imageExposureDuration.setValue(duration);
-        this.updateProperty(imageExposure);
-    }
-
-    /**
-     * @throws INDIException
-     * @brief setExposureFailed Alert the client that the exposure failed.
-     */
-    void setExposureFailed() throws INDIException {
-        imageExposure.setState(PropertyStates.ALERT);
-        this.updateProperty(imageExposure);
-    }
-
-    /**
-     * @return Get number of FITS axis in image. By default 2
-     */
-    int getNAxis() {
-        return NAxis;
-    }
-
-    /**
-     * @brief setNAxis Set FITS number of axis
-     * @param value
-     *            number of axis
-     */
-    void setNAxis(int value) {
-        NAxis = value;
-    }
-
-    /**
-     * @brief setImageExtension Set image exntension
-     * @param ext
-     *            extension (fits, jpeg, raw..etc)
-     */
-    void setImageExtension(String ext) {
-        imageExtention = ext;
-    }
-
-    /**
-     * @return Return image extension (fits, jpeg, raw..etc)
-     */
-    String getImageExtension() {
-        return imageExtention;
-    }
-
-    /**
-     * @return True if CCD is currently exposing, false otherwise.
-     */
-    boolean isExposing() {
-        return (imageExposure.getState() == PropertyStates.BUSY);
-    }
-
-    public CCDDriverExtention(INDICCD indiccd) {
+    public CCDDriverExtention(INDICCDDriver indiccd) {
         super(indiccd);
         imageExposure.setEventHandler(new NumberEvent() {
 
@@ -822,126 +400,8 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
 
     }
 
-    @Override
-    public void connect() {
-        driver.addProperty(this.imageExposure);
-        if (capability().canAbort())
-            driver.addProperty(this.abort);
-        if (!capability().canSubFrame()) {
-            this.imageFrame.setPermission(PropertyPermissions.RO);
-        }
-        driver.addProperty(this.imageFrame);
-        if (capability().canBin())
-            driver.addProperty(this.imageBin);
-        driver.addProperty(this.imagePixelSize);
-        driver.addProperty(this.compress);
-        driver.addProperty(this.fits);
-        driver.addProperty(this.frameType);
-        driver.addProperty(this.rapidGuide);
-        if (RapidGuideEnabled) {
-            driver.addProperty(this.rapidGuideSetup);
-            driver.addProperty(this.rapidGuideData);
-        }
-    }
-
-    @Override
-    public void disconnect() {
-        driver.removeProperty(this.imageExposure);
-        if (capability().canAbort())
-            driver.removeProperty(this.abort);
-        if (!capability().canSubFrame()) {
-            this.imageFrame.setPermission(PropertyPermissions.RO);
-        }
-        driver.removeProperty(this.imageFrame);
-        if (capability().canBin())
-            driver.removeProperty(this.imageBin);
-        driver.removeProperty(this.imagePixelSize);
-        driver.removeProperty(this.compress);
-        driver.removeProperty(this.fits);
-        driver.removeProperty(this.frameType);
-        driver.removeProperty(this.rapidGuide);
-        if (RapidGuideEnabled) {
-            driver.removeProperty(this.rapidGuideSetup);
-            driver.removeProperty(this.rapidGuideData);
-        }
-    }
-
-    private void newImageBinValue(INDINumberElementAndValue[] elementsAndValues) {
-        // We are being asked to set camera binning
-        if (!capability().canBin()) {
-            imageBin.setState(PropertyStates.ALERT);
-            try {
-                updateProperty(imageBin);
-            } catch (INDIException e) {
-            }
-            return;
-        }
-        imageBin.setValues(elementsAndValues);
-        binningX = imageBinX.getIntValue();
-        binningY = imageBinY.getIntValue();
-
-        if (driverInterface.updateCCDBin(binningX, binningY)) {
-            imageBin.setState(PropertyStates.OK);
-
-        } else
-            imageBin.setState(PropertyStates.ALERT);
-        try {
-            updateProperty(imageBin);
-        } catch (INDIException e) {
-        }
-        return;
-    }
-
-    private void newImageExposureValue(INDINumberElementAndValue[] elementsAndValues) {
-        imageExposure.setValues(elementsAndValues);
-        if (imageExposure.getState() == PropertyStates.BUSY)
-            driverInterface.abortExposure();
-        if (driverInterface.startExposure(exposureDuration))
-            imageExposure.setState(PropertyStates.BUSY);
-        else
-            imageExposure.setState(PropertyStates.ALERT);
-        try {
-            updateProperty(imageExposure);
-        } catch (INDIException e) {
-        }
-    }
-
-    private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
-        imageFrame.setValues(elementsAndValues);
-
-        imageFrame.setState(PropertyStates.OK);
-
-        LOG.log(Level.FINE, String.format("Requested CCD Frame is %4.0f,%4.0f %4.0f x %4.0f", imageFrameX.getIntValue(), imageFrameY.getIntValue(),
-                imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()));
-
-        if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()))
-            imageFrame.setState(PropertyStates.ALERT);
-        try {
-            updateProperty(imageFrame);
-        } catch (INDIException e) {
-        }
-    }
-
-    private void newRapidGuideDataValue(INDINumberElementAndValue[] elementsAndValues) {
-        rapidGuideData.setState(PropertyStates.OK);
-        rapidGuideData.setValues(elementsAndValues);
-        try {
-            updateProperty(rapidGuideData);
-        } catch (INDIException e) {
-        }
-    }
-
-    private void newImagePixelSize(INDINumberElementAndValue[] elementsAndValues) {
-        imagePixelSize.setValues(elementsAndValues);
-        imagePixelSize.setState(PropertyStates.OK);
-        xResolution = imagePixelSizeMaxX.getIntValue();
-        yResolution = imagePixelSizeMaxY.getIntValue();
-        pixelSizeX = imagePixelSizePixelSizeX.getValue().floatValue();
-        pixelSizeY = imagePixelSizePixelSizeY.getValue().floatValue();
-        try {
-            updateProperty(imagePixelSize);
-        } catch (INDIException e) {
-        }
+    private Capability capability() {
+        return driver.capability();
     }
 
     private void newAbortValue() {
@@ -978,21 +438,21 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         frameType.setValues(elementsAndValues);
         frameType.setState(PropertyStates.OK);
         if (frameTypeLight.getValue() == SwitchStatus.ON) {
-            setFrameType(CCD_FRAME.LIGHT_FRAME);
+            currentFrameType = CcdFrame.LIGHT_FRAME;
         } else if (frameTypeBais.getValue() == SwitchStatus.ON) {
-            setFrameType(CCD_FRAME.BIAS_FRAME);
+            currentFrameType = CcdFrame.BIAS_FRAME;
             if (!capability().hasShutter()) {
                 LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
             }
         } else if (frameTypeDark.getValue() == SwitchStatus.ON) {
-            setFrameType(CCD_FRAME.DARK_FRAME);
+            currentFrameType = CcdFrame.DARK_FRAME;
             if (!capability().hasShutter()) {
                 LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
             }
         } else if (frameTypeFlat.getValue() == SwitchStatus.ON) {
-            setFrameType(CCD_FRAME.FLAT_FRAME);
+            currentFrameType = CcdFrame.FLAT_FRAME;
         }
-        if (!driverInterface.updateCCDFrameType(getFrameType()))
+        if (!driverInterface.updateCCDFrameType(currentFrameType))
             frameType.setState(PropertyStates.ALERT);
         try {
             updateProperty(frameType);
@@ -1000,12 +460,106 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         }
     }
 
+    private void newImageBinValue(INDINumberElementAndValue[] elementsAndValues) {
+        // We are being asked to set camera binning
+        if (!capability().canBin()) {
+            imageBin.setState(PropertyStates.ALERT);
+            try {
+                updateProperty(imageBin);
+            } catch (INDIException e) {
+            }
+            return;
+        }
+        imageBin.setValues(elementsAndValues);
+        binningX = imageBinX.getIntValue();
+        binningY = imageBinY.getIntValue();
+
+        if (driverInterface.updateCCDBin(binningX, binningY)) {
+            imageBin.setState(PropertyStates.OK);
+
+        } else
+            imageBin.setState(PropertyStates.ALERT);
+        try {
+            updateProperty(imageBin);
+        } catch (INDIException e) {
+        }
+        return;
+    }
+
+    private void newImageExposureValue(INDINumberElementAndValue[] elementsAndValues) {
+        imageExposure.setValues(elementsAndValues);
+        if (imageExposure.getState() == PropertyStates.BUSY) {
+            driverInterface.abortExposure();
+        }
+        startExposureTime = new Date();
+        if (driverInterface.startExposure(exposureDuration))
+            imageExposure.setState(PropertyStates.BUSY);
+        else
+            imageExposure.setState(PropertyStates.ALERT);
+        try {
+            updateProperty(imageExposure);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
+        imageFrame.setValues(elementsAndValues);
+
+        imageFrame.setState(PropertyStates.OK);
+
+        LOG.log(Level.FINE, String.format("Requested CCD Frame is %4.0f,%4.0f %4.0f x %4.0f", imageFrameX.getIntValue(), imageFrameY.getIntValue(),
+                imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()));
+
+        if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()))
+            imageFrame.setState(PropertyStates.ALERT);
+        try {
+            updateProperty(imageFrame);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newImagePixelSize(INDINumberElementAndValue[] elementsAndValues) {
+        imagePixelSize.setValues(elementsAndValues);
+        imagePixelSize.setState(PropertyStates.OK);
+        xResolution = imagePixelSizeMaxX.getIntValue();
+        yResolution = imagePixelSizeMaxY.getIntValue();
+        pixelSizeX = imagePixelSizePixelSizeX.getValue().floatValue();
+        pixelSizeY = imagePixelSizePixelSizeY.getValue().floatValue();
+        try {
+            updateProperty(imagePixelSize);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newRapidGuideDataValue(INDINumberElementAndValue[] elementsAndValues) {
+        rapidGuideData.setState(PropertyStates.OK);
+        rapidGuideData.setValues(elementsAndValues);
+        try {
+            updateProperty(rapidGuideData);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newRapidGuideSetupValue(INDISwitchElementAndValue[] elementsAndValues) {
+        rapidGuideSetup.setValues(elementsAndValues);
+        rapidGuideSetup.setState(PropertyStates.OK);
+
+        autoLoop = rapidGuideSetupAutoLoop.getValue() == SwitchStatus.ON;
+        sendImage = rapidGuideSetupSendImage.getValue() == SwitchStatus.ON;
+        showMarker = rapidGuideSetupShowMarker.getValue() == SwitchStatus.ON;
+
+        try {
+            updateProperty(rapidGuideSetup);
+        } catch (INDIException e) {
+        }
+    }
+
     private void newRapidGuideValue(INDISwitchElementAndValue[] elementsAndValues) {
         rapidGuide.setValues(elementsAndValues);
         rapidGuide.setState(PropertyStates.OK);
-        RapidGuideEnabled = (rapidGuideEnable.getValue() == SwitchStatus.ON);
+        rapidGuideEnabled = (rapidGuideEnable.getValue() == SwitchStatus.ON);
 
-        if (RapidGuideEnabled) {
+        if (rapidGuideEnabled) {
             driver.addProperty(rapidGuideSetup);
             driver.addProperty(rapidGuideData);
         } else {
@@ -1019,18 +573,403 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         }
     }
 
-    private void newRapidGuideSetupValue(INDISwitchElementAndValue[] elementsAndValues) {
-        rapidGuideSetup.setValues(elementsAndValues);
-        rapidGuideSetup.setState(PropertyStates.OK);
+    /**
+     * @brief getBinX Get horizontal binning of the CCD chip.
+     * @return horizontal binning of the CCD chip.
+     */
+    int getBinX() {
+        return binningX;
+    }
 
-        AutoLoop = rapidGuideSetupAutoLoop.getValue() == SwitchStatus.ON;
-        SendImage = rapidGuideSetupSendImage.getValue() == SwitchStatus.ON;
-        ShowMarker = rapidGuideSetupShowMarker.getValue() == SwitchStatus.ON;
+    /**
+     * @brief getBinY Get vertical binning of the CCD chip.
+     * @return vertical binning of the CCD chip.
+     */
+    int getBinY() {
+        return binningY;
+    }
 
-        try {
-            updateProperty(rapidGuideSetup);
-        } catch (INDIException e) {
+    /**
+     * @brief getBPP Get CCD Chip depth (bits per pixel).
+     * @return bits per pixel.
+     */
+    int getBPP() {
+        return bitsPerPixel;
+    }
+
+    /**
+     * @brief getExposureLeft Get exposure time left in seconds.
+     * @return exposure time left in seconds.
+     */
+    double getExposureLeft() {
+        return imageExposureDuration.getValue();
+    }
+
+    /**
+     * @brief getExposureStartTime
+     * @return exposure start time in ISO 8601 format.
+     */
+    private String getExposureStartTime() {
+        return dateFormatISO8601.format(startExposureTime);
+    }
+
+    /**
+     * @brief getFrameBuffer Get raw frame buffer of the CCD chip.
+     * @return raw frame buffer of the CCD chip.
+     */
+    INDICCDImage getFrameBuffer() {
+        return ccdImage;
+    }
+
+    /**
+     * @brief getFrameTypeName returns CCD Frame type name
+     * @param fType
+     *            type of frame
+     * @return CCD Frame type name
+     */
+    String getFrameTypeName(CcdFrame fType) {
+        return fType.toString();
+    }
+
+    /**
+     * @return Return image extension (fits, jpeg, raw..etc)
+     */
+    public String getImageExtension() {
+        return imageExtention;
+    }
+
+    /**
+     * @return Get number of FITS axis in image. By default 2
+     */
+    int getNAxis() {
+        return NAxis;
+    }
+
+    /**
+     * @brief getPixelSizeX Get horizontal pixel size in microns.
+     * @return horizontal pixel size in microns.
+     */
+    float getPixelSizeX() {
+        return pixelSizeX;
+    }
+
+    /**
+     * @brief getPixelSizeY Get vertical pixel size in microns.
+     * @return vertical pixel size in microns.
+     */
+    float getPixelSizeY() {
+        return pixelSizeY;
+    }
+
+    /**
+     * @brief getSubH Get the height of the frame
+     * @return unbinned height of the frame
+     */
+    int getSubH() {
+        return subframeHeight;
+    }
+
+    /**
+     * @brief getSubW Get the width of the frame
+     * @return unbinned width of the frame
+     */
+    int getSubW() {
+        return subframeWidth;
+    }
+
+    /**
+     * @brief getSubX Get the starting left coordinates (X) of the frame.
+     * @return the starting left coordinates (X) of the image.
+     */
+    int getSubX() {
+        return subframeX;
+    }
+
+    /**
+     * @brief getSubY Get the starting top coordinates (Y) of the frame.
+     * @return the starting top coordinates (Y) of the image.
+     */
+    int getSubY() {
+        return subframeY;
+    }
+
+    /**
+     * @brief getXRes Get the horizontal resolution in pixels of the CCD Chip.
+     * @return the horizontal resolution of the CCD Chip.
+     */
+    int getXRes() {
+        return xResolution;
+    }
+
+    /**
+     * @brief Get the vertical resolution in pixels of the CCD Chip.
+     * @return the horizontal resolution of the CCD Chip.
+     */
+    int getYRes() {
+        return yResolution;
+    }
+
+    /**
+     * @brief isCompressed
+     * @return True if frame is compressed, false otherwise.
+     */
+    boolean isCompressed() {
+        return sendCompressed;
+    }
+
+    /**
+     * @return True if CCD is currently exposing, false otherwise.
+     */
+    boolean isExposing() {
+        return (imageExposure.getState() == PropertyStates.BUSY);
+    }
+
+    /**
+     * @brief setBin Set CCD Chip binnig
+     * @param hor
+     *            Horizontal binning.
+     * @param ver
+     *            Vertical binning.
+     * @throws INDIException
+     */
+    void setBin(int hor, int ver) throws INDIException {
+        binningX = hor;
+        binningY = ver;
+
+        imageBinX.setValue(binningX);
+        imageBinY.setValue(binningY);
+        this.updateProperty(imageBin);
+    }
+
+    /**
+     * @brief setBPP Set depth of CCD chip.
+     * @param bpp
+     *            bits per pixel
+     * @throws INDIException
+     */
+    void setBPP(int bpp) throws INDIException {
+        bitsPerPixel = bpp;
+        imagePixelSizeBitPerPixel.setValue(bpp);
+        this.updateProperty(imagePixelSize);
+    }
+
+    /**
+     * @brief Make CCD Info writable
+     */
+    void setCCDInfoWritable() {
+        throw new UnsupportedOperationException("can not set property writable");
+    }
+
+    /**
+     * @brief setCompressed Set whether a frame is compressed after exposure?
+     * @param cmp
+     *            If true, compress frame.
+     */
+    void setCompressed(boolean cmp) {
+
+    }
+
+    /**
+     * @throws INDIException
+     * @brief setExposureFailed Alert the client that the exposure failed.
+     */
+    void setExposureFailed() throws INDIException {
+        imageExposure.setState(PropertyStates.ALERT);
+        this.updateProperty(imageExposure);
+    }
+
+    /**
+     * @brief setExposureLeft Update exposure time left. Inform the client of
+     *        the new exposure time left value.
+     * @param duration
+     *            exposure duration left in seconds.
+     */
+    void setExposureLeft(double duration) throws INDIException {
+        imageExposureDuration.setValue(duration);
+        this.updateProperty(imageExposure);
+    }
+
+    /**
+     * @brief setFrame Set desired frame resolutoin for an exposure.
+     * @param subx
+     *            Left position.
+     * @param suby
+     *            Top position.
+     * @param subw
+     *            unbinned width of the frame.
+     * @param subh
+     *            unbinned height of the frame.
+     * @throws INDIException
+     */
+    void setFrame(int subx, int suby, int subw, int subh) throws INDIException {
+        subframeX = subx;
+        subframeY = suby;
+        subframeWidth = subw;
+        subframeHeight = subh;
+
+        imageFrameX.setValue(subframeX);
+        imageFrameY.setValue(subframeY);
+        imageFrameWidth.setValue(subframeWidth);
+        imageFrameHeigth.setValue(subframeHeight);
+        this.updateProperty(imageFrame);
+    }
+
+    /**
+     * @brief setFrameBuffer Set raw frame buffer pointer.
+     * @param buffer
+     *            pointer to frame buffer /note CCD Chip allocates the frame
+     *            buffer internally once SetFrameBufferSize is called with
+     *            allocMem set to true which is the default behavior. If you
+     *            allocated the memory yourself (i.e. allocMem is false), then
+     *            you must call this function to set the pointer to the raw
+     *            frame buffer.
+     */
+    void setFrameBuffer(INDICCDImage ccdImage) {
+        this.ccdImage = ccdImage;
+    }
+
+    /**
+     * @brief setFrameBufferSize Set desired frame buffer size. The function
+     *        will allocate memory accordingly. The frame size depends on the
+     *        desired frame resolution (Left, Top, Width, Height), depth of the
+     *        CCD chip (bpp), and binning settings. You must set the frame size
+     *        any time any of the prior parameters gets updated.
+     * @param nbuf
+     *            size of buffer in bytes.
+     * @param allocMem
+     *            if True, it will allocate memory of nbut size bytes.
+     */
+    void setFrameBufferSize(int nbuf) {
+        throw new UnsupportedOperationException("sould not be nessesary");
+    }
+
+    /**
+     * @brief setImageExtension Set image exntension
+     * @param ext
+     *            extension (fits, jpeg, raw..etc)
+     */
+   public void setImageExtension(String ext) {
+        imageExtention = ext;
+    }
+
+    /**
+     * @brief setMaxBin Set Maximum CCD Chip binning
+     * @param max_hor
+     *            Maximum horizontal binning
+     * @param max_ver
+     *            Maximum vertical binning
+     * @throws INDIException
+     */
+    void setMaxBin(int max_hor, int max_ver) throws INDIException {
+        imageBinX.setMax(max_hor);
+        imageBinY.setMax(max_ver);
+        this.updateProperty(imageBin, true, null);
+    }
+
+    /**
+     * @brief setNAxis Set FITS number of axis
+     * @param value
+     *            number of axis
+     */
+    void setNAxis(int value) {
+        NAxis = value;
+    }
+
+    /**
+     * @brief setPixelSize Set CCD Chip pixel size
+     * @param x
+     *            Horziontal pixel size in microns.
+     * @param y
+     *            Vertical pixel size in microns.
+     * @throws INDIException
+     */
+    void setPixelSize(float x, float y) throws INDIException {
+        pixelSizeX = x;
+        pixelSizeY = y;
+
+        imagePixelSizePixelSize.setValue(x);
+        imagePixelSizePixelSizeX.setValue(x);
+        imagePixelSizePixelSizeY.setValue(y);
+        this.updateProperty(imagePixelSize);
+    }
+
+    /**
+     * @brief setResolution set CCD Chip resolution
+     * @param x
+     *            width
+     * @param y
+     *            height
+     * @throws INDIException
+     */
+    void setResolution(int x, int y) throws INDIException {
+        xResolution = x;
+        yResolution = y;
+
+        imagePixelSizeMaxX.setValue(x);
+        imagePixelSizeMaxY.setValue(y);
+        this.updateProperty(imagePixelSize);
+
+        imageFrameX.setMin(0);
+        imageFrameX.setMax(x - 1);
+        imageFrameY.setMin(0);
+        imageFrameY.setMax(y - 1);
+        imageFrameWidth.setMin(1);
+        imageFrameWidth.setMax(x);
+        imageFrameHeigth.setMin(1);
+        imageFrameHeigth.setMax(y);
+        this.updateProperty(imageFrame, true, null);
+    }
+
+    /**
+     * Add FITS keywords to a fits file. In additional to the standard FITS
+     * keywords, this function write the following keywords the FITS file:
+     * <ul>
+     * <li>EXPTIME: Total Exposure Time (s)</li>
+     * <li>DARKTIME (if applicable): Total Exposure Time (s)</li>
+     * <li>PIXSIZE1: Pixel Size 1 (microns)</li>
+     * <li>PIXSIZE2: Pixel Size 2 (microns)</li>
+     * <li>BINNING: Binning HOR x VER</li>
+     * <li>FRAME: Frame Type</li>
+     * <li>DATAMIN: Minimum value</li>
+     * <li>DATAMAX: Maximum value</li>
+     * <li>INSTRUME: CCD Name</li>
+     * <li>DATE-OBS: UTC start date of observation</li>
+     * </ul>
+     * To add additional information, override this function in the child class
+     * and ensure to call INDICCD::addFITSKeywords.
+     * 
+     * @param fptr
+     *            pointer to a valid FITS file.
+     * @param targetChip
+     *            The target chip to extract the keywords from.
+     * @throws HeaderCardException
+     */
+    private void addFITSKeywords(BasicHDU fitsHeader) throws HeaderCardException {
+        fitsHeader.addValue("EXPTIME", exposureDuration, "Total Exposure Time (s)");
+
+        if (currentFrameType == CcdFrame.DARK_FRAME)
+            fitsHeader.addValue("DARKTIME", exposureDuration, "Total Exposure Time (s)");
+
+        fitsHeader.addValue("PIXSIZE1", getPixelSizeX(), "Pixel Size 1 (microns)");
+        fitsHeader.addValue("PIXSIZE2", getPixelSizeY(), "Pixel Size 2 (microns)");
+        fitsHeader.addValue("XBINNING", binningX, "Binning factor in width");
+        fitsHeader.addValue("YBINNING", binningY, "Binning factor in height");
+        fitsHeader.addValue("FRAME", currentFrameType.fitsValue(), "Frame Type");
+
+        if (getNAxis() == 2) {
+            // should de done in the image processing
+            // fitsHeader.addValue("DATAMIN", &min_val, "Minimum value");
+            // fitsHeader.addValue("DATAMAX", &max_val, "Maximum value");
         }
+
+        if (!Double.isNaN(ra) && !Double.isNaN(dec)) {
+            fitsHeader.addValue("OBJCTRA", ra, "Object RA");
+            fitsHeader.addValue("OBJCTDEC", dec, "Object DEC");
+        }
+
+        fitsHeader.addValue("INSTRUME", driver.getName(), "CCD Name");
+        fitsHeader.addValue("DATE-OBS", getExposureStartTime(), "UTC start date of observation");
+
     }
 
     /**
@@ -1042,10 +981,10 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         boolean showMarker = false;
         boolean sendData = false;
         boolean autoLoop = false;
-        if (RapidGuideEnabled) {
-            autoLoop = AutoLoop;
-            sendImage = SendImage;
-            showMarker = ShowMarker;
+        if (rapidGuideEnabled) {
+            autoLoop = this.autoLoop;
+            sendImage = this.sendImage;
+            showMarker = this.showMarker;
             sendData = true;
             saveImage = false;
         }
@@ -1157,9 +1096,9 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         } catch (INDIException e) {
         }
         if (autoLoop) {
-            imageExposureDuration.setValue(ExposureTime);
+            imageExposureDuration.setValue(exposureTime);
             imageExposure.setState(PropertyStates.BUSY);
-            if (driverInterface.startExposure(ExposureTime))
+            if (driverInterface.startExposure(exposureTime))
                 imageExposure.setState(PropertyStates.BUSY);
             else {
                 LOG.log(Level.SEVERE, "Autoloop: Primary CCD Exposure Error!");
@@ -1202,56 +1141,48 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         }
     }
 
-    /**
-     * Add FITS keywords to a fits file. In additional to the standard FITS
-     * keywords, this function write the following keywords the FITS file:
-     * <ul>
-     * <li>EXPTIME: Total Exposure Time (s)</li>
-     * <li>DARKTIME (if applicable): Total Exposure Time (s)</li>
-     * <li>PIXSIZE1: Pixel Size 1 (microns)</li>
-     * <li>PIXSIZE2: Pixel Size 2 (microns)</li>
-     * <li>BINNING: Binning HOR x VER</li>
-     * <li>FRAME: Frame Type</li>
-     * <li>DATAMIN: Minimum value</li>
-     * <li>DATAMAX: Maximum value</li>
-     * <li>INSTRUME: CCD Name</li>
-     * <li>DATE-OBS: UTC start date of observation</li>
-     * </ul>
-     * To add additional information, override this function in the child class
-     * and ensure to call INDICCD::addFITSKeywords.
-     * 
-     * @param fptr
-     *            pointer to a valid FITS file.
-     * @param targetChip
-     *            The target chip to extract the keywords from.
-     * @throws HeaderCardException
-     */
-    protected void addFITSKeywords(BasicHDU fitsHeader) throws HeaderCardException {
-        fitsHeader.addValue("EXPTIME", exposureDuration, "Total Exposure Time (s)");
-
-        if (getFrameType() == CCD_FRAME.DARK_FRAME)
-            fitsHeader.addValue("DARKTIME", exposureDuration, "Total Exposure Time (s)");
-
-        fitsHeader.addValue("PIXSIZE1", getPixelSizeX(), "Pixel Size 1 (microns)");
-        fitsHeader.addValue("PIXSIZE2", getPixelSizeY(), "Pixel Size 2 (microns)");
-        fitsHeader.addValue("XBINNING", binningX, "Binning factor in width");
-        fitsHeader.addValue("YBINNING", binningY, "Binning factor in height");
-        fitsHeader.addValue("FRAME", getFrameType().fitsValue(), "Frame Type");
-
-        if (getNAxis() == 2) {
-            // should de done in the image processing
-            // fitsHeader.addValue("DATAMIN", &min_val, "Minimum value");
-            // fitsHeader.addValue("DATAMAX", &max_val, "Maximum value");
+    @Override
+    public void connect() {
+        driver.addProperty(this.imageExposure);
+        if (capability().canAbort())
+            driver.addProperty(this.abort);
+        if (!capability().canSubFrame()) {
+            this.imageFrame.setPermission(PropertyPermissions.RO);
         }
-
-        if (!Double.isNaN(ra) && !Double.isNaN(dec)) {
-            fitsHeader.addValue("OBJCTRA", ra, "Object RA");
-            fitsHeader.addValue("OBJCTDEC", dec, "Object DEC");
+        driver.addProperty(this.imageFrame);
+        if (capability().canBin())
+            driver.addProperty(this.imageBin);
+        driver.addProperty(this.imagePixelSize);
+        driver.addProperty(this.compress);
+        driver.addProperty(this.fits);
+        driver.addProperty(this.frameType);
+        driver.addProperty(this.rapidGuide);
+        if (rapidGuideEnabled) {
+            driver.addProperty(this.rapidGuideSetup);
+            driver.addProperty(this.rapidGuideData);
         }
+    }
 
-        fitsHeader.addValue("INSTRUME", driver.getName(), "CCD Name");
-        fitsHeader.addValue("DATE-OBS", getExposureStartTime(), "UTC start date of observation");
-
+    @Override
+    public void disconnect() {
+        driver.removeProperty(this.imageExposure);
+        if (capability().canAbort())
+            driver.removeProperty(this.abort);
+        if (!capability().canSubFrame()) {
+            this.imageFrame.setPermission(PropertyPermissions.RO);
+        }
+        driver.removeProperty(this.imageFrame);
+        if (capability().canBin())
+            driver.removeProperty(this.imageBin);
+        driver.removeProperty(this.imagePixelSize);
+        driver.removeProperty(this.compress);
+        driver.removeProperty(this.fits);
+        driver.removeProperty(this.frameType);
+        driver.removeProperty(this.rapidGuide);
+        if (rapidGuideEnabled) {
+            driver.removeProperty(this.rapidGuideSetup);
+            driver.removeProperty(this.rapidGuideData);
+        }
     }
 
     /**
@@ -1277,7 +1208,12 @@ public class CCDDriverExtention extends INDIDriverExtention<INDICCD> {
         setBPP(bpp);
     }
 
-    private Capability capability() {
-        return driver.capability();
+    public void setDriverInterface(CCDDriverInterface driverInterface) {
+        this.driverInterface = driverInterface;
+    }
+
+    public void setScopeDirection(double ra, double dec) {
+        this.ra = ra;
+        this.dec = dec;
     }
 }
