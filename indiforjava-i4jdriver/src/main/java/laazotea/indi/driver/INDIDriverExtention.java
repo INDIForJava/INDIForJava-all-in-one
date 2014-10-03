@@ -1,5 +1,6 @@
 package laazotea.indi.driver;
 
+import laazotea.indi.INDIException;
 import laazotea.indi.driver.util.INDIPropertyInjector;
 
 public abstract class INDIDriverExtention<Driver extends INDIDriver> {
@@ -23,6 +24,18 @@ public abstract class INDIDriverExtention<Driver extends INDIDriver> {
 
     public void disconnect() {
 
+    }
+
+    protected void updateProperty(INDIProperty<?> property) throws INDIException {
+        driver.updateProperty(property);
+    }
+
+    protected void updateProperty(INDIProperty<?> property, String message) throws INDIException {
+        driver.updateProperty(property, message);
+    }
+
+    protected void updateProperty(INDIProperty<?> property, boolean updateminmax, String message) throws INDIException {
+        driver.updateProperty(property, updateminmax, message);
     }
 
 }

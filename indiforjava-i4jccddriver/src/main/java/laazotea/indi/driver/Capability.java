@@ -2,73 +2,104 @@ package laazotea.indi.driver;
 
 class Capability {
 
-    public boolean isHasGuideHead() {
-        return hasGuideHead;
-    }
+    private boolean canAbort = false;
 
-    public void setHasGuideHead(boolean hasGuideHead) {
-        this.hasGuideHead = hasGuideHead;
-    }
+    private boolean canBin = false;
 
-    public boolean isHasST4Port() {
-        return hasST4Port;
-    }
+    private boolean canSubFrame = false;
 
-    public void setHasST4Port(boolean hasST4Port) {
-        this.hasST4Port = hasST4Port;
-    }
+    private boolean hasCooler = false;
 
-    public boolean isHasShutter() {
-        return hasShutter;
-    }
+    private boolean hasGuideHead = false;
 
-    public void setHasShutter(boolean hasShutter) {
-        this.hasShutter = hasShutter;
-    }
+    private boolean hasShutter = false;
 
-    public boolean isHasCooler() {
-        return hasCooler;
-    }
+    private boolean hasST4Port = false;
 
-    public void setHasCooler(boolean hasCooler) {
-        this.hasCooler = hasCooler;
-    }
-
-    public boolean isCanBin() {
-        return canBin;
-    }
-
-    public void setCanBin(boolean canBin) {
-        this.canBin = canBin;
-    }
-
-    public boolean isCanSubFrame() {
-        return canSubFrame;
-    }
-
-    public void setCanSubFrame(boolean canSubFrame) {
-        this.canSubFrame = canSubFrame;
-    }
-
-    public boolean isCanAbort() {
+    /**
+     * @return True if CCD can abort exposure. False otherwise.
+     */
+    public boolean canAbort() {
         return canAbort;
     }
 
-    public void setCanAbort(boolean canAbort) {
-        this.canAbort = canAbort;
+    /**
+     * @return True if CCD supports binning. False otherwise.
+     */
+    public boolean canBin() {
+        return canBin;
     }
 
-    boolean hasGuideHead = false;
+    /**
+     * @return True if CCD supports subframing. False otherwise.
+     */
+    public boolean canSubFrame() {
+        return canSubFrame;
+    }
 
-    boolean hasST4Port = false;
+    /**
+     * @return True if CCD has cooler and temperature can be controlled. False
+     *         otherwise.
+     */
+    public boolean hasCooler() {
+        return hasCooler;
+    }
 
-    boolean hasShutter = false;
+    /**
+     * @return True if CCD has guide head. False otherwise.
+     */
+    public boolean hasGuideHead() {
+        return hasGuideHead;
+    }
 
-    boolean hasCooler = false;
+    /**
+     * @return True if CCD has mechanical or electronic shutter. False
+     *         otherwise.
+     */
+    public boolean hasShutter() {
+        return hasShutter;
+    }
 
-    boolean canBin = false;
+    /**
+     * @return True if CCD has ST4 port for guiding. False otherwise.
+     */
+    public boolean hasST4Port() {
+        return hasST4Port;
+    }
 
-    boolean canSubFrame = false;
+    public Capability canAbort(boolean canAbort) {
+        this.canAbort = canAbort;
+        return this;
+    }
 
-    boolean canAbort = false;
+    public Capability canBin(boolean canBin) {
+        this.canBin = canBin;
+        return this;
+    }
+
+    public Capability canSubFrame(boolean canSubFrame) {
+        this.canSubFrame = canSubFrame;
+        return this;
+    }
+
+    public Capability hasCooler(boolean hasCooler) {
+        this.hasCooler = hasCooler;
+        return this;
+    }
+
+    public Capability hasGuideHead(boolean hasGuideHead) {
+        this.hasGuideHead = hasGuideHead;
+        return this;
+    }
+
+    public Capability hasShutter(boolean hasShutter) {
+        this.hasShutter = hasShutter;
+        return this;
+    }
+
+    public Capability hasST4Port(boolean hasST4Port) {
+        this.hasST4Port = hasST4Port;
+        return this;
+    }
+
 }
