@@ -196,8 +196,7 @@
 		<module>indiforjava-i4jsqmdriver</module>
 		<module>indiforjava-i4jfilterwheeldriver</module>
 		<module>indiforjava-i4jfocuserdriver</module>
-		<module>ostermillerutils</module>
-		<module>fits</module>
+
 		<module>gsl</module>
 	</modules>
 	<dependencies>
@@ -257,6 +256,18 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		<profile>
+			<id>build-non-maven-jars</id>
+			<activation>
+				<property>
+					<name>!performRelease</name>
+				</property>
+			</activation>
+			<modules>
+				<module>ostermillerutils</module>
+				<module>fits</module>
+			</modules>
 		</profile>
 	</profiles>
 </project>
