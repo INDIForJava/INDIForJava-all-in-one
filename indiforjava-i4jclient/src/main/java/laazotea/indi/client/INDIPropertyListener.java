@@ -18,7 +18,7 @@
 package laazotea.indi.client;
 
 /**
- * A interface to be notified about changes in a <code>INDIProperty</code>
+ * A interface to be notified about changes in a <code>INDIProperty</code>.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
