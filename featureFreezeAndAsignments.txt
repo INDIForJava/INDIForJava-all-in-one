@@ -14,11 +14,13 @@ For the next release:
 - Finishing refactorings for CCD and Telescope -> ritchie
 - getting maven-release to work with central -> ritchie
 - moving every abstract driver to it's own module. -> ritchie
--
+- URL handling for connections: indi://[host]:[port][/device[/property[/element]]]
+- Annotations for easy property (and element?) definitions.
 
 For future releases:
 
-
+- Server library: allow driver renaming for multiple equal devices (with the same driver)
+- Server library: Check listeners mechanism. Not sure if some error may occur when iterating over the lists.- Server library: Check if drivers are really distroyed to avoid active threads. 
 
 
 

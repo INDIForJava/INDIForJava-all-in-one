@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import laazotea.indi.FileUtils;
 
 import net.sourceforge.novaforjava.api.LnLnlatPosn;
 
@@ -17,7 +18,7 @@ public class InMemoryDatabase {
 
     private static Logger LOG = Logger.getLogger(InMemoryDatabase.class.getName());
 
-    private static String DATABASE_FILE = ".i4j/alignment.db";
+    private static String DATABASE_FILE_NAME = "alignment.db";
 
     private List<LoadDatabaseCallback> callbacks = new ArrayList<InMemoryDatabase.LoadDatabaseCallback>();
 
@@ -119,7 +120,7 @@ public class InMemoryDatabase {
      * @return the file to use.
      */
     private File getDataBaseFile(String deviceName) {
-        File base = new File(System.getProperty("user.home"), DATABASE_FILE);
+        File base = new File(FileUtils.getI4JBaseDirectory(), DATABASE_FILE_NAME);
         StringBuffer deviceNameFile = new StringBuffer(deviceName);
         deviceNameFile.append('-');
         deviceNameFile.append(base.getName());

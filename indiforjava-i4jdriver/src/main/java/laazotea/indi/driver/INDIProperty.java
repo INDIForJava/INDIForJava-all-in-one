@@ -30,6 +30,7 @@ import java.util.List;
 
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
+import laazotea.indi.FileUtils;
 import laazotea.indi.INDIException;
 import laazotea.indi.driver.event.IEventHandler;
 
@@ -84,7 +85,8 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
    */
   private boolean isInit;
   /**
-   * To save / retrieve properties from dis directory
+   * To save / retrieve properties from this directory. It will be stored inside
+   * the default I4J directory. 
    */
   private static final String PROPERTIES_DIR_NAME = "properties";
   /**
@@ -531,7 +533,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
    * @throws IOException
    */
   private void saveToFile() throws IOException {
-    File propertiesDir = new File(PROPERTIES_DIR_NAME);
+    File i4jDir = FileUtils.getI4JBaseDirectory();
+    
+    File propertiesDir = new File(i4jDir, PROPERTIES_DIR_NAME);
 
     if (!propertiesDir.exists()) {
       propertiesDir.mkdir();
@@ -594,7 +598,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
    * the file does not exist)
    */
   public static INDIProperty loadFromFile(INDIDriver driver, String propertyName) throws INDIException {
-    File propertiesDir = new File(PROPERTIES_DIR_NAME);
+    File i4jDir = FileUtils.getI4JBaseDirectory();
+    
+    File propertiesDir = new File(i4jDir, PROPERTIES_DIR_NAME);
 
     File file = new File(propertiesDir, getPropertyNameForFile(driver, propertyName));
 
