@@ -20,11 +20,13 @@ package laazotea.indi.seletek;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchStatus;
 import laazotea.indi.INDIException;
 import laazotea.indi.driver.*;
+import laazotea.indi.driver.focuser.INDIFocuserDriver;
 
 /**
  * A class that acts as a INDI for Java Focuser Driver for a focuser connected

@@ -15,13 +15,22 @@
  *  along with INDI for Java Driver.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.driver;
+package laazotea.indi.driver.filterwheel;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+
 import laazotea.indi.Constants;
 import laazotea.indi.INDIException;
+import laazotea.indi.driver.INDIDriver;
+import laazotea.indi.driver.INDINumberElement;
+import laazotea.indi.driver.INDINumberElementAndValue;
+import laazotea.indi.driver.INDINumberProperty;
+import laazotea.indi.driver.INDIProperty;
+import laazotea.indi.driver.INDITextElement;
+import laazotea.indi.driver.INDITextElementAndValue;
+import laazotea.indi.driver.INDITextProperty;
 
 /**
  * A class representing a Filter Wheel Driver in the INDI Protocol. INDI Filter

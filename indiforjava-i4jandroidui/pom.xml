@@ -9,6 +9,8 @@
 	</parent>
 	<artifactId>i4jandroidui</artifactId>
 	<packaging>apk</packaging>
+	<name>INDI for Java Android App</name>
+	<description>INDI for Java Android App</description>
 	<build>
 		<plugins>
 			<plugin>

@@ -7,14 +7,14 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jseletekdriver</artifactId>
-	<name>INDI for Java Driver for the Seletek</name>
-	<description>INDI for Java Driver for the Seletek</description>
+	<artifactId>i4jfilterwheeldriver</artifactId>
+	<name>INDI for Java Abstract Filter Wheel Driver</name>
+	<description>INDI for Java Abstract Filter Wheel Driver</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jfocuserdriver</artifactId>
+			<artifactId>i4jdriver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

@@ -194,6 +194,8 @@
 		<module>indiforjava-i4jseletekdriver</module>
 		<module>indiforjava-i4jserver</module>
 		<module>indiforjava-i4jsqmdriver</module>
+		<module>indiforjava-i4jfilterwheeldriver</module>
+		<module>indiforjava-i4jfocuserdriver</module>
 		<module>ostermillerutils</module>
 		<module>fits</module>
 		<module>gsl</module>

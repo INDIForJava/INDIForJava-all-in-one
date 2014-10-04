@@ -15,14 +15,22 @@
  *  along with INDI for Java Driver.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.driver;
+package laazotea.indi.driver.focuser;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchStatus;
+import laazotea.indi.driver.INDIDriver;
+import laazotea.indi.driver.INDINumberElement;
+import laazotea.indi.driver.INDINumberElementAndValue;
+import laazotea.indi.driver.INDINumberProperty;
+import laazotea.indi.driver.INDISwitchElementAndValue;
+import laazotea.indi.driver.INDISwitchOneOrNoneProperty;
+import laazotea.indi.driver.INDISwitchProperty;
 import laazotea.indi.INDIException;
 
 /**

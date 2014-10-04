@@ -593,7 +593,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
    * @throws INDIException If there is some problem loading it (for example if
    * the file does not exist)
    */
-  protected static INDIProperty loadFromFile(INDIDriver driver, String propertyName) throws INDIException {
+  public static INDIProperty loadFromFile(INDIDriver driver, String propertyName) throws INDIException {
     File propertiesDir = new File(PROPERTIES_DIR_NAME);
 
     File file = new File(propertiesDir, getPropertyNameForFile(driver, propertyName));

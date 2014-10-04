@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+
 import laazotea.indi.Constants.PropertyPermissions;
 import laazotea.indi.Constants.PropertyStates;
 import laazotea.indi.Constants.SwitchRules;
@@ -32,7 +33,6 @@ import laazotea.indi.INDIException;
 import laazotea.indi.driver.INDIBLOBElementAndValue;
 import laazotea.indi.driver.INDIBLOBProperty;
 import laazotea.indi.driver.INDIConnectionHandler;
-import laazotea.indi.driver.INDIFilterWheelDriver;
 import laazotea.indi.driver.INDINumberElement;
 import laazotea.indi.driver.INDINumberElementAndValue;
 import laazotea.indi.driver.INDINumberProperty;
@@ -42,6 +42,7 @@ import laazotea.indi.driver.INDISwitchElementAndValue;
 import laazotea.indi.driver.INDISwitchProperty;
 import laazotea.indi.driver.INDITextElementAndValue;
 import laazotea.indi.driver.INDITextProperty;
+import laazotea.indi.driver.filterwheel.INDIFilterWheelDriver;
 
 /**
  * A class that acts as a INDI for Java Driver for the QHY Filter Wheel.
