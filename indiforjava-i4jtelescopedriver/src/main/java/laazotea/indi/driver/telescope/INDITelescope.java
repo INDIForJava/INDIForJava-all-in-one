@@ -48,10 +48,12 @@ import laazotea.indi.driver.INDITextElement;
 import laazotea.indi.driver.INDITextElementAndValue;
 import laazotea.indi.driver.INDITextProperty;
 import laazotea.indi.driver.annotation.InjectElement;
+import laazotea.indi.driver.annotation.InjectExtention;
 import laazotea.indi.driver.annotation.InjectProperty;
 import laazotea.indi.driver.event.NumberEvent;
 import laazotea.indi.driver.event.SwitchEvent;
 import laazotea.indi.driver.event.TextEvent;
+import laazotea.indi.driver.serial.INDISerialPortExtention;
 
 /**
  * A class that acts as a abstract INDI for Java Driver for a Telescope.
@@ -99,7 +101,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         SCOPE_TRACKING
     };
 
-    private static Logger LOG = Logger.getLogger(INDITelescope.class.getName());;
+    private static Logger LOG = Logger.getLogger(INDITelescope.class.getName());
 
     protected static final String MAIN_CONTROL_TAB = "Main Control";
 
@@ -176,11 +178,8 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectElement(name = "ABORT", label = "Abort")
     protected INDISwitchElement abordElement;
 
-    @InjectProperty(name = "PORTS", label = "Ports", group = OPTIONS_TAB, saveable = true)
-    protected INDITextProperty port;
-
-    @InjectElement(name = "PORT", label = "Port", valueT = "/dev/ttyUSB0")
-    protected INDITextElement portElement;
+    @InjectExtention(group= OPTIONS_TAB)
+    protected INDISerialPortExtention serialPortExtention;
 
     @InjectProperty(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
     protected INDISwitchProperty movementNSS;
@@ -254,19 +253,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 property.setValues(elementsAndValues);
             }
         });
-        this.port.setEventHandler(new TextEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
-                property.setValues(elementsAndValues);
-                property.setState(PropertyStates.OK);
-                try {
-                    updateProperty(property);
-                } catch (INDIException e) {
-                }
-            }
-        });
-        this.abort.setEventHandler(new SwitchEvent() {
+                this.abort.setEventHandler(new SwitchEvent() {
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
@@ -470,10 +457,6 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         return false;
     }
 
-    protected abstract boolean canPark();
-
-    protected abstract boolean canSync();
-
     protected void doGoto(double ra, double dec) {
 
     }
@@ -535,18 +518,8 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     }
 
-    protected void park() {
-
-    }
-
     protected void readScopeStatus() {
 
-    }
-
-    protected boolean sync(double ra, double dec) {
-        // if we get here, our mount doesn't support sync
-        INDITelescope.LOG.log(Level.SEVERE, "Mount does not support Sync.");
-        return false;
     }
 
     protected long updateInterfall() {
@@ -571,7 +544,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         addProperty(this.config);
         parkExtention.connect();
         addProperty(this.abort);
-        addProperty(this.port);
+        serialPortExtention.connect();
 
         addProperty(this.movementNSS);
         addProperty(this.movementWES);
@@ -589,7 +562,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         removeProperty(this.config);
         parkExtention.disconnect();
         removeProperty(this.abort);
-        removeProperty(this.port);
+        serialPortExtention.disconnect();
         newAbortValue();
 
         removeProperty(this.movementNSS);

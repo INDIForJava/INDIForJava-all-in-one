@@ -22,15 +22,21 @@ public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescop
     @InjectElement(name = "PARK", label = "Park")
     private INDISwitchElement parkElement;
 
+    private INDITelescopeParkInterface parkInterface;
+
     public INDITelescopeParkExtention(INDITelescope telecopeDriver) {
         super(telecopeDriver);
+        if (!isActive()) {
+            return;
+        }
         park.setEventHandler(new SwitchEvent() {
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
-                driver.park();
+                parkInterface.park();
             }
         });
+        parkInterface = (INDITelescopeParkInterface) telecopeDriver;
     }
 
     @Override
@@ -51,7 +57,7 @@ public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescop
 
     @Override
     public boolean isActive() {
-        return driver.canPark();
+        return driver instanceof INDITelescopeParkInterface;
     }
 
     public boolean isBusy() {

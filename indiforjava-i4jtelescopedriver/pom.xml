@@ -18,6 +18,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4jserialextention</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.indilib.i4j</groupId>
 			<artifactId>org.gnu.savannah.gsl</artifactId>
 			<version>1.16.1-SNAPSHOT</version>

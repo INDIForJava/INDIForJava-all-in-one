@@ -27,7 +27,7 @@ import laazotea.indi.driver.ccd.INDIGuiderInterface;
 import laazotea.indi.driver.event.NumberEvent;
 import laazotea.indi.driver.event.SwitchEvent;
 
-public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface {
+public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface, INDITelescopeParkInterface, INDITelescopeSyncInterface {
 
     private static Logger LOG = Logger.getLogger(TelescopeSimulator.class.getName());
 
@@ -342,16 +342,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     }
 
     @Override
-    protected boolean canPark() {
-        return true;
-    }
-
-    @Override
-    protected boolean canSync() {
-        return true;
-    }
-
-    @Override
     protected void doGoto(double r, double d) {
         // IDLog("ScopeSim Goto\n");
         targetRA = r;
@@ -441,7 +431,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     }
 
     @Override
-    protected void park() {
+    public void park() {
         targetRA = 0;
         targetDEC = 90;
         Parked = true;
@@ -662,7 +652,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     }
 
     @Override
-    protected boolean sync(double ra, double dec) {
+    public boolean sync(double ra, double dec) {
         currentRA = ra;
         currentDEC = dec;
 
