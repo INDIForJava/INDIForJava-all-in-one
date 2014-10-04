@@ -5,12 +5,11 @@ Additonally we can annotate if any of the feautures is actually being implemente
 
 For the next release:
 
-- Base directory stuff ( ~/.i4j/ )   -> Zerjillo
 - Element iterators in properties (and properties in drivers? and drivers in connections?)
 - Avoid of api exposures (returned some ArrayList<> when List<> would be better)
 - Generics in INDIProperty to help INDISwitchProperty only having INDISwitchElement as elements. Check for other types of Properties. Much less castings would be needed.
 - Check the expception mehanism. Some exception may become a runtime exception to avoid try {}catch block in the drivers which make the code quite ugly. Do not directly make INDIException as a runtime one. Maybe a subclass.
-- Package renaming: laazotea.blabla -> org.indilib.i4j.xxx
+- Package renaming: laazotea.blabla -> org.indilib.i4j.xxx -> zerjillo
 - Finishing refactorings for CCD and Telescope -> ritchie
 - getting maven-release to work with central -> ritchie
 - moving every abstract driver to it's own module. -> ritchie
@@ -26,3 +25,4 @@ For future releases:
 
 DONE:
 
+- Base directory stuff ( ~/.i4j/ ) 
