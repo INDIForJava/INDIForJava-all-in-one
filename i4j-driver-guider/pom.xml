@@ -7,30 +7,20 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4j-driver-telescope</artifactId>
-	<name>INDI for Java Abstract Telescope Driver</name>
-	<description>INDI for Java Abstract Telescope Driver</description>
+	<artifactId>i4j-driver-guider</artifactId>
+	<name>INDI for Java Guider extention - inactive</name>
+	<description>INDI for Java Guider extention - inactive</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4j-driver</artifactId>
+			<artifactId>i4j-driver-ccd</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4j-driver-serialextension</artifactId>
+			<artifactId>i4j-driver-telescope</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.indilib.i4j</groupId>
-			<artifactId>org.gnu.savannah.gsl</artifactId>
-			<version>1.16.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.novaforjava</groupId>
-			<artifactId>novaforjava</artifactId>
-			<version>0.15.0.0</version>
 		</dependency>
 	</dependencies>
 </project>

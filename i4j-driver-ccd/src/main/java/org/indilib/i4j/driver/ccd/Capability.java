@@ -13,9 +13,6 @@ public class Capability {
     private boolean hasGuideHead = false;
 
     private boolean hasShutter = false;
-
-    private boolean hasST4Port = false;
-
     /**
      * @return True if CCD can abort exposure. False otherwise.
      */
@@ -90,16 +87,5 @@ public class Capability {
         return this;
     }
 
-    /**
-     * @return True if CCD has ST4 port for guiding. False otherwise.
-     */
-    public boolean hasST4Port() {
-        return hasST4Port;
-    }
-
-    public Capability hasST4Port(boolean hasST4Port) {
-        this.hasST4Port = hasST4Port;
-        return this;
-    }
 
 }

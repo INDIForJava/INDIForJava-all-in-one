@@ -33,7 +33,7 @@ import org.indilib.i4j.driver.event.TextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface, INDICCDDriverInterface {
+public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDICCDDriverInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(INDICCDDriver.class);
 
@@ -42,12 +42,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     protected static final String IMAGE_SETTINGS_TAB = "Image Settings";
 
     protected static final String IMAGE_INFO_TAB = "Image Info";
-
-    protected static final String GUIDE_HEAD_TAB = "Guider Head";
-
-    protected static final String GUIDE_CONTROL_TAB = "Guider Control";
-
-    protected static final String RAPIDGUIDE_TAB = "Rapid Guide";
 
     protected static final String OPTIONS_TAB = "Options";
 
@@ -78,15 +72,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     @InjectElement(name = "UPLOAD_PREFIX", label = "Prefix", textValue = "IMAGE_XX")
     private INDITextElement uploadSettingsPrefix;
 
-    @InjectProperty(name = "ACTIVE_DEVICES", label = "Snoop devices", group = INDICCDDriver.OPTIONS_TAB, saveable = true)
-    private INDITextProperty activeDevice;
-
-    @InjectElement(name = "ACTIVE_TELESCOPE", label = "Telescope", textValue = "Telescope Simulator")
-    private INDITextElement activeDeviceTelescope;
-
-    @InjectElement(name = "ACTIVE_FOCUSER", label = "Focuser", textValue = "Focuser Simulator")
-    private INDITextElement activeDeviceFocuser;
-
     @InjectExtension(prefix = "CCD_", rename = {
         @Rename(name = "CCD", to = "CCD0")
     })
@@ -99,14 +84,10 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     private final Capability capability = defineCapabilities();
 
-    @InjectExtension(group = GUIDE_CONTROL_TAB)
-    private INDIGuiderExtension guider;
-
     public INDICCDDriver(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
         primaryCCD.setDriverInterface(this);
         guiderCCD.setDriverInterface(createGuiderDriverHandler());
-        this.guider.setGuiderInterface(this);
         this.temperature.setEventHandler(new NumberEvent() {
 
             @Override
@@ -121,14 +102,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
                 newUploadValue(elementsAndValues);
             }
         });
-        this.activeDevice.setEventHandler(new TextEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
-                newActiveDeviceValue(elementsAndValues);
-            }
-
-        });
         this.uploadSettings.setEventHandler(new TextEvent() {
 
             @Override
@@ -137,25 +110,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
                 updateProperty(property);
             }
         });
-    }
-
-    private void connectToTelescope() {
-        // TODO open a indiclient connection to the scope
-    }
-
-    private void disconnectFromTelescope() {
-        // TODO open a indiclient connection to the fokuser
-    }
-
-    private void newActiveDeviceValue(INDITextElementAndValue[] elementsAndValues) {
-        activeDevice.setState(PropertyStates.OK);
-        activeDevice.setValues(elementsAndValues);
-        updateProperty(activeDevice);
-
-        // IDSnoopDevice(ActiveDeviceT[0].text,"EQUATORIAL_EOD_COORD");
-
-        // Tell children active devices was updated.
-        activeDevicesUpdated();
     }
 
     private void newTemperatureValue(INDINumberElementAndValue[] elementsAndValues) {
@@ -181,13 +135,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
             LOG.debug(String.format("Upload settings set to local only."));
         else
             LOG.debug(String.format("Upload settings set to client and local."));
-    }
-
-    /**
-     * the active telescope was changed!
-     */
-    protected void activeDevicesUpdated() {
-        // disconnect the indi-client and reconnect to the new active device.
     }
 
     /**
@@ -244,42 +191,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     }
 
     /**
-     * Guide easward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return 0 if successful, -1 otherwise.
-     */
-    abstract protected boolean guideEast(float ms);
-
-    /**
-     * Guide northward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return True if successful, false otherwise.
-     */
-    abstract protected boolean guideNorth(float ms);
-
-    /**
-     * Guide southward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return 0 if successful, -1 otherwise.
-     */
-    abstract protected boolean guideSouth(float ms);
-
-    /**
-     * Guide westward for ms milliseconds
-     * 
-     * @param ms
-     *            Duration in milliseconds.
-     * @return 0 if successful, -1 otherwise.
-     */
-    abstract protected boolean guideWest(float ms);
-
-    /**
      * Set CCD temperature. Upon returning false, the property becomes BUSY.
      * Once the temperature reaches the requested value, change the state to OK.
      * This must be implemented in the child class
@@ -311,20 +222,15 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         if (capability.hasGuideHead()) {
             guiderCCD.connect();
         }
-        if (capability.hasCooler())
+        if (capability.hasCooler()) {
             addProperty(temperature);
-
-        if (capability.hasST4Port()) {
-            this.guider.connect();
         }
-        addProperty(activeDevice);
         addProperty(upload);
 
         if (uploadSettingsDir.getValue() == null) {
             uploadSettingsDir.setValue(new File(FileUtils.getI4JBaseDirectory(), "images").getAbsolutePath());
         }
         addProperty(uploadSettings);
-        connectToTelescope();
     }
 
     @Override
@@ -333,15 +239,11 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         if (capability.hasGuideHead()) {
             guiderCCD.disconnect();
         }
-        if (capability.hasCooler())
+        if (capability.hasCooler()) {
             removeProperty(temperature);
-        if (capability.hasST4Port()) {
-            this.guider.disconnect();
         }
-        removeProperty(activeDevice);
         removeProperty(upload);
         removeProperty(uploadSettings);
-        disconnectFromTelescope();
     }
 
     @Override

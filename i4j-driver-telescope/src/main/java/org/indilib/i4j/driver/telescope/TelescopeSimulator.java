@@ -16,16 +16,13 @@ import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
-import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
-import org.indilib.i4j.driver.ccd.INDIGuiderExtension;
-import org.indilib.i4j.driver.ccd.INDIGuiderInterface;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface, INDITelescopeParkInterface, INDITelescopeSyncInterface {
+public class TelescopeSimulator extends INDITelescope implements  INDITelescopeParkInterface, INDITelescopeSyncInterface {
 
     private static Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
 
@@ -140,9 +137,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     @InjectElement(name = "GUIDE_RATE_NS", label = "N/S Rate", numberValue = 0.3d, maximum = 1d, step = 0.1d, numberFormat = "%g")
     private INDINumberElement guideRateNS;
 
-    @InjectExtension(group = Constants.MOTION_TAB)
-    private INDIGuiderExtension guider;
-
     private double[] guiderNSTarget = new double[2];
 
     private double[] guiderEWTarget = new double[2];
@@ -189,7 +183,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                 newPErrWEValue(elementsAndValues);
             }
         });
-        this.guider.setGuiderInterface(this);
     }
 
     /**
@@ -632,7 +625,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     public void driverConnect(Date timestamp) throws INDIException {
         super.driverConnect(timestamp);
         LOG.info("Telescope simulator is online.");
-        guider.connect();
         addProperty(guideRate);
         addProperty(eqPen);
         addProperty(periodicErrorNS);
@@ -642,7 +634,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     public void driverDisconnect(Date timestamp) throws INDIException {
         super.driverDisconnect(timestamp);
         LOG.info("Telescope simulator is offline.");
-        guider.disconnect();
         removeProperty(guideRate);
         removeProperty(eqPen);
         removeProperty(periodicErrorNS);
@@ -656,35 +647,6 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     @Override
     public String getName() {
         return getDefaultName();
-    }
-
-    @Override
-    public boolean guideEast(double ms) {
-        guiderEWTarget[GUIDE_EAST] = ms;
-        guiderEWTarget[GUIDE_WEST] = 0;
-        return true;
-    }
-
-    @Override
-    public boolean guideNorth(double ms) {
-        guiderNSTarget[GUIDE_NORTH] = ms;
-        guiderNSTarget[GUIDE_SOUTH] = 0;
-        return true;
-    }
-
-    @Override
-    public boolean guideSouth(double ms) {
-        guiderNSTarget[GUIDE_SOUTH] = ms;
-        guiderNSTarget[GUIDE_NORTH] = 0;
-        return true;
-    }
-
-    @Override
-    public boolean guideWest(double ms) {
-        guiderEWTarget[GUIDE_WEST] = ms;
-        guiderEWTarget[GUIDE_EAST] = 0;
-        return true;
-
     }
 
 }

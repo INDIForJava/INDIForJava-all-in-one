@@ -15,7 +15,6 @@ import nom.tam.fits.HeaderCardException;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIException;
@@ -128,42 +127,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     @InjectElement(name = "CCD", label = "Image")
     protected INDIBLOBElement fitsImage;
 
-    @InjectProperty(name = "RAPID_GUIDE", label = "Rapid Guide", group = INDICCDDriver.OPTIONS_TAB, timeout = 0)
-    protected INDISwitchProperty rapidGuide;
-
-    @InjectElement(name = "ENABLE", label = "Enable")
-    protected INDISwitchElement rapidGuideEnable;
-
-    @InjectElement(name = "DISABLE", label = "Disable", switchValue = SwitchStatus.ON)
-    protected INDISwitchElement rapidGuideDisable;
-
-    @InjectProperty(name = "RAPID_GUIDE_SETUP", label = "Rapid Guide Setup", group = INDICCDDriver.RAPIDGUIDE_TAB, timeout = 0, switchRule = SwitchRules.ANY_OF_MANY)
-    protected INDISwitchProperty rapidGuideSetup;
-
-    @InjectElement(name = "AUTO_LOOP", label = "Auto loop", switchValue = SwitchStatus.ON)
-    protected INDISwitchElement rapidGuideSetupAutoLoop;
-
-    @InjectElement(name = "SEND_IMAGE", label = "Send image")
-    protected INDISwitchElement rapidGuideSetupShowMarker;
-
-    @InjectElement(name = "SHOW_MARKER", label = "Show marker")
-    protected INDISwitchElement rapidGuideSetupSendImage;
-
-    @InjectProperty(name = "RAPID_GUIDE_DATA", label = "Rapid Guide Data", group = INDICCDDriver.RAPIDGUIDE_TAB, permission = PropertyPermissions.RO)
-    protected INDINumberProperty rapidGuideData;
-
-    @InjectElement(name = "GUIDESTAR_X", label = "Guide star position X", maximum = 1024, numberFormat = "%%5.2f")
-    protected INDINumberElement rapidGuideDataX;
-
-    @InjectElement(name = "GUIDESTAR_Y", label = "Guide star position Y", maximum = 1024, numberFormat = "%5.2f")
-    protected INDINumberElement rapidGuideDataY;
-
-    @InjectElement(name = "GUIDESTAR_FIT", label = "GUIDESTAR_FIT", maximum = 1024, numberFormat = "%5.2f")
-    protected INDINumberElement rapidGuideDataFIT;
-
     private INDICCDDriverInterface driverInterface;
-
-    private final INDIGuiderDataCalculator guiderDataCalculator;
 
     /**
      * True if frame is compressed, false otherwise
@@ -243,19 +207,13 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     private String imageExtension = "fits";
 
-    private boolean rapidGuideEnabled = false;
-
-    private boolean autoLoop = false;
-
-    private boolean sendImage = false;
-
-    private boolean showMarker = false;
-
     private float exposureTime = 0.0f;
 
     private double ra = Double.NaN;
 
     private double dec = Double.NaN;
+
+    protected boolean autoLoop = false;
 
     public INDICCDDriverExtension(INDICCDDriver indiccd) {
         super(indiccd);
@@ -280,13 +238,6 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
                 newImageFrameValue(elementsAndValues);
-            }
-        });
-        rapidGuideData.setEventHandler(new NumberEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
-                newRapidGuideDataValue(elementsAndValues);
             }
         });
         imagePixelSize.setEventHandler(new NumberEvent() {
@@ -319,23 +270,6 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             }
         });
 
-        rapidGuide.setEventHandler(new SwitchEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
-                newRapidGuideValue(elementsAndValues);
-            }
-
-        });
-
-        rapidGuideSetup.setEventHandler(new SwitchEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
-                newRapidGuideSetupValue(elementsAndValues);
-            }
-        });
-        guiderDataCalculator = new INDIGuiderDataCalculator(rapidGuideData, rapidGuideDataX, rapidGuideDataY, rapidGuideDataFIT);
     }
 
     /**
@@ -529,48 +463,6 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         }
     }
 
-    private void newRapidGuideDataValue(INDINumberElementAndValue[] elementsAndValues) {
-        rapidGuideData.setState(PropertyStates.OK);
-        rapidGuideData.setValues(elementsAndValues);
-        try {
-            updateProperty(rapidGuideData);
-        } catch (INDIException e) {
-        }
-    }
-
-    private void newRapidGuideSetupValue(INDISwitchElementAndValue[] elementsAndValues) {
-        rapidGuideSetup.setValues(elementsAndValues);
-        rapidGuideSetup.setState(PropertyStates.OK);
-
-        autoLoop = rapidGuideSetupAutoLoop.getValue() == SwitchStatus.ON;
-        sendImage = rapidGuideSetupSendImage.getValue() == SwitchStatus.ON;
-        showMarker = rapidGuideSetupShowMarker.getValue() == SwitchStatus.ON;
-
-        try {
-            updateProperty(rapidGuideSetup);
-        } catch (INDIException e) {
-        }
-    }
-
-    private void newRapidGuideValue(INDISwitchElementAndValue[] elementsAndValues) {
-        rapidGuide.setValues(elementsAndValues);
-        rapidGuide.setState(PropertyStates.OK);
-        rapidGuideEnabled = (rapidGuideEnable.getValue() == SwitchStatus.ON);
-
-        if (rapidGuideEnabled) {
-            driver.addProperty(rapidGuideSetup);
-            driver.addProperty(rapidGuideData);
-        } else {
-            driver.removeProperty(rapidGuideSetup);
-            driver.removeProperty(rapidGuideData);
-        }
-
-        try {
-            updateProperty(rapidGuide);
-        } catch (INDIException e) {
-        }
-    }
-
     /**
      * @brief setBin Set CCD Chip binnig
      * @param hor
@@ -685,11 +577,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         driver.addProperty(this.compress);
         driver.addProperty(this.fits);
         driver.addProperty(this.frameType);
-        driver.addProperty(this.rapidGuide);
-        if (rapidGuideEnabled) {
-            driver.addProperty(this.rapidGuideSetup);
-            driver.addProperty(this.rapidGuideData);
-        }
+
     }
 
     @Override
@@ -707,11 +595,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         driver.removeProperty(this.compress);
         driver.removeProperty(this.fits);
         driver.removeProperty(this.frameType);
-        driver.removeProperty(this.rapidGuide);
-        if (rapidGuideEnabled) {
-            driver.removeProperty(this.rapidGuideSetup);
-            driver.removeProperty(this.rapidGuideData);
-        }
+
     }
 
     /**
@@ -720,35 +604,16 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     public boolean exposureComplete() {
         boolean sendImage = driver.shouldSendImage();
         boolean saveImage = driver.shouldSaveImage();
-        boolean showMarker = false;
-        boolean sendData = false;
-        boolean autoLoop = false;
-        if (rapidGuideEnabled) {
-            autoLoop = this.autoLoop;
-            sendImage = this.sendImage;
-            showMarker = this.showMarker;
-            sendData = true;
-            saveImage = false;
-        }
-        if (sendData) {
-            int width = subframeWidth / binningX;
-            int height = subframeHeight / binningY;
-            guiderDataCalculator.detectGuideData(width, height, ccdImage, showMarker);
+        if (sendImage || saveImage) {
             try {
-                updateProperty(rapidGuideData);
-            } catch (INDIException e) {
-            }
-            if (sendImage || saveImage) {
-                try {
-                    if ("fits".equals((getImageExtension()))) {
-                        Fits f = ccdImage.asFitsImage();
-                        addFITSKeywords(f.getHDU(0));
-                    }
-                    uploadFile(sendImage, saveImage);
-                } catch (Exception e) {
-                    LOG.error("could not send or save image", e);
-                    return false;
+                if ("fits".equals((getImageExtension()))) {
+                    Fits f = ccdImage.asFitsImage();
+                    addFITSKeywords(f.getHDU(0));
                 }
+                uploadFile(sendImage, saveImage);
+            } catch (Exception e) {
+                LOG.error("could not send or save image", e);
+                return false;
             }
         }
         imageExposure.setState(PropertyStates.OK);
@@ -762,7 +627,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             if (driverInterface.startExposure(exposureTime))
                 imageExposure.setState(PropertyStates.BUSY);
             else {
-                LOG.error("Autoloop: Primary CCD Exposure Error!");
+                LOG.error("Autoloop: CCD Exposure Error!");
                 imageExposure.setState(PropertyStates.ALERT);
             }
             try {
@@ -877,23 +742,24 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     }
 
     public void uploadFile(boolean sendImage, boolean saveImage) throws Exception {
+
         if (saveImage) {
             File fp = driver.getFileWithIndex(getImageExtension());
             try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fp)))) {
-                ccdImage.write(os, getImageExtension());
+                ccdImage.write(os, this.subframeX, this.subframeY, this.subframeWidth, this.subframeHeight, getImageExtension());
             }
         }
         if (sendImage) {
             if (sendCompressed) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new BufferedOutputStream(out))))) {
-                    ccdImage.write(os, getImageExtension());
+                    ccdImage.write(os, this.subframeX, this.subframeY, this.subframeWidth, this.subframeHeight, getImageExtension());
                 }
                 fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + getImageExtension() + ".z"));
             } else {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(out))) {
-                    ccdImage.write(os, getImageExtension());
+                    ccdImage.write(os, this.subframeX, this.subframeY, this.subframeWidth, this.subframeHeight, getImageExtension());
                 }
                 fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + getImageExtension()));
             }

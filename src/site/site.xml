@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Nova for Java">
+	<bannerLeft>
+		<name>INDI for Java</name>
+	</bannerLeft>
+	<bannerRight>
+		<src>images/i4j-icon.png</src>
+	</bannerRight>
+	<body>
+		<menu ref="reports" />
+
+	</body>
+</project>
