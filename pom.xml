@@ -184,19 +184,19 @@
 	<modules>
 		<module>indiforjava-i4jbase</module>
 		<module>indiforjava-i4jclient</module>
-		<module>indiforjava-i4jdriver</module>
-		<module>indiforjava-i4jserialextention</module>
-		<module>indiforjava-i4jtelescopedriver</module>
-		<module>indiforjava-i4jccddriver</module>
-		<module>indiforjava-i4jraspberrypigpiodriver</module>
 		<module>indiforjava-i4jclientui</module>
-		<module>indiforjava-i4jqhyfilterwheeldriver</module>
-		<module>indiforjava-i4jseletekdriver</module>
-		<module>indiforjava-i4jserver</module>
-		<module>indiforjava-i4jsqmdriver</module>
+		<module>indiforjava-i4jdriver</module>
 		<module>indiforjava-i4jfilterwheeldriver</module>
 		<module>indiforjava-i4jfocuserdriver</module>
+		<module>indiforjava-i4jtelescopedriver</module>
+		<module>indiforjava-i4jccddriver</module>
+		<module>indiforjava-i4jserialextension</module>
+		<module>indiforjava-i4jraspberrypigpiodriver</module>
+		<module>indiforjava-i4jqhyfilterwheeldriver</module>
+		<module>indiforjava-i4jseletekdriver</module>
+		<module>indiforjava-i4jsqmdriver</module>
 		<module>indiforjava-i4jexampledriver</module>
+		<module>indiforjava-i4jserver</module>
 		<module>indiforjava-i4jserverexample</module>
 		<module>gsl</module>
 	</modules>

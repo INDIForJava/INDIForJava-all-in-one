@@ -8,8 +8,8 @@
 		<version>1.39-SNAPSHOT</version>
 	</parent>
 	<artifactId>i4jserialextention</artifactId>
-	<name>INDI for Java Serial Port Extention</name>
-	<description>INDI for Java Serial Port Extention</description>
+	<name>INDI for Java Serial Port Extension</name>
+	<description>INDI for Java Serial Port Extension</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
