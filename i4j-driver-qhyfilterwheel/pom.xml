@@ -7,7 +7,7 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jqhyfilterwheeldriver</artifactId>
+	<artifactId>i4j-driver-qhyfilterwheel</artifactId>
 	<name>INDI for Java Driver for the QHY Filter Wheel</name>
 	<description>INDI for Java Driver for the QHY Filter Wheel</description>
 	<packaging>jar</packaging>

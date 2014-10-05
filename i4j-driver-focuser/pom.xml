@@ -7,7 +7,7 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jfocuserdriver</artifactId>
+	<artifactId>i4j-driver-focuser</artifactId>
 	<name>INDI for Java Abstract Focuser Driver</name>
 	<description>INDI for Java Abstract Focuser Driver</description>
 	<packaging>jar</packaging>

@@ -7,7 +7,7 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jdriver</artifactId>
+	<artifactId>i4j-driver</artifactId>
 	<name>INDI for Java Driver Library</name>
 	<description>INDI for Java Driver is a library to create Drivers that control astronomical devices using the INDI protocol (http://indilib.org)</description>
 	<packaging>jar</packaging>

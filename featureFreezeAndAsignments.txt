@@ -7,14 +7,15 @@ For the next release:
 
 - Element iterators in properties (and properties in drivers? and drivers in connections?)
 - Avoid of api exposures (returned some ArrayList<> when List<> would be better)
-- Check the exception mehanism. Some exception may become a runtime exception to avoid try {}catch block in the drivers which make the code quite ugly. Do not directly make INDIException as a runtime one. Maybe a subclass.
+- Check the exception mechanism. Some exception may become a runtime exception to avoid try {}catch block in the drivers which make the code quite ugly. Do not directly make INDIException as a runtime one. Maybe a subclass.
 - getting maven-release to work with central -> ritchie
-- URL handling for connections: indi://[host]:[port][/device[/property[/element]]]
+- URL handling for connections: indi://[host]:[port][/device[/property[/element]]]  -> Zerjillo
 - extract the guider stuff from the ccd and telescope and store it for later discussion
 - use the license-plugin to write the class header? -> to diskuss 
 - check dokumentation of every method/class.
 - Extract Client examples to their own Maven Module -> Zerjillo will try to do it. Good way to learn a little about Maven :-P
 - Check old tutorials and adapt them to the new features. Create new examples if necessary.
+
 
 
 For future releases:

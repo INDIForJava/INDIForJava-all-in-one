@@ -7,9 +7,9 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jbase</artifactId>
+	<artifactId>i4j-base</artifactId>
 	<name>INDI for Java Base Library</name>
-	<description>INDI for Java is a library to deal with astronomical devices using the INDI library (http://indilib.org)\n</description>
+	<description>INDI for Java is a library to deal with astronomical devices using the INDI library (http://indilib.org)</description>
 	<packaging>jar</packaging>
 	<build>
 		<plugins>

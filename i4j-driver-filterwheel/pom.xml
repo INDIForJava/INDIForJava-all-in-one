@@ -7,7 +7,7 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jfilterwheeldriver</artifactId>
+	<artifactId>i4j-driver-filterwheel</artifactId>
 	<name>INDI for Java Abstract Filter Wheel Driver</name>
 	<description>INDI for Java Abstract Filter Wheel Driver</description>
 	<packaging>jar</packaging>

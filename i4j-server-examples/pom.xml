@@ -7,7 +7,7 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jserverexample</artifactId>
+	<artifactId>i4j-server-examples</artifactId>
 	<name>INDI for Java Server examples</name>
 	<description>INDI for Java Server examples</description>
 	<packaging>jar</packaging>

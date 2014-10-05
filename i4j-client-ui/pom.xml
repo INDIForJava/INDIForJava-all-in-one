@@ -7,7 +7,7 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4jclientui</artifactId>
+	<artifactId>i4j-client-ui</artifactId>
 	<description>INDI for Java Client UI is a library to create Graphical Clients that control astronomical devices using the INDI protocol (http://indilib.org)</description>
 	<name>INDI for Java Client UI Library</name>
 	<packaging>jar</packaging>
