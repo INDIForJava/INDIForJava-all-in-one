@@ -18,6 +18,7 @@
 package org.indilib.i4j;
 
 import java.io.InputStream;
+
 import org.w3c.dom.Document;
 
 /**

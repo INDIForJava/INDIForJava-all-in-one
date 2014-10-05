@@ -17,15 +17,16 @@
  */
 package org.indilib.i4j.client.examples;
 
-import org.indilib.i4j.client.INDIProperty;
-import org.indilib.i4j.client.INDIDevice;
-import org.indilib.i4j.client.INDIServerConnection;
-import org.indilib.i4j.client.INDIDeviceListener;
-import org.indilib.i4j.client.INDIPropertyListener;
-import org.indilib.i4j.client.INDIServerConnectionListener;
 import java.io.IOException;
 import java.util.Date;
+
 import org.indilib.i4j.Constants;
+import org.indilib.i4j.client.INDIDevice;
+import org.indilib.i4j.client.INDIDeviceListener;
+import org.indilib.i4j.client.INDIProperty;
+import org.indilib.i4j.client.INDIPropertyListener;
+import org.indilib.i4j.client.INDIServerConnection;
+import org.indilib.i4j.client.INDIServerConnectionListener;
 
 /**
  * A simple INDI Client that listens to a particular INDI Server and prints any

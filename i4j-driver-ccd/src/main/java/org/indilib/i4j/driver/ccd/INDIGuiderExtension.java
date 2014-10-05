@@ -3,7 +3,6 @@ package org.indilib.i4j.driver.ccd;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDINumberElement;
@@ -64,10 +63,7 @@ public class INDIGuiderExtension extends INDIDriverExtension<INDIDriver> {
                 }
 
                 guideNS.setState(rc ? PropertyStates.OK : PropertyStates.ALERT);
-                try {
-                    driver.updateProperty(guideNS);
-                } catch (INDIException e) {
-                }
+                driver.updateProperty(guideNS);
                 return;
 
             }
@@ -88,10 +84,7 @@ public class INDIGuiderExtension extends INDIDriverExtension<INDIDriver> {
                     rc = guiderInterface.guideWest(guideEast.getValue());
 
                 guideWE.setState(rc ? PropertyStates.OK : PropertyStates.ALERT);
-                try {
-                    driver.updateProperty(guideWE);
-                } catch (INDIException e) {
-                }
+                driver.updateProperty(guideWE);
                 return;
             }
         });

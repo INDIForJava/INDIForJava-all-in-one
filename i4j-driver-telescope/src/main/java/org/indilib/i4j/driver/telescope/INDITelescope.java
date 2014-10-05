@@ -17,15 +17,19 @@
  */
 package org.indilib.i4j.driver.telescope;
 
+import static org.indilib.i4j.Constants.PropertyStates.IDLE;
+import static org.indilib.i4j.Constants.PropertyStates.OK;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
@@ -48,11 +52,8 @@ import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.driver.serial.INDISerialPortExtension;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
-import static org.indilib.i4j.Constants.PropertyStates.OK;
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class that acts as a abstract INDI for Java Driver for a Telescope.
@@ -100,7 +101,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         SCOPE_TRACKING
     };
 
-    private static Logger LOG = Logger.getLogger(INDITelescope.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
 
     protected static final String MAIN_CONTROL_TAB = "Main Control";
 
@@ -177,7 +178,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectElement(name = "ABORT", label = "Abort")
     protected INDISwitchElement abordElement;
 
-    @InjectExtension(group= OPTIONS_TAB)
+    @InjectExtension(group = OPTIONS_TAB)
     protected INDISerialPortExtension serialPortExtension;
 
     @InjectProperty(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
@@ -252,7 +253,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 property.setValues(elementsAndValues);
             }
         });
-                this.abort.setEventHandler(new SwitchEvent() {
+        this.abort.setEventHandler(new SwitchEvent() {
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
@@ -291,7 +292,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             try {
                 return this.extractISOTimeFormat2.parse(isoTime);
             } catch (ParseException e1) {
-                INDITelescope.LOG.log(Level.SEVERE, "could not parse date: " + isoTime);
+                INDITelescope.LOG.error("could not parse date: " + isoTime);
                 return null;
             }
         }
@@ -345,7 +346,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             doGoto(ra, dec);
         } else {
             this.eqn.setState(PropertyStates.ALERT);
-            INDITelescope.LOG.log(Level.SEVERE, "eqn data missing or corrupted.");
+            INDITelescope.LOG.error("eqn data missing or corrupted.");
         }
     }
 
@@ -365,7 +366,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
         if (targetLat == null || targetLong == null || targetElev == null) {
             this.location.setState(PropertyStates.ALERT);
-            INDITelescope.LOG.log(Level.SEVERE, "Location data missing or corrupted.");
+            INDITelescope.LOG.error("Location data missing or corrupted.");
         } else {
             if (updateLocation(targetLat, targetLong, targetElev)) {
                 property.setValues(elementsAndValues);
@@ -374,10 +375,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 this.location.setState(PropertyStates.ALERT);
             }
         }
-        try {
-            updateProperty(this.location);
-        } catch (INDIException e) {
-        }
+        updateProperty(this.location);
     }
 
     private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
@@ -405,10 +403,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         this.scopeParameters.setState(OK);
         property.setValues(elementsAndValues);
 
-        try {
-            updateProperty(this.scopeParameters);
-        } catch (INDIException e) {
-        }
+        updateProperty(this.scopeParameters);
     }
 
     private void newTimeValue(INDITextProperty property, INDITextElementAndValue[] elementsAndValues) {
@@ -437,13 +432,10 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 this.time.setState(PropertyStates.ALERT);
             }
         } else {
-            INDITelescope.LOG.log(Level.SEVERE, "Date/Time is invalid: " + utcString + " offset " + offsetString + ".");
+            INDITelescope.LOG.error( "Date/Time is invalid: " + utcString + " offset " + offsetString + ".");
             this.time.setState(PropertyStates.ALERT);
         }
-        try {
-            updateProperty(this.time);
-        } catch (INDIException e) {
-        }
+        updateProperty(this.time);
     }
 
     private void resetSwitch(INDISwitchProperty property) {
@@ -461,24 +453,18 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     }
 
     protected boolean moveNS(TelescopeMotionNS dir) {
-        INDITelescope.LOG.log(Level.SEVERE, "Mount does not support North/South motion.");
+        INDITelescope.LOG.error("Mount does not support North/South motion.");
         resetSwitch(this.movementNSS);
         this.movementNSS.setState(IDLE);
-        try {
-            updateProperty(this.movementNSS);
-        } catch (INDIException e) {
-        }
+        updateProperty(this.movementNSS);
         return false;
     }
 
     protected boolean moveWE(TelescopeMotionWE dir) {
-        INDITelescope.LOG.log(Level.SEVERE, "Mount does not support West/East motion.");
+        INDITelescope.LOG.error("Mount does not support West/East motion.");
         resetSwitch(this.movementWES);
         this.movementWES.setState(IDLE);
-        try {
-            updateProperty(this.movementWES);
-        } catch (INDIException e) {
-        }
+        updateProperty(this.movementWES);
         return false;
     }
 
@@ -509,10 +495,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             this.eqnRa.setValue(ra);
             this.eqnDec.setValue(dec);
             this.last_state = this.eqn.getState();
-            try {
-                updateProperty(this.eqn);
-            } catch (INDIException e) {
-            }
+            updateProperty(this.eqn);
         }
 
     }

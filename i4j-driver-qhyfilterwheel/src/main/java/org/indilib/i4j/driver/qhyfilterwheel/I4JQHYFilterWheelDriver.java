@@ -25,6 +25,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchRules;
+import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
@@ -38,11 +43,6 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.filterwheel.INDIFilterWheelDriver;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchRules;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
 
 /**
  * A class that acts as a INDI for Java Driver for the QHY Filter Wheel.
@@ -139,10 +139,9 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
       getSetupPositions();
 
       factorySettingsP.setState(PropertyStates.OK);
-      try {
+
         updateProperty(factorySettingsP);
-      } catch (INDIException e) {
-      }
+
     }
   }
 
@@ -270,11 +269,9 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
     filterPositionsP.setState(PropertyStates.OK);
 
-    try {
+
       updateProperty(filterPositionsP);
-    } catch (INDIException e) {
-      e.printStackTrace();
-    }
+
   }
 
   /**

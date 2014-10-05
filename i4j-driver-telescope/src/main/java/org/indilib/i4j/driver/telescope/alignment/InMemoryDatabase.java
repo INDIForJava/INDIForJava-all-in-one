@@ -8,12 +8,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.indilib.i4j.FileUtils;
 
 import net.sourceforge.novaforjava.api.LnLnlatPosn;
+
+import org.indilib.i4j.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InMemoryDatabase {
 
@@ -22,7 +22,7 @@ public class InMemoryDatabase {
         void loadDatabaseCallback();
     }
 
-    private static Logger LOG = Logger.getLogger(InMemoryDatabase.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(InMemoryDatabase.class);
 
     private static String DATABASE_FILE = "alignment.db";
 
@@ -86,14 +86,14 @@ public class InMemoryDatabase {
             mySyncPoints = (List<AlignmentDatabaseEntry>) out.readObject();
             return true;
         } catch (IOException | ClassNotFoundException e) {
-            LOG.log(Level.SEVERE, "could not load sync points to alignment database", e);
+            LOG.error("could not load sync points to alignment database", e);
             return false;
         } finally {
             for (LoadDatabaseCallback loadDatabaseCallback : callbacks) {
                 try {
                     loadDatabaseCallback.loadDatabaseCallback();
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE, "Callback has thrown a exception", e);
+                    LOG.error("Callback has thrown a exception", e);
                 }
             }
         }
@@ -112,7 +112,7 @@ public class InMemoryDatabase {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(db))) {
             out.writeObject(mySyncPoints);
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, "could not save sync points to alignment database", e);
+            LOG.error("could not save sync points to alignment database", e);
             return false;
         }
         return true;

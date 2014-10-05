@@ -17,12 +17,22 @@
  */
 package org.indilib.i4j.driver.examples;
 
-import java.io.*;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
-import org.indilib.i4j.driver.*;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.INDIBLOBElementAndValue;
+import org.indilib.i4j.driver.INDIBLOBProperty;
+import org.indilib.i4j.driver.INDIDriver;
+import org.indilib.i4j.driver.INDINumberElement;
+import org.indilib.i4j.driver.INDINumberElementAndValue;
+import org.indilib.i4j.driver.INDINumberProperty;
+import org.indilib.i4j.driver.INDISwitchElementAndValue;
+import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.INDITextElementAndValue;
+import org.indilib.i4j.driver.INDITextProperty;
 
 /**
  * An example class representing a very basic INDI Driver. It just defines a
@@ -92,13 +102,7 @@ public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable 
       randomP.setState(PropertyStates.OK);
 
       // Send the changes to the Clients
-      try {
-        updateProperty(randomP);
-      } catch (INDIException e) {
-        e.printStackTrace();
-        System.exit(-1);
-      }
-
+      updateProperty(randomP);
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {

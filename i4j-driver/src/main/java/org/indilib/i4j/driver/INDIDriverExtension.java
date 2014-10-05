@@ -1,7 +1,7 @@
 package org.indilib.i4j.driver;
 
-import org.indilib.i4j.driver.util.INDIPropertyInjector;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyInjector;
 
 public abstract class INDIDriverExtension<Driver extends INDIDriver> {
 

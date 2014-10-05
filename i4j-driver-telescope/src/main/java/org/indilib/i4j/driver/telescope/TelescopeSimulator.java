@@ -3,9 +3,12 @@ package org.indilib.i4j.driver.telescope;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.indilib.i4j.Constants;
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
@@ -19,15 +22,12 @@ import org.indilib.i4j.driver.ccd.INDIGuiderExtension;
 import org.indilib.i4j.driver.ccd.INDIGuiderInterface;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
-import org.indilib.i4j.Constants;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TelescopeSimulator extends INDITelescope implements INDIGuiderInterface, INDITelescopeParkInterface, INDITelescopeSyncInterface {
 
-    private static Logger LOG = Logger.getLogger(TelescopeSimulator.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
 
     /**
      * slew rate, degrees/s
@@ -254,10 +254,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     private void newGuideRateValue(INDINumberElementAndValue[] elementsAndValues) {
         this.guideRate.setValues(elementsAndValues);
         guideRate.setState(PropertyStates.OK);
-        try {
-            updateProperty(this.guideRate);
-        } catch (INDIException e) {
-        }
+        updateProperty(this.guideRate);
     };
 
     private void newPErrNSValue(INDISwitchElementAndValue[] elementsAndValues) {
@@ -266,17 +263,14 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
         if (periodicErrorNSNorth.getValue() == SwitchStatus.ON) {
             eqPenDec.setValue(eqPenDec.getValue() + (SID_RATE * guideRateNS.getValue()));
-            LOG.log(Level.INFO, String.format("Simulating PE in NORTH direction for value of %g", SID_RATE));
+            LOG.info(String.format("Simulating PE in NORTH direction for value of %g", SID_RATE));
         } else {
             eqPenDec.setValue(eqPenDec.getValue() - (SID_RATE * guideRateNS.getValue()));
-            LOG.log(Level.INFO, String.format("Simulating PE in SOUTH direction for value of %g", SID_RATE));
+            LOG.info(String.format("Simulating PE in SOUTH direction for value of %g", SID_RATE));
         }
         periodicErrorNS.resetAllSwitches();
-        try {
-            updateProperty(periodicErrorNS);
-            updateProperty(this.eqPen);
-        } catch (INDIException e) {
-        }
+        updateProperty(periodicErrorNS);
+        updateProperty(this.eqPen);
     }
 
     private void newPErrWEValue(INDISwitchElementAndValue[] elementsAndValues) {
@@ -285,18 +279,15 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
         if (periodicErrorWEWest.getValue() == SwitchStatus.ON) {
             eqPenRa.setValue(eqPenRa.getValue() - (SID_RATE / 15d * guideRateWE.getValue()));
-            LOG.log(Level.INFO, String.format("Simulator PE in WEST direction for value of %g", SID_RATE));
+            LOG.info(String.format("Simulator PE in WEST direction for value of %g", SID_RATE));
         } else {
             eqPenRa.setValue(eqPenRa.getValue() + (SID_RATE / 15d * guideRateWE.getValue()));
-            LOG.log(Level.INFO, String.format("Simulator PE in EAST direction for value of %g", SID_RATE));
+            LOG.info(String.format("Simulator PE in EAST direction for value of %g", SID_RATE));
         }
 
         periodicErrorWE.resetAllSwitches();
-        try {
-            updateProperty(periodicErrorWE);
-            updateProperty(this.eqPen);
-        } catch (INDIException e) {
-        }
+        updateProperty(periodicErrorWE);
+        updateProperty(this.eqPen);
     }
 
     @Override
@@ -304,37 +295,25 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
         if (movementNSS.getState() == PropertyStates.BUSY) {
             movementNSS.resetAllSwitches();
             movementNSS.setState(PropertyStates.IDLE);
-            try {
-                updateProperty(movementNSS);
-            } catch (INDIException e) {
-            }
+            updateProperty(movementNSS);
         }
         if (movementWES.getState() == PropertyStates.BUSY) {
             movementWES.resetAllSwitches();
             movementWES.setState(PropertyStates.IDLE);
-            try {
-                updateProperty(movementWES);
-            } catch (INDIException e) {
-            }
+            updateProperty(movementWES);
         }
         if (parkExtension.isBusy()) {
             parkExtension.setIdle();
         }
         if (eqn.getState() == PropertyStates.BUSY) {
             eqn.setState(PropertyStates.IDLE);
-            try {
-                updateProperty(eqn);
-            } catch (INDIException e) {
-            }
+            updateProperty(eqn);
         }
         trackState = TelescopeStatus.SCOPE_IDLE;
         abort.setState(PropertyStates.OK);
         abort.resetAllSwitches();
-        try {
-            updateProperty(abort);
-        } catch (INDIException e) {
-        }
-        LOG.log(Level.INFO, "Telescope aborted.");
+        updateProperty(abort);
+        LOG.info("Telescope aborted.");
 
         return true;
     }
@@ -354,7 +333,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
         eqn.setState(PropertyStates.BUSY);
 
-        LOG.log(Level.INFO, String.format("Slewing to RA: %s - DEC: %s", RAStr, DecStr));
+        LOG.info(String.format("Slewing to RA: %s - DEC: %s", RAStr, DecStr));
     }
 
     @Override
@@ -367,10 +346,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                 else {
                     movementNSS.resetAllSwitches();
                     movementNSS.setState(PropertyStates.IDLE);
-                    try {
-                        updateProperty(movementNSS);
-                    } catch (INDIException e) {
-                    }
+                    updateProperty(movementNSS);
                 }
                 break;
 
@@ -380,11 +356,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                 else {
                     movementNSS.resetAllSwitches();
                     movementNSS.setState(PropertyStates.IDLE);
-                    try {
-                        updateProperty(movementNSS);
-                    } catch (INDIException e) {
-                    }
-                    ;
+                    updateProperty(movementNSS);
                 }
                 break;
         }
@@ -402,11 +374,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                 else {
                     movementWES.resetAllSwitches();
                     movementWES.setState(PropertyStates.IDLE);
-                    try {
-                        updateProperty(movementWES);
-                    } catch (INDIException e) {
-                    }
-                    ;
+                    updateProperty(movementWES);
                 }
                 break;
 
@@ -416,11 +384,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                 else {
                     movementWES.resetAllSwitches();
                     movementWES.setState(PropertyStates.IDLE);
-                    try {
-                        updateProperty(movementWES);
-                    } catch (INDIException e) {
-                    }
-                    ;
+                    updateProperty(movementWES);
                 }
                 break;
         }
@@ -434,7 +398,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
         targetDEC = 90;
         Parked = true;
         trackState = TelescopeStatus.SCOPE_PARKING;
-        LOG.log(Level.INFO, "Parking telescope in progress...");
+        LOG.info("Parking telescope in progress...");
     }
 
     @Override
@@ -526,20 +490,15 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                         // Initially no PE in both axis.
                         eqnRa.setValue(currentRA);
                         eqnDec.setValue(currentDEC);
-
-                        try {
-                            updateProperty(this.eqn);
-                        } catch (INDIException e) {
-                        }
-
+                        updateProperty(this.eqn);
                         trackState = TelescopeStatus.SCOPE_TRACKING;
 
                         eqn.setState(PropertyStates.OK);
-                        LOG.log(Level.INFO, "Telescope slew is complete. Tracking...");
+                        LOG.info("Telescope slew is complete. Tracking...");
                     } else {
                         trackState = TelescopeStatus.SCOPE_PARKED;
                         eqn.setState(PropertyStates.IDLE);
-                        LOG.log(Level.INFO, "Telescope parked successfully.");
+                        LOG.info("Telescope parked successfully.");
                     }
                 }
 
@@ -552,20 +511,20 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                 dt *= 1000;
 
                 if (guiderNSTarget[GUIDE_NORTH] > 0) {
-                    LOG.log(Level.INFO, "Commanded to GUIDE NORTH for " + guiderNSTarget[GUIDE_NORTH] + " ms");
+                    LOG.info("Commanded to GUIDE NORTH for " + guiderNSTarget[GUIDE_NORTH] + " ms");
                     ns_guide_dir = GUIDE_NORTH;
                 } else if (guiderNSTarget[GUIDE_SOUTH] > 0) {
-                    LOG.log(Level.INFO, "Commanded to GUIDE SOUTH for " + guiderNSTarget[GUIDE_SOUTH] + " ms");
+                    LOG.info("Commanded to GUIDE SOUTH for " + guiderNSTarget[GUIDE_SOUTH] + " ms");
                     ns_guide_dir = GUIDE_SOUTH;
                 }
 
                 // WE Guide Selection
                 if (guiderEWTarget[GUIDE_WEST] > 0) {
                     we_guide_dir = GUIDE_WEST;
-                    LOG.log(Level.INFO, "Commanded to GUIDE WEST for " + guiderEWTarget[GUIDE_WEST] + " ms");
+                    LOG.info("Commanded to GUIDE WEST for " + guiderEWTarget[GUIDE_WEST] + " ms");
                 } else if (guiderEWTarget[GUIDE_EAST] > 0) {
                     we_guide_dir = GUIDE_EAST;
-                    LOG.log(Level.INFO, "Commanded to GUIDE EAST for " + guiderEWTarget[GUIDE_EAST] + " ms");
+                    LOG.info("Commanded to GUIDE EAST for " + guiderEWTarget[GUIDE_EAST] + " ms");
                 }
 
                 if (ns_guide_dir != -1) {
@@ -618,20 +577,17 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
                 if ((dx != last_dx || dy != last_dy || ra_guide_dt != 0 || dec_guide_dt != 0)) {
                     last_dx = dx;
                     last_dy = dy;
-                    LOG.log(Level.INFO, String.format("dt is %g\n", dt));
-                    LOG.log(Level.INFO, String.format("RA Displacement (%c%s) %s -- %s of target RA %s\n", dx >= 0 ? '+' : '-', RA_DISP, RA_PE,
-                            (eqPenRa.getValue() - targetRA) > 0 ? "East" : "West", RA_TARGET));
-                    LOG.log(Level.INFO, String.format("DEC Displacement (%c%s) %s -- %s of target RA %s\n", dy >= 0 ? '+' : '-', DEC_DISP, DEC_PE,
-                            (eqPenDec.getValue() - targetDEC) > 0 ? "North" : "South", DEC_TARGET));
-                    LOG.log(Level.INFO, String.format("RA Guide Correction (%g) %s -- Direction %s\n", ra_guide_dt, RA_GUIDE, ra_guide_dt > 0 ? "East" : "West"));
-                    LOG.log(Level.INFO, String.format("DEC Guide Correction (%g) %s -- Direction %s\n", dec_guide_dt, DEC_GUIDE, dec_guide_dt > 0 ? "North" : "South"));
+                    LOG.info(String.format("dt is %g\n", dt));
+                    LOG.info(String.format("RA Displacement (%c%s) %s -- %s of target RA %s\n", dx >= 0 ? '+' : '-', RA_DISP, RA_PE, (eqPenRa.getValue() - targetRA) > 0
+                            ? "East" : "West", RA_TARGET));
+                    LOG.info(String.format("DEC Displacement (%c%s) %s -- %s of target RA %s\n", dy >= 0 ? '+' : '-', DEC_DISP, DEC_PE, (eqPenDec.getValue() - targetDEC) > 0
+                            ? "North" : "South", DEC_TARGET));
+                    LOG.info(String.format("RA Guide Correction (%g) %s -- Direction %s\n", ra_guide_dt, RA_GUIDE, ra_guide_dt > 0 ? "East" : "West"));
+                    LOG.info(String.format("DEC Guide Correction (%g) %s -- Direction %s\n", dec_guide_dt, DEC_GUIDE, dec_guide_dt > 0 ? "North" : "South"));
                 }
 
                 if (ns_guide_dir != -1 || we_guide_dir != -1) {
-                    try {
-                        updateProperty(this.eqPen);
-                    } catch (INDIException e) {
-                    }
+                    updateProperty(this.eqPen);
                 }
                 break;
 
@@ -644,7 +600,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
         RAStr = fs_sexa(currentRA, 2, 3600);
         DecStr = fs_sexa(currentDEC, 2, 3600);
 
-        LOG.log(Level.INFO, String.format("Current RA: %s Current DEC: %s", RAStr, DecStr));
+        LOG.info(String.format("Current RA: %s Current DEC: %s", RAStr, DecStr));
 
         newRaDec(currentRA, currentDEC);
     }
@@ -656,12 +612,9 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
         eqPenRa.setValue(ra);
         eqPenDec.setValue(dec);
-        try {
-            updateProperty(this.eqPen);
-        } catch (INDIException e) {
-        }
+        updateProperty(this.eqPen);
 
-        LOG.log(Level.INFO, "Sync is successful.");
+        LOG.info("Sync is successful.");
 
         trackState = TelescopeStatus.SCOPE_IDLE;
         eqn.setState(PropertyStates.OK);
@@ -678,7 +631,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
     public void driverConnect(Date timestamp) throws INDIException {
         super.driverConnect(timestamp);
-        LOG.log(Level.INFO, "Telescope simulator is online.");
+        LOG.info("Telescope simulator is online.");
         guider.connect();
         addProperty(guideRate);
         addProperty(eqPen);
@@ -688,7 +641,7 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
 
     public void driverDisconnect(Date timestamp) throws INDIException {
         super.driverDisconnect(timestamp);
-        LOG.log(Level.INFO, "Telescope simulator is offline.");
+        LOG.info("Telescope simulator is offline.");
         guider.disconnect();
         removeProperty(guideRate);
         removeProperty(eqPen);

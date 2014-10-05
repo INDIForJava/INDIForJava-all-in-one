@@ -19,6 +19,7 @@ package org.indilib.i4j.client;
 
 import java.util.Formatter;
 import java.util.Locale;
+
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDISexagesimalFormatter;

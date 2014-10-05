@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.FileUtils;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
@@ -28,14 +30,12 @@ import org.indilib.i4j.driver.annotation.Rename;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.FileUtils;
-import org.indilib.i4j.INDIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface, INDICCDDriverInterface {
 
-    private static final Logger LOG = Logger.getLogger(INDICCDDriver.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(INDICCDDriver.class);
 
     protected static final String MAIN_CONTROL_TAB = "Main Control";
 
@@ -134,10 +134,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
             @Override
             public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
                 property.setValues(elementsAndValues);
-                try {
-                    updateProperty(property);
-                } catch (INDIException e) {
-                }
+                updateProperty(property);
             }
         });
     }
@@ -153,10 +150,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     private void newActiveDeviceValue(INDITextElementAndValue[] elementsAndValues) {
         activeDevice.setState(PropertyStates.OK);
         activeDevice.setValues(elementsAndValues);
-        try {
-            updateProperty(activeDevice);
-        } catch (INDIException e) {
-        }
+        updateProperty(activeDevice);
 
         // IDSnoopDevice(ActiveDeviceT[0].text,"EQUATORIAL_EOD_COORD");
 
@@ -173,26 +167,20 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
             temperature.setState(PropertyStates.OK);
         else
             temperature.setState(PropertyStates.BUSY);
-        try {
-            updateProperty(temperature);
-        } catch (INDIException e) {
-        }
+        updateProperty(temperature);
     }
 
     private void newUploadValue(INDISwitchElementAndValue[] elementsAndValues) {
         upload.setValues(elementsAndValues);
         upload.setState(PropertyStates.OK);
 
-        try {
-            updateProperty(upload);
-        } catch (INDIException e) {
-        }
+        updateProperty(upload);
         if (uploadClient.getValue() == SwitchStatus.ON)
-            LOG.log(Level.FINE, String.format("Upload settings set to client only."));
+            LOG.debug(String.format("Upload settings set to client only."));
         else if (uploadLocal.getValue() == SwitchStatus.ON)
-            LOG.log(Level.FINE, String.format("Upload settings set to local only."));
+            LOG.debug(String.format("Upload settings set to local only."));
         else
-            LOG.log(Level.FINE, String.format("Upload settings set to client and local."));
+            LOG.debug(String.format("Upload settings set to client and local."));
     }
 
     /**

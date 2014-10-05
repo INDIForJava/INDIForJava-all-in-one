@@ -20,6 +20,7 @@ package org.indilib.i4j.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIProtocolParser;

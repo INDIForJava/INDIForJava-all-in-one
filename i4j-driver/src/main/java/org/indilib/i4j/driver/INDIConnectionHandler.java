@@ -18,6 +18,7 @@
 package org.indilib.i4j.driver;
 
 import java.util.Date;
+
 import org.indilib.i4j.INDIException;
 
 /**

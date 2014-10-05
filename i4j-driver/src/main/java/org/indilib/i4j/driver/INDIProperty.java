@@ -28,11 +28,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.indilib.i4j.driver.event.IEventHandler;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.event.IEventHandler;
 
 /**
  * A class representing a INDI Property. The subclasses

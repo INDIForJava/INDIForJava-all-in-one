@@ -18,6 +18,7 @@
 package org.indilib.i4j.driver;
 
 import java.io.Serializable;
+
 import org.w3c.dom.Element;
 
 /**

@@ -22,6 +22,7 @@ import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.StringTokenizer;
+
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
@@ -43,10 +49,6 @@ import org.indilib.i4j.driver.INDISwitchOneOrNoneProperty;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
 
 /**
  * A class that acts as a INDI for Java Driver for the Sky Quality Meter - LU.
@@ -160,11 +162,9 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
     if (property == doReadingP) {
       doReading();
       doReadingP.setState(PropertyStates.OK);
-      try {
+
         updateProperty(doReadingP);
-      } catch (INDIException e) {
-        e.printStackTrace();
-      }
+
     }
   }
 
@@ -326,15 +326,13 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
     sensorTempP.setValue(measurements[4]);
     sensorTempP.setState(PropertyStates.OK);
 
-    try {
+
       updateProperty(sensorReadingP);
       updateProperty(sensorFreqP);
       updateProperty(sensorPeriodCP);
       updateProperty(sensorPeriodSP);
       updateProperty(sensorTempP);
-    } catch (INDIException e) {
-      e.printStackTrace();
-    }
+
   }
 
   /**
@@ -419,14 +417,12 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
     serialNumberP.setValue(st.nextToken());
     serialNumberP.setState(PropertyStates.OK);
 
-    try {
+
       updateProperty(protocolNumberP);
       updateProperty(modelNumberP);
       updateProperty(featureNumberP);
       updateProperty(serialNumberP);
-    } catch (INDIException e) {
-      e.printStackTrace();
-    }
+
   }
 
   /**

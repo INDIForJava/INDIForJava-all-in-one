@@ -20,6 +20,7 @@ package org.indilib.i4j.client.ui;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+
 import javax.swing.filechooser.FileFilter;
 
 /**

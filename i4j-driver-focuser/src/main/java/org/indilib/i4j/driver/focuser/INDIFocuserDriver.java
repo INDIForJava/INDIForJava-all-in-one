@@ -21,6 +21,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
@@ -28,10 +31,6 @@ import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchOneOrNoneProperty;
 import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
 
 /**
  * A class representing a Focuser Driver in the INDI Protocol. INDI Focuser
@@ -249,10 +248,9 @@ public abstract class INDIFocuserDriver extends INDIDriver {
   protected void finalPositionReached() {
     absFocusPositionP.setState(PropertyStates.OK);
 
-    try {
+
       updateProperty(absFocusPositionP);
-    } catch (INDIException e) {
-    }
+
   }
 
   /**
@@ -261,10 +259,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
   protected void desiredSpeedSet() {
     focusSpeedP.setState(PropertyStates.OK);
 
-    try {
       updateProperty(focusSpeedP);
-    } catch (INDIException e) {
-    }
   }
 
   /**
@@ -274,10 +269,9 @@ public abstract class INDIFocuserDriver extends INDIDriver {
   protected void stopped() {
     stopFocusingP.setState(PropertyStates.OK);
 
-    try {
+
       updateProperty(stopFocusingP);
-    } catch (INDIException e) {
-    }
+
   }
 
   /**
@@ -290,10 +284,9 @@ public abstract class INDIFocuserDriver extends INDIDriver {
   protected void positionChanged(int currentPos) {
     focusAbsolutePositionE.setValue("" + currentPos);
 
-    try {
+
       updateProperty(absFocusPositionP);
-    } catch (INDIException e) {
-    }
+
   }
   
   /**
@@ -305,10 +298,9 @@ public abstract class INDIFocuserDriver extends INDIDriver {
   protected void speedChanged(int currentSpeed) {
     focusSpeedValueE.setValue("" + currentSpeed);
 
-    try {
+
       updateProperty(focusSpeedP);
-    } catch (INDIException e) {
-    }
+
   }
 
   @Override
@@ -316,10 +308,9 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     if (property == stopFocusingP) {
       stopFocusingP.setState(PropertyStates.BUSY);
       stopFocusingP.setStatus(SwitchStatus.OFF);
-      try {
+
         updateProperty(stopFocusingP);
-      } catch (INDIException e) {
-      }
+
 
       stopHasBeenRequested();
     }
@@ -336,18 +327,16 @@ public abstract class INDIFocuserDriver extends INDIDriver {
 
           desiredAbsPosition = newVal;
 
-          try {
+
             updateProperty(absFocusPositionP);
-          } catch (INDIException e) {
-          }
+
 
           absolutePositionHasBeenChanged();
         } else {
           absFocusPositionP.setState(PropertyStates.OK);
-          try {
+
             updateProperty(absFocusPositionP);
-          } catch (INDIException e) {
-          }
+
         }
       }
     }
@@ -361,19 +350,17 @@ public abstract class INDIFocuserDriver extends INDIDriver {
 
           focusSpeedValueE.setValue("" + newVal);
 
-          try {
+
             updateProperty(focusSpeedP);
-          } catch (INDIException e) {
-          }
+
 
           speedHasBeenChanged();
         } else {
           focusSpeedP.setState(PropertyStates.OK);
 
-          try {
+
             updateProperty(focusSpeedP);
-          } catch (INDIException e) {
-          }
+
         }
       }
     }

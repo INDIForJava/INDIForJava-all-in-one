@@ -20,8 +20,10 @@ package org.indilib.i4j.client.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+
 import javax.swing.ButtonGroup;
 import javax.swing.UIManager;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.client.INDIElement;

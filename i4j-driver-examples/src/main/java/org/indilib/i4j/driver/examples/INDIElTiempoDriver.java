@@ -17,18 +17,39 @@
  */
 package org.indilib.i4j.driver.examples;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
-import org.indilib.i4j.driver.*;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.INDIBLOBElement;
+import org.indilib.i4j.driver.INDIBLOBElementAndValue;
+import org.indilib.i4j.driver.INDIBLOBProperty;
+import org.indilib.i4j.driver.INDIConnectionHandler;
+import org.indilib.i4j.driver.INDIDriver;
+import org.indilib.i4j.driver.INDINumberElementAndValue;
+import org.indilib.i4j.driver.INDINumberProperty;
+import org.indilib.i4j.driver.INDISwitchElement;
+import org.indilib.i4j.driver.INDISwitchElementAndValue;
+import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.INDITextElement;
+import org.indilib.i4j.driver.INDITextElementAndValue;
+import org.indilib.i4j.driver.INDITextProperty;
 
 /**
  * A small example Driver that uses the INDI for Java Driver library. It defines
@@ -149,13 +170,8 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
 
           property.setState(PropertyStates.OK);
 
-          try {
-            updateProperty(property, "Checking images");
-          } catch (INDIException e) {
-            e.printStackTrace();
-            System.exit(-1);
-          }
-
+          updateProperty(property, "Checking images");
+          
           checksForSpainImage(true);
 
           checksForEuropeImage(true);
@@ -180,13 +196,8 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
 
         spainImageNameProp.setState(PropertyStates.OK);
 
-        try {
-          updateProperty(spainImageProp);
-          updateProperty(spainImageNameProp);
-        } catch (INDIException e) {
-          e.printStackTrace();
-          System.exit(-1);
-        }
+        updateProperty(spainImageProp);
+        updateProperty(spainImageNameProp);
       }
     }
   }
@@ -201,13 +212,9 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
 
         europeImageNameProp.setState(PropertyStates.OK);
 
-        try {
-          updateProperty(europeImageProp);
-          updateProperty(europeImageNameProp);
-        } catch (INDIException e) {
-          e.printStackTrace();
-          System.exit(-1);
-        }
+        updateProperty(europeImageProp);
+        updateProperty(europeImageNameProp);
+        
       }
     }
   }

@@ -19,6 +19,7 @@ package org.indilib.i4j.driver;
 
 import java.util.Formatter;
 import java.util.Locale;
+
 import org.indilib.i4j.INDISexagesimalFormatter;
 import org.w3c.dom.Element;
 

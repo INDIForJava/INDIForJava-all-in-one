@@ -20,12 +20,23 @@ package org.indilib.i4j.driver.seletek;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
-import org.indilib.i4j.driver.*;
-import org.indilib.i4j.driver.focuser.INDIFocuserDriver;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.INDIBLOBElementAndValue;
+import org.indilib.i4j.driver.INDIBLOBProperty;
+import org.indilib.i4j.driver.INDINotLoadableDriver;
+import org.indilib.i4j.driver.INDINumberElement;
+import org.indilib.i4j.driver.INDINumberElementAndValue;
+import org.indilib.i4j.driver.INDINumberProperty;
+import org.indilib.i4j.driver.INDISwitchElementAndValue;
+import org.indilib.i4j.driver.INDISwitchOneOfManyProperty;
+import org.indilib.i4j.driver.INDISwitchOneOrNoneProperty;
+import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.INDITextElementAndValue;
+import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.focuser.INDIFocuserDriver;
 
 /**
  * A class that acts as a INDI for Java Focuser Driver for a focuser connected
@@ -155,10 +166,9 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
       wireModeP.setSelectedIndex(elementsAndValues);
       wireModeP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(wireModeP);
-      } catch (INDIException e) {
-      }
+
     }
 
     if (property == modelP) {
@@ -167,10 +177,9 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
       modelP.setSelectedIndex(elementsAndValues);
       modelP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(modelP);
-      } catch (INDIException e) {
-      }
+
     }
 
     if (property == halfStepP) {
@@ -179,10 +188,9 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
       halfStepP.setStatus(elementsAndValues);
       halfStepP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(halfStepP);
-      } catch (INDIException e) {
-      }
+
     }
   }
 
@@ -198,10 +206,9 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
 
       powerSettingsP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(powerSettingsP);
-      } catch (INDIException e) {
-      }
+
     }
   }
 

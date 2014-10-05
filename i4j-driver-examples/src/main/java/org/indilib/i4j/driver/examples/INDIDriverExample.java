@@ -17,15 +17,30 @@
  */
 package org.indilib.i4j.driver.examples;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
-import org.indilib.i4j.driver.*;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.INDIBLOBElement;
+import org.indilib.i4j.driver.INDIBLOBElementAndValue;
+import org.indilib.i4j.driver.INDIBLOBProperty;
+import org.indilib.i4j.driver.INDIConnectionHandler;
+import org.indilib.i4j.driver.INDIDriver;
+import org.indilib.i4j.driver.INDINumberElementAndValue;
+import org.indilib.i4j.driver.INDINumberProperty;
+import org.indilib.i4j.driver.INDISwitchElement;
+import org.indilib.i4j.driver.INDISwitchElementAndValue;
+import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.INDITextElementAndValue;
+import org.indilib.i4j.driver.INDITextProperty;
 
 /**
  * An example class representing a very basic INDI Driver.
@@ -93,14 +108,8 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
             sendP.setState(PropertyStates.OK);  // Set the state of the sendImage property as OK
 
             imageP.setState(PropertyStates.OK); // Set the state of the image property as OK
-
-            try {
               updateProperty(sendP); // Send the sendImage property to the client.
               updateProperty(imageP); // Send the image property to the client.
-            } catch (INDIException e) {
-              e.printStackTrace();
-              System.exit(-1);
-            }
           }
         }
       }

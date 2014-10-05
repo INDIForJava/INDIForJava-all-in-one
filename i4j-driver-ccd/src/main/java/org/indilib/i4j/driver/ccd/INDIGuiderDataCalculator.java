@@ -1,14 +1,15 @@
 package org.indilib.i4j.driver.ccd;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.Constants.PropertyStates;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class INDIGuiderDataCalculator {
 
-    private static final Logger LOG = Logger.getLogger(INDIGuiderDataCalculator.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(INDIGuiderDataCalculator.class);
 
     private static final double P0 = 0.906, P1 = 0.584, P2 = 0.365, P3 = 0.117, P4 = 0.049, P5 = -0.05, P6 = -0.064, P7 = -0.074, P8 = -0.094;
 
@@ -201,7 +202,7 @@ public class INDIGuiderDataCalculator {
                 rapidGuideDataY.setValue(sumY / total);
                 rapidGuideData.setState(PropertyStates.OK);
 
-                LOG.log(Level.FINE, String.format("Guide Star X: %g Y: %g FIT: %g", rapidGuideDataX.getValue(), rapidGuideDataY.getValue(), rapidGuideDataFIT.getValue()));
+                LOG.debug(String.format("Guide Star X: %g Y: %g FIT: %g", rapidGuideDataX.getValue(), rapidGuideDataY.getValue(), rapidGuideDataFIT.getValue()));
             } else {
                 rapidGuideData.setState(PropertyStates.ALERT);
                 lastRapidX = lastRapidY = -1;

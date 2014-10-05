@@ -17,20 +17,6 @@
  */
 package org.indilib.i4j.driver.raspberrypi;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pi4j.system.SystemInfo;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,6 +28,10 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import org.indilib.i4j.Constants.LightStates;
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
@@ -59,10 +49,20 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
-import org.indilib.i4j.Constants.LightStates;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.INDIException;
+
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPin;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pi4j.system.SystemInfo;
 
 /**
  * A class that acts as a INDI for Java Driver for the Raspberry Pi GPIO port.
@@ -335,10 +335,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
       p.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(p);
-      } catch (INDIException e) {
-      }
+
     }
   }
 
@@ -348,10 +347,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
       property.setValues(elementsAndValues);
       pinsNamesP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(pinsNamesP);
-      } catch (INDIException e) {
-      }
+
     }
   }
 
@@ -392,10 +390,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
       pinsConfigP[pin].setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(pinsConfigP[pin]);
-      } catch (INDIException e) {
-      }
+
     }
 
     // Process Digital Output Pins
@@ -422,10 +419,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
       p.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(p);
-      } catch (INDIException e) {
-      }
+
     }
   }
 
@@ -485,10 +481,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
     ((INDILightProperty)pinsProperties[pin]).getElement("state").setValue(ls);
 
-    try {
+
       updateProperty(pinsProperties[pin]);
-    } catch (INDIException e) {
-    }
+
   }
 
   @Override
@@ -583,11 +578,10 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     } catch (IOException | InterruptedException e) {
     }
 
-    try {
+
       updateProperty(cpuTemperatureP);
       updateProperty(memoryP);
-    } catch (INDIException e) {
-    }
+
 
     try {
       Scanner sc = new Scanner(new FileInputStream("/proc/uptime"));
@@ -606,11 +600,10 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     } catch (FileNotFoundException e) {
     }
 
-    try {
+
       updateProperty(uptimeP);
       updateProperty(uptimeTextP);
-    } catch (INDIException e) {
-    }
+
   }
 
   /**

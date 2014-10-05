@@ -1,8 +1,6 @@
 package org.indilib.i4j.driver.telescope.alignment;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sourceforge.novaforjava.JulianDay;
 import net.sourceforge.novaforjava.Transform;
@@ -15,10 +13,12 @@ import org.gnu.savannah.gsl.Gsl;
 import org.gnu.savannah.gsl.GslMatrix;
 import org.gnu.savannah.gsl.GslPermutation;
 import org.gnu.savannah.gsl.util.IntegerRef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BuiltInMathPlugin implements IMathPlugin {
 
-    private static Logger LOG = Logger.getLogger(InMemoryDatabase.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(BuiltInMathPlugin.class);
 
     public static final String INBUILT_MATH_PLUGIN_LABEL = "Inbuilt Math Plugin";
 
@@ -71,7 +71,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
             // and cannot be inverted. This probably means it contains at least
             // one row or column that contains only zeroes
             pInvertedAlphaMatrix.setIdentity();
-            LOG.log(Level.SEVERE, "CalculateTransformMatrices - Alpha matrix is singular! Alpha matrix is singular and cannot be inverted.");
+            LOG.error("CalculateTransformMatrices - Alpha matrix is singular! Alpha matrix is singular and cannot be inverted.");
         } else {
             MatrixMatrixMultiply(pBetaMatrix, pInvertedAlphaMatrix, pAlphaToBeta);
 
@@ -84,8 +84,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
                     // at least
                     // one row or column that contains only zeroes
                     pBetaToAlpha.setIdentity();
-                    LOG.log(Level.SEVERE,
-                            "CalculateTransformMatrices - AlphaToBeta matrix is singular! Calculated Celestial to Telescope transformation matrix is singular (not a true transform).");
+                    LOG.error("CalculateTransformMatrices - AlphaToBeta matrix is singular! Calculated Celestial to Telescope transformation matrix is singular (not a true transform).");
                 }
 
             }

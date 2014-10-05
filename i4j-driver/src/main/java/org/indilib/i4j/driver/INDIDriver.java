@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import org.indilib.i4j.driver.event.IEventHandler;
-import org.indilib.i4j.driver.util.INDIPropertyInjector;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
@@ -36,7 +34,10 @@ import org.indilib.i4j.INDIDateFormat;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
-
+import org.indilib.i4j.driver.event.IEventHandler;
+import org.indilib.i4j.driver.util.INDIPropertyInjector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -51,7 +52,7 @@ import org.w3c.dom.NodeList;
  * @version 1.34, November 6, 2013
  */
 public abstract class INDIDriver implements INDIProtocolParser {
-
+    private static final Logger LOG = LoggerFactory.getLogger(INDIDriver.class);
   private InputStream inputStream;
   private OutputStream outputStream;
   private PrintWriter out;
@@ -248,16 +249,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     if (message == null) {
-      try {
+
         updateProperty(connectionP);
-      } catch (INDIException e) { // Ignore, there must be no errors here        
-      }
     } else {
-      try {
         connectionP.setState(PropertyStates.ALERT);
         updateProperty(connectionP, message);
-      } catch (INDIException e) { // Ignore, there must be no errors here        
-      }
     }
   }
 
@@ -755,7 +751,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
    *
    * @param property The Property to be added.
    */
-  public void addProperty(INDIProperty property) {
+  public void addProperty(INDIProperty<?> property) {
     addProperty(property, null);
   }
 
@@ -785,8 +781,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * @param property The Property whose values have change and about which the
    * clients must be notified.
    */
-  public void updateProperty(INDIProperty property) throws INDIException {
-    updateProperty(property, null);
+  public boolean updateProperty(INDIProperty<?> property) {
+    return updateProperty(property, null);
   }
 
   /**
@@ -799,8 +795,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * @param message The message to be sended to the clients with the udpate
    * message.
    */
-  public void updateProperty(INDIProperty property, String message) throws INDIException {
-      updateProperty(property, false, message);
+  public boolean updateProperty(INDIProperty<?> property, String message) {
+      return updateProperty(property, false, message);
   }
   /**
    * Notifies the clients about the property and its values with an additional
@@ -813,21 +809,24 @@ public abstract class INDIDriver implements INDIProtocolParser {
    * @param message The message to be sended to the clients with the udpate
    * message.
    */
-  protected void updateProperty(INDIProperty property, boolean includeMinMax, String message) throws INDIException {
+  public boolean updateProperty(INDIProperty<?> property, boolean includeMinMax, String message)  {
     if (properties.containsValue(property)) {
       if (property instanceof INDISwitchProperty) {
         INDISwitchProperty sp = (INDISwitchProperty)property;
 
         if (!sp.checkCorrectValues()) {
-          throw new INDIException("Switch (" + property.getName() + ") value not value (not following its rule).");
+            LOG.error("Switch (" + property.getName() + ") value not value (not following its rule).");
+          return false;
         }
       }
 
       String msg = property.getXMLPropertySet(includeMinMax,message);
 
       sendXML(msg);
+      return true;
     } else {
-      throw new INDIException("The Property is not from this driver. Maybe you forgot to add it?");
+        LOG.error("The Property is not from this driver. Maybe you forgot to add it?");
+        return false;
     }
   }
 

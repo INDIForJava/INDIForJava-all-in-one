@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.server.DefaultINDIServer;
 import org.indilib.i4j.server.INDIClient;
 import org.indilib.i4j.server.INDIDevice;
-import org.indilib.i4j.INDIException;
 
 /**
  * A simple INDI Server that basically sends all messages from drivers and

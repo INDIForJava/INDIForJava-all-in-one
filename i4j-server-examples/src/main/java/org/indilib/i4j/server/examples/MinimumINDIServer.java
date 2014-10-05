@@ -18,9 +18,10 @@
 package org.indilib.i4j.server.examples;
 
 import java.net.Socket;
+
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.examples.RandomNumberGeneratorDriver;
 import org.indilib.i4j.server.DefaultINDIServer;
-import org.indilib.i4j.INDIException;
 
 /**
  * An almost minimum INDI Server. It just has one working Driver:

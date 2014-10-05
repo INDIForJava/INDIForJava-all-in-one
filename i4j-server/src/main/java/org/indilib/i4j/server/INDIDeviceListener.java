@@ -18,6 +18,7 @@
 package org.indilib.i4j.server;
 
 import java.util.ArrayList;
+
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.XMLToString;
 import org.w3c.dom.Element;

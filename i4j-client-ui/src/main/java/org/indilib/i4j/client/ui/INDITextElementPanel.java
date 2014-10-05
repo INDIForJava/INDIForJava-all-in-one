@@ -19,8 +19,10 @@ package org.indilib.i4j.client.ui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDITextElement;

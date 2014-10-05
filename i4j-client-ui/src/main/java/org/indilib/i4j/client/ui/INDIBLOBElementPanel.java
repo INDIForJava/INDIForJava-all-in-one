@@ -21,10 +21,12 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.client.INDIBLOBElement;

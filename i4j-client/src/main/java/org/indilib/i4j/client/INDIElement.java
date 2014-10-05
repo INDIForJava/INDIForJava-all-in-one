@@ -18,6 +18,7 @@
 package org.indilib.i4j.client;
 
 import java.util.ArrayList;
+
 import org.indilib.i4j.INDIException;
 import org.w3c.dom.Element;
 

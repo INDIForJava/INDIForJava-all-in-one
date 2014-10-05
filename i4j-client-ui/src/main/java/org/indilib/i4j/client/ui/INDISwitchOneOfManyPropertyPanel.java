@@ -19,8 +19,10 @@ package org.indilib.i4j.client.ui;
 
 import java.io.IOException;
 import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.client.INDIElement;

@@ -10,7 +10,6 @@ import java.util.ServiceLoader;
 
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
@@ -113,10 +112,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         alignmentSubsystemActive.setValues(elementsAndValues);
 
         // Update client
-        try {
-            driver.updateProperty(alignmentSubsystemActive);
-        } catch (INDIException e) {
-        }
+        driver.updateProperty(alignmentSubsystemActive);
     }
 
     private void newAlignmentSubsystemCurrentMathPluginValue(INDITextElementAndValue[] elementsAndValues) {
@@ -132,11 +128,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         alignmentSubsystemMathPluginInitialise.setState(OK);
         alignmentSubsystemMathPluginInitialise.reset();
         // Update client
-        try {
-            driver.updateProperty(alignmentSubsystemMathPluginInitialise);
-        } catch (INDIException e) {
-        }
-
+        driver.updateProperty(alignmentSubsystemMathPluginInitialise);
         // Initialise or reinitialise the current math plugin
         initialise();
     }
@@ -158,10 +150,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
                 message = "MathPluginManagement - cannot load plugin " + alignmentSubsystemCurrentMathPluginElement.getValue() + "\n";
             }
             // Update client
-            try {
-                driver.updateProperty(alignmentSubsystemMathPlugins, message);
-            } catch (INDIException e) {
-            }
+            driver.updateProperty(alignmentSubsystemMathPlugins, message);
         }
         return plugin;
     }

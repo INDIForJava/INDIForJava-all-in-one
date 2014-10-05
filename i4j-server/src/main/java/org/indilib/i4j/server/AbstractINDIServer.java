@@ -20,13 +20,18 @@ package org.indilib.i4j.server;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINotLoadableDriver;
-import org.indilib.i4j.INDIException;
 import org.w3c.dom.Element;
 
 /**

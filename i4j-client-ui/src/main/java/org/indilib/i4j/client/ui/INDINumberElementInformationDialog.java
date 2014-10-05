@@ -19,6 +19,7 @@ package org.indilib.i4j.client.ui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+
 import org.indilib.i4j.client.INDINumberElement;
 
 

@@ -18,6 +18,7 @@
 package org.indilib.i4j.client.ui;
 
 import java.io.IOException;
+
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;

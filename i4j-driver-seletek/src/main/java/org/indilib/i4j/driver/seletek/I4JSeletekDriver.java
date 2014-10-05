@@ -17,13 +17,34 @@
  */
 package org.indilib.i4j.driver.seletek;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
-import org.indilib.i4j.driver.*;
+
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.INDIBLOBElementAndValue;
+import org.indilib.i4j.driver.INDIBLOBProperty;
+import org.indilib.i4j.driver.INDIConnectionHandler;
+import org.indilib.i4j.driver.INDIDriver;
+import org.indilib.i4j.driver.INDILightElement;
+import org.indilib.i4j.driver.INDILightProperty;
+import org.indilib.i4j.driver.INDINumberElement;
+import org.indilib.i4j.driver.INDINumberElementAndValue;
+import org.indilib.i4j.driver.INDINumberProperty;
+import org.indilib.i4j.driver.INDIPortProperty;
+import org.indilib.i4j.driver.INDISwitchElementAndValue;
+import org.indilib.i4j.driver.INDISwitchOneOfManyProperty;
+import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.INDITextElement;
+import org.indilib.i4j.driver.INDITextElementAndValue;
+import org.indilib.i4j.driver.INDITextProperty;
 
 /**
  * A class that acts as a INDI for Java Driver for the Seletek (by Lunatico
@@ -210,10 +231,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       }
       mainDeviceP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(mainDeviceP);
-      } catch (INDIException e) {
-      }
+
     }
 
     if (property == expDeviceP) {
@@ -231,10 +251,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       }
       expDeviceP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(expDeviceP);
-      } catch (INDIException e) {
-      }
+
     }
 
 
@@ -253,10 +272,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       }
       thirdDeviceP.setState(PropertyStates.OK);
 
-      try {
+
         updateProperty(thirdDeviceP);
-      } catch (INDIException e) {
-      }
+
     }
   }
 
@@ -637,10 +655,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
         temperatureSensorsP.setState(PropertyStates.OK);
         externalTemperatureE.setValue("" + averageTemp);
 
-        try {
+
           updateProperty(temperatureSensorsP);
-        } catch (INDIException e) {
-        }
+
       }
     }
   }
@@ -672,10 +689,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       temperatureSensorsP.setState(PropertyStates.OK);
       internalTemperatureE.setValue("" + averageTemp);
 
-      try {
+
         updateProperty(temperatureSensorsP);
-      } catch (INDIException e) {
-      }
+
     }
   }
 
@@ -752,10 +768,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       powerOkE.setValue(LightStates.ALERT);
     }
 
-    try {
+
       updateProperty(powerOkP);
-    } catch (INDIException e) {
-    }
+
   }
 
   /**
@@ -766,10 +781,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
   private void parseSerialNumber(String serialNumber) {
     seletekInfoP.setState(PropertyStates.OK);
     seletekSerialNumberE.setValue(serialNumber);
-    try {
+
       updateProperty(seletekInfoP);
-    } catch (INDIException e) {
-    }
+
   }
 
   /**
@@ -804,10 +818,9 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
     seletekInfoP.setState(PropertyStates.OK);
     seletekVersionE.setValue(version);
-    try {
+
       updateProperty(seletekInfoP);
-    } catch (INDIException e) {
-    }
+
   }
 
   @Override

@@ -20,6 +20,9 @@ package org.indilib.i4j.driver.filterwheel;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+
+import org.indilib.i4j.Constants;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
@@ -28,8 +31,6 @@ import org.indilib.i4j.driver.INDIProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
-import org.indilib.i4j.Constants;
-import org.indilib.i4j.INDIException;
 
 /**
  * A class representing a Filter Wheel Driver in the INDI Protocol. INDI Filter
@@ -135,11 +136,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
 
       filterNamesP.setState(Constants.PropertyStates.OK);
 
-      try {
-        updateProperty(filterNamesP);
-      } catch (INDIException e) {
-        e.printStackTrace();
-      }
+      updateProperty(filterNamesP);
     }
   }
 
@@ -158,12 +155,8 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
         filterNameP.setState(Constants.PropertyStates.OK);
       }
 
-      try {
-        updateProperty(filterSlotP);
-        updateProperty(filterNameP);
-      } catch (INDIException e) {
-        e.printStackTrace();
-      }
+      updateProperty(filterSlotP);
+      updateProperty(filterNameP);
     }
   }
 
@@ -186,28 +179,23 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
     filterSlotP.setState(Constants.PropertyStates.OK);
     filterNameP.setState(Constants.PropertyStates.OK);
 
-    try {
+
       filterSlotValueE.setValue("" + filterSlot);
 
       filterNameValueE.setValue(filterNamesP.getElement("filter_name_" + filterSlot).getValue());
 
       updateProperty(filterNameP);
       updateProperty(filterSlotP);
-    } catch (INDIException e) {
-      e.printStackTrace();
-    }
   }
 
   protected void setBusy() {
     filterSlotP.setState(Constants.PropertyStates.BUSY);
     filterNameP.setState(Constants.PropertyStates.BUSY);
 
-    try {
+
       updateProperty(filterNameP);
       updateProperty(filterSlotP);
-    } catch (INDIException e) {
-      e.printStackTrace();
-    }
+
   }
 
   /**

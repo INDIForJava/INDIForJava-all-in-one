@@ -18,7 +18,13 @@
 package org.indilib.i4j.client;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;

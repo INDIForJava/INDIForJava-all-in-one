@@ -19,6 +19,7 @@ package org.indilib.i4j.client;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;

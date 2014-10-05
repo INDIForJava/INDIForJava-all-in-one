@@ -118,11 +118,7 @@ public class INDIPortProperty extends INDITextProperty {
     portE.setValue(port);
     this.setState(Constants.PropertyStates.OK);
 
-    try {
-      getDriver().updateProperty(this);
-    } catch (INDIException e) {
-      e.printStackTrace();
-    }
+    getDriver().updateProperty(this);
   }
 
   /**

@@ -19,7 +19,9 @@ package org.indilib.i4j.client.ui.examples;
 
 import java.io.IOException;
 import java.util.Date;
+
 import javax.swing.JOptionPane;
+
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;

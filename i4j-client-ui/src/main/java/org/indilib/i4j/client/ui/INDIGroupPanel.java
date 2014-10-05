@@ -18,6 +18,7 @@
 package org.indilib.i4j.client.ui;
 
 import java.util.ArrayList;
+
 import org.indilib.i4j.client.INDIProperty;
 
 /**

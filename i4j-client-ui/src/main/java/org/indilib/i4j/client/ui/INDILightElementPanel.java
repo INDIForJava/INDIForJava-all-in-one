@@ -18,6 +18,7 @@
 package org.indilib.i4j.client.ui;
 
 import java.awt.Dimension;
+
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.client.INDIElement;

@@ -21,8 +21,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.indilib.i4j.driver.INDIBLOBElement;
 import org.indilib.i4j.driver.INDIBLOBProperty;
@@ -42,6 +40,8 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.annotation.Rename;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is the INDI field injector it is responsible for interpreting the
@@ -59,6 +59,11 @@ import org.indilib.i4j.driver.annotation.Rename;
 public class INDIPropertyInjector {
 
     /**
+     * Logger to log errors to.
+     */
+    private static Logger LOG = LoggerFactory.getLogger(INDIPropertyInjector.class);
+
+    /**
      * During the injection process it is importent to keep the context, so that
      * when we are in a extention and a property of a driver is referenced wi
      * can find where it is. This is done by storeing the context in a
@@ -72,11 +77,6 @@ public class INDIPropertyInjector {
      * extensions.
      */
     private Map<String, INDIProperty<?>> properties = new HashMap<String, INDIProperty<?>>();
-
-    /**
-     * Logger to log errors to.
-     */
-    private static Logger LOG = Logger.getLogger(INDIPropertyInjector.class.getName());;
 
     /**
      * the current driver that is being injected.
@@ -210,8 +210,8 @@ public class INDIPropertyInjector {
                 INDIElement lastElement = null;
                 if (INDINumberElement.class.isAssignableFrom(field.getType())) {
                     lastElement =
-                            new INDINumberElement((INDINumberProperty) lastProperty, elem.name(), elem.label(), elem.numberValue(), elem.minimum(), elem.maximum(), elem.step(),
-                                    elem.numberFormat());
+                            new INDINumberElement((INDINumberProperty) lastProperty, elem.name(), elem.label(), elem.numberValue(), elem.minimum(), elem.maximum(),
+                                    elem.step(), elem.numberFormat());
                 } else if (INDITextElement.class.isAssignableFrom(field.getType())) {
                     lastElement = new INDITextElement((INDITextProperty) lastProperty, elem.name(), elem.label(), elem.textValue());
                 } else if (INDISwitchElement.class.isAssignableFrom(field.getType())) {
@@ -221,11 +221,11 @@ public class INDIPropertyInjector {
                 } else if (INDILightElement.class.isAssignableFrom(field.getType())) {
                     lastElement = new INDILightElement((INDILightProperty) lastProperty, elem.name(), elem.label(), elem.state());
                 } else {
-                    LOG.log(Level.SEVERE, "Unknown property type" + elem.property() + " for element " + field);
+                    LOG.error("Unknown property type" + elem.property() + " for element " + field);
                 }
                 setFieldValue(instance, field, lastElement);
             } else {
-                LOG.log(Level.SEVERE, "could not find property " + elem.property() + " for element " + field);
+                LOG.error("could not find property " + elem.property() + " for element " + field);
             }
         }
     }
@@ -269,7 +269,7 @@ public class INDIPropertyInjector {
             } else if (INDILightProperty.class.isAssignableFrom(field.getType())) {
                 lastProperty = new INDILightProperty(driver, name, prop.label(), group, prop.state());
             } else {
-                LOG.log(Level.SEVERE, "Unknown property type for element " + field);
+                LOG.error("Unknown property type for element " + field);
             }
             if (prop.saveable()) {
                 lastProperty.setSaveable(true);
@@ -360,7 +360,7 @@ public class INDIPropertyInjector {
                 }
             }
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Could not instanciate Driver extention", e);
+            LOG.error("Could not instanciate Driver extention", e);
         }
         return driverExtension;
     }

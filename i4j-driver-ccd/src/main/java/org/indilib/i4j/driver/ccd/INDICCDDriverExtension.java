@@ -7,10 +7,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.DeflaterOutputStream;
 
+import nom.tam.fits.BasicHDU;
+import nom.tam.fits.Fits;
+import nom.tam.fits.HeaderCardException;
+
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchRules;
+import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.INDIBLOBValue;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElement;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIDriverExtension;
@@ -24,19 +32,12 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
-import nom.tam.fits.BasicHDU;
-import nom.tam.fits.Fits;
-import nom.tam.fits.HeaderCardException;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchRules;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIBLOBValue;
-import org.indilib.i4j.INDIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
-    private static final Logger LOG = Logger.getLogger(INDICCDDriverExtension.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(INDICCDDriverExtension.class);
 
     private final SimpleDateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
@@ -439,12 +440,12 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         } else if (frameTypeBais.getValue() == SwitchStatus.ON) {
             currentFrameType = CcdFrame.BIAS_FRAME;
             if (!capability().hasShutter()) {
-                LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
+                LOG.info("The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
             }
         } else if (frameTypeDark.getValue() == SwitchStatus.ON) {
             currentFrameType = CcdFrame.DARK_FRAME;
             if (!capability().hasShutter()) {
-                LOG.log(Level.FINE, "The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
+                LOG.info("The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
             }
         } else if (frameTypeFlat.getValue() == SwitchStatus.ON) {
             currentFrameType = CcdFrame.FLAT_FRAME;
@@ -504,8 +505,8 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
         imageFrame.setState(PropertyStates.OK);
 
-        LOG.log(Level.FINE, String.format("Requested CCD Frame is %4.0f,%4.0f %4.0f x %4.0f", imageFrameX.getIntValue(), imageFrameY.getIntValue(),
-                imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()));
+        LOG.info(String.format("Requested CCD Frame is %4.0f,%4.0f %4.0f x %4.0f", imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(),
+                imageFrameHeigth.getIntValue()));
 
         if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()))
             imageFrame.setState(PropertyStates.ALERT);
@@ -745,7 +746,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
                     }
                     uploadFile(sendImage, saveImage);
                 } catch (Exception e) {
-                    LOG.log(Level.SEVERE, "could not send or save image", e);
+                    LOG.error("could not send or save image", e);
                     return false;
                 }
             }
@@ -761,7 +762,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             if (driverInterface.startExposure(exposureTime))
                 imageExposure.setState(PropertyStates.BUSY);
             else {
-                LOG.log(Level.SEVERE, "Autoloop: Primary CCD Exposure Error!");
+                LOG.error("Autoloop: Primary CCD Exposure Error!");
                 imageExposure.setState(PropertyStates.ALERT);
             }
             try {

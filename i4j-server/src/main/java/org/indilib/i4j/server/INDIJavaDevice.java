@@ -17,15 +17,19 @@
  */
 package org.indilib.i4j.server;
 
-import com.Ostermiller.util.CircularByteBuffer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import org.indilib.i4j.driver.INDIDriver;
+
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.INDIDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.Ostermiller.util.CircularByteBuffer;
 
 /**
  * A class that represent a Java Device (created with the INDI Driver library).
@@ -37,6 +41,7 @@ import org.indilib.i4j.INDIException;
  */
 public class INDIJavaDevice extends INDIDevice {
 
+    private static final Logger LOG = LoggerFactory.getLogger(INDIJavaDevice.class);
   /**
    * The Driver
    */
@@ -91,14 +96,19 @@ public class INDIJavaDevice extends INDIDevice {
       Constructor c = driverClass.getConstructor(InputStream.class, OutputStream.class);
       this.driver = (INDIDriver) c.newInstance(toDriver.getInputStream(), fromDriver.getOutputStream());
     } catch (InstantiationException ex) {
+      LOG.error("Problem instantiating driver (not an INDI for Java Driver?)",ex);
       throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - InstantiationException");
     } catch (IllegalAccessException ex) {
+      LOG.error("Problem instantiating driver (not an INDI for Java Driver?)",ex);
       throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - IllegalAccessException");
     } catch (NoSuchMethodException ex) {
+      LOG.error("Problem instantiating driver (not an INDI for Java Driver?)",ex);
       throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - NoSuchMethodException");
     } catch (InvocationTargetException ex) {
+      LOG.error("Problem instantiating driver (not an INDI for Java Driver?)",ex);
       throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - InvocationTargetException");
     } catch (ClassCastException ex) {
+      LOG.error("Problem instantiating driver (not an INDI for Java Driver?)",ex);
       throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - ClassCastException");
     }
 

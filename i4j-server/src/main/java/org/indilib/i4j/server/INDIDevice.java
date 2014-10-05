@@ -20,10 +20,13 @@ package org.indilib.i4j.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,6 +41,7 @@ import org.w3c.dom.NodeList;
  */
 public abstract class INDIDevice extends INDIDeviceListener implements INDIProtocolParser {
 
+    private static final Logger LOG = LoggerFactory.getLogger(INDIDevice.class);
   /**
    * The Server that listens to this Device
    */

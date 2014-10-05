@@ -38,3 +38,5 @@ DONE:
 - event handler directly attached to the properties -> ritchie
 - driver extensions, to encapsulate and make reusable code -> ritchie
 - Maven folder renaming -> Zerjillo
+- slf4j introduced for better logging -> ritchie
+- updateProperty does not throw an exception anymore -> ritchie

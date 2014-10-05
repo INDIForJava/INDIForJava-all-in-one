@@ -11,4 +11,16 @@
 	<name>INDI for Java Base Library</name>
 	<description>INDI for Java is a library to deal with astronomical devices using the INDI library (http://indilib.org)</description>
 	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+	</dependencies>
 </project>

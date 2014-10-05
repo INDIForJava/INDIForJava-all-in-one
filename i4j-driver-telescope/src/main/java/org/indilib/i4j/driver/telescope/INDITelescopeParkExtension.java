@@ -1,6 +1,10 @@
 package org.indilib.i4j.driver.telescope;
 
+import static org.indilib.i4j.Constants.PropertyStates.IDLE;
+
 import java.util.Date;
+
+import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
@@ -8,9 +12,6 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.SwitchEvent;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.INDIException;
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 
 public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescope> {
 
@@ -71,10 +72,7 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         }
         this.park.setState(IDLE);
         park.resetAllSwitches();
-        try {
-            driver.updateProperty(this.park);
-        } catch (INDIException e) {
-        }
+        driver.updateProperty(this.park);
     }
 
     public void setNotBussy() {

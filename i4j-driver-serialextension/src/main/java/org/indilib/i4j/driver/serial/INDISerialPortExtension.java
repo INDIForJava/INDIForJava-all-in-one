@@ -1,11 +1,10 @@
 package org.indilib.i4j.driver.serial;
 
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
@@ -16,10 +15,12 @@ import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.TextEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
-    private static Logger LOG = Logger.getLogger(INDISerialPortExtension.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(INDISerialPortExtension.class);
 
     protected static final String OPTIONS_TAB = "Options";
 
@@ -81,7 +82,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             updateProperty(port, "Serial port error " + e.getMessage());
         } catch (INDIException e1) {
         }
-        LOG.log(Level.SEVERE, "Serial port error", e);
+        LOG.error("Serial port error", e);
     }
 
     public synchronized boolean close() {

@@ -20,12 +20,13 @@ package org.indilib.i4j.client.examples;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+
+import org.indilib.i4j.Constants.BLOBEnables;
+import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.client.INDIBLOBElement;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDIElementListener;
 import org.indilib.i4j.client.INDIServerConnection;
-import org.indilib.i4j.Constants.BLOBEnables;
-import org.indilib.i4j.INDIBLOBValue;
 
 /**
  * A INDI Client that listens to a particular BLOB Element and saves it to a

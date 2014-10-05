@@ -1,9 +1,9 @@
 package org.indilib.i4j.driver.telescope;
 
+import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.annotation.InjectElement;
-import org.indilib.i4j.Constants.SwitchStatus;
 
 public class INDITelescopeSyncExtension extends INDIDriverExtension<INDITelescope> {
 
