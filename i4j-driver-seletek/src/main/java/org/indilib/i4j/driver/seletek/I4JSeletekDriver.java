@@ -17,6 +17,28 @@
  */
 package org.indilib.i4j.driver.seletek;
 
+/*
+ * #%L
+ * INDI for Java Driver for the Seletek
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -45,6 +67,8 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class that acts as a INDI for Java Driver for the Seletek (by Lunatico
@@ -54,7 +78,7 @@ import org.indilib.i4j.driver.INDITextProperty;
  * @version 1.35, November 11, 2013
  */
 public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandler {
-
+    private static Logger LOG = LoggerFactory.getLogger(I4JSeletekDriver.class);
   /**
    * The Port Property
    */
@@ -321,7 +345,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
   @Override
   public void driverConnect(Date timestamp) throws INDIException {
-    System.out.println("Connecting to Seletek");
+    LOG.info("Connecting to Seletek");
 
     File port = new File(portP.getPort());
     if (!port.exists()) {
@@ -363,8 +387,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
   @Override
   public void driverDisconnect(Date timestamp) throws INDIException {
-    System.out.println("Disconnecting from Seletek");
-    System.out.flush();
+    LOG.info("Disconnecting from Seletek");
     try {
       if (readingThread != null) {
         readingThread.stopReading();
@@ -394,7 +417,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     this.removeProperty(temperatureSensorsP);
     this.removeProperty(powerOkP);
 
-    System.out.println("Disconnected from Seletek");
+    LOG.info("Disconnected from Seletek");
   }
 
   /**
@@ -562,7 +585,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
       seletekOutput.write(command.getBytes());
       seletekOutput.flush();
     } catch (IOException e) {
-      e.printStackTrace();
+        LOG.error("io exception",e);
     }
   }
 
@@ -600,8 +623,6 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     }
 
     String returnParam = buffer.substring(dotsPos + 1, endPos);
-
- //   System.out.println(buffer.substring(0, endPos));
 
     if (buffer.startsWith("!seletek version:")) {
       parseVersion(returnParam);
@@ -825,7 +846,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
   @Override
   public void isBeingDestroyed() {
-    System.out.println("Destroy Seletek Driver");
+    LOG.info("Destroy Seletek Driver");
 
     destroyMainSubdriver();
     destroyExpSubdriver();

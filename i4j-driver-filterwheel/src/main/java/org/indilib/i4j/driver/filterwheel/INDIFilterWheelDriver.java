@@ -1,21 +1,27 @@
-/*
- *  This file is part of INDI for Java Driver.
- * 
- *  INDI for Java Driver is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Driver is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Driver.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
+
 package org.indilib.i4j.driver.filterwheel;
+
+/*
+ * #%L
+ * INDI for Java Abstract Filter Wheel Driver
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,6 +37,8 @@ import org.indilib.i4j.driver.INDIProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class representing a Filter Wheel Driver in the INDI Protocol. INDI Filter
@@ -56,6 +64,7 @@ import org.indilib.i4j.driver.INDITextProperty;
  * @version 1.34, November 7, 2013
  */
 public abstract class INDIFilterWheelDriver extends INDIDriver {
+    private static Logger LOG = LoggerFactory.getLogger(INDIFilterWheelDriver.class);
 
   /**
    * The filter_names property
@@ -104,7 +113,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
     try {
       filterNamesP = (INDITextProperty)INDIProperty.loadFromFile(this, "filter_names");
     } catch (INDIException ex) {
-      System.out.println(ex.getMessage());
+        LOG.error("INDIException",ex);
     }
 
     if (filterNamesP == null) {
@@ -174,7 +183,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
    * @param filterSlot The Filter Slot that is currently on.
    */
   protected void filterHasBeenChanged(int filterSlot) {
-    System.out.println("Filter has been changed " + filterSlot);
+    LOG.info("Filter has been changed " + filterSlot);
 
     filterSlotP.setState(Constants.PropertyStates.OK);
     filterNameP.setState(Constants.PropertyStates.OK);

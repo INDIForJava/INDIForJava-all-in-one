@@ -17,6 +17,28 @@
  */
 package org.indilib.i4j.client.ui.examples;
 
+/*
+ * #%L
+ * INDI for Java Client UI Library
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -26,6 +48,8 @@ import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
 import org.indilib.i4j.client.ui.INDIDevicePanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple GUI INDI Client using the library.
@@ -34,7 +58,7 @@ import org.indilib.i4j.client.ui.INDIDevicePanel;
  * @version 1.21, April 4, 2012
  */
 public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDIServerConnectionListener {
-
+    private static Logger LOG = LoggerFactory.getLogger(SimpleINDIFrameClient.class);
   INDIServerConnection connection;
 
   /**
@@ -58,9 +82,7 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
       connection.connect();
       connection.askForDevices();
     } catch (IOException e) {
-      System.out.println("Problem connecting to " + connection.getHost() + ":" + connection.getPort());
-
-      e.printStackTrace();
+        LOG.error("Problem connecting to " + connection.getHost() + ":" + connection.getPort(),e);
     }
   }
 
@@ -70,8 +92,8 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
 
     try {
       p = (INDIDevicePanel) device.getDefaultUIComponent();
-    } catch (Exception e) { // Problem with library. Should not happen unless errors in Client library
-      e.printStackTrace();
+    } catch (Exception e) { // 
+        LOG.error("Problem with library. Should not happen unless errors in Client library",e);
       System.exit(-1);
     }
 
@@ -84,8 +106,8 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
 
     try {
       p = (INDIDevicePanel) device.getDefaultUIComponent();
-    } catch (Exception e) { // Problem with library. Should not happen unless errors in Client library
-      e.printStackTrace();
+    } catch (Exception e) { 
+        LOG.error("Problem with library. Should not happen unless errors in Client library",e);
       System.exit(-1);
     }
 
@@ -94,13 +116,13 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
 
   @Override
   public void connectionLost(INDIServerConnection connection) {
-    System.out.println("Connection lost. Exiting.");
+    LOG.info("Connection lost. Exiting.");
     System.exit(0);
   }
 
   @Override
   public void newMessage(INDIServerConnection connection, Date timestamp, String message) {
-    System.out.println(timestamp + " - " + message);
+      LOG.info(message);
   }
 
   /**

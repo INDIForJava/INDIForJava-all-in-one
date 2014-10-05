@@ -1,21 +1,27 @@
-/*
- *  This file is part of INDI for Java Driver.
- * 
- *  INDI for Java Driver is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Driver is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Driver.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
+
 package org.indilib.i4j.driver.examples;
+
+/*
+ * #%L
+ * INDI for Java Driver examples
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +47,8 @@ import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An example class representing a very basic INDI Driver.
@@ -50,6 +58,9 @@ import org.indilib.i4j.driver.INDITextProperty;
  */
 public class INDIDriverExample extends INDIDriver implements INDIConnectionHandler {
 
+    private static Logger LOG = LoggerFactory.getLogger(INDIDriverExample.class);
+    
+    
   // The Properties and Elements of this Driver
   private INDIBLOBProperty imageP;
   private INDIBLOBElement imageE;
@@ -149,7 +160,7 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         in.read(fileContents);
         in.close();
       } catch (IOException e) {
-        e.printStackTrace();
+          LOG.error("Could not write file",e);
 
         return false;
       }

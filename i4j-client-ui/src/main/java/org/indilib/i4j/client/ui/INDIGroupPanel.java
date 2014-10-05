@@ -17,9 +17,33 @@
  */
 package org.indilib.i4j.client.ui;
 
+/*
+ * #%L
+ * INDI for Java Client UI Library
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 
 import org.indilib.i4j.client.INDIProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A panel to join a group of
@@ -30,6 +54,7 @@ import org.indilib.i4j.client.INDIProperty;
  * @see INDIDefaultPropertyPanel
  */
 public class INDIGroupPanel extends javax.swing.JPanel {
+    private static Logger LOG = LoggerFactory.getLogger(INDIGroupPanel.class);
 
   private ArrayList<INDIPropertyPanel> propertyPanels;
 
@@ -46,8 +71,8 @@ public class INDIGroupPanel extends javax.swing.JPanel {
     INDIPropertyPanel pp = null;
     try {
       pp = (INDIPropertyPanel) ip.getDefaultUIComponent();
-    } catch (Exception e) { // Problem with library. Should not happen unless errors in Client library
-      e.printStackTrace();
+    } catch (Exception e) { 
+        LOG.error("Problem with library. Should not happen unless errors in Client library",e);
       System.exit(-1);
     }
 

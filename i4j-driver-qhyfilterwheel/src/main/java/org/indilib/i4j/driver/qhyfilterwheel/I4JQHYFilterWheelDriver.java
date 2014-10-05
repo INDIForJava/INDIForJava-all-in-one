@@ -1,21 +1,27 @@
-/*
- *  This file is part of INDI for Java QHY Filter Wheel Driver.
- * 
- *  INDI for Java QHY Filter Wheel Driver is free software: you can 
- *  redistribute it and/or modify it under the terms of the GNU General Public 
- *  License as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java QHY Filter Wheel Driver is distributed in the hope that it
- *  will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java QHY Filter Wheel Driver.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
+
 package org.indilib.i4j.driver.qhyfilterwheel;
+
+/*
+ * #%L
+ * INDI for Java Driver for the QHY Filter Wheel
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +49,8 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.filterwheel.INDIFilterWheelDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class that acts as a INDI for Java Driver for the QHY Filter Wheel.
@@ -51,7 +59,7 @@ import org.indilib.i4j.driver.filterwheel.INDIFilterWheelDriver;
  * @version 1.35, November 11, 2013
  */
 public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements INDIConnectionHandler, Runnable {
-
+    private static Logger LOG = LoggerFactory.getLogger(I4JQHYFilterWheelDriver.class);
   /**
    * The PORTS property.
    */
@@ -178,7 +186,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
   @Override
   public void driverConnect(Date timestamp) throws INDIException {
-    System.out.println("Connecting to QHY Filter Wheel");
+    LOG.info("Connecting to QHY Filter Wheel");
 
     File port = new File(portP.getPort());
     if (!port.exists()) {
@@ -207,8 +215,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
   @Override
   public void driverDisconnect(Date timestamp) throws INDIException {
-    System.out.println("Disconnecting from QHY Filter Wheel");
-    System.out.flush();
+    LOG.info("Disconnecting from QHY Filter Wheel");
 
     try {
       if (readingThread != null) {
@@ -233,8 +240,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     removeProperty(filterPositionsP);
     removeProperty(factorySettingsP);
 
-    System.out.println("Disconnected from QHY Filter Wheel");
-    System.out.flush();
+    LOG.info("Disconnected from QHY Filter Wheel");
   }
 
   @Override
@@ -309,10 +315,6 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     message[18] = (byte)(800 >>> 8);
     message[19] = (byte)(800);
 
-    /* for (int i = 0 ; i < message.length ; i++) {
-     System.out.println(String.format("0x%02X", message[i]));
-     }*/
-
     sendMessageToFilterWheel(message);
   }
 
@@ -338,7 +340,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
       }
       fwOutput.flush();
     } catch (IOException e) {
-      e.printStackTrace();
+        LOG.error("io exception",e);
     }
   }
   /**
@@ -367,18 +369,12 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
           byte[] readed = new byte[512];
 
           int br = fwInput.read(readed);
-//          System.out.println(br);
-//System.out.println("MEC " + new String(readed, 0, br));
           if (br == 1) {
             if (readed[0] == '-') {
               filterHasBeenChanged(lastAskedFilter);
             }
           } else if (br == 17) {
             int[] filterPositions = new int[5];
-
-            /* for (int i = 0 ; i < 17 ; i++) {
-             System.out.println(String.format("0x%02X", readed[i]));
-             }*/
 
             filterPositions[0] = (readed[1] << 8) & 0xff00 | (readed[2]) & 0xff;
             filterPositions[1] = (readed[3] << 8) & 0xff00 | (readed[4]) & 0xff;
@@ -396,7 +392,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
       sleep(200);
     }
 
-    System.out.println("QHY Filter Wheel Reader Thread Ending");
+    LOG.info("QHY Filter Wheel Reader Thread Ending");
 
     readerEnded = true;
   }

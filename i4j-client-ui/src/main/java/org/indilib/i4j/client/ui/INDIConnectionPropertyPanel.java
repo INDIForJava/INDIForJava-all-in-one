@@ -17,6 +17,28 @@
  */
 package org.indilib.i4j.client.ui;
 
+/*
+ * #%L
+ * INDI for Java Client UI Library
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.io.IOException;
 
 import org.indilib.i4j.Constants;
@@ -28,6 +50,9 @@ import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDISwitchElement;
 import org.indilib.i4j.client.INDISwitchProperty;
 import org.indilib.i4j.client.INDIValueException;
+import org.indilib.i4j.client.ui.examples.SimpleINDIFrameClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A panel to represent a the standard CONNECTION Property.
@@ -37,7 +62,7 @@ import org.indilib.i4j.client.INDIValueException;
  * @see INDIProperty
  */
 public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements INDIElementListener {
-
+    private static Logger LOG = LoggerFactory.getLogger(INDIConnectionPropertyPanel.class);
   private INDISwitchElement connectedE;
   private INDISwitchElement disconnectedE;
 
@@ -143,9 +168,9 @@ public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements IN
       }
       getProperty().sendChangesToDriver();
     } catch (INDIValueException e) {
-      e.printStackTrace();
+        LOG.error("value exception",e); 
     } catch (IOException e) {
-      e.printStackTrace();
+        LOG.error("io exception",e);
     }
 
     updatePropertyData();

@@ -1,21 +1,27 @@
-/*
- *  This file is part of INDI for Java Driver.
- * 
- *  INDI for Java Driver is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Driver is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Driver.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
+
 package org.indilib.i4j.driver.examples;
+
+/*
+ * #%L
+ * INDI for Java Driver examples
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -50,6 +56,8 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A small example Driver that uses the INDI for Java Driver library. It defines
@@ -64,7 +72,7 @@ import org.indilib.i4j.driver.INDITextProperty;
  * @version 1.3, April 5, 2012
  */
 public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConnectionHandler {
-
+    private static Logger LOG = LoggerFactory.getLogger(INDIElTiempoDriver.class);
   /*
    * The properties
    */
@@ -256,7 +264,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
 
       text = readFile(webpage);
     } catch (IOException e) {
-      e.printStackTrace();
+        LOG.error("io exception", e);
 
       return false;
     }
@@ -289,7 +297,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
       try {
         downloadAndSave(imgURL, image);
       } catch (IOException e) {
-        e.printStackTrace();
+          LOG.error("io exception", e);
 
         return false;
       }
@@ -300,7 +308,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     try {
       imageBytes = readBinaryFile(image);
     } catch (IOException e) {
-      e.printStackTrace();
+        LOG.error("io exception", e);
 
       return false;
     }

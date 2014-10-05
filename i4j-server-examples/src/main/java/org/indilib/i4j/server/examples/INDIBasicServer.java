@@ -1,21 +1,27 @@
-/*
- *  This file is part of INDI for Java Server.
- * 
- *  INDI for Java Server is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Server is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Server.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
+
 package org.indilib.i4j.server.examples;
+
+/*
+ * #%L
+ * INDI for Java Server examples
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +33,8 @@ import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.server.DefaultINDIServer;
 import org.indilib.i4j.server.INDIClient;
 import org.indilib.i4j.server.INDIDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple INDI Server that basically sends all messages from drivers and
@@ -40,6 +48,7 @@ import org.indilib.i4j.server.INDIDevice;
  */
 public class INDIBasicServer extends DefaultINDIServer {
 
+    private static Logger LOG = LoggerFactory.getLogger(INDIBasicServer.class);
   /**
    * The only server.
    */
@@ -249,7 +258,7 @@ public class INDIBasicServer extends DefaultINDIServer {
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+        LOG.error("io exception",e);
     }
   }
 

@@ -17,6 +17,28 @@
  */
 package org.indilib.i4j.client.ui;
 
+/*
+ * #%L
+ * INDI for Java Client UI Library
+ * %%
+ * Copyright (C) 2013 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 import java.io.IOException;
 import java.util.List;
 
@@ -31,6 +53,8 @@ import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDISwitchProperty;
 import org.indilib.i4j.client.INDIValueException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A default panel to represent a
@@ -41,7 +65,7 @@ import org.indilib.i4j.client.INDIValueException;
  * @see INDIProperty
  */
 public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
-
+    private static Logger LOG = LoggerFactory.getLogger(INDIDefaultPropertyPanel.class);
   private INDIPropertyInformationDialog infoDialog;
 
   /**
@@ -244,7 +268,7 @@ public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
         try {
           elp.getElement().setDesiredValue(elp.getDesiredValue());
         } catch (INDIValueException e) {
-          e.printStackTrace();
+            LOG.error("value exception",e);
           return;
         }
       }
@@ -265,7 +289,7 @@ public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
         }
       }
     } catch (IOException e) {
-      // System.out.println("Problem sending properties");
+      LOG.error("io exception",e);
     }
   }//GEN-LAST:event_setActionPerformed
 
