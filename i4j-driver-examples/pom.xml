@@ -8,8 +8,8 @@
 		<version>1.39-SNAPSHOT</version>
 	</parent>
 	<artifactId>i4j-driver-examples</artifactId>
-	<name>INDI for Java Driver examples</name>
-	<description>INDI for Java Driver examples</description>
+	<name>INDI for Java Driver Examples</name>
+	<description>INDI for Java Driver Examples</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>

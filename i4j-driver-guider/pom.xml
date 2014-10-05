@@ -8,8 +8,8 @@
 		<version>1.39-SNAPSHOT</version>
 	</parent>
 	<artifactId>i4j-driver-guider</artifactId>
-	<name>INDI for Java Guider extension - inactive</name>
-	<description>INDI for Java Guider extension - inactive</description>
+	<name>INDI for Java Guider Extension - inactive</name>
+	<description>INDI for Java Guider Extension - inactive</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
