@@ -34,6 +34,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import org.indilib.i4j.Constants;
 
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
@@ -88,7 +89,7 @@ public abstract class AbstractINDIServer implements Runnable {
    * Constructs a new Server. The Server begins to listen to the default port.
    */
   protected AbstractINDIServer() {
-    listeningPort = 7624;
+    listeningPort = Constants.INDI_DEFAULT_PORT;
 
     initServer();
   }

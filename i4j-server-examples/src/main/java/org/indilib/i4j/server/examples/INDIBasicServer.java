@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import org.indilib.i4j.Constants;
 
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
@@ -215,7 +216,7 @@ public class INDIBasicServer extends DefaultINDIServer {
   public static void main(String[] args) {
     System.err.println("INDI for Java Basic Server initializing...");
 
-    int port = 7624;
+    int port = Constants.INDI_DEFAULT_PORT;
 
     for (int i = 0 ; i < args.length ; i++) {
       String[] s = splitArgument(args[i]);
@@ -292,7 +293,7 @@ public class INDIBasicServer extends DefaultINDIServer {
 
         return true;
     } else if (s[0].equals("-connect")) {
-      int port = 7624;
+      int port = Constants.INDI_DEFAULT_PORT;
       String host;
 
       int pos = s[1].indexOf(":");
@@ -496,7 +497,7 @@ public class INDIBasicServer extends DefaultINDIServer {
       return;
     } else if ((args[0].equals("connect")) || (args[0].equals("disconnect"))) {
       String host = args[1];
-      int port = 7624;
+      int port = Constants.INDI_DEFAULT_PORT;
 
       if (args.length > 2) {
         String p = args[2];

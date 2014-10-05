@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
+import org.indilib.i4j.Constants;
 
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
@@ -63,7 +64,7 @@ public class SimpleINDIAppletClient extends javax.swing.JApplet implements INDIS
 
   public void connect() {
     String host = "";
-    int port = 7624;
+    int port = Constants.INDI_DEFAULT_PORT;
 
     String s = null;
 

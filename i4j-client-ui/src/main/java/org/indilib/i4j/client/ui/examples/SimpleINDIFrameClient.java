@@ -43,6 +43,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.Date;
+import org.indilib.i4j.Constants;
 
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
@@ -153,7 +154,7 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
     }
 
     String host = args[0];
-    int port = 7624;
+    int port = Constants.INDI_DEFAULT_PORT;
 
     if (args.length > 1) {
       try {
@@ -174,7 +175,7 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
 
     System.out.println("> java SimpleINDIFormClient host [port]\n  where");
     System.out.println("    host - is the INDI Server to connect to");
-    System.out.println("    port - is the INDI Server port. If not present the default port (7624) will be used.\n");
+    System.out.println("    port - is the INDI Server port. If not present the default port (" + Constants.INDI_DEFAULT_PORT + ") will be used.\n");
 
     System.exit(-1);
   }

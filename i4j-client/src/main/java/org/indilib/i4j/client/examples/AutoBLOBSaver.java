@@ -26,6 +26,7 @@ package org.indilib.i4j.client.examples;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import org.indilib.i4j.Constants;
 
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIBLOBValue;
@@ -123,7 +124,7 @@ public class AutoBLOBSaver implements INDIElementListener {
     String propertyName = args[1];
     String elementName = args[2];
     String host = args[3];
-    int port = 7624;
+    int port = Constants.INDI_DEFAULT_PORT;
 
     if (args.length > 4) {
       try {
@@ -146,7 +147,7 @@ public class AutoBLOBSaver implements INDIElementListener {
     System.out.println("    property - is the BLOB Property name");
     System.out.println("    element - is the BLOB Element name");
     System.out.println("    host - is the INDI Server to connect to");
-    System.out.println("    port - is the INDI Server port. If not present the default port (7624) will be used.\n");
+    System.out.println("    port - is the INDI Server port. If not present the default port (" + Constants.INDI_DEFAULT_PORT + ") will be used.\n");
 
     System.exit(-1);
   }

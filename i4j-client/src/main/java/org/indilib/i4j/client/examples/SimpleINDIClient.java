@@ -125,7 +125,7 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
     }
 
     String host = args[0];
-    int port = 7624;
+    int port = Constants.INDI_DEFAULT_PORT;
 
     if (args.length > 1) {
       try {
@@ -143,7 +143,7 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
 
     System.out.println("> java SimpleINDIClient host [port]\n  where");
     System.out.println("    host - is the INDI Server to connect to");
-    System.out.println("    port - is the INDI Server port. If not present the default port (7624) will be used.\n");
+    System.out.println("    port - is the INDI Server port. If not present the default port (" + Constants.INDI_DEFAULT_PORT + ") will be used.\n");
 
     System.exit(-1);
   }
