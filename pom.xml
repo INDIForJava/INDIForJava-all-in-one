@@ -182,22 +182,22 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>indiforjava-i4jbase</module>
-		<module>indiforjava-i4jclient</module>
-		<module>indiforjava-i4jclientui</module>
-		<module>indiforjava-i4jdriver</module>
-		<module>indiforjava-i4jfilterwheeldriver</module>
-		<module>indiforjava-i4jfocuserdriver</module>
-		<module>indiforjava-i4jtelescopedriver</module>
-		<module>indiforjava-i4jccddriver</module>
-		<module>indiforjava-i4jserialextension</module>
-		<module>indiforjava-i4jraspberrypigpiodriver</module>
-		<module>indiforjava-i4jqhyfilterwheeldriver</module>
-		<module>indiforjava-i4jseletekdriver</module>
-		<module>indiforjava-i4jsqmdriver</module>
-		<module>indiforjava-i4jexampledriver</module>
-		<module>indiforjava-i4jserver</module>
-		<module>indiforjava-i4jserverexample</module>
+		<module>i4j-base</module>
+		<module>i4j-client</module>
+		<module>i4j-client-ui</module>
+		<module>i4j-driver</module>
+		<module>i4j-driver-filterwheel</module>
+		<module>i4j-driver-focuser</module>
+		<module>i4j-driver-telescope</module>
+		<module>i4j-driver-ccd</module>
+		<module>i4j-driver-serialextension</module>
+		<module>i4j-driver-raspberrypigpio</module>
+		<module>i4j-driver-qhyfilterwheel</module>
+		<module>i4j-driver-seletek</module>
+		<module>i4j-driver-sqm</module>
+		<module>i4j-driver-examples</module>
+		<module>i4j-server</module>
+		<module>i4j-server-examples</module>
 		<module>gsl</module>
 	</modules>
 	<dependencies>

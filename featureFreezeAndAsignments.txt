@@ -14,6 +14,8 @@ For the next release:
 - use the license-plugin to write the class header? -> to diskuss 
 - check dokumentation of every method/class.
 - Extract Client examples to their own Maven Module -> Zerjillo will try to do it. Good way to learn a little about Maven :-P
+- Check old tutorials and adapt them to the new features. Create new examples if necessary.
+
 
 For future releases:
 
@@ -33,3 +35,4 @@ DONE:
 - Annotations for easy property (and element?) definitions. -> ritchie
 - event handler directly attached to the properties -> ritchie
 - driver extensions, to encapsulate and make reusable code -> ritchie
+- Maven folder renaming -> Zerjillo
