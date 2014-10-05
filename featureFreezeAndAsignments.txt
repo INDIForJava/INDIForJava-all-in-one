@@ -26,6 +26,7 @@ For future releases:
 - Selecting a logger framework and introduce it every where
 - useing the serviceloader for driver detection? -> to diskuss
 - Generics in elements (value)? -> to diskuss
+- Unit testing capabilities, and write unit tests.
 
 DONE:
 

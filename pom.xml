@@ -218,7 +218,7 @@
 				<android.sdk.path>/home/nir/ws/nexstar/android-sdk-linux</android.sdk.path>
 			</properties>
 			<modules>
-				<module>indiforjava-i4jandroidui</module>
+				<module>i4j-android-ui</module>
 			</modules>
 		</profile>
 		<profile>
@@ -228,7 +228,7 @@
 				</property>
 			</activation>
 			<modules>
-				<module>indiforjava-i4jandroidui</module>
+				<module>i4j-android-ui</module>
 			</modules>
 		</profile>
 		<profile>
