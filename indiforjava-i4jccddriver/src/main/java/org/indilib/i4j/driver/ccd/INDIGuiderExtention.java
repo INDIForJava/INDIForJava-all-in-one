@@ -5,7 +5,7 @@ import java.util.Date;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDIDriverExtention;
+import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
@@ -13,24 +13,24 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 
-public class INDIGuiderExtention extends INDIDriverExtention<INDIDriver> {
+public class INDIGuiderExtention extends INDIDriverExtension<INDIDriver> {
 
     @InjectProperty(name = "TELESCOPE_TIMED_GUIDE_NS", label = "Guide North/South")
     private INDINumberProperty guideNS;
 
-    @InjectElement(name = "TIMED_GUIDE_N", label = "North (msec)", maximumD = 60000d, stepD = 10d)
+    @InjectElement(name = "TIMED_GUIDE_N", label = "North (msec)", maximum = 60000d, step = 10d)
     private INDINumberElement guideNorth;
 
-    @InjectElement(name = "TIMED_GUIDE_S", label = "South (msec)", maximumD = 60000d, stepD = 10d)
+    @InjectElement(name = "TIMED_GUIDE_S", label = "South (msec)", maximum = 60000d, step = 10d)
     private INDINumberElement guideSouth;
 
     @InjectProperty(name = "TELESCOPE_TIMED_GUIDE_WE", label = "Guide East/West")
     private INDINumberProperty guideWE;
 
-    @InjectElement(name = "TIMED_GUIDE_E", label = "East (msec)", maximumD = 60000d, stepD = 10d)
+    @InjectElement(name = "TIMED_GUIDE_E", label = "East (msec)", maximum = 60000d, step = 10d)
     private INDINumberElement guideWest;
 
-    @InjectElement(name = "TIMED_GUIDE_W", label = "West (msec)", maximumD = 60000d, stepD = 10d)
+    @InjectElement(name = "TIMED_GUIDE_W", label = "West (msec)", maximum = 60000d, step = 10d)
     private INDINumberElement guideEast;
 
     private INDIGuiderInterface guiderInterface;

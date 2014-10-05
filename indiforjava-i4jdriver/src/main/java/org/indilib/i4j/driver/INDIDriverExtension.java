@@ -3,11 +3,11 @@ package org.indilib.i4j.driver;
 import org.indilib.i4j.driver.util.INDIPropertyInjector;
 import org.indilib.i4j.INDIException;
 
-public abstract class INDIDriverExtention<Driver extends INDIDriver> {
+public abstract class INDIDriverExtension<Driver extends INDIDriver> {
 
     protected final Driver driver;
 
-    public INDIDriverExtention(Driver driver) {
+    public INDIDriverExtension(Driver driver) {
         this.driver = driver;
         if (isActive()) {
             INDIPropertyInjector.initialize(this.driver, this);

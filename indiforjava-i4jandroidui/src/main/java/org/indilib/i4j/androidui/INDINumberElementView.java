@@ -15,38 +15,42 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import laazotea.indi.Constants.PropertyPermissions;
-import laazotea.indi.INDIException;
-import laazotea.indi.client.INDIElement;
-import laazotea.indi.client.INDITextElement;
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIElement;
+import org.indilib.i4j.client.INDINumberElement;
+import org.indilib.i4j.client.INDIValueException;
 
 /**
- * An class representing a View of a Text Element.
+ * An class representing a View of a Number Element.
  *
  * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
-public class INDITextElementView extends INDIElementView {
+public class INDINumberElementView extends INDIElementView {
 
-  private INDITextElement te;
+  private INDINumberElement ne;
+  private boolean desiredValueErroneous;
   private TextView name;
   private TextView currentValue;
   private EditText desiredValue;
+  private Drawable bgColor;
 
-  public INDITextElementView(INDITextElement te, PropertyPermissions perm) throws INDIException {
+  public INDINumberElementView(INDINumberElement ne, PropertyPermissions perm) throws INDIException {
     super(perm);
 
     Context context = I4JAndroidConfig.getContext();
 
-    this.te = te;
+    this.ne = ne;
 
     name = new TextView(context);
     name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
@@ -58,11 +62,12 @@ public class INDITextElementView extends INDIElementView {
 
     addView(currentValue);
 
+
     desiredValue = new EditText(context);
     desiredValue.setText("");
     desiredValue.setSingleLine();
     desiredValue.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
+    bgColor = desiredValue.getBackground();
     desiredValue.addTextChangedListener(new TextWatcher() {
 
       public void afterTextChanged(Editable s) {
@@ -80,23 +85,40 @@ public class INDITextElementView extends INDIElementView {
       addView(desiredValue);
     }
 
+
+
     updateElementData();
+
+    desiredValueErroneous = false;
   }
 
   private void desiredValueChanged() {
-    if (!(desiredValue.getText().length() == 0)) {
+    if (desiredValue.getText().toString().trim().length() > 0) {
       setChanged(true);
+
+      try {
+        boolean correct = ne.checkCorrectValue(desiredValue.getText().toString());
+
+        if (!correct) {
+          setError(true, "Unknown error parsing value");
+        } else {
+          setError(false, "");
+        }
+      } catch (INDIValueException e) {
+        setError(true, e.getMessage());
+      }
     } else {
       setChanged(false);
+      setError(false, "");
     }
 
     checkSetButton();
   }
 
   private void updateElementData() {
-    name.setText(te.getLabel() + ":");
+    name.setText(ne.getLabel() + ":");
 
-    currentValue.setText((String) te.getValue());
+    currentValue.setText(ne.getValueAsString());
   }
 
   @Override
@@ -105,18 +127,27 @@ public class INDITextElementView extends INDIElementView {
   }
 
   @Override
-  protected INDITextElement getElement() {
-    return te;
+  protected INDINumberElement getElement() {
+    return ne;
   }
 
   @Override
   protected void setError(boolean erroneous, String errorMessage) {
-    // Does nothing, text elements cannot be erroneous
+    this.desiredValueErroneous = erroneous;
+
+    if (erroneous) {
+      desiredValue.setBackgroundColor(Color.RED);
+//      desiredValue.setToolTipText(errorMessage);
+      desiredValue.requestFocus();
+    } else {
+      desiredValue.setBackgroundDrawable(bgColor);
+//      desiredValue.setToolTipText(null);
+    }
   }
 
   @Override
   protected boolean isDesiredValueErroneous() {
-    return false; // Never erroneous
+    return desiredValueErroneous;
   }
 
   @Override
@@ -126,7 +157,7 @@ public class INDITextElementView extends INDIElementView {
 
   @Override
   public void elementChanged(INDIElement element) {
-    if (element == te) {
+    if (element == ne) {
       try {
         I4JAndroidConfig.postHandler(new Runnable() {
 

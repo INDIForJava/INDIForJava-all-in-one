@@ -6,22 +6,22 @@ public class AlignmentDatabaseEntry implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 5136616882513466640L;
 
-    private double observationJulianDate;
+    protected double observationJulianDate;
 
     /**
      * Right ascension in decimal hours. N.B. libnova works in decimal degrees
      * so conversion is always needed!
      */
-    private double rightAscension;
+    protected double rightAscension;
 
     /** Declination in decimal degrees */
-    private double declination;
+    protected double declination;
 
     /**
      * Normalised vector giving telescope pointing direction. This is referred
      * to elsewhere as the "apparent" direction.
      */
-    private TelescopeDirectionVector telescopeDirection;
+    protected TelescopeDirectionVector telescopeDirection;
 
     /** Private data associated with this sync point */
     private byte[] privateData;

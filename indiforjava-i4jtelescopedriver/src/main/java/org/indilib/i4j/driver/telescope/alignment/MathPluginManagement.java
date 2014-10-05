@@ -1,80 +1,101 @@
 package org.indilib.i4j.driver.telescope.alignment;
 
+import static org.indilib.i4j.Constants.PropertyStates.OK;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import org.indilib.i4j.Constants.SwitchRules;
+import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.annotation.InjectElement;
+import org.indilib.i4j.driver.annotation.InjectProperty;
+import org.indilib.i4j.driver.event.SwitchEvent;
+import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.driver.telescope.INDITelescope;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
-import org.indilib.i4j.Constants.PropertyStates;
-import static org.indilib.i4j.Constants.PropertyPermissions.RW;
-import org.indilib.i4j.Constants.SwitchRules;
 
-public class MathPluginManagement {
+public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
 
     private final static String ALIGNMENT_TAB = "Alignment";
 
-    private final INDITelescope driver;
-
     private Map<String, IMathPlugin> plugins;
 
-    private BuiltInMathPlugin builtInMathPlugin = new BuiltInMathPlugin();
-
+    @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_MATH_PLUGINS", label = "Math Plugins", group = ALIGNMENT_TAB)
     private INDISwitchProperty alignmentSubsystemMathPlugins;
 
+    @InjectElement(name = BuiltInMathPlugin.INBUILT_MATH_PLUGIN_NAME, label = BuiltInMathPlugin.INBUILT_MATH_PLUGIN_LABEL, switchValue = SwitchStatus.ON)
+    private INDISwitchElement builtInMathPluginElement;
+
+    @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_MATH_PLUGIN_INITIALISE", label = "(Re)Initialise Plugin", group = ALIGNMENT_TAB, switchRule = SwitchRules.AT_MOST_ONE)
     private INDISwitchProperty alignmentSubsystemMathPluginInitialise;
 
+    @InjectElement(name = "ALIGNMENT_SUBSYSTEM_MATH_PLUGIN_INITIALISE", label = "OK")
+    private INDISwitchElement alignmentSubsystemMathPluginInitialiseElement;
+
+    @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_ACTIVE", label = "Activate alignment subsystem", group = ALIGNMENT_TAB, switchRule = SwitchRules.AT_MOST_ONE)
     private INDISwitchProperty alignmentSubsystemActive;
 
+    @InjectElement(name = "ALIGNMENT SUBSYSTEM ACTIVE", label = "Alignment Subsystem Active")
+    private INDISwitchElement alignmentSubsystemActiveElement;
+
+    /**
+     * The following property is used for configuration purposes only and is not
+     * exposed to the client.
+     */
+    @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_CURRENT_MATH_PLUGIN", label = "Current Math Plugin", group = ALIGNMENT_TAB, saveable = true)
     private INDITextProperty alignmentSubsystemCurrentMathPlugin;
 
+    @InjectElement(name = "ALIGNMENT ALIGNMENT_SUBSYSTEM_CURRENT_MATH_PLUGIN ACTIVE", label = "Current Math Plugin", textValue = BuiltInMathPlugin.INBUILT_MATH_PLUGIN_NAME)
     private INDITextElement alignmentSubsystemCurrentMathPluginElement;
 
     private IMathPlugin plugin;
 
-    private INDISwitchElement alignmentSubsystemMathPluginInitialiseElement;
-
     private InMemoryDatabase inMemoryDatabase;
 
     public MathPluginManagement(INDITelescope driver) {
-        this.driver = driver;
+        super(driver);
         enumeratePlugins();
-        this.alignmentSubsystemMathPlugins =
-                new INDISwitchProperty(driver, "ALIGNMENT_SUBSYSTEM_MATH_PLUGINS", "Math Plugins", ALIGNMENT_TAB, PropertyStates.IDLE, RW, 60, SwitchRules.ONE_OF_MANY);
-        new INDISwitchElement(this.alignmentSubsystemMathPlugins, builtInMathPlugin.id(), builtInMathPlugin.name(), SwitchStatus.ON);
         for (IMathPlugin mathPlugin : plugins.values()) {
             new INDISwitchElement(this.alignmentSubsystemMathPlugins, mathPlugin.id(), mathPlugin.name(), SwitchStatus.OFF);
         }
-        driver.addProperty(this.alignmentSubsystemMathPlugins);
+        alignmentSubsystemMathPlugins.setEventHandler(new SwitchEvent() {
 
-        this.alignmentSubsystemMathPluginInitialise =
-                new INDISwitchProperty(driver, "ALIGNMENT_SUBSYSTEM_MATH_PLUGIN_INITIALISE", "(Re)Initialise Plugin", ALIGNMENT_TAB, PropertyStates.IDLE, RW, 60, SwitchRules.AT_MOST_ONE);
-        this.alignmentSubsystemMathPluginInitialiseElement =
-                new INDISwitchElement(this.alignmentSubsystemMathPluginInitialise, "ALIGNMENT_SUBSYSTEM_MATH_PLUGIN_INITIALISE", "OK", SwitchStatus.OFF);
-        driver.addProperty(this.alignmentSubsystemMathPluginInitialise);
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newAlignmentSubsystemMathPluginsValue(elementsAndValues);
+            }
+        });
+        alignmentSubsystemMathPluginInitialise.setEventHandler(new SwitchEvent() {
 
-        this.alignmentSubsystemActive =
-                new INDISwitchProperty(driver, "ALIGNMENT_SUBSYSTEM_ACTIVE", "Activate alignment subsystem", ALIGNMENT_TAB, PropertyStates.IDLE, RW, 60, SwitchRules.AT_MOST_ONE);
-        new INDISwitchElement(this.alignmentSubsystemActive, "ALIGNMENT SUBSYSTEM ACTIVE", "Alignment Subsystem Active", SwitchStatus.OFF);
-        driver.addProperty(this.alignmentSubsystemActive);
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newAlignmentSubsystemMathPluginInitialiseValue();
+            }
+        });
+        alignmentSubsystemActive.setEventHandler(new SwitchEvent() {
 
-        // The following property is used for configuration purposes only and is
-        // not exposed to the client.
-        this.alignmentSubsystemCurrentMathPlugin =
-                new INDITextProperty(driver, "ALIGNMENT_SUBSYSTEM_CURRENT_MATH_PLUGIN", "Current Math Plugin", ALIGNMENT_TAB, PropertyStates.IDLE, PropertyPermissions.RO, 60);
-        this.alignmentSubsystemCurrentMathPluginElement =
-                new INDITextElement(this.alignmentSubsystemCurrentMathPlugin, "ALIGNMENT_SUBSYSTEM_CURRENT_MATH_PLUGIN", "Current Math Plugin", builtInMathPlugin.id());
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newAlignmentSubsystemActiveValue(elementsAndValues);
+            }
+        });
+        alignmentSubsystemCurrentMathPlugin.setEventHandler(new TextEvent() {
 
+            @Override
+            public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
+                newAlignmentSubsystemCurrentMathPluginValue(elementsAndValues);
+            }
+        });
     }
 
     private void enumeratePlugins() {
@@ -87,17 +108,48 @@ public class MathPluginManagement {
         }
     }
 
-    public void processNewTextValue(INDITextProperty property, Date date, INDITextElementAndValue[] elementsAndValues) {
-        if (alignmentSubsystemCurrentMathPlugin == property) {
-            alignmentSubsystemMathPlugins.setState(PropertyStates.OK);
-            property.setValues(elementsAndValues);
-            // in java no difference between buildin and other
-            // Unload old plugin if required
-            if (plugin != null) {
-                plugin.destroy();
-                plugin = null;
-            }
-            // It is not the built in so try to load it
+    private void newAlignmentSubsystemActiveValue(INDISwitchElementAndValue[] elementsAndValues) {
+        alignmentSubsystemActive.setState(OK);
+        alignmentSubsystemActive.setValues(elementsAndValues);
+
+        // Update client
+        try {
+            driver.updateProperty(alignmentSubsystemActive);
+        } catch (INDIException e) {
+        }
+    }
+
+    private void newAlignmentSubsystemCurrentMathPluginValue(INDITextElementAndValue[] elementsAndValues) {
+        INDISwitchElement currentPlugin = alignmentSubsystemMathPlugins.getOnElement();
+        alignmentSubsystemMathPlugins.setState(OK);
+        alignmentSubsystemCurrentMathPlugin.setValues(elementsAndValues);
+        // in java no difference between buildin and other
+        // Unload old plugin if required
+        resetPluginIfChanged(currentPlugin);
+    }
+
+    private void newAlignmentSubsystemMathPluginInitialiseValue() {
+        alignmentSubsystemMathPluginInitialise.setState(OK);
+        alignmentSubsystemMathPluginInitialise.reset();
+        // Update client
+        try {
+            driver.updateProperty(alignmentSubsystemMathPluginInitialise);
+        } catch (INDIException e) {
+        }
+
+        // Initialise or reinitialise the current math plugin
+        initialise();
+    }
+
+    private void newAlignmentSubsystemMathPluginsValue(INDISwitchElementAndValue[] elementsAndValues) {
+        INDISwitchElement currentPlugin = alignmentSubsystemMathPlugins.getOnElement();
+        alignmentSubsystemMathPlugins.setValues(elementsAndValues);
+        alignmentSubsystemMathPlugins.setState(OK);
+        resetPluginIfChanged(currentPlugin);
+    }
+
+    private IMathPlugin plugin() {
+        if (plugin == null) {
             String message = null;
             if ((plugin = plugins.get(alignmentSubsystemCurrentMathPluginElement.getValue())) != null) {
                 plugin.create();
@@ -105,94 +157,67 @@ public class MathPluginManagement {
             } else {
                 message = "MathPluginManagement - cannot load plugin " + alignmentSubsystemCurrentMathPluginElement.getValue() + "\n";
             }
+            // Update client
             try {
                 driver.updateProperty(alignmentSubsystemMathPlugins, message);
             } catch (INDIException e) {
             }
         }
+        return plugin;
     }
 
-    public void processNewSwitchValue(INDISwitchProperty property, Date date, INDISwitchElementAndValue[] elementsAndValues) {
-        if (alignmentSubsystemMathPlugins == property) {
-            INDISwitchElement currentPlugin = alignmentSubsystemMathPlugins.getOnElement();
-            property.setValues(elementsAndValues);
-            alignmentSubsystemMathPlugins.setState(PropertyStates.OK);
-            INDISwitchElement newPlugin = alignmentSubsystemMathPlugins.getOnElement();
+    private void resetPluginIfChanged(INDISwitchElement currentPlugin) {
+        INDISwitchElement newPlugin = alignmentSubsystemMathPlugins.getOnElement();
 
-            if (newPlugin != currentPlugin) {
-                // New plugin requested
-                // Unload old plugin if required
-                if (plugin != null) {
-                    plugin.destroy();
-                    plugin = null;
-                }
-                // It is not the built in so try to load it
-                String message = null;
-                if ((plugin = plugins.get(alignmentSubsystemCurrentMathPluginElement.getValue())) != null) {
-                    plugin.create();
-                    alignmentSubsystemMathPlugins.setOnlyOneSwitchOn(alignmentSubsystemMathPlugins.getElement(plugin.id()));
-                } else {
-                    message = "MathPluginManagement - cannot load plugin " + alignmentSubsystemCurrentMathPluginElement.getValue() + "\n";
-                }
-                // Update client
-                try {
-                    driver.updateProperty(alignmentSubsystemMathPlugins, message);
-                } catch (INDIException e) {
-                }
+        if (newPlugin != currentPlugin) {
+            // New plugin requested
+            // Unload old plugin if required
+            if (plugin != null) {
+                plugin.destroy();
+                plugin = null;
             }
-        } else if (alignmentSubsystemMathPluginInitialise == property) {
-            alignmentSubsystemMathPluginInitialise.setState(PropertyStates.OK);
-            alignmentSubsystemMathPluginInitialise.reset();
-            // Update client
-            try {
-                driver.updateProperty(property);
-            } catch (INDIException e) {
-            }
-
-            // Initialise or reinitialise the current math plugin
-            initialise();
-        } else if (alignmentSubsystemActive == property) {
-            alignmentSubsystemActive.setState(PropertyStates.OK);
-            property.setValues(elementsAndValues);
-
-            // Update client
-            try {
-                driver.updateProperty(property);
-            } catch (INDIException e) {
-            }
+            plugin();
         }
+    }
+
+    @Override
+    public void connect() {
+        driver.addProperty(this.alignmentSubsystemMathPlugins);
+        driver.addProperty(this.alignmentSubsystemMathPluginInitialise);
+        driver.addProperty(this.alignmentSubsystemActive);
+    }
+
+    @Override
+    public void disconnect() {
+        driver.removeProperty(this.alignmentSubsystemMathPlugins);
+        driver.removeProperty(this.alignmentSubsystemMathPluginInitialise);
+        driver.removeProperty(this.alignmentSubsystemActive);
     }
 
     // These must match the function signatures in MathPlugin
 
     public MountAlignment getApproximateMountAlignment() {
-        return plugin.getApproximateMountAlignment();
+        return plugin().getApproximateMountAlignment();
     }
 
     public boolean initialise() {
-        return plugin.initialise(this.inMemoryDatabase);
+        return plugin().initialise(this.inMemoryDatabase);
     }
 
     public void setApproximateMountAlignment(MountAlignment approximateAlignment) {
-        plugin.setApproximateMountAlignment(this.inMemoryDatabase);
+        plugin().setApproximateMountAlignment(this.inMemoryDatabase);
     }
 
-    private double rightAscension;
-
-    private double declination;
-
     public boolean transformCelestialToTelescope(double rightAscension, double declination, double julianOffset, TelescopeDirectionVector apparentTelescopeDirectionVector) {
-        if (alignmentSubsystemActive.firstElement().getValue() == SwitchStatus.ON)
-            return plugin.transformCelestialToTelescope(this.rightAscension = rightAscension, this.declination = declination, julianOffset, apparentTelescopeDirectionVector);
+        if (alignmentSubsystemActiveElement.getValue() == SwitchStatus.ON)
+            return plugin().transformCelestialToTelescope(rightAscension, declination, julianOffset, apparentTelescopeDirectionVector);
         else
             return false;
     }
 
-    private TelescopeDirectionVector apparentTelescopeDirectionVector;
-
-    public boolean transformTelescopeToCelestial(TelescopeDirectionVector ApparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination) {
-        if (alignmentSubsystemActive.firstElement().getValue() == SwitchStatus.ON)
-            return plugin.transformTelescopeToCelestial(this.apparentTelescopeDirectionVector = apparentTelescopeDirectionVector, rightAscension, declination);
+    public boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination) {
+        if (alignmentSubsystemActiveElement.getValue() == SwitchStatus.ON)
+            return plugin().transformTelescopeToCelestial(apparentTelescopeDirectionVector, rightAscension, declination);
         else
             return false;
     }

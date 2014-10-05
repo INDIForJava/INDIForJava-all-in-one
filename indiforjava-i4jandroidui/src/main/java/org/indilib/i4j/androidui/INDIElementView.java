@@ -15,13 +15,13 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
 import android.widget.LinearLayout;
-import laazotea.indi.Constants.PropertyPermissions;
-import laazotea.indi.INDIException;
-import laazotea.indi.client.INDIElement;
-import laazotea.indi.client.INDIElementListener;
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIElement;
+import org.indilib.i4j.client.INDIElementListener;
 
 /**
  * An abstract class representing a View of a Element.

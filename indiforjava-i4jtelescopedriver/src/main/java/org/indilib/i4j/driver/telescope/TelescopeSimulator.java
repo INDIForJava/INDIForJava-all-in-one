@@ -96,10 +96,10 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     @InjectProperty(name = "EQUATORIAL_PE", label = "Periodic Error", group = Constants.MOTION_TAB, permission = PropertyPermissions.RO)
     private INDINumberProperty eqPen;
 
-    @InjectElement(name = "RA_PE", label = "RA (hh:mm:ss)", valueD = 0.15d, maximumD = 24d, numberFormat = "%010.6m")
+    @InjectElement(name = "RA_PE", label = "RA (hh:mm:ss)", numberValue = 0.15d, maximum = 24d, numberFormat = "%010.6m")
     private INDINumberElement eqPenRa;
 
-    @InjectElement(name = "DEC_PE", label = "DEC (dd:mm:ss)", valueD = 0.15d, minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    @InjectElement(name = "DEC_PE", label = "DEC (dd:mm:ss)", numberValue = 0.15d, minimum = -90d, maximum = 90d, numberFormat = "%010.6m")
     private INDINumberElement eqPenDec;
 
     /**
@@ -134,10 +134,10 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     @InjectProperty(name = "GUIDE_RATE", label = "Guiding Rate", group = Constants.MOTION_TAB, timeout = 0)
     private INDINumberProperty guideRate;
 
-    @InjectElement(name = "GUIDE_RATE_WE", label = "W/E Rate", valueD = 0.3d, maximumD = 1d, stepD = 0.1d, numberFormat = "%g")
+    @InjectElement(name = "GUIDE_RATE_WE", label = "W/E Rate", numberValue = 0.3d, maximum = 1d, step = 0.1d, numberFormat = "%g")
     private INDINumberElement guideRateWE;
 
-    @InjectElement(name = "GUIDE_RATE_NS", label = "N/S Rate", valueD = 0.3d, maximumD = 1d, stepD = 0.1d, numberFormat = "%g")
+    @InjectElement(name = "GUIDE_RATE_NS", label = "N/S Rate", numberValue = 0.3d, maximum = 1d, step = 0.1d, numberFormat = "%g")
     private INDINumberElement guideRateNS;
 
     @InjectExtention(group = Constants.MOTION_TAB)

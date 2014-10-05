@@ -15,7 +15,7 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
 import android.content.Context;
 import android.view.View;
@@ -23,10 +23,10 @@ import android.widget.*;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import laazotea.indi.INDIException;
-import laazotea.indi.client.INDIDevice;
-import laazotea.indi.client.INDIDeviceListener;
-import laazotea.indi.client.INDIProperty;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIDevice;
+import org.indilib.i4j.client.INDIDeviceListener;
+import org.indilib.i4j.client.INDIProperty;
 
 /**
  * An class representing a View of a Device.

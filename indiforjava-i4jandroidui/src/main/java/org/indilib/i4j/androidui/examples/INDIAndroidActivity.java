@@ -15,7 +15,7 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui.examples;
+package org.indilib.i4j.androidui.examples;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,17 +25,20 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.TabHost.TabSpec;
 import android.widget.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import laazotea.indi.INDIException;
-import laazotea.indi.androidui.I4JAndroidConfig;
-import laazotea.indi.androidui.INDIDeviceView;
-import laazotea.indi.androidui.R;
-import laazotea.indi.client.INDIDevice;
-import laazotea.indi.client.INDIServerConnection;
-import laazotea.indi.client.INDIServerConnectionListener;
+
+import org.indilib.i4j.androidui.I4JAndroidConfig;
+import org.indilib.i4j.androidui.INDIDeviceView;
+import org.indilib.i4j.androidui.R;
+
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIDevice;
+import org.indilib.i4j.client.INDIServerConnection;
+import org.indilib.i4j.client.INDIServerConnectionListener;
 
 /**
  * An Android Activity that implements a INDI Client.

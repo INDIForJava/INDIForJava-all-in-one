@@ -13,7 +13,7 @@ import java.util.zip.DeflaterOutputStream;
 
 import org.indilib.i4j.driver.INDIBLOBElement;
 import org.indilib.i4j.driver.INDIBLOBProperty;
-import org.indilib.i4j.driver.INDIDriverExtention;
+import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
@@ -34,7 +34,7 @@ import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIException;
 
-public class INDICCDDriverExtention extends INDIDriverExtention<INDICCDDriver> {
+public class INDICCDDriverExtention extends INDIDriverExtension<INDICCDDriver> {
 
     private static final Logger LOG = Logger.getLogger(INDICCDDriverExtention.class.getName());
 
@@ -43,16 +43,16 @@ public class INDICCDDriverExtention extends INDIDriverExtention<INDICCDDriver> {
     @InjectProperty(name = "FRAME", label = "Frame", group = INDICCDDriver.IMAGE_SETTINGS_TAB, saveable = true)
     protected INDINumberProperty imageFrame;
 
-    @InjectElement(name = "X", label = "Left", maximumD = 1392d, numberFormat = "%4.0f")
+    @InjectElement(name = "X", label = "Left", maximum = 1392d, numberFormat = "%4.0f")
     protected INDINumberElement imageFrameX;
 
-    @InjectElement(name = "Y", label = "Top", maximumD = 1040d, numberFormat = "%4.0f")
+    @InjectElement(name = "Y", label = "Top", maximum = 1040d, numberFormat = "%4.0f")
     protected INDINumberElement imageFrameY;
 
-    @InjectElement(name = "WIDTH", label = "Width", valueD = 1392d, maximumD = 1392d, numberFormat = "%4.0f")
+    @InjectElement(name = "WIDTH", label = "Width", numberValue = 1392d, maximum = 1392d, numberFormat = "%4.0f")
     protected INDINumberElement imageFrameWidth;
 
-    @InjectElement(name = "HEIGHT", label = "Height", valueD = 1392d, maximumD = 1392d, numberFormat = "%4.0f")
+    @InjectElement(name = "HEIGHT", label = "Height", numberValue = 1392d, maximum = 1392d, numberFormat = "%4.0f")
     protected INDINumberElement imageFrameHeigth;
 
     @InjectProperty(name = "FRAME_TYPE", label = "Frame Type", group = INDICCDDriver.IMAGE_SETTINGS_TAB, saveable = true)
@@ -73,7 +73,7 @@ public class INDICCDDriverExtention extends INDIDriverExtention<INDICCDDriver> {
     @InjectProperty(name = "EXPOSURE", label = "Expose", group = INDICCDDriver.MAIN_CONTROL_TAB)
     protected INDINumberProperty imageExposure;
 
-    @InjectElement(name = "CCD_EXPOSURE_VALUE", label = "Duration (s)", valueD = 1, maximumD = 36000, numberFormat = "%5.2f")
+    @InjectElement(name = "CCD_EXPOSURE_VALUE", label = "Duration (s)", numberValue = 1, maximum = 36000, numberFormat = "%5.2f")
     protected INDINumberElement imageExposureDuration;
 
     @InjectProperty(name = "ABORT_EXPOSURE", label = "Expose Abort", group = INDICCDDriver.MAIN_CONTROL_TAB)
@@ -85,31 +85,31 @@ public class INDICCDDriverExtention extends INDIDriverExtention<INDICCDDriver> {
     @InjectProperty(name = "BINNING", label = "Binning", group = INDICCDDriver.IMAGE_SETTINGS_TAB, saveable = true)
     protected INDINumberProperty imageBin;
 
-    @InjectElement(name = "HOR_BIN", label = "X", valueD = 1, maximumD = 4, minimumD = 1, stepD = 1, numberFormat = "%2.0f")
+    @InjectElement(name = "HOR_BIN", label = "X", numberValue = 1, maximum = 4, minimum = 1, step = 1, numberFormat = "%2.0f")
     protected INDINumberElement imageBinX;
 
-    @InjectElement(name = "VER_BIN", label = "Y", valueD = 1, maximumD = 4, minimumD = 1, stepD = 1, numberFormat = "%2.0f")
+    @InjectElement(name = "VER_BIN", label = "Y", numberValue = 1, maximum = 4, minimum = 1, step = 1, numberFormat = "%2.0f")
     protected INDINumberElement imageBinY;
 
     @InjectProperty(name = "INFO", label = "CCD Information", group = INDICCDDriver.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
     protected INDINumberProperty imagePixelSize;
 
-    @InjectElement(name = "CCD_MAX_X", label = "Resolution x", valueD = 1392, maximumD = 16000, minimumD = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_MAX_X", label = "Resolution x", numberValue = 1392, maximum = 16000, minimum = 1, numberFormat = "%4.0f")
     protected INDINumberElement imagePixelSizeMaxX;
 
-    @InjectElement(name = "CCD_MAX_Y", label = "Resolution y", valueD = 1392, maximumD = 16000, minimumD = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_MAX_Y", label = "Resolution y", numberValue = 1392, maximum = 16000, minimum = 1, numberFormat = "%4.0f")
     protected INDINumberElement imagePixelSizeMaxY;
 
-    @InjectElement(name = "CCD_PIXEL_SIZE", label = "Pixel size (um)", valueD = 6.45, maximumD = 40, minimumD = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_PIXEL_SIZE", label = "Pixel size (um)", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.0f")
     protected INDINumberElement imagePixelSizePixelSize;
 
-    @InjectElement(name = "CCD_PIXEL_SIZE_X", label = "Pixel size X", valueD = 6.45, maximumD = 40, minimumD = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_PIXEL_SIZE_X", label = "Pixel size X", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.0f")
     protected INDINumberElement imagePixelSizePixelSizeX;
 
-    @InjectElement(name = "CCD_PIXEL_SIZE_Y", label = "Pixel size Y", valueD = 6.45, maximumD = 40, minimumD = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_PIXEL_SIZE_Y", label = "Pixel size Y", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.0f")
     protected INDINumberElement imagePixelSizePixelSizeY;
 
-    @InjectElement(name = "CCD_BITSPERPIXEL", label = "Bits per pixel", valueD = 8, maximumD = 64, minimumD = 8, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_BITSPERPIXEL", label = "Bits per pixel", numberValue = 8, maximum = 64, minimum = 8, numberFormat = "%4.0f")
     protected INDINumberElement imagePixelSizeBitPerPixel;
 
     @InjectProperty(name = "COMPRESSION", label = "Image", group = INDICCDDriver.IMAGE_SETTINGS_TAB)
@@ -151,13 +151,13 @@ public class INDICCDDriverExtention extends INDIDriverExtention<INDICCDDriver> {
     @InjectProperty(name = "RAPID_GUIDE_DATA", label = "Rapid Guide Data", group = INDICCDDriver.RAPIDGUIDE_TAB, permission = PropertyPermissions.RO)
     protected INDINumberProperty rapidGuideData;
 
-    @InjectElement(name = "GUIDESTAR_X", label = "Guide star position X", maximumD = 1024, numberFormat = "%%5.2f")
+    @InjectElement(name = "GUIDESTAR_X", label = "Guide star position X", maximum = 1024, numberFormat = "%%5.2f")
     protected INDINumberElement rapidGuideDataX;
 
-    @InjectElement(name = "GUIDESTAR_Y", label = "Guide star position Y", maximumD = 1024, numberFormat = "%5.2f")
+    @InjectElement(name = "GUIDESTAR_Y", label = "Guide star position Y", maximum = 1024, numberFormat = "%5.2f")
     protected INDINumberElement rapidGuideDataY;
 
-    @InjectElement(name = "GUIDESTAR_FIT", label = "GUIDESTAR_FIT", maximumD = 1024, numberFormat = "%5.2f")
+    @InjectElement(name = "GUIDESTAR_FIT", label = "GUIDESTAR_FIT", maximum = 1024, numberFormat = "%5.2f")
     protected INDINumberElement rapidGuideDataFIT;
 
     private INDICCDDriverInterface driverInterface;

@@ -15,7 +15,7 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -25,12 +25,12 @@ import android.view.View;
 import android.widget.*;
 import java.io.IOException;
 import java.util.List;
-import laazotea.indi.Constants;
-import laazotea.indi.Constants.PropertyStates;
-import laazotea.indi.INDIException;
-import laazotea.indi.client.INDIElement;
-import laazotea.indi.client.INDIProperty;
-import laazotea.indi.client.INDIValueException;
+import org.indilib.i4j.Constants;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIElement;
+import org.indilib.i4j.client.INDIProperty;
+import org.indilib.i4j.client.INDIValueException;
 
 /**
  * An class representing a View of a Property.

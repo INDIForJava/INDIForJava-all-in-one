@@ -1,19 +1,18 @@
 package org.indilib.i4j.driver.telescope.alignment;
 
-
 public interface IMathPlugin {
-
-    String id();
-
-    String name();
-
-    void destroy();
 
     void create();
 
+    void destroy();
+
     MountAlignment getApproximateMountAlignment();
 
+    String id();
+
     boolean initialise(InMemoryDatabase inMemoryDatabase);
+
+    String name();
 
     void setApproximateMountAlignment(InMemoryDatabase inMemoryDatabase);
 

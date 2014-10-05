@@ -15,91 +15,85 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
 import android.content.Context;
-import android.widget.ImageView;
 import android.widget.TextView;
-import laazotea.indi.Constants.LightStates;
-import laazotea.indi.Constants.PropertyPermissions;
-import laazotea.indi.INDIException;
-import laazotea.indi.client.INDIElement;
-import laazotea.indi.client.INDILightElement;
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.INDIBLOBValue;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIBLOBElement;
+import org.indilib.i4j.client.INDIElement;
 
 /**
- * An class representing a View of a Light Element.
+ * An class representing a View of a BLOB Element.
  *
  * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
-public class INDILightElementView extends INDIElementView {
+public class INDIBLOBElementView extends INDIElementView {
 
-  private INDILightElement le;
+  private INDIBLOBElement be;
   private TextView name;
-  private ImageView currentValue;
+  private TextView currentValue;
 
-  public INDILightElementView(INDILightElement le) throws INDIException {
-    super(PropertyPermissions.RO);
+  public INDIBLOBElementView(INDIBLOBElement be, PropertyPermissions perm) throws INDIException {
+    super(perm);
 
     Context context = I4JAndroidConfig.getContext();
 
-    this.le = le;
+    this.be = be;
 
     name = new TextView(context);
     name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     addView(name);
 
-    currentValue = new ImageView(context);
+    currentValue = new TextView(context);
+    currentValue.setSingleLine();
     currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
     addView(currentValue);
+
 
     updateElementData();
   }
 
   private void updateElementData() {
-    name.setText(le.getLabel() + ":");
+    name.setText(be.getLabel());
 
-    LightStates s = (LightStates) le.getValue();
+    INDIBLOBValue val = be.getValue();
 
-    if (s == LightStates.ALERT) {
-      currentValue.setImageResource(R.drawable.light_alert_big);
-    } else if (s == LightStates.BUSY) {
-      currentValue.setImageResource(R.drawable.light_busy_big);
-    } else if (s == LightStates.OK) {
-      currentValue.setImageResource(R.drawable.light_ok_big);
-    } else if (s == LightStates.IDLE) {
-      currentValue.setImageResource(R.drawable.light_idle_big);
+    if (val != null) {
+      currentValue.setText(val.getFormat() + "(" + val.getSize() + " bytes)");
     }
   }
 
   @Override
   protected Object getDesiredValue() {
-    return null; // There is no desired value for a light
+    return null;
   }
 
   @Override
-  protected INDILightElement getElement() {
-    return le;
+  protected INDIBLOBElement getElement() {
+    return be;
   }
 
   @Override
   protected void setError(boolean erroneous, String errorMessage) {
-    // No thing to do, a light cannot be erroneous
   }
 
   @Override
   protected boolean isDesiredValueErroneous() {
-    return false; // Cannot be erroneous
+    return false;
   }
 
   @Override
   protected void cleanDesiredValue() {
-    // There is no desired value for a light
   }
 
   @Override
   public void elementChanged(INDIElement element) {
-    if (element == le) {
+    if (element == be) {
       try {
         I4JAndroidConfig.postHandler(new Runnable() {
 

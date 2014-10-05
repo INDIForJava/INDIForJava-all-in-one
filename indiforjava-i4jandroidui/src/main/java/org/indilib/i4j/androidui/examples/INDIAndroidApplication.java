@@ -15,10 +15,10 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui.examples;
+package org.indilib.i4j.androidui.examples;
 
 import android.app.Application;
-import laazotea.indi.client.INDIServerConnection;
+import org.indilib.i4j.client.INDIServerConnection;
 
 /**
  * An Android Application to persist the Server Connection between configuration

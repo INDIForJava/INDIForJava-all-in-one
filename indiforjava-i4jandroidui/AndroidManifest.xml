@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="laazotea.indi.androidui"
+      package="org.indilib.i4j.androidui"
       android:versionCode="1"
       android:versionName="1.0">
         
     <uses-permission android:name="android.permission.INTERNET" /> 
-    <application android:label="@string/app_name" android:name="laazotea.indi.androidui.examples.INDIAndroidApplication" android:icon="@drawable/ic_launcher_cupule">
-        <activity android:name="laazotea.indi.androidui.examples.INDIAndroidActivity"
+    <application android:label="@string/app_name" android:name="org.indilib.i4j.androidui.examples.INDIAndroidApplication" android:icon="@drawable/ic_launcher_cupule">
+        <activity android:name="org.indilib.i4j.androidui.examples.INDIAndroidActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

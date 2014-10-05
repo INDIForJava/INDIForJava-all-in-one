@@ -1,7 +1,7 @@
 package org.indilib.i4j.driver.telescope;
 
 import java.util.Date;
-import org.indilib.i4j.driver.INDIDriverExtention;
+import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
@@ -12,7 +12,7 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 
-public class INDITelescopeParkExtention extends INDIDriverExtention<INDITelescope> {
+public class INDITelescopeParkExtention extends INDIDriverExtension<INDITelescope> {
 
     @InjectProperty(name = "TELESCOPE_PARK", label = "Park", group = INDITelescope.MAIN_CONTROL_TAB)
     private INDISwitchProperty park;

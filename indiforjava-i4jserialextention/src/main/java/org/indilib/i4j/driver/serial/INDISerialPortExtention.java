@@ -9,7 +9,7 @@ import jssc.SerialPortException;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDIDriverExtention;
+import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
@@ -17,7 +17,7 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.TextEvent;
 
-public class INDISerialPortExtention extends INDIDriverExtention<INDIDriver> {
+public class INDISerialPortExtention extends INDIDriverExtension<INDIDriver> {
 
     private static Logger LOG = Logger.getLogger(INDISerialPortExtention.class.getName());
 
@@ -26,7 +26,7 @@ public class INDISerialPortExtention extends INDIDriverExtention<INDIDriver> {
     @InjectProperty(name = "PORTS", label = "Ports", group = OPTIONS_TAB, saveable = true)
     protected INDITextProperty port;
 
-    @InjectElement(name = "PORT", label = "Port", valueT = "/dev/ttyUSB0")
+    @InjectElement(name = "PORT", label = "Port", textValue = "/dev/ttyUSB0")
     protected INDITextElement portElement;
 
     private INDISerialPortInterface servialPortInterface;

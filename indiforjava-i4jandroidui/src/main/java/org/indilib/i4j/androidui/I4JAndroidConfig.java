@@ -15,11 +15,11 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
 import android.content.Context;
 import android.os.Handler;
-import laazotea.indi.INDIException;
+import org.indilib.i4j.INDIException;
 
 /**
  * A class to centralize a Handler and Context for all INDI Android Views.

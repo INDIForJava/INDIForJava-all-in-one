@@ -1,3 +1,20 @@
+/*
+ *  This file is part of INDI for Java Driver.
+ * 
+ *  INDI for Java Driver is free software: you can redistribute it
+ *  and/or modify it under the terms of the GNU General Public License 
+ *  as published by the Free Software Foundation, either version 3 of 
+ *  the License, or (at your option) any later version.
+ * 
+ *  INDI for Java Driver is distributed in the hope that it will be
+ *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with INDI for Java Driver.  If not, see 
+ *  <http://www.gnu.org/licenses/>.
+ */
 package org.indilib.i4j.driver.annotation;
 
 import java.lang.annotation.ElementType;
@@ -8,31 +25,80 @@ import java.lang.annotation.Target;
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 
+/**
+ * Use this annotation on a field in your driver oder extension and a element
+ * will be injected in the property with the attributes specified.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
     ElementType.FIELD
 })
 public @interface InjectElement {
 
+    /**
+     * @return the name of the element (mandatory)
+     */
     String name();
 
+    /**
+     * @return the label of the element (mandatory)
+     */
     String label();
 
-    double valueD() default 0d;
+    /**
+     * @return the default value of the element when it is a number field,
+     *         defaults to 0
+     */
+    double numberValue() default 0d;
 
-    String valueT() default "";
+    /**
+     * @return the default value of the element when it is a text field,
+     *         defaults to an empty string
+     */
+    String textValue() default "";
 
-    double minimumD() default 0d;
+    /**
+     * @return the minimal value of the element when it is a number field,
+     *         defaults to 0
+     */
+    double minimum() default 0d;
 
-    double maximumD() default 0d;
+    /**
+     * @return the maximal value of the element when it is a number field,
+     *         defaults to 0
+     */
+    double maximum() default 0d;
 
-    double stepD() default 0d;
+    /**
+     * @return the step value of the element when it is a number field, defaults
+     *         to 0
+     */
+    double step() default 0d;
 
+    /**
+     * @return the number format value of the element when it is a number field,
+     *         defaults to %g
+     */
     String numberFormat() default "%g";
 
+    /**
+     * @return the default value of the element when it is a switch field,
+     *         defaults to an empty string
+     */
     SwitchStatus switchValue() default SwitchStatus.OFF;
 
+    /**
+     * @return the property this element should be created in (defaults to the
+     *         last defined property field in the current class. Only specify
+     *         this field if the field is somewhere else.
+     */
     String property() default "";
 
+    /**
+     * @return the default value of the element when it is a light field,
+     *         defaults to an empty string
+     */
     LightStates state() default LightStates.IDLE;
 }

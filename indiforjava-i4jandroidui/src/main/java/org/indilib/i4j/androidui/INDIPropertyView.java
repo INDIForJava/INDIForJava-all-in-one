@@ -15,27 +15,34 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
-import android.app.Application;
-import laazotea.indi.client.INDIServerConnection;
+import android.widget.LinearLayout;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIProperty;
+import org.indilib.i4j.client.INDIPropertyListener;
 
 /**
- * An Android Application to persist the connection between configuration changes.
+ * An abstract class representing a View of a Property.
  *
- * @version 1.32, April 18, 2012
+ * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
-public class INDIAndroidApplication extends Application {
-  private INDIServerConnection connection;
+public abstract class INDIPropertyView extends LinearLayout implements INDIPropertyListener {
 
-  public INDIServerConnection getConnection() {
-    return connection;
+  private INDIProperty property;
+
+  protected INDIPropertyView(INDIProperty property) throws INDIException {
+    super(I4JAndroidConfig.getContext());
+
+    this.property = property;
+    
+    this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
   }
 
-  public void setConnection(INDIServerConnection connection) {
-    this.connection = connection;
+  public INDIProperty getProperty() {
+    return property;
   }
-  
-  
+
+  protected abstract void checkSetButton();
 }

@@ -15,44 +15,39 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui;
+package org.indilib.i4j.androidui;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.view.Gravity;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import android.widget.ToggleButton;
-import laazotea.indi.Constants.PropertyPermissions;
-import laazotea.indi.Constants.SwitchStatus;
-import laazotea.indi.INDIException;
-import laazotea.indi.client.INDIElement;
-import laazotea.indi.client.INDISwitchElement;
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIElement;
+import org.indilib.i4j.client.INDITextElement;
 
 /**
- * An class representing a View of a Switch Element.
+ * An class representing a View of a Text Element.
  *
  * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
-public class INDISwitchElementView extends INDIElementView {
+public class INDITextElementView extends INDIElementView {
 
-  private INDISwitchElement se;
+  private INDITextElement te;
   private TextView name;
   private TextView currentValue;
-  private Drawable bgColor;
-  private ToggleButton desiredValue;
+  private EditText desiredValue;
 
-  public INDISwitchElementView(INDISwitchElement se, PropertyPermissions perm) throws INDIException {
+  public INDITextElementView(INDITextElement te, PropertyPermissions perm) throws INDIException {
     super(perm);
 
     Context context = I4JAndroidConfig.getContext();
 
-    this.se = se;
+    this.te = te;
 
-    this.setGravity(Gravity.CENTER_VERTICAL);
-    
     name = new TextView(context);
     name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     addView(name);
@@ -60,17 +55,23 @@ public class INDISwitchElementView extends INDIElementView {
     currentValue = new TextView(context);
     currentValue.setSingleLine();
     currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-    bgColor = currentValue.getBackground();
+
     addView(currentValue);
 
-    desiredValue = new ToggleButton(context);
-    desiredValue.setTextOn("Set Selected");
-    desiredValue.setTextOff("Set Deselected");
-    desiredValue.setChecked(false);
-    desiredValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-    desiredValue.setOnClickListener(new View.OnClickListener() {
+    desiredValue = new EditText(context);
+    desiredValue.setText("");
+    desiredValue.setSingleLine();
+    desiredValue.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
-      public void onClick(View v) {
+    desiredValue.addTextChangedListener(new TextWatcher() {
+
+      public void afterTextChanged(Editable s) {
+      }
+
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
         desiredValueChanged();
       }
     });
@@ -82,61 +83,50 @@ public class INDISwitchElementView extends INDIElementView {
     updateElementData();
   }
 
-  private void updateElementData() {
-    name.setText(se.getLabel() + ":");
-
-    SwitchStatus ss = (SwitchStatus) se.getValue();
-
-    if (ss == SwitchStatus.OFF) {
-      currentValue.setText("DESELECTED");
-      currentValue.setBackgroundDrawable(bgColor);
-    } else {
-      currentValue.setText("SELECTED");
-      currentValue.setBackgroundColor(Color.GREEN);
-    }
-  }
-
   private void desiredValueChanged() {
+    if (!(desiredValue.getText().length() == 0)) {
+      setChanged(true);
+    } else {
+      setChanged(false);
+    }
+
     checkSetButton();
   }
 
-  @Override
-  protected boolean isChanged() {
-    return true; // Always changed: all will be send 
+  private void updateElementData() {
+    name.setText(te.getLabel() + ":");
+
+    currentValue.setText((String) te.getValue());
   }
 
   @Override
   protected Object getDesiredValue() {
-    if (desiredValue.isChecked()) {
-      return SwitchStatus.ON;
-    }
-
-    return SwitchStatus.OFF;
+    return desiredValue.getText().toString();
   }
 
   @Override
-  protected INDISwitchElement getElement() {
-    return se;
+  protected INDITextElement getElement() {
+    return te;
   }
 
   @Override
   protected void setError(boolean erroneous, String errorMessage) {
-    // A single switch element cannot be erroneous
+    // Does nothing, text elements cannot be erroneous
   }
 
   @Override
   protected boolean isDesiredValueErroneous() {
-    return false; // A single switch element cannot be erroneous
+    return false; // Never erroneous
   }
 
   @Override
   protected void cleanDesiredValue() {
-    desiredValue.setChecked(false);
+    desiredValue.setText("");
   }
 
   @Override
   public void elementChanged(INDIElement element) {
-    if (element == se) {
+    if (element == te) {
       try {
         I4JAndroidConfig.postHandler(new Runnable() {
 

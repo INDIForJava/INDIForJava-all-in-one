@@ -15,7 +15,7 @@
  *  along with INDI for Java Android UI.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package laazotea.indi.androidui.examples;
+package org.indilib.i4j.androidui.examples;
 
 import android.content.Context;
 import android.widget.FrameLayout;

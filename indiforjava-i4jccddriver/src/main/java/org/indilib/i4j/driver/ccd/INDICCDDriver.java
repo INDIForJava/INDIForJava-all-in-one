@@ -53,7 +53,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     @InjectProperty(name = "CCD_TEMPERATURE", label = "Temperature", group = INDICCDDriver.MAIN_CONTROL_TAB)
     protected INDINumberProperty temperature;
 
-    @InjectElement(name = "CCD_TEMPERATURE_VALUE", label = "Temperature (C)", minimumD = -50d, maximumD = 50d, numberFormat = "%5.2f")
+    @InjectElement(name = "CCD_TEMPERATURE_VALUE", label = "Temperature (C)", minimum = -50d, maximum = 50d, numberFormat = "%5.2f")
     private INDINumberElement temperatureTemp;
 
     @InjectProperty(name = "UPLOAD_MODE", label = "Upload", group = INDICCDDriver.OPTIONS_TAB, timeout = 0, saveable = true)
@@ -74,16 +74,16 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     @InjectElement(name = "UPLOAD_DIR", label = "Dir")
     private INDITextElement uploadSettingsDir;
 
-    @InjectElement(name = "UPLOAD_PREFIX", label = "Prefix", valueT = "IMAGE_XX")
+    @InjectElement(name = "UPLOAD_PREFIX", label = "Prefix", textValue = "IMAGE_XX")
     private INDITextElement uploadSettingsPrefix;
 
     @InjectProperty(name = "ACTIVE_DEVICES", label = "Snoop devices", group = INDICCDDriver.OPTIONS_TAB, saveable = true)
     private INDITextProperty activeDevice;
 
-    @InjectElement(name = "ACTIVE_TELESCOPE", label = "Telescope", valueT = "Telescope Simulator")
+    @InjectElement(name = "ACTIVE_TELESCOPE", label = "Telescope", textValue = "Telescope Simulator")
     private INDITextElement activeDeviceTelescope;
 
-    @InjectElement(name = "ACTIVE_FOCUSER", label = "Focuser", valueT = "Focuser Simulator")
+    @InjectElement(name = "ACTIVE_FOCUSER", label = "Focuser", textValue = "Focuser Simulator")
     private INDITextElement activeDeviceFocuser;
 
     @InjectExtention(prefix = "CCD_", rename = {

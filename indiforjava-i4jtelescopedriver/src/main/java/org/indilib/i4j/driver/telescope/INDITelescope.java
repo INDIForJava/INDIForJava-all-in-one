@@ -121,10 +121,10 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectProperty(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDITelescope.MAIN_CONTROL_TAB)
     protected INDINumberProperty eqn;
 
-    @InjectElement(name = "RA", label = "RA (hh:mm:ss)", maximumD = 24d, numberFormat = "%010.6m")
+    @InjectElement(name = "RA", label = "RA (hh:mm:ss)", maximum = 24d, numberFormat = "%010.6m")
     protected INDINumberElement eqnRa;
 
-    @InjectElement(name = "DEC", label = "DEC (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    @InjectElement(name = "DEC", label = "DEC (dd:mm:ss)", minimum = -90d, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement eqnDec;
 
     @InjectProperty(name = "TIME_UTC", label = "UTC", group = SITE_TAB)
@@ -139,13 +139,13 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectProperty(name = "GEOGRAPHIC_COORD", label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
     protected INDINumberProperty location;
 
-    @InjectElement(name = "LAT", label = "Lat (dd:mm:ss)", minimumD = -90d, maximumD = 90d, numberFormat = "%010.6m")
+    @InjectElement(name = "LAT", label = "Lat (dd:mm:ss)", minimum = -90d, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement locationLat;
 
-    @InjectElement(name = "LONG", label = "Lon (dd:mm:ss)", maximumD = 360d, numberFormat = "%010.6m")
+    @InjectElement(name = "LONG", label = "Lon (dd:mm:ss)", maximum = 360d, numberFormat = "%010.6m")
     protected INDINumberElement locationLong;
 
-    @InjectElement(name = "ELEV", label = "Elevation (m)", minimumD = -200d, maximumD = 10000d)
+    @InjectElement(name = "ELEV", label = "Elevation (m)", minimum = -200d, maximum = 10000d)
     protected INDINumberElement locationElev;
 
     @InjectProperty(name = "ON_COORD_SET", label = "On Set", group = INDITelescope.MAIN_CONTROL_TAB)
@@ -201,16 +201,16 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectProperty(name = "TELESCOPE_INFO", label = "Scope Properties", group = OPTIONS_TAB, state = OK, saveable = true)
     protected INDINumberProperty scopeParameters;
 
-    @InjectElement(name = "TELESCOPE_APERTURE", label = "Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
+    @InjectElement(name = "TELESCOPE_APERTURE", label = "Aperture (mm)", numberValue = 50d, minimum = 50d, maximum = 4000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersAperture;
 
-    @InjectElement(name = "TELESCOPE_FOCAL_LENGTH", label = "Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
+    @InjectElement(name = "TELESCOPE_FOCAL_LENGTH", label = "Focal Length (mm)", numberValue = 100d, minimum = 100d, maximum = 10000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersFocalLength;
 
-    @InjectElement(name = "GUIDER_APERTURE", label = "Guider Aperture (mm)", valueD = 50d, minimumD = 50d, maximumD = 4000d, numberFormat = "%g")
+    @InjectElement(name = "GUIDER_APERTURE", label = "Guider Aperture (mm)", numberValue = 50d, minimum = 50d, maximum = 4000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersGuiderAperture;
 
-    @InjectElement(name = "GUIDER_FOCAL_LENGTH", label = "Guider Focal Length (mm)", valueD = 100d, minimumD = 100d, maximumD = 10000d, numberFormat = "%g")
+    @InjectElement(name = "GUIDER_FOCAL_LENGTH", label = "Guider Focal Length (mm)", numberValue = 100d, minimum = 100d, maximum = 10000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersGuiderFocalLength;
 
     protected INDITelescopeSyncExtention syncExtention;
