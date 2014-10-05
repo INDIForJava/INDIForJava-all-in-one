@@ -7,7 +7,6 @@ For the next release:
 
 - Element iterators in properties (and properties in drivers? and drivers in connections?)
 - Avoid of api exposures (returned some ArrayList<> when List<> would be better)
-- Check the exception mechanism. Some exception may become a runtime exception to avoid try {}catch block in the drivers which make the code quite ugly. Do not directly make INDIException as a runtime one. Maybe a subclass.
 - getting maven-release to work with central -> ritchie
 - URL handling for connections: indi://[host]:[port][/device[/property[/element]]]  -> Zerjillo
 - extract the guider stuff from the ccd and telescope and store it for later discussion
@@ -16,10 +15,12 @@ For the next release:
 - Extract Client examples to their own Maven Module -> Zerjillo will try to do it. Good way to learn a little about Maven :-P
 - Check old tutorials and adapt them to the new features. Create new examples if necessary.
 - Update existing drivers to new changes. For example, check the Serial implementation by Ritchie and see if wold improve the drivers for seletek, sqm and qhyfilterwheel.
+- replace org.indilib.i4j.Base64 with apache commons-codec
 
 
 For future releases:
 
+- Check the exception mechanism. Some exception may become a runtime exception to avoid try {}catch block in the drivers which make the code quite ugly. Do not directly make INDIException as a runtime one. Maybe a subclass.
 - Server library: allow driver renaming for multiple equal devices (with the same driver)
 - Server library: Check listeners mechanism. Not sure if some error may occur when iterating over the lists.- Server library: Check if drivers are really distroyed to avoid active threads. 
 - Finishing refactorings for CCD and Telescope -> ritchie
