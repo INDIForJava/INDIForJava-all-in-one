@@ -32,8 +32,6 @@ package org.indilib.i4j;
  */
 public class Constants {
 
-  public static final String MOTION_TAB = "Motion Control";
-  
   public static final int INDI_DEFAULT_PORT = 7624;
     
   /**

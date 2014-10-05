@@ -45,7 +45,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TelescopeSimulator extends INDITelescope implements  INDITelescopeParkInterface, INDITelescopeSyncInterface {
-
+    public static final String MOTION_TAB = "Motion Control";
+    
     private static Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
 
     /**
@@ -112,7 +113,7 @@ public class TelescopeSimulator extends INDITelescope implements  INDITelescopeP
     /**
      * Simulated periodic error in RA, DEC
      */
-    @InjectProperty(name = "EQUATORIAL_PE", label = "Periodic Error", group = Constants.MOTION_TAB, permission = PropertyPermissions.RO)
+    @InjectProperty(name = "EQUATORIAL_PE", label = "Periodic Error", group = MOTION_TAB, permission = PropertyPermissions.RO)
     private INDINumberProperty eqPen;
 
     @InjectElement(name = "RA_PE", label = "RA (hh:mm:ss)", numberValue = 0.15d, maximum = 24d, numberFormat = "%010.6m")
@@ -125,7 +126,7 @@ public class TelescopeSimulator extends INDITelescope implements  INDITelescopeP
      * Enable client to manually add periodic error northward or southward for
      * simulation purposes
      */
-    @InjectProperty(name = "PE_NS", label = "PE N/S", group = Constants.MOTION_TAB)
+    @InjectProperty(name = "PE_NS", label = "PE N/S", group = MOTION_TAB)
     private INDISwitchProperty periodicErrorNS;
 
     @InjectElement(name = "PE_N", label = "North")
@@ -138,7 +139,7 @@ public class TelescopeSimulator extends INDITelescope implements  INDITelescopeP
      * Enable client to manually add periodic error westward or easthward for
      * simulation purposes
      */
-    @InjectProperty(name = "PE_WE", label = "PE W/E", group = Constants.MOTION_TAB)
+    @InjectProperty(name = "PE_WE", label = "PE W/E", group = MOTION_TAB)
     private INDISwitchProperty periodicErrorWE;
 
     @InjectElement(name = "PE_W", label = "West")
@@ -150,7 +151,7 @@ public class TelescopeSimulator extends INDITelescope implements  INDITelescopeP
     /**
      * How fast do we guide compared to sidereal rate
      */
-    @InjectProperty(name = "GUIDE_RATE", label = "Guiding Rate", group = Constants.MOTION_TAB, timeout = 0)
+    @InjectProperty(name = "GUIDE_RATE", label = "Guiding Rate", group = MOTION_TAB, timeout = 0)
     private INDINumberProperty guideRate;
 
     @InjectElement(name = "GUIDE_RATE_WE", label = "W/E Rate", numberValue = 0.3d, maximum = 1d, step = 0.1d, numberFormat = "%g")
