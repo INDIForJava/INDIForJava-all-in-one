@@ -30,6 +30,7 @@ import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
 
 public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDIGuiderInterface, INDICCDDriverInterface {
@@ -249,7 +250,8 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
             }
         }
         maxNumber++;
-        File fp = new File(uploadSettingsDir.getValue(), uploadSettingsPrefix.getValue().replace("XX", Integer.toString(maxNumber)) + "." + extension);
+        new File(dir).mkdirs();
+        File fp = new File(dir, prefix.replace("XX", Integer.toString(maxNumber)) + "." + extension);
         return fp;
     }
 
@@ -331,7 +333,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         addProperty(upload);
 
         if (uploadSettingsDir.getValue() == null) {
-            uploadSettingsDir.setValue(System.getProperty("user.home"));
+            uploadSettingsDir.setValue(new File(FileUtils.getI4JBaseDirectory(), "images").getAbsolutePath());
         }
         addProperty(uploadSettings);
         connectToTelescope();
