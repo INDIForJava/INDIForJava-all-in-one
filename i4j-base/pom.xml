@@ -11,21 +11,4 @@
 	<name>INDI for Java Base Library</name>
 	<description>INDI for Java is a library to deal with astronomical devices using the INDI library (http://indilib.org)</description>
 	<packaging>jar</packaging>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>laazotea.indi.PruebaSexagesimal</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

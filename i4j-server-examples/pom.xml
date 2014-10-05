@@ -11,15 +11,32 @@
 	<name>INDI for Java Server examples</name>
 	<description>INDI for Java Server examples</description>
 	<packaging>jar</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>org.indilib.i4j.server.examples.INDIBasicServer</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jexampledriver</artifactId>
+			<artifactId>i4j-driver-examples</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jserver</artifactId>
+			<artifactId>i4j-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

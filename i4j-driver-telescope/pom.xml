@@ -14,12 +14,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jccddriver</artifactId>
+			<artifactId>i4j-driver-ccd</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jserialextention</artifactId>
+			<artifactId>i4j-driver-serialextension</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

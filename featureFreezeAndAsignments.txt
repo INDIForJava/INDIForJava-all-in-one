@@ -15,7 +15,7 @@ For the next release:
 - check dokumentation of every method/class.
 - Extract Client examples to their own Maven Module -> Zerjillo will try to do it. Good way to learn a little about Maven :-P
 - Check old tutorials and adapt them to the new features. Create new examples if necessary.
-
+- Update existing drivers to new changes. For example, check the Serial implementation by Ritchie and see if wold improve the drivers for seletek, sqm and qhyfilterwheel.
 
 
 For future releases:

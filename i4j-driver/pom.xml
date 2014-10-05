@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jbase</artifactId>
+			<artifactId>i4j-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

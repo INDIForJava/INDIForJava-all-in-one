@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jclient</artifactId>
+			<artifactId>i4j-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

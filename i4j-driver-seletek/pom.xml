@@ -14,7 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4jfocuserdriver</artifactId>
+			<artifactId>i4j-driver-focuser</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
