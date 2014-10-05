@@ -34,9 +34,9 @@ import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIException;
 
-public class INDICCDDriverExtention extends INDIDriverExtension<INDICCDDriver> {
+public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
-    private static final Logger LOG = Logger.getLogger(INDICCDDriverExtention.class.getName());
+    private static final Logger LOG = Logger.getLogger(INDICCDDriverExtension.class.getName());
 
     private final SimpleDateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
@@ -240,7 +240,7 @@ public class INDICCDDriverExtention extends INDIDriverExtension<INDICCDDriver> {
 
     private INDICCDImage ccdImage;
 
-    private String imageExtention = "fits";
+    private String imageExtension = "fits";
 
     private boolean rapidGuideEnabled = false;
 
@@ -256,7 +256,7 @@ public class INDICCDDriverExtention extends INDIDriverExtension<INDICCDDriver> {
 
     private double dec = Double.NaN;
 
-    public INDICCDDriverExtention(INDICCDDriver indiccd) {
+    public INDICCDDriverExtension(INDICCDDriver indiccd) {
         super(indiccd);
         imageExposure.setEventHandler(new NumberEvent() {
 
@@ -776,7 +776,7 @@ public class INDICCDDriverExtention extends INDIDriverExtension<INDICCDDriver> {
      * @return Return image extension (fits, jpeg, raw..etc)
      */
     public String getImageExtension() {
-        return imageExtention;
+        return imageExtension;
     }
 
     /**
@@ -853,7 +853,7 @@ public class INDICCDDriverExtention extends INDIDriverExtension<INDICCDDriver> {
      *            extension (fits, jpeg, raw..etc)
      */
     public void setImageExtension(String ext) {
-        imageExtention = ext;
+        imageExtension = ext;
     }
 
     /**

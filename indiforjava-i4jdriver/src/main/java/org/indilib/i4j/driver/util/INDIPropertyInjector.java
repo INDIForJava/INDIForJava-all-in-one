@@ -39,7 +39,7 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
-import org.indilib.i4j.driver.annotation.InjectExtention;
+import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.annotation.Rename;
 
@@ -184,7 +184,7 @@ public class INDIPropertyInjector {
         if (clazz != null) {
             initializeAnnotatedClass(instance, clazz.getSuperclass());
             for (Field field : clazz.getDeclaredFields()) {
-                initializeDriverExtention(instance, field);
+                initializeDriverExtension(instance, field);
                 initializeAnnotatedProperty(instance, field);
                 initializeAnnotatedElement(instance, field);
             }
@@ -309,9 +309,9 @@ public class INDIPropertyInjector {
      * @param field
      *            the field that specifies the extension.
      */
-    private void initializeDriverExtention(Object instance, Field field) {
+    private void initializeDriverExtension(Object instance, Field field) {
         if (INDIDriverExtension.class.isAssignableFrom(field.getType())) {
-            InjectExtention extentionAnnot = field.getAnnotation(InjectExtention.class);
+            InjectExtension extentionAnnot = field.getAnnotation(InjectExtension.class);
             String oldValue = currentGroup;
             String oldPrefix = currentGroup;
             Rename[] oldRenamings = currentRenamings;
@@ -327,8 +327,8 @@ public class INDIPropertyInjector {
                         currentRenamings = extentionAnnot.rename();
                     }
                 }
-                INDIDriverExtension<?> driverExtention = instanciateDriverExtention(instance, field);
-                setFieldValue(instance, field, driverExtention);
+                INDIDriverExtension<?> driverExtension = instanciateDriverExtension(instance, field);
+                setFieldValue(instance, field, driverExtension);
             } finally {
                 currentGroup = oldValue;
                 currentPrefix = oldPrefix;
@@ -347,14 +347,14 @@ public class INDIPropertyInjector {
      * @return the newly instantiated extension or the existing one if it was
      *         already set
      */
-    private INDIDriverExtension<?> instanciateDriverExtention(Object instance, Field field) {
-        INDIDriverExtension<?> driverExtention = null;
+    private INDIDriverExtension<?> instanciateDriverExtension(Object instance, Field field) {
+        INDIDriverExtension<?> driverExtension = null;
         try {
-            driverExtention = (INDIDriverExtension<?>) getFieldValue(instance, field);
-            if (driverExtention == null) {
+            driverExtension = (INDIDriverExtension<?>) getFieldValue(instance, field);
+            if (driverExtension == null) {
                 for (Constructor<?> constructor : field.getType().getConstructors()) {
                     if (constructor.getParameterTypes().length == 1 && INDIDriver.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
-                        driverExtention = (INDIDriverExtension<?>) constructor.newInstance(driver);
+                        driverExtension = (INDIDriverExtension<?>) constructor.newInstance(driver);
                         break;
                     }
                 }
@@ -362,7 +362,7 @@ public class INDIPropertyInjector {
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Could not instanciate Driver extention", e);
         }
-        return driverExtention;
+        return driverExtension;
     }
 
     /**

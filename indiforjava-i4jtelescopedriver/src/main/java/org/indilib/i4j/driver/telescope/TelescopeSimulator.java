@@ -13,9 +13,9 @@ import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
-import org.indilib.i4j.driver.annotation.InjectExtention;
+import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
-import org.indilib.i4j.driver.ccd.INDIGuiderExtention;
+import org.indilib.i4j.driver.ccd.INDIGuiderExtension;
 import org.indilib.i4j.driver.ccd.INDIGuiderInterface;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
@@ -140,8 +140,8 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
     @InjectElement(name = "GUIDE_RATE_NS", label = "N/S Rate", numberValue = 0.3d, maximum = 1d, step = 0.1d, numberFormat = "%g")
     private INDINumberElement guideRateNS;
 
-    @InjectExtention(group = Constants.MOTION_TAB)
-    private INDIGuiderExtention guider;
+    @InjectExtension(group = Constants.MOTION_TAB)
+    private INDIGuiderExtension guider;
 
     private double[] guiderNSTarget = new double[2];
 
@@ -317,8 +317,8 @@ public class TelescopeSimulator extends INDITelescope implements INDIGuiderInter
             } catch (INDIException e) {
             }
         }
-        if (parkExtention.isBusy()) {
-            parkExtention.setIdle();
+        if (parkExtension.isBusy()) {
+            parkExtension.setIdle();
         }
         if (eqn.getState() == PropertyStates.BUSY) {
             eqn.setState(PropertyStates.IDLE);

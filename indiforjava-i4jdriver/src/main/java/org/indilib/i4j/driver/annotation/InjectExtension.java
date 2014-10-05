@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Target({
     ElementType.FIELD
 })
-public @interface InjectExtention {
+public @interface InjectExtension {
 
     /**
      * @return a prefix that will be inserted before all fields in this

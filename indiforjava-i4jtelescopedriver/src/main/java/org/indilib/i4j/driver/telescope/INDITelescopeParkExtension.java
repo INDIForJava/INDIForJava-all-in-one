@@ -12,7 +12,7 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 
-public class INDITelescopeParkExtention extends INDIDriverExtension<INDITelescope> {
+public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescope> {
 
     @InjectProperty(name = "TELESCOPE_PARK", label = "Park", group = INDITelescope.MAIN_CONTROL_TAB)
     private INDISwitchProperty park;
@@ -22,7 +22,7 @@ public class INDITelescopeParkExtention extends INDIDriverExtension<INDITelescop
 
     private INDITelescopeParkInterface parkInterface;
 
-    public INDITelescopeParkExtention(INDITelescope telecopeDriver) {
+    public INDITelescopeParkExtension(INDITelescope telecopeDriver) {
         super(telecopeDriver);
         if (!isActive()) {
             return;

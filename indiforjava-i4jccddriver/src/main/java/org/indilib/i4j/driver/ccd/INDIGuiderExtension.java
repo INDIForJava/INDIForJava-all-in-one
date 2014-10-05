@@ -13,7 +13,7 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 
-public class INDIGuiderExtention extends INDIDriverExtension<INDIDriver> {
+public class INDIGuiderExtension extends INDIDriverExtension<INDIDriver> {
 
     @InjectProperty(name = "TELESCOPE_TIMED_GUIDE_NS", label = "Guide North/South")
     private INDINumberProperty guideNS;
@@ -44,7 +44,7 @@ public class INDIGuiderExtention extends INDIDriverExtension<INDIDriver> {
      * @param groupName
      *            Group or tab name to be used to define guider properties.
      */
-    public INDIGuiderExtention(INDIDriver parentDriver) {
+    public INDIGuiderExtension(INDIDriver parentDriver) {
         super(parentDriver);
         guideNS.setEventHandler(new NumberEvent() {
 

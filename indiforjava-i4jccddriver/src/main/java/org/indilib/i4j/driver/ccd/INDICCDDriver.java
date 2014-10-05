@@ -22,7 +22,7 @@ import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
-import org.indilib.i4j.driver.annotation.InjectExtention;
+import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.annotation.Rename;
 import org.indilib.i4j.driver.event.NumberEvent;
@@ -87,20 +87,20 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     @InjectElement(name = "ACTIVE_FOCUSER", label = "Focuser", textValue = "Focuser Simulator")
     private INDITextElement activeDeviceFocuser;
 
-    @InjectExtention(prefix = "CCD_", rename = {
+    @InjectExtension(prefix = "CCD_", rename = {
         @Rename(name = "CCD", to = "CCD0")
     })
-    protected INDICCDDriverExtention primaryCCD;
+    protected INDICCDDriverExtension primaryCCD;
 
-    @InjectExtention(prefix = "GUIDER_", rename = {
+    @InjectExtension(prefix = "GUIDER_", rename = {
         @Rename(name = "CCD", to = "CCD1")
     })
-    protected INDICCDDriverExtention guiderCCD;
+    protected INDICCDDriverExtension guiderCCD;
 
     private final Capability capability = defineCapabilities();
 
-    @InjectExtention(group = GUIDE_CONTROL_TAB)
-    private INDIGuiderExtention guider;
+    @InjectExtension(group = GUIDE_CONTROL_TAB)
+    private INDIGuiderExtension guider;
 
     public INDICCDDriver(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
@@ -224,7 +224,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * @param targetChip
      *            chip that contains upload image data
      */
-    protected boolean exposureComplete(INDICCDDriverExtention targetChip) {
+    protected boolean exposureComplete(INDICCDDriverExtension targetChip) {
         if (targetChip == primaryCCD) {
             return primaryCCD.exposureComplete();
         } else {

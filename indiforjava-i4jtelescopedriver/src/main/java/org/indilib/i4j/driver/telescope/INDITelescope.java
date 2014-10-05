@@ -42,12 +42,12 @@ import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
-import org.indilib.i4j.driver.annotation.InjectExtention;
+import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
-import org.indilib.i4j.driver.serial.INDISerialPortExtention;
+import org.indilib.i4j.driver.serial.INDISerialPortExtension;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
@@ -169,7 +169,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectElement(name = "CONFIG_DEFAULT", label = "Default")
     protected INDISwitchElement configDefault;
 
-    protected INDITelescopeParkExtention parkExtention;
+    protected INDITelescopeParkExtension parkExtension;
 
     @InjectProperty(name = "TELESCOPE_ABORT_MOTION", label = "Abort Motion", group = INDITelescope.MAIN_CONTROL_TAB)
     protected INDISwitchProperty abort;
@@ -177,8 +177,8 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectElement(name = "ABORT", label = "Abort")
     protected INDISwitchElement abordElement;
 
-    @InjectExtention(group= OPTIONS_TAB)
-    protected INDISerialPortExtention serialPortExtention;
+    @InjectExtension(group= OPTIONS_TAB)
+    protected INDISerialPortExtension serialPortExtension;
 
     @InjectProperty(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
     protected INDISwitchProperty movementNSS;
@@ -213,7 +213,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectElement(name = "GUIDER_FOCAL_LENGTH", label = "Guider Focal Length (mm)", numberValue = 100d, minimum = 100d, maximum = 10000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersGuiderFocalLength;
 
-    protected INDITelescopeSyncExtention syncExtention;
+    protected INDITelescopeSyncExtension syncExtension;
 
     /**
      * This is a variable filled in by the ReadStatus telescope low level code,
@@ -301,7 +301,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         resetSwitch(this.abort);
         if (abort()) {
             this.abort.setState(OK);
-            parkExtention.setNotBussy();
+            parkExtension.setNotBussy();
             if (this.eqn.getState() == PropertyStates.BUSY) {
                 this.eqn.setState(IDLE);
             }
@@ -336,12 +336,12 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             // perform the goto
             // Ok, lets see if we should be doing a goto
             // or a sync
-            if (syncExtention.doSync(ra, dec)) {
+            if (syncExtension.doSync(ra, dec)) {
                 return;
             }
 
             // Ensure we are not showing Parked status
-            parkExtention.setIdle();
+            parkExtension.setIdle();
             doGoto(ra, dec);
         } else {
             this.eqn.setState(PropertyStates.ALERT);
@@ -541,9 +541,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         addProperty(this.location);
         addProperty(this.coord);
         addProperty(this.config);
-        parkExtention.connect();
+        parkExtension.connect();
         addProperty(this.abort);
-        serialPortExtention.connect();
+        serialPortExtension.connect();
 
         addProperty(this.movementNSS);
         addProperty(this.movementWES);
@@ -559,9 +559,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         removeProperty(this.location);
         removeProperty(this.coord);
         removeProperty(this.config);
-        parkExtention.disconnect();
+        parkExtension.disconnect();
         removeProperty(this.abort);
-        serialPortExtention.disconnect();
+        serialPortExtension.disconnect();
         newAbortValue();
 
         removeProperty(this.movementNSS);

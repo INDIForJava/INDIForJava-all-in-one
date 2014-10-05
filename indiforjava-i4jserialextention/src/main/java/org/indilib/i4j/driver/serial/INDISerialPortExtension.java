@@ -17,9 +17,9 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.TextEvent;
 
-public class INDISerialPortExtention extends INDIDriverExtension<INDIDriver> {
+public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
-    private static Logger LOG = Logger.getLogger(INDISerialPortExtention.class.getName());
+    private static Logger LOG = Logger.getLogger(INDISerialPortExtension.class.getName());
 
     protected static final String OPTIONS_TAB = "Options";
 
@@ -43,7 +43,7 @@ public class INDISerialPortExtention extends INDIDriverExtension<INDIDriver> {
 
     private Thread shutdownHook;
 
-    public INDISerialPortExtention(INDIDriver driver) {
+    public INDISerialPortExtension(INDIDriver driver) {
         super(driver);
         if (!isActive()) {
             return;
@@ -141,22 +141,22 @@ public class INDISerialPortExtention extends INDIDriverExtension<INDIDriver> {
         }
     }
 
-    public INDISerialPortExtention setBaudrate(int baudrate) {
+    public INDISerialPortExtension setBaudrate(int baudrate) {
         this.baudrate = baudrate;
         return this;
     }
 
-    public INDISerialPortExtention setDatabits(int databits) {
+    public INDISerialPortExtension setDatabits(int databits) {
         this.databits = databits;
         return this;
     }
 
-    public INDISerialPortExtention setParity(int parity) {
+    public INDISerialPortExtension setParity(int parity) {
         this.parity = parity;
         return this;
     }
 
-    public INDISerialPortExtention setStopbits(int stopbits) {
+    public INDISerialPortExtension setStopbits(int stopbits) {
         this.stopbits = stopbits;
         return this;
     }
