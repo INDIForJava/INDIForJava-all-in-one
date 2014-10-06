@@ -1,4 +1,3 @@
-
 package org.indilib.i4j;
 
 /*
@@ -27,31 +26,31 @@ import java.io.File;
 
 /**
  * A class to help dealing with Files and Directories.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.39, October 4, 2014
  */
 public class FileUtils {
-  
-  /**
-   * Gets the base directory while auxiliary files for the I4J library should
-   * be stored. This directory is ~/.i4j . In case of that directory not 
-   * existing, the directory is created. Every axiliary file produced by the 
-   * library should be written in this directory.
-   * 
-   * @return The base directory for I4J auxiliary files.
-   */
-  public static File getI4JBaseDirectory() {
-    String userDirName = System.getProperty("user.home");
-    
-    File userDir = new File(userDirName);
-    
-    File i4jDir = new File(userDir, ".i4j");
-    
-    if (!i4jDir.exists()) {
-      i4jDir.mkdir();
+
+    /**
+     * Gets the base directory while auxiliary files for the I4J library should
+     * be stored. This directory is ~/.i4j . In case of that directory not
+     * existing, the directory is created. Every axiliary file produced by the
+     * library should be written in this directory.
+     * 
+     * @return The base directory for I4J auxiliary files.
+     */
+    public static File getI4JBaseDirectory() {
+        String userDirName = System.getProperty("user.home");
+
+        File userDir = new File(userDirName);
+
+        File i4jDir = new File(userDir, ".i4j");
+
+        if (!i4jDir.exists()) {
+            i4jDir.mkdir();
+        }
+
+        return i4jDir;
     }
-    
-    return i4jDir;
-  }
 }

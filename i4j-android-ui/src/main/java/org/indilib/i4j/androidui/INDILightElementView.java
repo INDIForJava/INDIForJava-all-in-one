@@ -1,26 +1,16 @@
-
 package org.indilib.i4j.androidui;
 
 /*
- * #%L
- * INDI for Java Android App
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Android App %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import android.content.Context;
@@ -40,83 +30,85 @@ import org.indilib.i4j.client.INDILightElement;
  */
 public class INDILightElementView extends INDIElementView {
 
-  private INDILightElement le;
-  private TextView name;
-  private ImageView currentValue;
+    private INDILightElement le;
 
-  public INDILightElementView(INDILightElement le) throws INDIException {
-    super(PropertyPermissions.RO);
+    private TextView name;
 
-    Context context = I4JAndroidConfig.getContext();
+    private ImageView currentValue;
 
-    this.le = le;
+    public INDILightElementView(INDILightElement le) throws INDIException {
+        super(PropertyPermissions.RO);
 
-    name = new TextView(context);
-    name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-    addView(name);
+        Context context = I4JAndroidConfig.getContext();
 
-    currentValue = new ImageView(context);
-    currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-    addView(currentValue);
+        this.le = le;
 
-    updateElementData();
-  }
+        name = new TextView(context);
+        name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addView(name);
 
-  private void updateElementData() {
-    name.setText(le.getLabel() + ":");
+        currentValue = new ImageView(context);
+        currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addView(currentValue);
 
-    LightStates s = (LightStates) le.getValue();
-
-    if (s == LightStates.ALERT) {
-      currentValue.setImageResource(R.drawable.light_alert_big);
-    } else if (s == LightStates.BUSY) {
-      currentValue.setImageResource(R.drawable.light_busy_big);
-    } else if (s == LightStates.OK) {
-      currentValue.setImageResource(R.drawable.light_ok_big);
-    } else if (s == LightStates.IDLE) {
-      currentValue.setImageResource(R.drawable.light_idle_big);
+        updateElementData();
     }
-  }
 
-  @Override
-  protected Object getDesiredValue() {
-    return null; // There is no desired value for a light
-  }
+    private void updateElementData() {
+        name.setText(le.getLabel() + ":");
 
-  @Override
-  protected INDILightElement getElement() {
-    return le;
-  }
+        LightStates s = (LightStates) le.getValue();
 
-  @Override
-  protected void setError(boolean erroneous, String errorMessage) {
-    // No thing to do, a light cannot be erroneous
-  }
-
-  @Override
-  protected boolean isDesiredValueErroneous() {
-    return false; // Cannot be erroneous
-  }
-
-  @Override
-  protected void cleanDesiredValue() {
-    // There is no desired value for a light
-  }
-
-  @Override
-  public void elementChanged(INDIElement element) {
-    if (element == le) {
-      try {
-        I4JAndroidConfig.postHandler(new Runnable() {
-
-          @Override
-          public void run() {
-            updateElementData();
-          }
-        });
-      } catch (INDIException e) {
-        e.printStackTrace();
-      }
+        if (s == LightStates.ALERT) {
+            currentValue.setImageResource(R.drawable.light_alert_big);
+        } else if (s == LightStates.BUSY) {
+            currentValue.setImageResource(R.drawable.light_busy_big);
+        } else if (s == LightStates.OK) {
+            currentValue.setImageResource(R.drawable.light_ok_big);
+        } else if (s == LightStates.IDLE) {
+            currentValue.setImageResource(R.drawable.light_idle_big);
+        }
     }
-  }
+
+    @Override
+    protected Object getDesiredValue() {
+        return null; // There is no desired value for a light
+    }
+
+    @Override
+    protected INDILightElement getElement() {
+        return le;
+    }
+
+    @Override
+    protected void setError(boolean erroneous, String errorMessage) {
+        // No thing to do, a light cannot be erroneous
+    }
+
+    @Override
+    protected boolean isDesiredValueErroneous() {
+        return false; // Cannot be erroneous
+    }
+
+    @Override
+    protected void cleanDesiredValue() {
+        // There is no desired value for a light
+    }
+
+    @Override
+    public void elementChanged(INDIElement element) {
+        if (element == le) {
+            try {
+                I4JAndroidConfig.postHandler(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        updateElementData();
+                    }
+                });
+            } catch (INDIException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

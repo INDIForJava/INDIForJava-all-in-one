@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.client;
 
 /*
@@ -25,14 +24,17 @@ package org.indilib.i4j.client;
 
 /**
  * A interface to be notified about changes in a <code>INDIElement</code>
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public interface INDIElementListener {
-  /**
-   * The method that will be called when a <code>INDIElement</code> changes.
-   * @param element the element that has changed.
-   */
-  public abstract void elementChanged(INDIElement element);
+
+    /**
+     * The method that will be called when a <code>INDIElement</code> changes.
+     * 
+     * @param element
+     *            the element that has changed.
+     */
+    public abstract void elementChanged(INDIElement element);
 }

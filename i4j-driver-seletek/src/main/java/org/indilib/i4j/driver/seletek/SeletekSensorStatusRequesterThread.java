@@ -44,70 +44,74 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A thread that asks for the readings of the sensors of the Seletek.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.35, November 11, 2013
  */
 public class SeletekSensorStatusRequesterThread extends Thread {
 
     private static Logger LOG = LoggerFactory.getLogger(SeletekSensorStatusRequesterThread.class);
-  /**
-   * The Seletek Driver.
-   */
-  private I4JSeletekDriver driver;
-  /**
-   * To finish the thread.
-   */
-  private boolean stopRequesting;
-  /**
-   * Number of temperature readings to do before obtaining a final one.
-   */
-  public static final int TEMPERATURE_READINGS = 10;
 
-  /**
-   * Constructs an instance of a
-   * <code>SeletekSensorStatusRequesterThread</code>.
-   *
-   * @param driver The Seletek Driver
-   */
-  public SeletekSensorStatusRequesterThread(I4JSeletekDriver driver) {
-    this.driver = driver;
+    /**
+     * The Seletek Driver.
+     */
+    private I4JSeletekDriver driver;
 
-    stopRequesting = false;
-  }
+    /**
+     * To finish the thread.
+     */
+    private boolean stopRequesting;
 
-  /**
-   * Tells the thread to stop requesting and finish.
-   */
-  public void stopRequesting() {
-    stopRequesting = true;
-  }
+    /**
+     * Number of temperature readings to do before obtaining a final one.
+     */
+    public static final int TEMPERATURE_READINGS = 10;
 
-  @Override
-  public void run() {
-    while (!stopRequesting) {
-      for (int i = 0 ; i < TEMPERATURE_READINGS ; i++) {
-        if (!stopRequesting) {
-          driver.askForInternalTemperature();
-          Utils.sleep(100);
-        }
+    /**
+     * Constructs an instance of a
+     * <code>SeletekSensorStatusRequesterThread</code>.
+     * 
+     * @param driver
+     *            The Seletek Driver
+     */
+    public SeletekSensorStatusRequesterThread(I4JSeletekDriver driver) {
+        this.driver = driver;
 
-        if (!stopRequesting) {
-          driver.askForExternalTemperature();
-          Utils.sleep(100);
-        }
-      }
-
-      if (!stopRequesting) {
-        driver.askForPowerOk();
-        Utils.sleep(100);
-      }
-
-      if (!stopRequesting) {
-        Utils.sleep(60000);
-      }
+        stopRequesting = false;
     }
 
-    LOG.info("Seletek Sensor Status Reader Thread Ending");
-  }
+    /**
+     * Tells the thread to stop requesting and finish.
+     */
+    public void stopRequesting() {
+        stopRequesting = true;
+    }
+
+    @Override
+    public void run() {
+        while (!stopRequesting) {
+            for (int i = 0; i < TEMPERATURE_READINGS; i++) {
+                if (!stopRequesting) {
+                    driver.askForInternalTemperature();
+                    Utils.sleep(100);
+                }
+
+                if (!stopRequesting) {
+                    driver.askForExternalTemperature();
+                    Utils.sleep(100);
+                }
+            }
+
+            if (!stopRequesting) {
+                driver.askForPowerOk();
+                Utils.sleep(100);
+            }
+
+            if (!stopRequesting) {
+                Utils.sleep(60000);
+            }
+        }
+
+        LOG.info("Seletek Sensor Status Reader Thread Ending");
+    }
 }

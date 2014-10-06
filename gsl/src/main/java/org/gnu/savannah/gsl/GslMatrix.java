@@ -25,329 +25,330 @@ package org.gnu.savannah.gsl;
 import org.gnu.savannah.gsl.util.DoubleArray;
 
 public class GslMatrix {
-	public GslMatrix(int n1, int n2) {
 
-		if (n1 == 0) {
-			throw new IllegalStateException(
-					"matrix dimension n1 must be positive integer");
-		} else if (n2 == 0) {
-			throw new IllegalStateException(
-					"matrix dimension n2 must be positive integer");
-		}
+    public GslMatrix(int n1, int n2) {
 
-		/* FIXME: n1*n2 could overflow for large dimensions */
+        if (n1 == 0) {
+            throw new IllegalStateException("matrix dimension n1 must be positive integer");
+        } else if (n2 == 0) {
+            throw new IllegalStateException("matrix dimension n2 must be positive integer");
+        }
 
-		block = new GslBlock(n1 * n2);
+        /* FIXME: n1*n2 could overflow for large dimensions */
 
-		data = block.data;
-		size1 = n1;
-		size2 = n2;
-		tda = n2;
-		owner = 1;
+        block = new GslBlock(n1 * n2);
 
-	}
+        data = block.data;
+        size1 = n1;
+        size2 = n2;
+        tda = n2;
+        owner = 1;
 
-	public int size1;
-	public int size2;
-	public int tda;
-	public DoubleArray data;
-	public GslBlock block;
-	public int owner;
+    }
 
-	public double get(int i, int j) {
-		return data.get(i * tda + j);
-	}
+    public int size1;
 
-	public void set(int i, int j, double x) {
-		data.set(i * tda + j, x);
-	}
+    public int size2;
 
-	public void copy(GslMatrix matrix) {
-		DoubleArray.arraycopy(matrix.data, 0, data, 0, size1 * size2);
-	}
+    public int tda;
 
-	public GslErrno swapRows(int i, int j) {
+    public DoubleArray data;
 
-		if (i >= size1) {
-			throw new IllegalStateException("first row index is out of range");
-		}
+    public GslBlock block;
 
-		if (j >= size1) {
-			throw new IllegalStateException("second row index is out of range");
-		}
+    public int owner;
 
-		if (i != j) {
-			int row1Offset = 1 * i * tda;
-			int row2Offset = 1 * j * tda;
+    public double get(int i, int j) {
+        return data.get(i * tda + j);
+    }
 
-			int k;
+    public void set(int i, int j, double x) {
+        data.set(i * tda + j, x);
+    }
 
-			for (k = 0; k < 1 * size2; k++) {
-				double tmp = data.get(row1Offset + k);
-				data.set(row1Offset + k, data.get(row2Offset + k));
-				data.set(row2Offset + k, tmp);
-			}
-		}
+    public void copy(GslMatrix matrix) {
+        DoubleArray.arraycopy(matrix.data, 0, data, 0, size1 * size2);
+    }
 
-		return GslErrno.GSL_SUCCESS;
-	}
+    public GslErrno swapRows(int i, int j) {
 
-	public void setIdentity() {
-		int p = size1;
-		int q = size2;
+        if (i >= size1) {
+            throw new IllegalStateException("first row index is out of range");
+        }
 
-		for (int i = 0; i < p; i++) {
-			for (int j = 0; j < q; j++) {
-				data.set((i * tda + j), ((i == j) ? 1d : 0d));
-			}
-		}
-	}
+        if (j >= size1) {
+            throw new IllegalStateException("second row index is out of range");
+        }
 
-	public GslVectorView column(int j) {
-		GslVectorView view = new GslVectorView();
+        if (i != j) {
+            int row1Offset = 1 * i * tda;
+            int row2Offset = 1 * j * tda;
 
-		if (j >= size2) {
-			throw new IllegalStateException("column index is out of range");
-		}
+            int k;
 
-		{
-			GslVector v = new GslVector(j);
+            for (k = 0; k < 1 * size2; k++) {
+                double tmp = data.get(row1Offset + k);
+                data.set(row1Offset + k, data.get(row2Offset + k));
+                data.set(row2Offset + k, tmp);
+            }
+        }
 
-			// should referense same data
-			v.data = new DoubleArray(this.data, j * 1);
-			v.size = this.size1;
-			v.stride = this.tda;
-			v.block = this.block;
-			v.owner = 0;
+        return GslErrno.GSL_SUCCESS;
+    }
 
-			view.vector = v;
-			return view;
-		}
-	}
+    public void setIdentity() {
+        int p = size1;
+        int q = size2;
 
-	public void setZero() {
-		int i, j;
-		int p = this.size1;
-		int q = this.size2;
-		int tda = this.tda;
-		for (i = 0; i < p; i++) {
-			for (j = 0; j < q; j++) {
-				data.set(1 * (i * tda + j), 0d);
-			}
-		}
-	}
+        for (int i = 0; i < p; i++) {
+            for (int j = 0; j < q; j++) {
+                data.set((i * tda + j), ((i == j) ? 1d : 0d));
+            }
+        }
+    }
 
-	public GslErrno transpose() {
-		int size1 = this.size1;
-		int size2 = this.size2;
-		int i, j, k;
+    public GslVectorView column(int j) {
+        GslVectorView view = new GslVectorView();
 
-		if (size1 != size2) {
-			throw new IllegalStateException(
-					"matrix must be square to take transpose");
-		}
+        if (j >= size2) {
+            throw new IllegalStateException("column index is out of range");
+        }
 
-		for (i = 0; i < size1; i++) {
-			for (j = i + 1; j < size2; j++) {
-				for (k = 0; k < 1; k++) {
-					int e1 = (i * this.tda + j) * 1 + k;
-					int e2 = (j * this.tda + i) * 1 + k;
-					{
-						double tmp = this.data.get(e1);
-						this.data.set(e1, this.data.get(e2));
-						this.data.set(e2, tmp);
-					}
-				}
-			}
-		}
+        {
+            GslVector v = new GslVector(j);
 
-		return GslErrno.GSL_SUCCESS;
-	}
+            // should referense same data
+            v.data = new DoubleArray(this.data, j * 1);
+            v.size = this.size1;
+            v.stride = this.tda;
+            v.block = this.block;
+            v.owner = 0;
 
-	public GslErrno swapColumns(int i, int j) {
-		int size1 = this.size1;
-		int size2 = this.size2;
+            view.vector = v;
+            return view;
+        }
+    }
 
-		if (i >= size2) {
-			throw new IllegalStateException(
-					"first column index is out of range");
-		}
+    public void setZero() {
+        int i, j;
+        int p = this.size1;
+        int q = this.size2;
+        int tda = this.tda;
+        for (i = 0; i < p; i++) {
+            for (j = 0; j < q; j++) {
+                data.set(1 * (i * tda + j), 0d);
+            }
+        }
+    }
 
-		if (j >= size2) {
-			throw new IllegalStateException(
-					"second column index is out of range");
-		}
+    public GslErrno transpose() {
+        int size1 = this.size1;
+        int size2 = this.size2;
+        int i, j, k;
 
-		if (i != j) {
-			int col1Offset = 1 * i;
-			int col2Offset = 1 * j;
+        if (size1 != size2) {
+            throw new IllegalStateException("matrix must be square to take transpose");
+        }
 
-			int p;
+        for (i = 0; i < size1; i++) {
+            for (j = i + 1; j < size2; j++) {
+                for (k = 0; k < 1; k++) {
+                    int e1 = (i * this.tda + j) * 1 + k;
+                    int e2 = (j * this.tda + i) * 1 + k;
+                    {
+                        double tmp = this.data.get(e1);
+                        this.data.set(e1, this.data.get(e2));
+                        this.data.set(e2, tmp);
+                    }
+                }
+            }
+        }
 
-			for (p = 0; p < size1; p++) {
-				int k;
-				int n = p * 1 * this.tda;
+        return GslErrno.GSL_SUCCESS;
+    }
 
-				for (k = 0; k < 1; k++) {
-					double tmp = data.get(col1Offset + n + k);
-					data.set(col1Offset + n + k, data.get(col2Offset + n + k));
-					data.set(col2Offset + n + k, tmp);
-				}
-			}
-		}
+    public GslErrno swapColumns(int i, int j) {
+        int size1 = this.size1;
+        int size2 = this.size2;
 
-		return GslErrno.GSL_SUCCESS;
-	}
+        if (i >= size2) {
+            throw new IllegalStateException("first column index is out of range");
+        }
 
-	public GslMatrixView submatrix(int i, int j, int n1, int n2) {
-		GslMatrixView view = new GslMatrixView();
+        if (j >= size2) {
+            throw new IllegalStateException("second column index is out of range");
+        }
 
-		if (i >= this.size1) {
-			throw new IllegalStateException("row index is out of range");
-		} else if (j >= this.size2) {
-			throw new IllegalStateException("column index is out of range");
-		} else if (n1 == 0) {
-			throw new IllegalStateException("first dimension must be non-zero");
-		} else if (n2 == 0) {
-			throw new IllegalStateException("second dimension must be non-zero");
-		} else if (i + n1 > this.size1) {
-			throw new IllegalStateException("first dimension overflows matrix");
-		} else if (j + n2 > this.size2) {
-			throw new IllegalStateException("second dimension overflows matrix");
-		}
+        if (i != j) {
+            int col1Offset = 1 * i;
+            int col2Offset = 1 * j;
 
-		{
-			GslMatrix s = new GslMatrix(1, 1);
+            int p;
 
-			s.data = new DoubleArray(this.data, 1 * (i * this.tda + j));
-			s.size1 = n1;
-			s.size2 = n2;
-			s.tda = this.tda;
-			s.block = this.block;
-			s.owner = 0;
+            for (p = 0; p < size1; p++) {
+                int k;
+                int n = p * 1 * this.tda;
 
-			view.matrix = s;
-			return view;
-		}
-	}
+                for (k = 0; k < 1; k++) {
+                    double tmp = data.get(col1Offset + n + k);
+                    data.set(col1Offset + n + k, data.get(col2Offset + n + k));
+                    data.set(col2Offset + n + k, tmp);
+                }
+            }
+        }
 
-	public GslVectorView row(int i) {
-		GslVectorView view = new GslVectorView();
+        return GslErrno.GSL_SUCCESS;
+    }
 
-		if (i >= this.size1) {
-			throw new IllegalStateException("row index is out of range");
-		}
+    public GslMatrixView submatrix(int i, int j, int n1, int n2) {
+        GslMatrixView view = new GslMatrixView();
 
-		{
-			GslVector v = new GslVector(1);
+        if (i >= this.size1) {
+            throw new IllegalStateException("row index is out of range");
+        } else if (j >= this.size2) {
+            throw new IllegalStateException("column index is out of range");
+        } else if (n1 == 0) {
+            throw new IllegalStateException("first dimension must be non-zero");
+        } else if (n2 == 0) {
+            throw new IllegalStateException("second dimension must be non-zero");
+        } else if (i + n1 > this.size1) {
+            throw new IllegalStateException("first dimension overflows matrix");
+        } else if (j + n2 > this.size2) {
+            throw new IllegalStateException("second dimension overflows matrix");
+        }
 
-			v.data = new DoubleArray(this.data, i * 1 * this.tda);
-			v.size = this.size2;
-			v.stride = 1;
-			v.block = this.block;
-			v.owner = 0;
+        {
+            GslMatrix s = new GslMatrix(1, 1);
 
-			view.vector = v;
-			return view;
-		}
-	}
+            s.data = new DoubleArray(this.data, 1 * (i * this.tda + j));
+            s.size1 = n1;
+            s.size2 = n2;
+            s.tda = this.tda;
+            s.block = this.block;
+            s.owner = 0;
 
-	public boolean isNull() {
-		int size1 = this.size1;
-		int size2 = this.size2;
-		int tda = this.tda;
+            view.matrix = s;
+            return view;
+        }
+    }
 
-		int i, j, k;
+    public GslVectorView row(int i) {
+        GslVectorView view = new GslVectorView();
 
-		for (i = 0; i < size1; i++) {
-			for (j = 0; j < size2; j++) {
-				for (k = 0; k < 1; k++) {
-					if (this.data.get((i * tda + j) * 1 + k) != 0.0) {
-						return false;
-					}
-				}
-			}
-		}
+        if (i >= this.size1) {
+            throw new IllegalStateException("row index is out of range");
+        }
 
-		return true;
-	}
+        {
+            GslVector v = new GslVector(1);
 
-	public boolean isPos() {
-		int size1 = this.size1;
-		int size2 = this.size2;
-		int tda = this.tda;
+            v.data = new DoubleArray(this.data, i * 1 * this.tda);
+            v.size = this.size2;
+            v.stride = 1;
+            v.block = this.block;
+            v.owner = 0;
 
-		int i, j, k;
+            view.vector = v;
+            return view;
+        }
+    }
 
-		for (i = 0; i < size1; i++) {
-			for (j = 0; j < size2; j++) {
-				for (k = 0; k < 1; k++) {
-					if (this.data.get((i * tda + j) * 1 + k) <= 0.0) {
-						return false;
-					}
-				}
-			}
-		}
+    public boolean isNull() {
+        int size1 = this.size1;
+        int size2 = this.size2;
+        int tda = this.tda;
 
-		return true;
-	}
+        int i, j, k;
 
-	public boolean isNeg() {
-		int size1 = this.size1;
-		int size2 = this.size2;
-		int tda = this.tda;
+        for (i = 0; i < size1; i++) {
+            for (j = 0; j < size2; j++) {
+                for (k = 0; k < 1; k++) {
+                    if (this.data.get((i * tda + j) * 1 + k) != 0.0) {
+                        return false;
+                    }
+                }
+            }
+        }
 
-		int i, j, k;
+        return true;
+    }
 
-		for (i = 0; i < size1; i++) {
-			for (j = 0; j < size2; j++) {
-				for (k = 0; k < 1; k++) {
-					if (this.data.get((i * tda + j) * 1 + k) >= 0.0) {
-						return false;
-					}
-				}
-			}
-		}
+    public boolean isPos() {
+        int size1 = this.size1;
+        int size2 = this.size2;
+        int tda = this.tda;
 
-		return true;
-	}
+        int i, j, k;
 
-	public boolean isNonNeg() {
-		int size1 = this.size1;
-		int size2 = this.size2;
-		int tda = this.tda;
+        for (i = 0; i < size1; i++) {
+            for (j = 0; j < size2; j++) {
+                for (k = 0; k < 1; k++) {
+                    if (this.data.get((i * tda + j) * 1 + k) <= 0.0) {
+                        return false;
+                    }
+                }
+            }
+        }
 
-		int i, j, k;
+        return true;
+    }
 
-		for (i = 0; i < size1; i++) {
-			for (j = 0; j < size2; j++) {
-				for (k = 0; k < 1; k++) {
-					if (this.data.get((i * tda + j) * 1 + k) < 0.0) {
-						return false;
-					}
-				}
-			}
-		}
+    public boolean isNeg() {
+        int size1 = this.size1;
+        int size2 = this.size2;
+        int tda = this.tda;
 
-		return true;
-	}
+        int i, j, k;
 
-	@Override
-	public String toString() {
-		StringBuffer result = new StringBuffer("gsl_matrix(\n");
-		for (int i = 0; i < size1; i++) {
-			if (i != 0) {
-				result.append('\n');
-			}
-			for (int j = 0; j < size2; j++) {
-				if (j != 0) {
-					result.append(",\t");
-				}
-				double value = this.data.get((i * tda + j) * 1);
-				result.append(value);
-			}
-		}
-		result.append(")");
-		return result.toString();
-	}
+        for (i = 0; i < size1; i++) {
+            for (j = 0; j < size2; j++) {
+                for (k = 0; k < 1; k++) {
+                    if (this.data.get((i * tda + j) * 1 + k) >= 0.0) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isNonNeg() {
+        int size1 = this.size1;
+        int size2 = this.size2;
+        int tda = this.tda;
+
+        int i, j, k;
+
+        for (i = 0; i < size1; i++) {
+            for (j = 0; j < size2; j++) {
+                for (k = 0; k < 1; k++) {
+                    if (this.data.get((i * tda + j) * 1 + k) < 0.0) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer result = new StringBuffer("gsl_matrix(\n");
+        for (int i = 0; i < size1; i++) {
+            if (i != 0) {
+                result.append('\n');
+            }
+            for (int j = 0; j < size2; j++) {
+                if (j != 0) {
+                    result.append(",\t");
+                }
+                double value = this.data.get((i * tda + j) * 1);
+                result.append(value);
+            }
+        }
+        result.append(")");
+        return result.toString();
+    }
 }

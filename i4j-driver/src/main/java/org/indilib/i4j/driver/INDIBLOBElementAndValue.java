@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -28,7 +27,7 @@ import org.indilib.i4j.INDIBLOBValue;
 /**
  * A class representing a pair of a <code>INDIBLOBElement</code> and a
  * <code>INDIBLOBValue</code>.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */

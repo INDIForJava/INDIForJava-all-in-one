@@ -41,31 +41,32 @@ package org.indilib.i4j.driver.seletek;
 
 /**
  * Some utility functions.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.35, November 11, 2013
  */
 public class Utils {
 
-  /**
-   * Sleep for some time.
-   *
-   * @param milis The number of miliseconds to sleep
-   */
-  protected static void sleep(int milis) {
-    try {
-      Thread.sleep(milis);
-    } catch (InterruptedException e) {
+    /**
+     * Sleep for some time.
+     * 
+     * @param milis
+     *            The number of miliseconds to sleep
+     */
+    protected static void sleep(int milis) {
+        try {
+            Thread.sleep(milis);
+        } catch (InterruptedException e) {
+        }
     }
-  }
-  
-  protected static String getSeletekPortName(int seletekPort) {
-    if (seletekPort == 0) {
-      return "Main";
-    } else if (seletekPort == 1) {
-      return "Exp";
-    } 
-    
-    return "Third";
-  }
+
+    protected static String getSeletekPortName(int seletekPort) {
+        if (seletekPort == 0) {
+            return "Main";
+        } else if (seletekPort == 1) {
+            return "Exp";
+        }
+
+        return "Third";
+    }
 }

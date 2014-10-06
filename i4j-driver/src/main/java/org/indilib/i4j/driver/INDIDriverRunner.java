@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -32,54 +31,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class to initialize and launch a
- * <code>INDIDriver</code>. It just contain a
+ * A class to initialize and launch a <code>INDIDriver</code>. It just contain a
  * <code>main</code> method to initialize the appropriate Driver.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public class INDIDriverRunner {
+
     private static Logger LOG = LoggerFactory.getLogger(INDIDriverRunner.class);
-  /**
-   * Initializes a
-   * <code>INDIDriver</code>.
-   *
-   * @param args the command line arguments. The first argument must be the
-   * complete name of the class of the <code>INDIDriver</code>. That class must
-   * be in the class path in order to be loaded.
-   * @see INDIDriver
-   */
-  public static void main(String[] args) {
-    if (args.length != 1) {
-      LOG.error("A INDIDriver class name must be supplied");
-      System.exit(-1);
+
+    /**
+     * Initializes a <code>INDIDriver</code>.
+     * 
+     * @param args
+     *            the command line arguments. The first argument must be the
+     *            complete name of the class of the <code>INDIDriver</code>.
+     *            That class must be in the class path in order to be loaded.
+     * @see INDIDriver
+     */
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            LOG.error("A INDIDriver class name must be supplied");
+            System.exit(-1);
+        }
+
+        INDIDriver driver = null;
+
+        try {
+            Class theClass = Class.forName(args[0]);
+            Constructor c = theClass.getConstructor(InputStream.class, OutputStream.class);
+            driver = (INDIDriver) c.newInstance(System.in, System.out);
+        } catch (ClassNotFoundException ex) {
+            LOG.error(ex + " class must be in class path.", ex);
+            System.exit(-1);
+        } catch (InstantiationException ex) {
+            LOG.error(ex + " class must be concrete.", ex);
+            System.exit(-1);
+        } catch (IllegalAccessException ex) {
+            LOG.error(ex + " class must have a no-arg constructor.", ex);
+            System.exit(-1);
+        } catch (NoSuchMethodException ex) {
+            LOG.error(ex + " class must have a InputStream, OutputStream constructor.", ex);
+            System.exit(-1);
+        } catch (InvocationTargetException ex) {
+            LOG.error(ex + " invocation target exception.", ex);
+            System.exit(-1);
+        }
+
+        driver.startListening();
     }
-
-    INDIDriver driver = null;
-
-    try {
-      Class theClass = Class.forName(args[0]);
-      Constructor c = theClass.getConstructor(InputStream.class, OutputStream.class);
-      driver = (INDIDriver)c.newInstance(System.in, System.out);
-    } catch (ClassNotFoundException ex) {
-      LOG.error(ex + " class must be in class path.",ex);
-      System.exit(-1);
-    } catch (InstantiationException ex) {
-      LOG.error(ex + " class must be concrete.",ex);
-      System.exit(-1);
-    } catch (IllegalAccessException ex) {
-      LOG.error(ex + " class must have a no-arg constructor.",ex);
-      System.exit(-1);
-    } catch (NoSuchMethodException ex) {
-      LOG.error(ex + " class must have a InputStream, OutputStream constructor.",ex);
-      System.exit(-1);
-    } catch (InvocationTargetException ex) {
-      LOG.error(ex + " invocation target exception.",ex);
-      System.exit(-1);
-    }
-
-
-    driver.startListening();
-  }
 }

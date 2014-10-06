@@ -42,55 +42,58 @@ package org.indilib.i4j.driver.raspberrypi;
 /**
  * A Thread that asks the Raspberry Pi GPIO Driver to update the sensor
  * Properties periodically.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.36, November 23, 2013
  */
 public class RaspberryPiSensorReaderThread extends Thread {
 
-  /**
-   * To stop the Thread.
-   */
-  private boolean stopReading;
-  /**
-   * The Raspberry Pi GPIO Driver
-   */
-  private I4JRaspberryPiGPIODriver driver;
+    /**
+     * To stop the Thread.
+     */
+    private boolean stopReading;
 
-  /**
-   * Constructs an instance of the Thread.
-   *
-   * @param driver The Raspberry Pi GPIO Driver
-   */
-  protected RaspberryPiSensorReaderThread(I4JRaspberryPiGPIODriver driver) {
-    stopReading = false;
-    this.driver = driver;
-  }
+    /**
+     * The Raspberry Pi GPIO Driver
+     */
+    private I4JRaspberryPiGPIODriver driver;
 
-  /**
-   * Asks the thread to stop.
-   */
-  protected void stopReading() {
-    stopReading = true;
-  }
-
-  @Override
-  public void run() {
-    while (!stopReading) {
-      driver.setSensors();
-      sleep(10000);
+    /**
+     * Constructs an instance of the Thread.
+     * 
+     * @param driver
+     *            The Raspberry Pi GPIO Driver
+     */
+    protected RaspberryPiSensorReaderThread(I4JRaspberryPiGPIODriver driver) {
+        stopReading = false;
+        this.driver = driver;
     }
-  }
 
-  /**
-   * Sleeps for a certain amount of time.
-   *
-   * @param milis The number of milliseconds to sleep
-   */
-  private void sleep(int milis) {
-    try {
-      Thread.sleep(milis);
-    } catch (InterruptedException e) {
+    /**
+     * Asks the thread to stop.
+     */
+    protected void stopReading() {
+        stopReading = true;
     }
-  }
+
+    @Override
+    public void run() {
+        while (!stopReading) {
+            driver.setSensors();
+            sleep(10000);
+        }
+    }
+
+    /**
+     * Sleeps for a certain amount of time.
+     * 
+     * @param milis
+     *            The number of milliseconds to sleep
+     */
+    private void sleep(int milis) {
+        try {
+            Thread.sleep(milis);
+        } catch (InterruptedException e) {
+        }
+    }
 }

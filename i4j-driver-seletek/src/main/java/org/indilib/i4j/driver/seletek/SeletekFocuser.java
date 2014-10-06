@@ -63,271 +63,296 @@ import org.indilib.i4j.driver.focuser.INDIFocuserDriver;
 /**
  * A class that acts as a INDI for Java Focuser Driver for a focuser connected
  * to a Seletek.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.35, November 11, 2013
  */
 public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadableDriver, Runnable {
 
-  /**
-   * The Seletek port number to which the focuser is attached.
-   */
-  private int seletekPort;
-  /**
-   * The Seletek Driver.
-   */
-  private I4JSeletekDriver driver;
-  /**
-   * To finish the thread that reads the positions of the focuser.
-   */
-  private boolean stopPositionReaderThread;
-  /**
-   * Marks if the reader thread should ask for the position of the focser (only
-   * when it is moving).
-   */
-  private boolean updatePosition;
-  /**
-   * The Wire Mode Property
-   */
-  private INDISwitchOneOfManyProperty wireModeP;
-  /**
-   * The Model Property
-   */
-  private INDISwitchOneOfManyProperty modelP;
-  /**
-   * The Half Step Property
-   */
-  private INDISwitchOneOrNoneProperty halfStepP;
-  /**
-   * The Move Power Property
-   */
-  private INDINumberProperty powerSettingsP;
-  /**
-   * The Move Power Element
-   */
-  private INDINumberElement movePowerE;
-  /**
-   * The Move Power Element
-   */
-  private INDINumberElement stopPowerE;
+    /**
+     * The Seletek port number to which the focuser is attached.
+     */
+    private int seletekPort;
 
-  /**
-   * Constructs an instance of a
-   * <code>SeletekFocuser</code> with a particular
-   * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-   * <code>outputStream</code> to write the messages to the clients.
-   *
-   * @param inputStream The stream from which to read messages
-   * @param outputStream The stream to which to write the messages
-   * @param seletekPort 0 - Main port, 1 - Exp port
-   * @param driver The Seletek Driver
-   */
-  public SeletekFocuser(InputStream inputStream, OutputStream outputStream, int seletekPort, I4JSeletekDriver driver) {
-    super(inputStream, outputStream);
+    /**
+     * The Seletek Driver.
+     */
+    private I4JSeletekDriver driver;
 
-    this.seletekPort = seletekPort;
-    this.driver = driver;
+    /**
+     * To finish the thread that reads the positions of the focuser.
+     */
+    private boolean stopPositionReaderThread;
 
-    initializeStandardProperties();
-    showSpeedProperty();
-    speedHasBeenChanged(); // To set the possibly saved speed
+    /**
+     * Marks if the reader thread should ask for the position of the focser
+     * (only when it is moving).
+     */
+    private boolean updatePosition;
 
-    showStopFocusingProperty();
+    /**
+     * The Wire Mode Property
+     */
+    private INDISwitchOneOfManyProperty wireModeP;
 
-    driver.stopStepper(seletekPort);
+    /**
+     * The Model Property
+     */
+    private INDISwitchOneOfManyProperty modelP;
 
-    stopPositionReaderThread = false;
-    updatePosition = false;
+    /**
+     * The Half Step Property
+     */
+    private INDISwitchOneOrNoneProperty halfStepP;
 
-    wireModeP = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "wireMode", "Wire Mode", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"Lunático", "Lunático Inverted", "RF/Moonlite", "RF/Moonlite Inverted"});
-    addProperty(wireModeP);
-    int mode = wireModeP.getSelectedIndex();
-    driver.setStepperWireMode(seletekPort, mode);
+    /**
+     * The Move Power Property
+     */
+    private INDINumberProperty powerSettingsP;
 
-    modelP = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "model", "Model", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"Unipolar", "Bipolar", "DC", "Step and Dir"});
-    addProperty(modelP);
-    int model = modelP.getSelectedIndex();
-    driver.setStepperModel(seletekPort, model);
+    /**
+     * The Move Power Element
+     */
+    private INDINumberElement movePowerE;
 
-    halfStepP = INDISwitchOneOrNoneProperty.createSaveableSwitchOneOrNoneProperty(this, "halfStep", "Half Step", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW, "Half Step", SwitchStatus.OFF);
-    addProperty(halfStepP);
-    boolean half = (halfStepP.getStatus() == SwitchStatus.ON);
-    driver.setStepperHalfStep(seletekPort, half);
+    /**
+     * The Move Power Element
+     */
+    private INDINumberElement stopPowerE;
 
-    powerSettingsP = INDINumberProperty.createSaveableNumberProperty(this, "stepper_pow", "Power Settings", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW);
-    movePowerE = new INDINumberElement(powerSettingsP, "move_power", "Moving Power", 1023, 0, 1023, 1, "%1.0f");
-    stopPowerE = new INDINumberElement(powerSettingsP, "stop_power", "Stopped Power", 0, 0, 1023, 1, "%1.0f");
-    movePowerE = powerSettingsP.getElement("move_power");
-    stopPowerE = powerSettingsP.getElement("stop_power");
-    addProperty(powerSettingsP);
-    
-    driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());
-    driver.setStepperStopPower(seletekPort, stopPowerE.getValue().intValue());
+    /**
+     * Constructs an instance of a <code>SeletekFocuser</code> with a particular
+     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
+     * <code>outputStream</code> to write the messages to the clients.
+     * 
+     * @param inputStream
+     *            The stream from which to read messages
+     * @param outputStream
+     *            The stream to which to write the messages
+     * @param seletekPort
+     *            0 - Main port, 1 - Exp port
+     * @param driver
+     *            The Seletek Driver
+     */
+    public SeletekFocuser(InputStream inputStream, OutputStream outputStream, int seletekPort, I4JSeletekDriver driver) {
+        super(inputStream, outputStream);
 
-    Thread readerThread = new Thread(this);
-    readerThread.start();
-  }
+        this.seletekPort = seletekPort;
+        this.driver = driver;
 
-  @Override
-  public String getName() {
-    return "Seletek Focuser (" + Utils.getSeletekPortName(seletekPort) + ")";
-  }
+        initializeStandardProperties();
+        showSpeedProperty();
+        speedHasBeenChanged(); // To set the possibly saved speed
 
-  @Override
-  public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
-//    throw new UnsupportedOperationException("Not supported yet.");
-  }
+        showStopFocusingProperty();
 
-  @Override
-  public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-    super.processNewSwitchValue(property, timestamp, elementsAndValues);
+        driver.stopStepper(seletekPort);
 
-    if (property == wireModeP) {
-      int mode = wireModeP.getSelectedIndex(elementsAndValues);
-      driver.setStepperWireMode(seletekPort, mode);
-      wireModeP.setSelectedIndex(elementsAndValues);
-      wireModeP.setState(PropertyStates.OK);
+        stopPositionReaderThread = false;
+        updatePosition = false;
 
+        wireModeP =
+                INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "wireMode", "Wire Mode", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW,
+                        new String[]{
+                            "Lunático",
+                            "Lunático Inverted",
+                            "RF/Moonlite",
+                            "RF/Moonlite Inverted"
+                        });
+        addProperty(wireModeP);
+        int mode = wireModeP.getSelectedIndex();
+        driver.setStepperWireMode(seletekPort, mode);
 
-        updateProperty(wireModeP);
+        modelP =
+                INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "model", "Model", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW,
+                        new String[]{
+                            "Unipolar",
+                            "Bipolar",
+                            "DC",
+                            "Step and Dir"
+                        });
+        addProperty(modelP);
+        int model = modelP.getSelectedIndex();
+        driver.setStepperModel(seletekPort, model);
 
+        halfStepP =
+                INDISwitchOneOrNoneProperty.createSaveableSwitchOneOrNoneProperty(this, "halfStep", "Half Step", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW,
+                        "Half Step", SwitchStatus.OFF);
+        addProperty(halfStepP);
+        boolean half = (halfStepP.getStatus() == SwitchStatus.ON);
+        driver.setStepperHalfStep(seletekPort, half);
+
+        powerSettingsP = INDINumberProperty.createSaveableNumberProperty(this, "stepper_pow", "Power Settings", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW);
+        movePowerE = new INDINumberElement(powerSettingsP, "move_power", "Moving Power", 1023, 0, 1023, 1, "%1.0f");
+        stopPowerE = new INDINumberElement(powerSettingsP, "stop_power", "Stopped Power", 0, 0, 1023, 1, "%1.0f");
+        movePowerE = powerSettingsP.getElement("move_power");
+        stopPowerE = powerSettingsP.getElement("stop_power");
+        addProperty(powerSettingsP);
+
+        driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());
+        driver.setStepperStopPower(seletekPort, stopPowerE.getValue().intValue());
+
+        Thread readerThread = new Thread(this);
+        readerThread.start();
     }
 
-    if (property == modelP) {
-      int model = modelP.getSelectedIndex(elementsAndValues);
-      driver.setStepperModel(seletekPort, model);
-      modelP.setSelectedIndex(elementsAndValues);
-      modelP.setState(PropertyStates.OK);
-
-
-        updateProperty(modelP);
-
+    @Override
+    public String getName() {
+        return "Seletek Focuser (" + Utils.getSeletekPortName(seletekPort) + ")";
     }
 
-    if (property == halfStepP) {
-      boolean half = (halfStepP.getStatus(elementsAndValues) == SwitchStatus.ON);
-      driver.setStepperHalfStep(seletekPort, half);
-      halfStepP.setStatus(elementsAndValues);
-      halfStepP.setState(PropertyStates.OK);
-
-
-        updateProperty(halfStepP);
-
+    @Override
+    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
+        // throw new UnsupportedOperationException("Not supported yet.");
     }
-  }
 
-  @Override
-  public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-    super.processNewNumberValue(property, timestamp, elementsAndValues);
+    @Override
+    public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
+        super.processNewSwitchValue(property, timestamp, elementsAndValues);
 
-    if (property == powerSettingsP) {
-      powerSettingsP.setValues(elementsAndValues);
+        if (property == wireModeP) {
+            int mode = wireModeP.getSelectedIndex(elementsAndValues);
+            driver.setStepperWireMode(seletekPort, mode);
+            wireModeP.setSelectedIndex(elementsAndValues);
+            wireModeP.setState(PropertyStates.OK);
 
-      driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());
-      driver.setStepperStopPower(seletekPort, stopPowerE.getValue().intValue());
+            updateProperty(wireModeP);
 
-      powerSettingsP.setState(PropertyStates.OK);
+        }
 
+        if (property == modelP) {
+            int model = modelP.getSelectedIndex(elementsAndValues);
+            driver.setStepperModel(seletekPort, model);
+            modelP.setSelectedIndex(elementsAndValues);
+            modelP.setState(PropertyStates.OK);
 
-        updateProperty(powerSettingsP);
+            updateProperty(modelP);
 
+        }
+
+        if (property == halfStepP) {
+            boolean half = (halfStepP.getStatus(elementsAndValues) == SwitchStatus.ON);
+            driver.setStepperHalfStep(seletekPort, half);
+            halfStepP.setStatus(elementsAndValues);
+            halfStepP.setState(PropertyStates.OK);
+
+            updateProperty(halfStepP);
+
+        }
     }
-  }
 
-  @Override
-  public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
-//    throw new UnsupportedOperationException("Not supported yet.");
-  }
+    @Override
+    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
+        super.processNewNumberValue(property, timestamp, elementsAndValues);
 
-  @Override
-  public int getMaximumSpeed() {
-    return 10;
-  }
+        if (property == powerSettingsP) {
+            powerSettingsP.setValues(elementsAndValues);
 
-  @Override
-  public final void speedHasBeenChanged() {
-    driver.setStepperSpeed(seletekPort, getCurrentSpeed());
-  }
+            driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());
+            driver.setStepperStopPower(seletekPort, stopPowerE.getValue().intValue());
 
-  /**
-   * The Seletek signals that the speed has been set.
-   */
-  void setDesiredSpeed() {
-    super.desiredSpeedSet();
-  }
+            powerSettingsP.setState(PropertyStates.OK);
 
-  @Override
-  public final int getMaximumAbsPos() {
-    return 100000;
-  }
+            updateProperty(powerSettingsP);
 
-  @Override
-  public final int getMinimumAbsPos() {
-    return 0;
-  }
-
-  @Override
-  public final int getInitialAbsPos() {
-    return 50000;
-  }
-
-  @Override
-  public void absolutePositionHasBeenChanged() {
-    driver.stepperGotoAbs(seletekPort, getDesiredAbsPosition());
-    updatePosition = true;
-  }
-
-  @Override
-  public void stopHasBeenRequested() {
-    driver.stopStepper(seletekPort);
-  }
-
-  /**
-   * The Seletek informs that the focuser has stopped.
-   */
-  void stopFocuser() {
-    stopped();
-
-    finalPositionReached();
-    updatePosition = false;
-    driver.getStepperPos(seletekPort);
-  }
-
-  /**
-   * The Seletek informs about the focuser position
-   *
-   * @param position The position of the focuser
-   */
-  void showFocusPosition(int position) {
-    positionChanged(position);
-
-    if (position == getDesiredAbsPosition()) {
-      finalPositionReached();
-      updatePosition = false;
+        }
     }
-  }
 
-  @Override
-  public void isBeingDestroyed() {
-    stopPositionReaderThread = true;
+    @Override
+    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
+        // throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    Utils.sleep(200);
+    @Override
+    public int getMaximumSpeed() {
+        return 10;
+    }
 
-    super.isBeingDestroyed();
-  }
+    @Override
+    public final void speedHasBeenChanged() {
+        driver.setStepperSpeed(seletekPort, getCurrentSpeed());
+    }
 
-  /**
-   * The thread will ask for the position of the focuser every 200 miliseconds
-   * when it is moving.
-   */
-  @Override
-  public void run() {
-    while (!stopPositionReaderThread) {
-      if (updatePosition) {
+    /**
+     * The Seletek signals that the speed has been set.
+     */
+    void setDesiredSpeed() {
+        super.desiredSpeedSet();
+    }
+
+    @Override
+    public final int getMaximumAbsPos() {
+        return 100000;
+    }
+
+    @Override
+    public final int getMinimumAbsPos() {
+        return 0;
+    }
+
+    @Override
+    public final int getInitialAbsPos() {
+        return 50000;
+    }
+
+    @Override
+    public void absolutePositionHasBeenChanged() {
+        driver.stepperGotoAbs(seletekPort, getDesiredAbsPosition());
+        updatePosition = true;
+    }
+
+    @Override
+    public void stopHasBeenRequested() {
+        driver.stopStepper(seletekPort);
+    }
+
+    /**
+     * The Seletek informs that the focuser has stopped.
+     */
+    void stopFocuser() {
+        stopped();
+
+        finalPositionReached();
+        updatePosition = false;
         driver.getStepperPos(seletekPort);
-      }
-
-      Utils.sleep(200);
     }
-  }
+
+    /**
+     * The Seletek informs about the focuser position
+     * 
+     * @param position
+     *            The position of the focuser
+     */
+    void showFocusPosition(int position) {
+        positionChanged(position);
+
+        if (position == getDesiredAbsPosition()) {
+            finalPositionReached();
+            updatePosition = false;
+        }
+    }
+
+    @Override
+    public void isBeingDestroyed() {
+        stopPositionReaderThread = true;
+
+        Utils.sleep(200);
+
+        super.isBeingDestroyed();
+    }
+
+    /**
+     * The thread will ask for the position of the focuser every 200 miliseconds
+     * when it is moving.
+     */
+    @Override
+    public void run() {
+        while (!stopPositionReaderThread) {
+            if (updatePosition) {
+                driver.getStepperPos(seletekPort);
+            }
+
+            Utils.sleep(200);
+        }
+    }
 }

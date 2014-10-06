@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -29,100 +28,103 @@ import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Light Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public class INDILightElement extends INDIElement {
 
-  /**
-   * Current State value for this Light Element.
-   */
-  private LightStates state;
+    /**
+     * Current State value for this Light Element.
+     */
+    private LightStates state;
 
-  /**
-   * Constructs an instance of a
-   * <code>INDILightElement</code> with a
-   * <code>name</code>, a
-   * <code>label</code> and its initial
-   * <code>state</code>.
-   *
-   * @param property The Property to which this Element belongs.
-   * @param name The name of the Element.
-   * @param label The label of the Element.
-   * @param state The initial state of the Element.
-   */
-  public INDILightElement(INDILightProperty property, String name, String label, LightStates state) {
-    super(property, name, label);
+    /**
+     * Constructs an instance of a <code>INDILightElement</code> with a
+     * <code>name</code>, a <code>label</code> and its initial
+     * <code>state</code>.
+     * 
+     * @param property
+     *            The Property to which this Element belongs.
+     * @param name
+     *            The name of the Element.
+     * @param label
+     *            The label of the Element.
+     * @param state
+     *            The initial state of the Element.
+     */
+    public INDILightElement(INDILightProperty property, String name, String label, LightStates state) {
+        super(property, name, label);
 
-    this.state = state;
-  }
-
-  /**
-   * Constructs an instance of a
-   * <code>INDILightElement</code> with a
-   * <code>name</code> and its initial
-   * <code>state</code>. The label of the Element will be a copy of the
-   * <code>name</code>.
-   *
-   * @param property The Property to which this Element belongs.
-   * @param name The name of the Element.
-   * @param state The initial state of the Element.
-   * @throws IllegalArgumentException
-   */
-  public INDILightElement(INDILightProperty property, String name, LightStates state) {
-    super(property, name);
-
-    this.state = state;
-  }
-
-  @Override
-  public INDILightProperty getProperty() {
-    return (INDILightProperty)super.getProperty();
-  }
-
-  @Override
-  public LightStates getValue() {
-    return state;
-  }
-
-  @Override
-  public void setValue(Object newValue) throws IllegalArgumentException {
-    LightStates ns = null;
-    try {
-      ns = (LightStates)newValue;
-    } catch (ClassCastException e) {
-      throw new IllegalArgumentException("Value for a Light Element must be a INDILightElement.LightStates");
+        this.state = state;
     }
 
-    this.state = ns;
-  }
+    /**
+     * Constructs an instance of a <code>INDILightElement</code> with a
+     * <code>name</code> and its initial <code>state</code>. The label of the
+     * Element will be a copy of the <code>name</code>.
+     * 
+     * @param property
+     *            The Property to which this Element belongs.
+     * @param name
+     *            The name of the Element.
+     * @param state
+     *            The initial state of the Element.
+     * @throws IllegalArgumentException
+     */
+    public INDILightElement(INDILightProperty property, String name, LightStates state) {
+        super(property, name);
 
-  @Override
-  public String getXMLOneElement(boolean includeMinMaxStep) {
-    String v = Constants.getLightStateAsString(state);
+        this.state = state;
+    }
 
-    String xml = "<oneLight name=\"" + this.getName() + "\">" + v + "</oneLight>";
+    @Override
+    public INDILightProperty getProperty() {
+        return (INDILightProperty) super.getProperty();
+    }
 
-    return xml;
-  }
+    @Override
+    public LightStates getValue() {
+        return state;
+    }
 
-  @Override
-  public String getNameAndValueAsString() {
-    return getName() + " - " + getValue();
-  }
+    @Override
+    public void setValue(Object newValue) throws IllegalArgumentException {
+        LightStates ns = null;
+        try {
+            ns = (LightStates) newValue;
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("Value for a Light Element must be a INDILightElement.LightStates");
+        }
 
-  @Override
-  protected String getXMLDefElement() {
-    String v = Constants.getLightStateAsString(state);
+        this.state = ns;
+    }
 
-    String xml = "<defLight name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + v + "</defLight>";
+    @Override
+    public String getXMLOneElement(boolean includeMinMaxStep) {
+        String v = Constants.getLightStateAsString(state);
 
-    return xml;
-  }
+        String xml = "<oneLight name=\"" + this.getName() + "\">" + v + "</oneLight>";
 
-  @Override
-  public Object parseOneValue(Element xml) {
-    return Constants.parseLightState(xml.getTextContent().trim());
-  }
+        return xml;
+    }
+
+    @Override
+    public String getNameAndValueAsString() {
+        return getName() + " - " + getValue();
+    }
+
+    @Override
+    protected String getXMLDefElement() {
+        String v = Constants.getLightStateAsString(state);
+
+        String xml = "<defLight name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + v + "</defLight>";
+
+        return xml;
+    }
+
+    @Override
+    public Object parseOneValue(Element xml) {
+        return Constants.parseLightState(xml.getTextContent().trim());
+    }
 }

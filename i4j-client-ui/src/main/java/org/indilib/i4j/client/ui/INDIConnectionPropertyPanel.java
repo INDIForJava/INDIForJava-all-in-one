@@ -56,81 +56,86 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A panel to represent a the standard CONNECTION Property.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.2, March 26, 2012
  * @see INDIProperty
  */
 public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements INDIElementListener {
+
     private static Logger LOG = LoggerFactory.getLogger(INDIConnectionPropertyPanel.class);
-  private INDISwitchElement connectedE;
-  private INDISwitchElement disconnectedE;
 
-  /**
-   * Creates new form
-   * <code>INDIConnectionPropertyPanel</code>.
-   *
-   * @param property the CONNECTION property.
-   * @throws INDIException if the
-   * <code>property</code> is not a correct CONNECTION Property.
-   */
-  public INDIConnectionPropertyPanel(INDISwitchProperty property) throws INDIException {
-    super(property);
+    private INDISwitchElement connectedE;
 
-    connectedE = property.getElement("CONNECT");
-    if (connectedE == null) {
-      throw new INDIException("CONNECT Element not present");
+    private INDISwitchElement disconnectedE;
+
+    /**
+     * Creates new form <code>INDIConnectionPropertyPanel</code>.
+     * 
+     * @param property
+     *            the CONNECTION property.
+     * @throws INDIException
+     *             if the <code>property</code> is not a correct CONNECTION
+     *             Property.
+     */
+    public INDIConnectionPropertyPanel(INDISwitchProperty property) throws INDIException {
+        super(property);
+
+        connectedE = property.getElement("CONNECT");
+        if (connectedE == null) {
+            throw new INDIException("CONNECT Element not present");
+        }
+        connectedE.addINDIElementListener(this);
+
+        disconnectedE = property.getElement("DISCONNECT");
+        if (disconnectedE == null) {
+            throw new INDIException("DISCONNECT Element not present");
+        }
+        disconnectedE.addINDIElementListener(this);
+
+        initComponents();
+
+        setButtonStatus();
+        updatePropertyData();
     }
-    connectedE.addINDIElementListener(this);
 
-    disconnectedE = property.getElement("DISCONNECT");
-    if (disconnectedE == null) {
-      throw new INDIException("DISCONNECT Element not present");
+    /**
+     * Updates the selected and text of the button
+     */
+    private void setButtonStatus() {
+        SwitchStatus ss = connectedE.getValue();
+
+        if (ss == SwitchStatus.ON) {
+            button.setSelected(true);
+            button.setText("Connected");
+        } else {
+            button.setSelected(false);
+            button.setText("Disconnected");
+        }
     }
-    disconnectedE.addINDIElementListener(this);
 
-    initComponents();
+    private void updatePropertyData() {
+        Constants.PropertyStates st = getProperty().getState();
 
-    setButtonStatus();
-    updatePropertyData();
-  }
-
-  /**
-   * Updates the selected and text of the button
-   */
-  private void setButtonStatus() {
-    SwitchStatus ss = connectedE.getValue();
-
-    if (ss == SwitchStatus.ON) {
-      button.setSelected(true);
-      button.setText("Connected");
-    } else {
-      button.setSelected(false);
-      button.setText("Disconnected");
+        if (st == Constants.PropertyStates.IDLE) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_idle.png"))); // NOI18N
+        } else if (st == Constants.PropertyStates.OK) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_ok.png"))); // NOI18N
+        } else if (st == Constants.PropertyStates.BUSY) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_busy.png"))); // NOI18N
+        } else if (st == Constants.PropertyStates.ALERT) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_alert.png"))); // NOI18N
+        }
     }
-  }
 
-  private void updatePropertyData() {
-    Constants.PropertyStates st = getProperty().getState();
-
-    if (st == Constants.PropertyStates.IDLE) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_idle.png"))); // NOI18N
-    } else if (st == Constants.PropertyStates.OK) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_ok.png"))); // NOI18N
-    } else if (st == Constants.PropertyStates.BUSY) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_busy.png"))); // NOI18N
-    } else if (st == Constants.PropertyStates.ALERT) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_alert.png"))); // NOI18N
-    }
-  }
-
-  /**
-   * This method is called from within the constructor to initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is always
-   * regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed"
+    // desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         button = new javax.swing.JToggleButton();
@@ -143,6 +148,7 @@ public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements IN
         button.setText("Disconnected");
         button.setToolTipText("CONNECTION");
         button.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonActionPerformed(evt);
             }
@@ -157,42 +163,46 @@ public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements IN
         add(jPanel1, java.awt.BorderLayout.LINE_START);
     }// </editor-fold>//GEN-END:initComponents
 
-  private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
-    try {
-      if (button.isSelected()) {
-        connectedE.setDesiredValue(SwitchStatus.ON);
-        disconnectedE.setDesiredValue(SwitchStatus.OFF);
-      } else {
-        connectedE.setDesiredValue(SwitchStatus.OFF);
-        disconnectedE.setDesiredValue(SwitchStatus.ON);
-      }
-      getProperty().sendChangesToDriver();
-    } catch (INDIValueException e) {
-        LOG.error("value exception",e); 
-    } catch (IOException e) {
-        LOG.error("io exception",e);
-    }
+    private void buttonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_buttonActionPerformed
+        try {
+            if (button.isSelected()) {
+                connectedE.setDesiredValue(SwitchStatus.ON);
+                disconnectedE.setDesiredValue(SwitchStatus.OFF);
+            } else {
+                connectedE.setDesiredValue(SwitchStatus.OFF);
+                disconnectedE.setDesiredValue(SwitchStatus.ON);
+            }
+            getProperty().sendChangesToDriver();
+        } catch (INDIValueException e) {
+            LOG.error("value exception", e);
+        } catch (IOException e) {
+            LOG.error("io exception", e);
+        }
 
-    updatePropertyData();
-  }//GEN-LAST:event_buttonActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+        updatePropertyData();
+    }// GEN-LAST:event_buttonActionPerformed
+     // Variables declaration - do not modify//GEN-BEGIN:variables
+
     private javax.swing.JToggleButton button;
+
     private javax.swing.JPanel jPanel1;
+
     private javax.swing.JLabel state;
+
     // End of variables declaration//GEN-END:variables
 
-  @Override
-  public void elementChanged(INDIElement element) {
-    //setButtonStatus();
-  }
+    @Override
+    public void elementChanged(INDIElement element) {
+        // setButtonStatus();
+    }
 
-  @Override
-  public void propertyChanged(INDIProperty property) {
-    setButtonStatus();
-    updatePropertyData();
-  }
+    @Override
+    public void propertyChanged(INDIProperty property) {
+        setButtonStatus();
+        updatePropertyData();
+    }
 
-  @Override
-  protected void checkSetButton() {
-  }
+    @Override
+    protected void checkSetButton() {
+    }
 }

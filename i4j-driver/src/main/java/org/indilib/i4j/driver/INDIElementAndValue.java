@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -25,7 +24,7 @@ package org.indilib.i4j.driver;
 
 /**
  * A interface representing a pair of a INDIElement and a value for the Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
@@ -44,7 +43,7 @@ public class INDIElementAndValue<Element extends INDIElement, Type> {
     /**
      * Constructs an instance of a <code>INDINumberElementAndValue</code>. This
      * class should not usually be instantiated by specific Drivers.
-     *
+     * 
      * @param element
      *            The Number Element
      * @param value

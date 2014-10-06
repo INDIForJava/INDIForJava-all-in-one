@@ -1,26 +1,16 @@
-
 package org.indilib.i4j.androidui;
 
 /*
- * #%L
- * INDI for Java Android App
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Android App %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import android.content.Context;
@@ -42,108 +32,111 @@ import org.indilib.i4j.client.INDITextElement;
  */
 public class INDITextElementView extends INDIElementView {
 
-  private INDITextElement te;
-  private TextView name;
-  private TextView currentValue;
-  private EditText desiredValue;
+    private INDITextElement te;
 
-  public INDITextElementView(INDITextElement te, PropertyPermissions perm) throws INDIException {
-    super(perm);
+    private TextView name;
 
-    Context context = I4JAndroidConfig.getContext();
+    private TextView currentValue;
 
-    this.te = te;
+    private EditText desiredValue;
 
-    name = new TextView(context);
-    name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-    addView(name);
+    public INDITextElementView(INDITextElement te, PropertyPermissions perm) throws INDIException {
+        super(perm);
 
-    currentValue = new TextView(context);
-    currentValue.setSingleLine();
-    currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        Context context = I4JAndroidConfig.getContext();
 
-    addView(currentValue);
+        this.te = te;
 
-    desiredValue = new EditText(context);
-    desiredValue.setText("");
-    desiredValue.setSingleLine();
-    desiredValue.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        name = new TextView(context);
+        name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addView(name);
 
-    desiredValue.addTextChangedListener(new TextWatcher() {
+        currentValue = new TextView(context);
+        currentValue.setSingleLine();
+        currentValue.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-      public void afterTextChanged(Editable s) {
-      }
+        addView(currentValue);
 
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
+        desiredValue = new EditText(context);
+        desiredValue.setText("");
+        desiredValue.setSingleLine();
+        desiredValue.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-        desiredValueChanged();
-      }
-    });
+        desiredValue.addTextChangedListener(new TextWatcher() {
 
-    if (isWritable()) {
-      addView(desiredValue);
-    }
+            public void afterTextChanged(Editable s) {
+            }
 
-    updateElementData();
-  }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-  private void desiredValueChanged() {
-    if (!(desiredValue.getText().length() == 0)) {
-      setChanged(true);
-    } else {
-      setChanged(false);
-    }
-
-    checkSetButton();
-  }
-
-  private void updateElementData() {
-    name.setText(te.getLabel() + ":");
-
-    currentValue.setText((String) te.getValue());
-  }
-
-  @Override
-  protected Object getDesiredValue() {
-    return desiredValue.getText().toString();
-  }
-
-  @Override
-  protected INDITextElement getElement() {
-    return te;
-  }
-
-  @Override
-  protected void setError(boolean erroneous, String errorMessage) {
-    // Does nothing, text elements cannot be erroneous
-  }
-
-  @Override
-  protected boolean isDesiredValueErroneous() {
-    return false; // Never erroneous
-  }
-
-  @Override
-  protected void cleanDesiredValue() {
-    desiredValue.setText("");
-  }
-
-  @Override
-  public void elementChanged(INDIElement element) {
-    if (element == te) {
-      try {
-        I4JAndroidConfig.postHandler(new Runnable() {
-
-          @Override
-          public void run() {
-            updateElementData();
-          }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                desiredValueChanged();
+            }
         });
-      } catch (INDIException e) {
-        e.printStackTrace();
-      }
+
+        if (isWritable()) {
+            addView(desiredValue);
+        }
+
+        updateElementData();
     }
-  }
+
+    private void desiredValueChanged() {
+        if (!(desiredValue.getText().length() == 0)) {
+            setChanged(true);
+        } else {
+            setChanged(false);
+        }
+
+        checkSetButton();
+    }
+
+    private void updateElementData() {
+        name.setText(te.getLabel() + ":");
+
+        currentValue.setText((String) te.getValue());
+    }
+
+    @Override
+    protected Object getDesiredValue() {
+        return desiredValue.getText().toString();
+    }
+
+    @Override
+    protected INDITextElement getElement() {
+        return te;
+    }
+
+    @Override
+    protected void setError(boolean erroneous, String errorMessage) {
+        // Does nothing, text elements cannot be erroneous
+    }
+
+    @Override
+    protected boolean isDesiredValueErroneous() {
+        return false; // Never erroneous
+    }
+
+    @Override
+    protected void cleanDesiredValue() {
+        desiredValue.setText("");
+    }
+
+    @Override
+    public void elementChanged(INDIElement element) {
+        if (element == te) {
+            try {
+                I4JAndroidConfig.postHandler(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        updateElementData();
+                    }
+                });
+            } catch (INDIException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

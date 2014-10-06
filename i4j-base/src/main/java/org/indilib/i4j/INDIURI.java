@@ -22,52 +22,53 @@ package org.indilib.i4j;
  * #L%
  */
 /**
- * A convenience class to parse special INDI URIs in the form: indi://[host][:port][/device[/property[/element]]]
- *
- * When using it, ALWAYS check if the URI is correct with
- * <code>isCorrect()</code>. The values obtained from the class when the URI is not correct should not be used.
- *
+ * A convenience class to parse special INDI URIs in the form:
+ * indi://[host][:port][/device[/property[/element]]] When using it, ALWAYS
+ * check if the URI is correct with <code>isCorrect()</code>. The values
+ * obtained from the class when the URI is not correct should not be used.
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.39, October 5, 2014
  */
 public class INDIURI {
 
     /**
-     * The host in the URI.
-     * <code>127.0.0.1</code> as default value.
+     * The host in the URI. <code>127.0.0.1</code> as default value.
      */
     private String host;
+
     /**
-     * The port in the URI.
-     * <code>7624</code> as default value.
+     * The port in the URI. <code>7624</code> as default value.
      */
     private int port;
+
     /**
-     * The device in the URI.
-     * <code>null</code> as default value.
+     * The device in the URI. <code>null</code> as default value.
      */
     private String device;
+
     /**
-     * The property in the URI.
-     * <code>null</code> as default value.
+     * The property in the URI. <code>null</code> as default value.
      */
     private String property;
+
     /**
-     * The element in the URI.
-     * <code>null</code> as default value.
+     * The element in the URI. <code>null</code> as default value.
      */
     private String element;
+
     /**
      * The correctness of the constructor URI.
      */
     private boolean correct;
 
     /**
-     * Creates the INDIURI and parses it. The method
-     * <code>isCorrect()</code> should be called to check if the URI is correct:
+     * Creates the INDIURI and parses it. The method <code>isCorrect()</code>
+     * should be called to check if the URI is correct:
      * <code>indi://[host][:port][/device[/property[/element]]]</code>
-     *
-     * @param uri The URI to be parsed.
+     * 
+     * @param uri
+     *            The URI to be parsed.
      */
     public INDIURI(String uri) {
         host = "127.0.0.1";
@@ -113,7 +114,6 @@ public class INDIURI {
                 }
             }
 
-
             if (port <= 0) {
                 correct = false;
                 return;
@@ -144,8 +144,9 @@ public class INDIURI {
 
     /**
      * Returns if the pared URI is correct.
-     *
-     * @return <code>true</code> if the parsed URI is correct. <code>false</code> otherwise.
+     * 
+     * @return <code>true</code> if the parsed URI is correct.
+     *         <code>false</code> otherwise.
      */
     public boolean isCorrect() {
         return correct;
@@ -153,7 +154,7 @@ public class INDIURI {
 
     /**
      * Gets the Host of the URI.
-     *
+     * 
      * @return The Host of the URI.
      */
     public String getHost() {
@@ -162,7 +163,7 @@ public class INDIURI {
 
     /**
      * Gets the Port of the URI.
-     *
+     * 
      * @return The Port of the URI.
      */
     public int getPort() {
@@ -171,7 +172,7 @@ public class INDIURI {
 
     /**
      * Gets the Device of the URI.
-     *
+     * 
      * @return The Device of the URI.
      */
     public String getDevice() {
@@ -180,7 +181,7 @@ public class INDIURI {
 
     /**
      * Gets the Property of the URI.
-     *
+     * 
      * @return The Property of the URI.
      */
     public String getProperty() {
@@ -189,7 +190,7 @@ public class INDIURI {
 
     /**
      * Gets the Element of the URI.
-     *
+     * 
      * @return The Element of the URI.
      */
     public String getElement() {

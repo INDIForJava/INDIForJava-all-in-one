@@ -22,7 +22,6 @@ package org.indilib.i4j.driver.telescope;
  * #L%
  */
 
-
 public interface INDITelescopeParkInterface {
 
     void park();

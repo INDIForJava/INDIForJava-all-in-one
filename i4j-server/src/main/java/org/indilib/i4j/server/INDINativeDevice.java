@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.server;
 
 /*
@@ -31,123 +30,140 @@ import org.indilib.i4j.INDIException;
 
 /**
  * A class that represent a Native Device (created with the usual INDI library).
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 13, 2013
  */
 public class INDINativeDevice extends INDIDevice {
 
-  /**
-   * The path of the Driver (that will be launched).
-   */
-  private String driverPath;
-  /**
-   * The process that will be launched to start the Driver.
-   */
-  private Process process;
+    /**
+     * The path of the Driver (that will be launched).
+     */
+    private String driverPath;
 
     /**
-   * The name of the device. May be null if it has not been discovered through a <code>defXXXVector</code> message.
-   */
-  private String name;
-  
-  /**
-   * Constructs a new Native Device and launches it as a external process.
-   * @param server The server which listens to this Device.
-   * @param driverPath The path of of the Driver.
-   * @throws INDIException If there is any problem launching the external process of the driver.
-   */
-  protected INDINativeDevice(AbstractINDIServer server, String driverPath) throws INDIException {
-    super(server);
-    
-    name = null;
-    
-    this.driverPath = driverPath;
+     * The process that will be launched to start the Driver.
+     */
+    private Process process;
 
-    try {
-      process = Runtime.getRuntime().exec(driverPath);
-    } catch (IOException e) {
-      throw new INDIException("Problem executing " + driverPath);
-    }
-  }
+    /**
+     * The name of the device. May be null if it has not been discovered through
+     * a <code>defXXXVector</code> message.
+     */
+    private String name;
 
-  /**
-   * Gets the path of the Driver.
-   * @return The path of the Driver.
-   */
-  public String getDriverPath() {
-    return driverPath;
-  }
+    /**
+     * Constructs a new Native Device and launches it as a external process.
+     * 
+     * @param server
+     *            The server which listens to this Device.
+     * @param driverPath
+     *            The path of of the Driver.
+     * @throws INDIException
+     *             If there is any problem launching the external process of the
+     *             driver.
+     */
+    protected INDINativeDevice(AbstractINDIServer server, String driverPath) throws INDIException {
+        super(server);
 
-      /**
-   * Deals with a possible new Device name. If the Device already has a name, the new name is discarded.
-   * @param possibleNewName The new possible new name.
-   */
-  @Override
-  protected void dealWithPossibleNewDeviceName(String possibleNewName) {
-    if (name == null) {
-      name = possibleNewName; 
-    }
-  }
-  
-  /**
-   * Checks if the Device has a particular name.
-   * @param name The name to check.
-   * @return <code>true</code> if the Device respond to <code>name</code>. <code>false</code> otherwise.
-   */
-  @Override
-  protected boolean hasName(String name) {
-    if (this.name == null) {
-      return false;
+        name = null;
+
+        this.driverPath = driverPath;
+
+        try {
+            process = Runtime.getRuntime().exec(driverPath);
+        } catch (IOException e) {
+            throw new INDIException("Problem executing " + driverPath);
+        }
     }
 
-    if (this.name.equals(name)) {
-      return true; 
+    /**
+     * Gets the path of the Driver.
+     * 
+     * @return The path of the Driver.
+     */
+    public String getDriverPath() {
+        return driverPath;
     }
-    
-    return false;
-  }
-  
-  @Override
-  public void closeConnections() {
-    process.destroy();
-  }
 
-  @Override
-  public InputStream getInputStream() {
-    return process.getInputStream();
-  }
+    /**
+     * Deals with a possible new Device name. If the Device already has a name,
+     * the new name is discarded.
+     * 
+     * @param possibleNewName
+     *            The new possible new name.
+     */
+    @Override
+    protected void dealWithPossibleNewDeviceName(String possibleNewName) {
+        if (name == null) {
+            name = possibleNewName;
+        }
+    }
 
-  @Override
-  public OutputStream getOutputStream() {
-    return process.getOutputStream();
-  }
+    /**
+     * Checks if the Device has a particular name.
+     * 
+     * @param name
+     *            The name to check.
+     * @return <code>true</code> if the Device respond to <code>name</code>.
+     *         <code>false</code> otherwise.
+     */
+    @Override
+    protected boolean hasName(String name) {
+        if (this.name == null) {
+            return false;
+        }
 
-  @Override
-  public String getDeviceIdentifier() {
-    return driverPath;
-  }
-  
-  @Override
-  public boolean isDevice(String deviceIdentifier) {
-    return getDeviceIdentifier().equals(deviceIdentifier);
-  }  
-  
-  @Override
-  protected String[] getNames() {
-    return new String[] {name};
-  }
-  
-  /**
-   * Gets a String representation of the Device.
-   *
-   * @return A String representation of the Device.
-   */
-  @Override
-  public String toString() {
-    return "Native Device: " + driverPath;
-  }
+        if (this.name.equals(name)) {
+            return true;
+        }
 
-  @Override
-  public void isBeingDestroyed() {
-  }
+        return false;
+    }
+
+    @Override
+    public void closeConnections() {
+        process.destroy();
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return process.getInputStream();
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        return process.getOutputStream();
+    }
+
+    @Override
+    public String getDeviceIdentifier() {
+        return driverPath;
+    }
+
+    @Override
+    public boolean isDevice(String deviceIdentifier) {
+        return getDeviceIdentifier().equals(deviceIdentifier);
+    }
+
+    @Override
+    protected String[] getNames() {
+        return new String[]{
+            name
+        };
+    }
+
+    /**
+     * Gets a String representation of the Device.
+     * 
+     * @return A String representation of the Device.
+     */
+    @Override
+    public String toString() {
+        return "Native Device: " + driverPath;
+    }
+
+    @Override
+    public void isBeingDestroyed() {
+    }
 }

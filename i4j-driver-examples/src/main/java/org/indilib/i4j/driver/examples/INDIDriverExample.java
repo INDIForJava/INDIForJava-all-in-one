@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver.examples;
 
 /*
@@ -52,125 +51,150 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An example class representing a very basic INDI Driver.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 5, 2012
  */
 public class INDIDriverExample extends INDIDriver implements INDIConnectionHandler {
 
     private static Logger LOG = LoggerFactory.getLogger(INDIDriverExample.class);
-    
-    
-  // The Properties and Elements of this Driver
-  private INDIBLOBProperty imageP;
-  private INDIBLOBElement imageE;
-  private INDISwitchProperty sendP;
-  private INDISwitchElement sendE;
 
-  public INDIDriverExample(InputStream inputStream, OutputStream outputStream) {
-    super(inputStream, outputStream);
+    // The Properties and Elements of this Driver
+    private INDIBLOBProperty imageP;
 
-    // Define the BLOB Property with this Driver as its owner, name "image", label "Image", group "Image Properties", initial state IDLE and Read Only.
-    imageP = new INDIBLOBProperty(this, "image", "Image", "Image Properties", PropertyStates.IDLE, PropertyPermissions.RO);
-    // Define the BLOB Element with name "image" and label "Image". Its initial value is empty.
-    imageE = new INDIBLOBElement(imageP, "image", "Image");
+    private INDIBLOBElement imageE;
 
+    private INDISwitchProperty sendP;
 
-    // Define the Switch Property with this driver as its owner, name "sendImage", label "Send Image", group "Image Properties", initial state IDLE, Read/Write permission and AtMostOne rule for the switch.
-    sendP = new INDISwitchProperty(this, "sendImage", "Send Image", "Image Properties", PropertyStates.IDLE, PropertyPermissions.RW, SwitchRules.AT_MOST_ONE);
-    // Define the Switch Element with name "sendImage", label "Send Image" and initial status OFF
-    sendE = new INDISwitchElement(sendP, "sendImage", "Send Image", SwitchStatus.OFF);
-  }
+    private INDISwitchElement sendE;
 
-  // Returns the name of the Driver
-  @Override
-  public String getName() {
-    return "INDI Driver Example";
-  }
+    public INDIDriverExample(InputStream inputStream, OutputStream outputStream) {
+        super(inputStream, outputStream);
 
-  // No Number Properties can be set by clients. Empty method  
-  @Override
-  public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-  }
+        // Define the BLOB Property with this Driver as its owner, name "image",
+        // label "Image", group "Image Properties", initial state IDLE and Read
+        // Only.
+        imageP = new INDIBLOBProperty(this, "image", "Image", "Image Properties", PropertyStates.IDLE, PropertyPermissions.RO);
+        // Define the BLOB Element with name "image" and label "Image". Its
+        // initial value is empty.
+        imageE = new INDIBLOBElement(imageP, "image", "Image");
 
-  // No BLOB Properties can be set by clients. Empty method  
-  @Override
-  public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
-  }
+        // Define the Switch Property with this driver as its owner, name
+        // "sendImage", label "Send Image", group "Image Properties", initial
+        // state IDLE, Read/Write permission and AtMostOne rule for the switch.
+        sendP = new INDISwitchProperty(this, "sendImage", "Send Image", "Image Properties", PropertyStates.IDLE, PropertyPermissions.RW, SwitchRules.AT_MOST_ONE);
+        // Define the Switch Element with name "sendImage", label "Send Image"
+        // and initial status OFF
+        sendE = new INDISwitchElement(sendP, "sendImage", "Send Image", SwitchStatus.OFF);
+    }
 
-  // No Text Properties can be set by clients. Empty method
-  @Override
-  public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
-  }
+    // Returns the name of the Driver
+    @Override
+    public String getName() {
+        return "INDI Driver Example";
+    }
 
-  // Processes the changes sent by the client to the Switch Properties. If the Switch property is the CONNECTION one it adds or removes the image and send Properties. If the Property is the "sendImage", it loads an image from disk, sets it to the image property and sends it back to the client.
-  @Override
-  public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
+    // No Number Properties can be set by clients. Empty method
+    @Override
+    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
+    }
 
-    if (property == sendP) {  // If the property is the sendImage one
-      if (elementsAndValues.length > 0) {  // If any element has been updated
-        INDISwitchElement el = elementsAndValues[0].getElement();
-        SwitchStatus s = elementsAndValues[0].getValue();
+    // No BLOB Properties can be set by clients. Empty method
+    @Override
+    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
+    }
 
-        if ((el == sendE) && (s == SwitchStatus.ON)) {  // If the sendImage element has been switched one we send the image
-          boolean imageLoaded = loadImageFromFile();
+    // No Text Properties can be set by clients. Empty method
+    @Override
+    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
+    }
 
-          if (imageLoaded) {
-            sendP.setState(PropertyStates.OK);  // Set the state of the sendImage property as OK
+    // Processes the changes sent by the client to the Switch Properties. If the
+    // Switch property is the CONNECTION one it adds or removes the image and
+    // send Properties. If the Property is the "sendImage", it loads an image
+    // from disk, sets it to the image property and sends it back to the client.
+    @Override
+    public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
 
-            imageP.setState(PropertyStates.OK); // Set the state of the image property as OK
-              updateProperty(sendP); // Send the sendImage property to the client.
-              updateProperty(imageP); // Send the image property to the client.
-          }
+        if (property == sendP) { // If the property is the sendImage one
+            if (elementsAndValues.length > 0) { // If any element has been
+                                                // updated
+                INDISwitchElement el = elementsAndValues[0].getElement();
+                SwitchStatus s = elementsAndValues[0].getValue();
+
+                if ((el == sendE) && (s == SwitchStatus.ON)) { // If the
+                                                               // sendImage
+                                                               // element has
+                                                               // been switched
+                                                               // one we send
+                                                               // the image
+                    boolean imageLoaded = loadImageFromFile();
+
+                    if (imageLoaded) {
+                        sendP.setState(PropertyStates.OK); // Set the state of
+                                                           // the sendImage
+                                                           // property as OK
+
+                        imageP.setState(PropertyStates.OK); // Set the state of
+                                                            // the image
+                                                            // property as OK
+                        updateProperty(sendP); // Send the sendImage property to
+                                               // the client.
+                        updateProperty(imageP); // Send the image property to
+                                                // the client.
+                    }
+                }
+            }
         }
-      }
-    }
-  }
-
-  // Add the image and send properties changes
-  @Override
-  public void driverConnect(Date timestamp) {
-    printMessage("Driver connect");
-    this.addProperty(imageP);
-    this.addProperty(sendP);
-  }
-
-  // Remove the image and send properties changes
-  @Override
-  public void driverDisconnect(Date timestamp) {
-    printMessage("Driver disconnect");
-    this.removeProperty(imageP);
-    this.removeProperty(sendP);
-  }
-
-  // Loads the image "image.jpg" from the same directory into the image property. Returns true if the loading has been succesful. false otherwise.
-  private boolean loadImageFromFile() {
-    if (imageE.getValue().getSize() == 0) { // If it has not been already loaded
-
-      byte[] fileContents;
-
-      try {
-        File file = new File("image.jpg");
-
-// Create a buffer big enough to hold the file
-        int size = (int) file.length();
-        fileContents = new byte[size];
-// Create an input stream from the file object and read it all
-        FileInputStream in = new FileInputStream(file);
-        in.read(fileContents);
-        in.close();
-      } catch (IOException e) {
-          LOG.error("Could not write file",e);
-
-        return false;
-      }
-
-      // Create the new BLOB value and set it to the image element.
-      INDIBLOBValue v = new INDIBLOBValue(fileContents, ".jpg");
-
-      imageE.setValue(v);
     }
 
-    return true;
-  }
+    // Add the image and send properties changes
+    @Override
+    public void driverConnect(Date timestamp) {
+        printMessage("Driver connect");
+        this.addProperty(imageP);
+        this.addProperty(sendP);
+    }
+
+    // Remove the image and send properties changes
+    @Override
+    public void driverDisconnect(Date timestamp) {
+        printMessage("Driver disconnect");
+        this.removeProperty(imageP);
+        this.removeProperty(sendP);
+    }
+
+    // Loads the image "image.jpg" from the same directory into the image
+    // property. Returns true if the loading has been succesful. false
+    // otherwise.
+    private boolean loadImageFromFile() {
+        if (imageE.getValue().getSize() == 0) { // If it has not been already
+                                                // loaded
+
+            byte[] fileContents;
+
+            try {
+                File file = new File("image.jpg");
+
+                // Create a buffer big enough to hold the file
+                int size = (int) file.length();
+                fileContents = new byte[size];
+                // Create an input stream from the file object and read it all
+                FileInputStream in = new FileInputStream(file);
+                in.read(fileContents);
+                in.close();
+            } catch (IOException e) {
+                LOG.error("Could not write file", e);
+
+                return false;
+            }
+
+            // Create the new BLOB value and set it to the image element.
+            INDIBLOBValue v = new INDIBLOBValue(fileContents, ".jpg");
+
+            imageE.setValue(v);
+        }
+
+        return true;
+    }
 }

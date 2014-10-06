@@ -44,9 +44,10 @@ import org.indilib.i4j.driver.event.SwitchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TelescopeSimulator extends INDITelescope implements  INDITelescopeParkInterface, INDITelescopeSyncInterface {
+public class TelescopeSimulator extends INDITelescope implements INDITelescopeParkInterface, INDITelescopeSyncInterface {
+
     public static final String MOTION_TAB = "Motion Control";
-    
+
     private static Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
 
     /**

@@ -35,6 +35,7 @@ public class Capability {
     private boolean hasGuideHead = false;
 
     private boolean hasShutter = false;
+
     /**
      * @return True if CCD can abort exposure. False otherwise.
      */
@@ -108,6 +109,5 @@ public class Capability {
         this.hasShutter = hasShutter;
         return this;
     }
-
 
 }

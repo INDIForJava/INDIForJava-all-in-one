@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -26,7 +25,7 @@ package org.indilib.i4j.driver;
 /**
  * A class representing a pair of a <code>INDINumberElement</code> and a
  * <code>Double</code>.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */

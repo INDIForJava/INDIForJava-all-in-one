@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.server;
 
 /*
@@ -34,166 +33,175 @@ import org.indilib.i4j.INDIException;
 
 /**
  * A class that represent a Network Device (another INDI server).
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 19, 2013
  */
 public class INDINetworkDevice extends INDIDevice {
 
-  /**
-   * The socket to connect for the INDI Server
-   */
-  private Socket socket;
-  /**
-   * The host to connect for the INDI Server
-   */
-  private String host;
-  /**
-   * The port to connect for the INDI Server
-   */
-  private int port;
-  /**
-   * A list of names of the Device (it may be more than one)
-   */
-  private ArrayList<String> names;
+    /**
+     * The socket to connect for the INDI Server
+     */
+    private Socket socket;
 
-  /**
-   * Constructs a new Network Device and connects to it.
-   * @param server The server which listens to this Device.
-   * @param host The host to connect for the Device.
-   * @param port The port to connect for the Device.
-   * @throws INDIException if there is any problem with the connection.
-   */
-  protected INDINetworkDevice(AbstractINDIServer server, String host, int port) throws INDIException {
-    super(server);
+    /**
+     * The host to connect for the INDI Server
+     */
+    private String host;
 
-    names = new ArrayList<String>();
+    /**
+     * The port to connect for the INDI Server
+     */
+    private int port;
 
-    this.host = host;
-    this.port = port;
+    /**
+     * A list of names of the Device (it may be more than one)
+     */
+    private ArrayList<String> names;
 
-    try {
-      socket = new Socket();
+    /**
+     * Constructs a new Network Device and connects to it.
+     * 
+     * @param server
+     *            The server which listens to this Device.
+     * @param host
+     *            The host to connect for the Device.
+     * @param port
+     *            The port to connect for the Device.
+     * @throws INDIException
+     *             if there is any problem with the connection.
+     */
+    protected INDINetworkDevice(AbstractINDIServer server, String host, int port) throws INDIException {
+        super(server);
 
-      socket.connect(new InetSocketAddress(host, port), 20000);
-    } catch (IOException e) {
-      throw new INDIException("Problem connecting to " + host + ":" + port);
-    }
-  }
+        names = new ArrayList<String>();
 
-  /**
-   * Gets a String with the host and port of the connection.
-   * @return A String with the host and port of the connection.
-   */
-  private String getNetworkName() {
-    return host + ":" + port;
-  }
+        this.host = host;
+        this.port = port;
 
-  /**
-   * Deals with a possible new Device name, adding it if it is new.
-   *
-   * @param possibleNewName The new possible new name.
-   */
-  @Override
-  protected void dealWithPossibleNewDeviceName(String possibleNewName) {
-    if (!names.contains(possibleNewName)) {
-      names.add(possibleNewName);
-    }
-  }
+        try {
+            socket = new Socket();
 
-  /**
-   * Checks if the Device has a particular name.
-   *
-   * @param name The name to check.
-   * @return
-   * <code>true</code> if the Device respond to
-   * <code>name</code>.
-   * <code>false</code> otherwise.
-   */
-  @Override
-  protected boolean hasName(String name) {
-    if (names.contains(name)) {
-      return true;
+            socket.connect(new InetSocketAddress(host, port), 20000);
+        } catch (IOException e) {
+            throw new INDIException("Problem connecting to " + host + ":" + port);
+        }
     }
 
-    return false;
-  }
-
-  @Override
-  public void closeConnections() {
-    try {
-      socket.close();
-    } catch (IOException e) {
-    }
-  }
-
-  @Override
-  public InputStream getInputStream() {
-    try {
-      return socket.getInputStream();
-    } catch (IOException e) {
+    /**
+     * Gets a String with the host and port of the connection.
+     * 
+     * @return A String with the host and port of the connection.
+     */
+    private String getNetworkName() {
+        return host + ":" + port;
     }
 
-    return null;
-  }
-
-  @Override
-  public OutputStream getOutputStream() {
-    try {
-      return socket.getOutputStream();
-    } catch (IOException e) {
+    /**
+     * Deals with a possible new Device name, adding it if it is new.
+     * 
+     * @param possibleNewName
+     *            The new possible new name.
+     */
+    @Override
+    protected void dealWithPossibleNewDeviceName(String possibleNewName) {
+        if (!names.contains(possibleNewName)) {
+            names.add(possibleNewName);
+        }
     }
 
-    return null;
-  }
+    /**
+     * Checks if the Device has a particular name.
+     * 
+     * @param name
+     *            The name to check.
+     * @return <code>true</code> if the Device respond to <code>name</code>.
+     *         <code>false</code> otherwise.
+     */
+    @Override
+    protected boolean hasName(String name) {
+        if (names.contains(name)) {
+            return true;
+        }
 
-  @Override
-  public String getDeviceIdentifier() {
-    return getNetworkName();
-  }
-
-  @Override
-  public boolean isDevice(String deviceIdentifier) {
-    return getDeviceIdentifier().equals(deviceIdentifier);
-  }
-
-  @Override
-  protected String[] getNames() {
-    String[] ns = new String[names.size()];
-
-    for (int i = 0; i < ns.length; i++) {
-      ns[i] = names.get(i);
+        return false;
     }
 
-    return ns;
-  }
-
-  /**
-   * Gets a String representation of the Device.
-   *
-   * @return A String representation of the Device.
-   */
-  @Override
-  public String toString() {
-    return "Network Device: " + this.getNetworkName() + " - " + printArray(getNames());
-  }
-  
-  private String printArray(String[] arr) {
-    String res = "[";
-    
-    for (int i = 0 ; i < arr.length ; i++) {
-      if (i != arr.length - 1) {
-        res += ", ";
-      }
-      res += arr[i];
+    @Override
+    public void closeConnections() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+        }
     }
-    
-    res += "]";
-    
-    return res;
-  }
 
-  @Override
-  public void isBeingDestroyed() {
-  }
+    @Override
+    public InputStream getInputStream() {
+        try {
+            return socket.getInputStream();
+        } catch (IOException e) {
+        }
+
+        return null;
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        try {
+            return socket.getOutputStream();
+        } catch (IOException e) {
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getDeviceIdentifier() {
+        return getNetworkName();
+    }
+
+    @Override
+    public boolean isDevice(String deviceIdentifier) {
+        return getDeviceIdentifier().equals(deviceIdentifier);
+    }
+
+    @Override
+    protected String[] getNames() {
+        String[] ns = new String[names.size()];
+
+        for (int i = 0; i < ns.length; i++) {
+            ns[i] = names.get(i);
+        }
+
+        return ns;
+    }
+
+    /**
+     * Gets a String representation of the Device.
+     * 
+     * @return A String representation of the Device.
+     */
+    @Override
+    public String toString() {
+        return "Network Device: " + this.getNetworkName() + " - " + printArray(getNames());
+    }
+
+    private String printArray(String[] arr) {
+        String res = "[";
+
+        for (int i = 0; i < arr.length; i++) {
+            if (i != arr.length - 1) {
+                res += ", ";
+            }
+            res += arr[i];
+        }
+
+        res += "]";
+
+        return res;
+    }
+
+    @Override
+    public void isBeingDestroyed() {
+    }
 }

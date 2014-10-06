@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.client;
 
 /*
@@ -31,191 +30,200 @@ import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Switch Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, February 4, 2012
  */
 public class INDISwitchElement extends INDIElement {
 
-  /**
-   * A UI component that can be used in graphical interfaces for this Switch
-   * Element.
-   */
-  private INDIElementListener UIComponent;
-  /**
-   * Current Status value for this Switch Element.
-   */
-  private SwitchStatus status;
-  /**
-   * Current desired status value for this Switch Element.
-   */
-  private SwitchStatus desiredStatus;
+    /**
+     * A UI component that can be used in graphical interfaces for this Switch
+     * Element.
+     */
+    private INDIElementListener UIComponent;
 
-  /**
-   * Constructs an instance of
-   * <code>INDISwitchElement</code>. Usually called from a
-   * <code>INDIProperty</code>.
-   *
-   * @param xml A XML Element
-   * <code>&lt;defSwitch&gt;</code> describing the Switch Element.
-   * @param property The
-   * <code>INDIProperty</code> to which the Element belongs.
-   * @throws IllegalArgumentException if the XML Element is not well formed
-   * (switch value not correct).
-   */
-  protected INDISwitchElement(Element xml, INDIProperty property) throws IllegalArgumentException {
-    super(xml, property);
+    /**
+     * Current Status value for this Switch Element.
+     */
+    private SwitchStatus status;
 
-    desiredStatus = null;
+    /**
+     * Current desired status value for this Switch Element.
+     */
+    private SwitchStatus desiredStatus;
 
-    String sta = xml.getTextContent().trim();
+    /**
+     * Constructs an instance of <code>INDISwitchElement</code>. Usually called
+     * from a <code>INDIProperty</code>.
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;defSwitch&gt;</code> describing the
+     *            Switch Element.
+     * @param property
+     *            The <code>INDIProperty</code> to which the Element belongs.
+     * @throws IllegalArgumentException
+     *             if the XML Element is not well formed (switch value not
+     *             correct).
+     */
+    protected INDISwitchElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+        super(xml, property);
 
-    setValue(sta);
-  }
+        desiredStatus = null;
 
-  @Override
-  public SwitchStatus getValue() {
-    return status;
-  }
+        String sta = xml.getTextContent().trim();
 
-  /**
-   * Sets the current value of this Switch Element. It is assummed that the XML
-   * Element is really describing the new value for this particular Switch
-   * Element. <p> This method will notify the change of the value to the
-   * listeners.
-   *
-   * @param xml A XML Element &lt;oneSwitch&gt; describing the Element.
-   * @throws IllegalArgumentException if the
-   * <code>xml</code> is not well formed.
-   */
-  @Override
-  protected void setValue(Element xml) throws IllegalArgumentException {
-    String sta = xml.getTextContent().trim();
-
-    setValue(sta);
-
-    notifyListeners();
-  }
-
-  /**
-   * Sets the value of the Switch Property.
-   *
-   * @param newStatus the new status of the property
-   * @throws IllegalArgumentException if the new status is not a correct one
-   * ("On" or "Off");
-   */
-  private void setValue(String newStatus) throws IllegalArgumentException {
-    if (newStatus.compareTo("Off") == 0) {
-      status = SwitchStatus.OFF;
-    } else if (newStatus.compareTo("On") == 0) {
-      status = SwitchStatus.ON;
-    } else {
-      throw new IllegalArgumentException("Illegal Switch Status");
-    }
-  }
-
-  @Override
-  public INDIElementListener getDefaultUIComponent() throws INDIException {
-    if (UIComponent != null) {
-      removeINDIElementListener(UIComponent);
+        setValue(sta);
     }
 
-    Object[] arguments = new Object[]{this, getProperty().getPermission()};
-    String[] possibleUIClassNames = new String[]{"org.indilib.i4j.client.ui.INDISwitchElementPanel", "org.indilib.i4j.androidui.INDISwitchElementView"};
-
-    try {
-      UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-    } catch (ClassCastException e) {
-      throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
+    @Override
+    public SwitchStatus getValue() {
+        return status;
     }
 
-    addINDIElementListener(UIComponent);
+    /**
+     * Sets the current value of this Switch Element. It is assummed that the
+     * XML Element is really describing the new value for this particular Switch
+     * Element.
+     * <p>
+     * This method will notify the change of the value to the listeners.
+     * 
+     * @param xml
+     *            A XML Element &lt;oneSwitch&gt; describing the Element.
+     * @throws IllegalArgumentException
+     *             if the <code>xml</code> is not well formed.
+     */
+    @Override
+    protected void setValue(Element xml) throws IllegalArgumentException {
+        String sta = xml.getTextContent().trim();
 
-    return UIComponent;
-  }
+        setValue(sta);
 
-  /**
-   * Checks if a desired value would be correct to be applied to the Switch
-   * Element, that is a
-   * <code>SwitchStatus</code> object.
-   *
-   * @param desiredValue The value to be checked.
-   * @return
-   * <code>true</code> if the
-   * <code>desiredValue</code> is a
-   * <code>SwitchStatus</code>.
-   * <code>false</code> otherwise.
-   * @throws INDIValueException if
-   * <code>desiredValue</code> is
-   * <code>null</code>.
-   */
-  @Override
-  public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
-    if (desiredValue == null) {
-      throw new INDIValueException(this, "null value");
+        notifyListeners();
     }
 
-    if (desiredValue instanceof SwitchStatus) {
-      return true;
+    /**
+     * Sets the value of the Switch Property.
+     * 
+     * @param newStatus
+     *            the new status of the property
+     * @throws IllegalArgumentException
+     *             if the new status is not a correct one ("On" or "Off");
+     */
+    private void setValue(String newStatus) throws IllegalArgumentException {
+        if (newStatus.compareTo("Off") == 0) {
+            status = SwitchStatus.OFF;
+        } else if (newStatus.compareTo("On") == 0) {
+            status = SwitchStatus.ON;
+        } else {
+            throw new IllegalArgumentException("Illegal Switch Status");
+        }
     }
 
-    return false;
-  }
+    @Override
+    public INDIElementListener getDefaultUIComponent() throws INDIException {
+        if (UIComponent != null) {
+            removeINDIElementListener(UIComponent);
+        }
 
-  @Override
-  public String getNameAndValueAsString() {
-    return getName() + " - " + getValue();
-  }
+        Object[] arguments = new Object[]{
+            this,
+            getProperty().getPermission()
+        };
+        String[] possibleUIClassNames = new String[]{
+            "org.indilib.i4j.client.ui.INDISwitchElementPanel",
+            "org.indilib.i4j.androidui.INDISwitchElementView"
+        };
 
-  @Override
-  public SwitchStatus getDesiredValue() {
-    if (desiredStatus == null) { // Maybe there is no desired status, but should be sent
-      return status;
+        try {
+            UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+        } catch (ClassCastException e) {
+            throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
+        }
+
+        addINDIElementListener(UIComponent);
+
+        return UIComponent;
     }
 
-    return desiredStatus;
-  }
+    /**
+     * Checks if a desired value would be correct to be applied to the Switch
+     * Element, that is a <code>SwitchStatus</code> object.
+     * 
+     * @param desiredValue
+     *            The value to be checked.
+     * @return <code>true</code> if the <code>desiredValue</code> is a
+     *         <code>SwitchStatus</code>. <code>false</code> otherwise.
+     * @throws INDIValueException
+     *             if <code>desiredValue</code> is <code>null</code>.
+     */
+    @Override
+    public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
+        if (desiredValue == null) {
+            throw new INDIValueException(this, "null value");
+        }
 
-  @Override
-  public void setDesiredValue(Object desiredValue) throws INDIValueException {
-    SwitchStatus ss = null;
-    try {
-      ss = (SwitchStatus) desiredValue;
-    } catch (ClassCastException e) {
-      throw new INDIValueException(this, "Value for a Switch Element must be a SwitchStatus");
+        if (desiredValue instanceof SwitchStatus) {
+            return true;
+        }
+
+        return false;
     }
 
-    this.desiredStatus = ss;
-  }
+    @Override
+    public String getNameAndValueAsString() {
+        return getName() + " - " + getValue();
+    }
 
-  @Override
-  public boolean isChanged() {
-    return true; // Always true to send all the elements in a switch property
-  }
+    @Override
+    public SwitchStatus getDesiredValue() {
+        if (desiredStatus == null) { // Maybe there is no desired status, but
+                                     // should be sent
+            return status;
+        }
 
-  /**
-   * Returns the XML code &lt;oneSwitch&gt; representing this Switch Element
-   * with a new value (a
-   * <code>SwitchStatus</code>). Resets the desired status.
-   *
-   * @return the XML code
-   * <code>&lt;oneSwitch&gt;</code> representing this Switch Element with a new
-   * value.
-   * @see #setDesiredValue
-   */
-  @Override
-  protected String getXMLOneElementNewValue() {
-    String stat = Constants.getSwitchStatusAsString(desiredStatus);
+        return desiredStatus;
+    }
 
-    String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";
+    @Override
+    public void setDesiredValue(Object desiredValue) throws INDIValueException {
+        SwitchStatus ss = null;
+        try {
+            ss = (SwitchStatus) desiredValue;
+        } catch (ClassCastException e) {
+            throw new INDIValueException(this, "Value for a Switch Element must be a SwitchStatus");
+        }
 
-    desiredStatus = null;
+        this.desiredStatus = ss;
+    }
 
-    return xml;
-  }
+    @Override
+    public boolean isChanged() {
+        return true; // Always true to send all the elements in a switch
+                     // property
+    }
 
-  @Override
-  public String getValueAsString() {
-    return getValue() + "";
-  }
+    /**
+     * Returns the XML code &lt;oneSwitch&gt; representing this Switch Element
+     * with a new value (a <code>SwitchStatus</code>). Resets the desired
+     * status.
+     * 
+     * @return the XML code <code>&lt;oneSwitch&gt;</code> representing this
+     *         Switch Element with a new value.
+     * @see #setDesiredValue
+     */
+    @Override
+    protected String getXMLOneElementNewValue() {
+        String stat = Constants.getSwitchStatusAsString(desiredStatus);
+
+        String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";
+
+        desiredStatus = null;
+
+        return xml;
+    }
+
+    @Override
+    public String getValueAsString() {
+        return getValue() + "";
+    }
 }

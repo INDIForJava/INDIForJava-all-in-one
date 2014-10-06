@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -31,304 +30,332 @@ import org.indilib.i4j.INDIException;
 
 /**
  * A class representing a INDI BLOB Property.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 7, 2013
  */
 public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
 
-  /**
-   * Constructs an instance of
-   * <code>INDIBLOBProperty</code> with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>label</code>,
-   * <code>group</code>,
-   * <code>state</code>,
-   * <code>permission</code> and
-   * <code>timeout</code>.
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param label The label of the Property
-   * @param group The group of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @param timeout The timeout of the Property
-   * @throws IllegalArgumentException
-   * @see INDIProperty
-   */
-  public INDIBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) throws IllegalArgumentException {
-    super(driver, name, label, group, state, permission, timeout);
-  }
-
-  /**
-   * Loads an instance of
-   * <code>INDIBLOBProperty</code> from a file or, if it cannot be loaded,
-   * constructs it with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>label</code>,
-   * <code>group</code>,
-   * <code>state</code>,
-   * <code>permission</code> and
-   * <code>timeout</code>. The property will autosave its status to a file every
-   * time that it is changed.
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param label The label of the Property
-   * @param group The group of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @param timeout The timeout of the Property
-   * @throws IllegalArgumentException
-   * @return The loaded BLOB property or a new constructed one if cannot be
-   * loaded.
-   * @see INDIProperty
-   */
-  public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) throws IllegalArgumentException {
-    INDIBLOBProperty bp = loadBLOBProperty(driver, name);
-
-    if (bp == null) {
-      bp = new INDIBLOBProperty(driver, name, label, group, state, permission, timeout);
-      bp.setSaveable(true);
+    /**
+     * Constructs an instance of <code>INDIBLOBProperty</code> with a particular
+     * <code>driver</code>, <code>name</code>, <code>label</code>,
+     * <code>group</code>, <code>state</code>, <code>permission</code> and
+     * <code>timeout</code>.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param label
+     *            The label of the Property
+     * @param group
+     *            The group of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @param timeout
+     *            The timeout of the Property
+     * @throws IllegalArgumentException
+     * @see INDIProperty
+     */
+    public INDIBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout)
+            throws IllegalArgumentException {
+        super(driver, name, label, group, state, permission, timeout);
     }
 
-    return bp;
-  }
+    /**
+     * Loads an instance of <code>INDIBLOBProperty</code> from a file or, if it
+     * cannot be loaded, constructs it with a particular <code>driver</code>,
+     * <code>name</code>, <code>label</code>, <code>group</code>,
+     * <code>state</code>, <code>permission</code> and <code>timeout</code>. The
+     * property will autosave its status to a file every time that it is
+     * changed.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param label
+     *            The label of the Property
+     * @param group
+     *            The group of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @param timeout
+     *            The timeout of the Property
+     * @throws IllegalArgumentException
+     * @return The loaded BLOB property or a new constructed one if cannot be
+     *         loaded.
+     * @see INDIProperty
+     */
+    public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
+            PropertyPermissions permission, int timeout) throws IllegalArgumentException {
+        INDIBLOBProperty bp = loadBLOBProperty(driver, name);
 
-  /**
-   * Loads a BLOB Property from a file.
-   *
-   * @param driver The Driver to which this property is associated
-   * @param name The name of the property
-   * @return The loaded blob property or <code>null</code> if it could not be
-   * loaded.
-   */
-  private static INDIBLOBProperty loadBLOBProperty(INDIDriver driver, String name) {
-    INDIProperty prop;
+        if (bp == null) {
+            bp = new INDIBLOBProperty(driver, name, label, group, state, permission, timeout);
+            bp.setSaveable(true);
+        }
 
-    try {
-      prop = INDIProperty.loadFromFile(driver, name);
-    } catch (INDIException e) {  // Was not correctly loaded
-      return null;
+        return bp;
     }
 
-    if (!(prop instanceof INDIBLOBProperty)) {
-      return null;
+    /**
+     * Loads a BLOB Property from a file.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated
+     * @param name
+     *            The name of the property
+     * @return The loaded blob property or <code>null</code> if it could not be
+     *         loaded.
+     */
+    private static INDIBLOBProperty loadBLOBProperty(INDIDriver driver, String name) {
+        INDIProperty prop;
+
+        try {
+            prop = INDIProperty.loadFromFile(driver, name);
+        } catch (INDIException e) { // Was not correctly loaded
+            return null;
+        }
+
+        if (!(prop instanceof INDIBLOBProperty)) {
+            return null;
+        }
+
+        INDIBLOBProperty bp = (INDIBLOBProperty) prop;
+        bp.setSaveable(true);
+        return bp;
     }
 
-    INDIBLOBProperty bp = (INDIBLOBProperty)prop;
-    bp.setSaveable(true);
-    return bp;
-  }
-
-  /**
-   * Constructs an instance of
-   * <code>INDIBLOBProperty</code> with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>label</code>,
-   * <code>group</code>,
-   * <code>state</code>,
-   * <code>permission</code> and a 0 timeout.
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param label The label of the Property
-   * @param group The group of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @throws IllegalArgumentException
-   * @see INDIProperty
-   */
-  public INDIBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
-    super(driver, name, label, group, state, permission, 0);
-  }
-
-  /**
-   * Loads an instance of
-   * <code>INDIBLOBProperty</code> from a file or, if it cannot be loaded,
-   * constructs it with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>label</code>,
-   * <code>group</code>,
-   * <code>state</code> and
-   * <code>permission</code>. The property will autosave its status to a file
-   * every time that it is changed.
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param label The label of the Property
-   * @param group The group of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @throws IllegalArgumentException
-   * @return The loaded BLOB property or a new constructed one if cannot be
-   * loaded.
-   * @see INDIProperty
-   */
-  public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
-    INDIBLOBProperty bp = loadBLOBProperty(driver, name);
-
-    if (bp == null) {
-      bp = new INDIBLOBProperty(driver, name, label, group, state, permission);
-      bp.setSaveable(true);
+    /**
+     * Constructs an instance of <code>INDIBLOBProperty</code> with a particular
+     * <code>driver</code>, <code>name</code>, <code>label</code>,
+     * <code>group</code>, <code>state</code>, <code>permission</code> and a 0
+     * timeout.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param label
+     *            The label of the Property
+     * @param group
+     *            The group of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @throws IllegalArgumentException
+     * @see INDIProperty
+     */
+    public INDIBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+        super(driver, name, label, group, state, permission, 0);
     }
 
-    return bp;
-  }
+    /**
+     * Loads an instance of <code>INDIBLOBProperty</code> from a file or, if it
+     * cannot be loaded, constructs it with a particular <code>driver</code>,
+     * <code>name</code>, <code>label</code>, <code>group</code>,
+     * <code>state</code> and <code>permission</code>. The property will
+     * autosave its status to a file every time that it is changed.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param label
+     *            The label of the Property
+     * @param group
+     *            The group of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @throws IllegalArgumentException
+     * @return The loaded BLOB property or a new constructed one if cannot be
+     *         loaded.
+     * @see INDIProperty
+     */
+    public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission)
+            throws IllegalArgumentException {
+        INDIBLOBProperty bp = loadBLOBProperty(driver, name);
 
-  /**
-   * Constructs an instance of
-   * <code>INDIBLOBProperty</code> with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>label</code>,
-   * <code>state</code>,
-   * <code>permission</code> and a 0 timeout and default group.
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param label The label of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @throws IllegalArgumentException
-   * @see INDIProperty
-   */
-  public INDIBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
-    super(driver, name, label, null, state, permission, 0);
-  }
+        if (bp == null) {
+            bp = new INDIBLOBProperty(driver, name, label, group, state, permission);
+            bp.setSaveable(true);
+        }
 
-  /**
-   * Loads an instance of
-   * <code>INDIBLOBProperty</code> from a file or, if it cannot be loaded,
-   * constructs it with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>label</code>,
-   * <code>state</code> and
-   * <code>permission</code>. The property will autosave its status to a file
-   * every time that it is changed.
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param label The label of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @throws IllegalArgumentException
-   * @return The loaded BLOB property or a new constructed one if cannot be
-   * loaded.
-   * @see INDIProperty
-   */
-  public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
-    INDIBLOBProperty bp = loadBLOBProperty(driver, name);
-
-    if (bp == null) {
-      bp = new INDIBLOBProperty(driver, name, label, state, permission);
-      bp.setSaveable(true);
+        return bp;
     }
 
-    return bp;
-  }
-
-  /**
-   * Constructs an instance of
-   * <code>INDIBLOBProperty</code> with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>state</code>,
-   * <code>permission</code> and a 0 timeout, a default group and a label equal
-   * to its
-   * <code>name</code>
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @throws IllegalArgumentException
-   * @see INDIProperty
-   */
-  public INDIBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
-    super(driver, name, null, null, state, permission, 0);
-  }
-
-  /**
-   * Loads an instance of
-   * <code>INDIBLOBProperty</code> from a file or, if it cannot be loaded,
-   * constructs it with a particular
-   * <code>driver</code>,
-   * <code>name</code>,
-   * <code>state</code> and
-   * <code>permission</code>. The property will autosave its status to a file
-   * every time that it is changed.
-   *
-   * @param driver The Driver to which this property is associated.
-   * @param name The name of the Property
-   * @param state The initial state of the Property
-   * @param permission The permission of the Property
-   * @throws IllegalArgumentException
-   * @return The loaded BLOB property or a new constructed one if cannot be
-   * loaded.
-   * @see INDIProperty
-   */
-  public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
-    INDIBLOBProperty bp = loadBLOBProperty(driver, name);
-
-    if (bp == null) {
-      bp = new INDIBLOBProperty(driver, name, state, permission);
-      bp.setSaveable(true);
+    /**
+     * Constructs an instance of <code>INDIBLOBProperty</code> with a particular
+     * <code>driver</code>, <code>name</code>, <code>label</code>,
+     * <code>state</code>, <code>permission</code> and a 0 timeout and default
+     * group.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param label
+     *            The label of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @throws IllegalArgumentException
+     * @see INDIProperty
+     */
+    public INDIBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+        super(driver, name, label, null, state, permission, 0);
     }
 
-    return bp;
-  }
+    /**
+     * Loads an instance of <code>INDIBLOBProperty</code> from a file or, if it
+     * cannot be loaded, constructs it with a particular <code>driver</code>,
+     * <code>name</code>, <code>label</code>, <code>state</code> and
+     * <code>permission</code>. The property will autosave its status to a file
+     * every time that it is changed.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param label
+     *            The label of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @throws IllegalArgumentException
+     * @return The loaded BLOB property or a new constructed one if cannot be
+     *         loaded.
+     * @see INDIProperty
+     */
+    public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission)
+            throws IllegalArgumentException {
+        INDIBLOBProperty bp = loadBLOBProperty(driver, name);
 
-  @Override
-  public INDIBLOBElement getElement(String name) {
-    return (INDIBLOBElement)super.getElement(name);
-  }
+        if (bp == null) {
+            bp = new INDIBLOBProperty(driver, name, label, state, permission);
+            bp.setSaveable(true);
+        }
 
-  @Override
-  protected String getXMLPropertyDefinitionInit() {
-    String xml = "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\"" + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+        return bp;
+    }
 
-    return xml;
-  }
+    /**
+     * Constructs an instance of <code>INDIBLOBProperty</code> with a particular
+     * <code>driver</code>, <code>name</code>, <code>state</code>,
+     * <code>permission</code> and a 0 timeout, a default group and a label
+     * equal to its <code>name</code>
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @throws IllegalArgumentException
+     * @see INDIProperty
+     */
+    public INDIBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+        super(driver, name, null, null, state, permission, 0);
+    }
 
-  @Override
-  protected String getXMLPropertyDefinitionInit(String message) {
-    String xml = "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\"" + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+    /**
+     * Loads an instance of <code>INDIBLOBProperty</code> from a file or, if it
+     * cannot be loaded, constructs it with a particular <code>driver</code>,
+     * <code>name</code>, <code>state</code> and <code>permission</code>. The
+     * property will autosave its status to a file every time that it is
+     * changed.
+     * 
+     * @param driver
+     *            The Driver to which this property is associated.
+     * @param name
+     *            The name of the Property
+     * @param state
+     *            The initial state of the Property
+     * @param permission
+     *            The permission of the Property
+     * @throws IllegalArgumentException
+     * @return The loaded BLOB property or a new constructed one if cannot be
+     *         loaded.
+     * @see INDIProperty
+     */
+    public static INDIBLOBProperty createSaveableBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission)
+            throws IllegalArgumentException {
+        INDIBLOBProperty bp = loadBLOBProperty(driver, name);
 
-    return xml;
-  }
+        if (bp == null) {
+            bp = new INDIBLOBProperty(driver, name, state, permission);
+            bp.setSaveable(true);
+        }
 
-  @Override
-  protected String getXMLPropertyDefinitionEnd() {
-    String xml = "</defBLOBVector>";
+        return bp;
+    }
 
-    return xml;
-  }
+    @Override
+    public INDIBLOBElement getElement(String name) {
+        return (INDIBLOBElement) super.getElement(name);
+    }
 
-  @Override
-  protected String getXMLPropertySetInit() {
-    String xml = "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+    @Override
+    protected String getXMLPropertyDefinitionInit() {
+        String xml =
+                "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
+                        + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
+                        + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
 
-    return xml;
-  }
+        return xml;
+    }
 
-  @Override
-  protected String getXMLPropertySetInit(String message) {
-    String xml = "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+    @Override
+    protected String getXMLPropertyDefinitionInit(String message) {
+        String xml =
+                "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
+                        + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
+                        + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
 
-    return xml;
-  }
+        return xml;
+    }
 
-  @Override
-  protected String getXMLPropertySetEnd() {
-    String xml = "</setBLOBVector>";
+    @Override
+    protected String getXMLPropertyDefinitionEnd() {
+        String xml = "</defBLOBVector>";
 
-    return xml;
-  }
+        return xml;
+    }
+
+    @Override
+    protected String getXMLPropertySetInit() {
+        String xml =
+                "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+
+        return xml;
+    }
+
+    @Override
+    protected String getXMLPropertySetInit(String message) {
+        String xml =
+                "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+
+        return xml;
+    }
+
+    @Override
+    protected String getXMLPropertySetEnd() {
+        String xml = "</setBLOBVector>";
+
+        return xml;
+    }
 }

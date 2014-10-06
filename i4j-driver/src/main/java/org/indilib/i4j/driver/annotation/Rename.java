@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver.annotation;
 
 /*

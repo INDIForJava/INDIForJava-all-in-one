@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -32,23 +31,25 @@ import org.indilib.i4j.INDIException;
  * property. Note that any INDIDriver implementing this interface will
  * automatically include the connection property. No code will be necessary in
  * the Driver code to include or manage it.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public interface INDIConnectionHandler {
 
-  /**
-   * The method that will handle the connection.
-   *
-   * @param timestamp when the connection message has been received.
-   */
-  public void driverConnect(Date timestamp) throws INDIException;
+    /**
+     * The method that will handle the connection.
+     * 
+     * @param timestamp
+     *            when the connection message has been received.
+     */
+    public void driverConnect(Date timestamp) throws INDIException;
 
-  /**
-   * The method that will handle the disconnection.
-   *
-   * @param timestamp when the disconnection message has been received.
-   */
-  public void driverDisconnect(Date timestamp) throws INDIException;
+    /**
+     * The method that will handle the disconnection.
+     * 
+     * @param timestamp
+     *            when the disconnection message has been received.
+     */
+    public void driverDisconnect(Date timestamp) throws INDIException;
 }

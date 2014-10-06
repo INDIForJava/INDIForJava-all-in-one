@@ -76,14 +76,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A class that acts as a INDI for Java Driver for the Sky Quality Meter - LU.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.37, January 11, 2014
  */
 public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
     private static Logger LOG = LoggerFactory.getLogger(I4JSQMDriver.class);
-  /**
+
+    /**
      * The serial and its reading and writting streams / readers.
      */
     private SerialPort serialPort;
@@ -155,7 +156,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
      * Constructs an instance of a <code>I4JSQMDriver</code> with a particular
      * <code>inputStream<code> from which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
-     *
+     * 
      * @param inputStream
      *            The stream from which to read messages.
      * @param outputStream
@@ -351,7 +352,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
     /**
      * Gets a measurement from the SQM.
-     *
+     * 
      * @return An array of 5 elements: Magnitudes per square arc second,
      *         frequency of sensor, period of sensor in counts, period of sensor
      *         in seconds, light sensor temperature (ºC)
@@ -415,7 +416,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
                 answer = answer.trim();
             } while (!answer.startsWith("i,"));
         } catch (IOException e) {
-            LOG.error("read error",e);
+            LOG.error("read error", e);
             return;
         }
 
@@ -441,7 +442,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
     /**
      * Reads a line from the SQM.
-     *
+     * 
      * @return The readed line
      * @throws IOException
      *             If there is any problem in the communication.
@@ -458,7 +459,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
     /**
      * Writes a String to the SQM.
-     *
+     * 
      * @param msg
      *            The String to be sent to the SQM.
      * @throws IOException

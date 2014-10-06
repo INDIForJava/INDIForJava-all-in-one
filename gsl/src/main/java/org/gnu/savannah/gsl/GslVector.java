@@ -25,210 +25,209 @@ package org.gnu.savannah.gsl;
 import org.gnu.savannah.gsl.util.DoubleArray;
 
 public class GslVector {
-	public GslVector(int n) {
-		if (n == 0) {
-			throw new IllegalStateException(
-					"vector length n must be positive integer");
-		}
-		this.block = new GslBlock(n);
-		this.data = block.data;
-		this.size = n;
-		this.stride = 1;
-		this.owner = 1;
-	}
 
-	public int size;
-	public int stride;
-	public DoubleArray data;
-	public GslBlock block;
-	public int owner;
+    public GslVector(int n) {
+        if (n == 0) {
+            throw new IllegalStateException("vector length n must be positive integer");
+        }
+        this.block = new GslBlock(n);
+        this.data = block.data;
+        this.size = n;
+        this.stride = 1;
+        this.owner = 1;
+    }
 
-	public double get(int i) {
-		return data.get(i * stride);
-	}
+    public int size;
 
-	public void set(int i, double x) {
-		data.set(i * stride, x);
-	}
+    public int stride;
 
-	public void setZero() {
-		for (int index = 0; index < size; index++) {
-			data.set(index* stride, 0d);
-		}
-	}
+    public DoubleArray data;
 
-	public GslVectorView subvector(int offset, int n) {
-		GslVectorView view = new GslVectorView();
+    public GslBlock block;
 
-		if (n == 0) {
-			throw new IllegalStateException(
-					"vector length n must be positive integer");
-		}
+    public int owner;
 
-		if (offset + (n - 1) >= this.size) {
-			throw new IllegalStateException(
-					"view would extend past end of vector");
-		}
+    public double get(int i) {
+        return data.get(i * stride);
+    }
 
-		{
-			GslVector s = new GslVector(n);
+    public void set(int i, double x) {
+        data.set(i * stride, x);
+    }
 
-			s.data = new DoubleArray(this.data, 1 * this.stride * offset);
-			s.size = n;
-			s.stride = this.stride;
-			s.block = this.block;
-			s.owner = 0;
+    public void setZero() {
+        for (int index = 0; index < size; index++) {
+            data.set(index * stride, 0d);
+        }
+    }
 
-			view.vector = s;
-			return view;
-		}
-	}
+    public GslVectorView subvector(int offset, int n) {
+        GslVectorView view = new GslVectorView();
 
-	public GslVectorView subvectorWithStride(int offset,
-			int stride, int n) {
-		GslVectorView view = new GslVectorView();
-		if (n == 0) {
-			throw new IllegalStateException(
-					"vector length n must be positive integer");
-		}
+        if (n == 0) {
+            throw new IllegalStateException("vector length n must be positive integer");
+        }
 
-		if (stride == 0) {
-			throw new IllegalStateException("stride must be positive integer");
-		}
+        if (offset + (n - 1) >= this.size) {
+            throw new IllegalStateException("view would extend past end of vector");
+        }
 
-		if (offset + (n - 1) * stride >= this.size) {
-			throw new IllegalStateException(
-					"view would extend past end of vector");
-		}
+        {
+            GslVector s = new GslVector(n);
 
-		{
-			GslVector s = new GslVector(1);
+            s.data = new DoubleArray(this.data, 1 * this.stride * offset);
+            s.size = n;
+            s.stride = this.stride;
+            s.block = this.block;
+            s.owner = 0;
 
-			s.data = new DoubleArray(this.data, 1 * this.stride * offset);
-			s.size = n;
-			s.stride = this.stride * stride;
-			s.block = this.block;
-			s.owner = 0;
+            view.vector = s;
+            return view;
+        }
+    }
 
-			view.vector = s;
-			return view;
-		}
-	}
+    public GslVectorView subvectorWithStride(int offset, int stride, int n) {
+        GslVectorView view = new GslVectorView();
+        if (n == 0) {
+            throw new IllegalStateException("vector length n must be positive integer");
+        }
 
-	public GslErrno swapElements(int i, int j) {
+        if (stride == 0) {
+            throw new IllegalStateException("stride must be positive integer");
+        }
 
-		if (i >= size) {
-			throw new IllegalStateException("first index is out of range");
-		}
+        if (offset + (n - 1) * stride >= this.size) {
+            throw new IllegalStateException("view would extend past end of vector");
+        }
 
-		if (j >= size) {
-			throw new IllegalStateException("second index is out of range");
-		}
+        {
+            GslVector s = new GslVector(1);
 
-		if (i != j) {
-			int s = 1 * stride;
-			int k;
+            s.data = new DoubleArray(this.data, 1 * this.stride * offset);
+            s.size = n;
+            s.stride = this.stride * stride;
+            s.block = this.block;
+            s.owner = 0;
 
-			for (k = 0; k < 1; k++) {
-				double tmp = data.get(j * s + k);
-				data.set(j * s + k, data.get(i * s + k));
-				data.set(i * s + k, tmp);
-			}
-		}
+            view.vector = s;
+            return view;
+        }
+    }
 
-		return GslErrno.GSL_SUCCESS;
-	}
+    public GslErrno swapElements(int i, int j) {
 
-	public boolean isNull() {
-		int n = this.size;
-		int stride = this.stride;
+        if (i >= size) {
+            throw new IllegalStateException("first index is out of range");
+        }
 
-		int j;
+        if (j >= size) {
+            throw new IllegalStateException("second index is out of range");
+        }
 
-		for (j = 0; j < n; j++) {
-			int k;
+        if (i != j) {
+            int s = 1 * stride;
+            int k;
 
-			for (k = 0; k < 1; k++) {
-				if (this.data.get(1 * stride * j + k) != 0.0) {
-					return false;
-				}
-			}
-		}
+            for (k = 0; k < 1; k++) {
+                double tmp = data.get(j * s + k);
+                data.set(j * s + k, data.get(i * s + k));
+                data.set(i * s + k, tmp);
+            }
+        }
 
-		return true;
-	}
+        return GslErrno.GSL_SUCCESS;
+    }
 
-	public boolean isPos() {
-		int n = this.size;
-		int stride = this.stride;
+    public boolean isNull() {
+        int n = this.size;
+        int stride = this.stride;
 
-		int j;
+        int j;
 
-		for (j = 0; j < n; j++) {
-			int k;
+        for (j = 0; j < n; j++) {
+            int k;
 
-			for (k = 0; k < 1; k++) {
-				if (this.data.get(1 * stride * j + k) <= 0.0) {
-					return false;
-				}
-			}
-		}
+            for (k = 0; k < 1; k++) {
+                if (this.data.get(1 * stride * j + k) != 0.0) {
+                    return false;
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public boolean isNeg() {
-		int n = this.size;
-		int stride = this.stride;
+    public boolean isPos() {
+        int n = this.size;
+        int stride = this.stride;
 
-		int j;
+        int j;
 
-		for (j = 0; j < n; j++) {
-			int k;
+        for (j = 0; j < n; j++) {
+            int k;
 
-			for (k = 0; k < 1; k++) {
-				if (this.data.get(1 * stride * j + k) >= 0.0) {
-					return false;
-				}
-			}
-		}
+            for (k = 0; k < 1; k++) {
+                if (this.data.get(1 * stride * j + k) <= 0.0) {
+                    return false;
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public boolean isNonNeg() {
-		int n = this.size;
-		int stride = this.stride;
+    public boolean isNeg() {
+        int n = this.size;
+        int stride = this.stride;
 
-		int j;
+        int j;
 
-		for (j = 0; j < n; j++) {
-			int k;
+        for (j = 0; j < n; j++) {
+            int k;
 
-			for (k = 0; k < 1; k++) {
-				if (this.data.get(1 * stride * j + k) < 0.0) {
-					return false;
-				}
-			}
-		}
+            for (k = 0; k < 1; k++) {
+                if (this.data.get(1 * stride * j + k) >= 0.0) {
+                    return false;
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public DoubleArray ptr(int i) {
-		return new DoubleArray(data, i * stride);
-	}
+    public boolean isNonNeg() {
+        int n = this.size;
+        int stride = this.stride;
 
-	@Override
-	public String toString() {
-		StringBuffer result = new StringBuffer("gsl_vector(");
-		for (int i = 0; i < size; i++) {
-			if (i != 0) {
-				result.append(',');
-			}
-			result.append(get(i));
-		}
-		result.append(')');
-		return result.toString();
-	}
+        int j;
+
+        for (j = 0; j < n; j++) {
+            int k;
+
+            for (k = 0; k < 1; k++) {
+                if (this.data.get(1 * stride * j + k) < 0.0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public DoubleArray ptr(int i) {
+        return new DoubleArray(data, i * stride);
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer result = new StringBuffer("gsl_vector(");
+        for (int i = 0; i < size; i++) {
+            if (i != 0) {
+                result.append(',');
+            }
+            result.append(get(i));
+        }
+        result.append(')');
+        return result.toString();
+    }
 }

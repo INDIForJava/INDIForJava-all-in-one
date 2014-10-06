@@ -54,143 +54,137 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A simple GUI INDI Client using the library.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.21, April 4, 2012
  */
 public class SimpleINDIAppletClient extends javax.swing.JApplet implements INDIServerConnectionListener {
+
     private static Logger LOG = LoggerFactory.getLogger(SimpleINDIAppletClient.class);
-  private INDIServerConnection connection;
 
-  public void connect() {
-    String host = "";
-    int port = Constants.INDI_DEFAULT_PORT;
+    private INDIServerConnection connection;
 
-    String s = null;
+    public void connect() {
+        String host = "";
+        int port = Constants.INDI_DEFAULT_PORT;
 
-    while (s == null) {
-      Object[] possibilities = null;
-      s = (String) JOptionPane.showInputDialog(
-              null,
-              "Enter host:port to connect:",
-              "INDI Connection Dialog",
-              JOptionPane.PLAIN_MESSAGE,
-              null,
-              possibilities,
-              null);
+        String s = null;
 
+        while (s == null) {
+            Object[] possibilities = null;
+            s = (String) JOptionPane.showInputDialog(null, "Enter host:port to connect:", "INDI Connection Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities, null);
 
-      if (s == null) {
-        stop();  // If canel was pressed stop
-      }
+            if (s == null) {
+                stop(); // If canel was pressed stop
+            }
 
-      if (s.length() > 0) {
-        int pos = s.indexOf(":");
+            if (s.length() > 0) {
+                int pos = s.indexOf(":");
 
-        if (pos == -1) {
-          s = null;
-        } else {
-          host = s.substring(0, pos);
-          try {
-            port = Integer.parseInt(s.substring(pos + 1));
-          } catch (NumberFormatException e) {
-            s = null;
-          }
+                if (pos == -1) {
+                    s = null;
+                } else {
+                    host = s.substring(0, pos);
+                    try {
+                        port = Integer.parseInt(s.substring(pos + 1));
+                    } catch (NumberFormatException e) {
+                        s = null;
+                    }
+                }
+            }
         }
-      }
+
+        connection = new INDIServerConnection(host, port);
+
+        connection.addINDIServerConnectionListener(this);
+
+        try {
+            connection.connect();
+            connection.askForDevices();
+        } catch (IOException e) {
+            LOG.error("Problem connecting to " + connection.getHost() + ":" + connection.getPort(), e);
+        }
     }
 
-    connection = new INDIServerConnection(host, port);
+    @Override
+    public void newDevice(INDIServerConnection connection, INDIDevice device) {
+        INDIDevicePanel p = null;
 
-    connection.addINDIServerConnectionListener(this);
+        try {
+            p = (INDIDevicePanel) device.getDefaultUIComponent();
+        } catch (Exception e) {
+            LOG.error("Problem with library. Should not happen unless errors in Client library", e);
+            System.exit(-1);
+        }
 
-    try {
-      connection.connect();
-      connection.askForDevices();
-    } catch (IOException e) {
-        LOG.error("Problem connecting to " + connection.getHost() + ":" + connection.getPort(), e);
-    }
-  }
-
-  @Override
-  public void newDevice(INDIServerConnection connection, INDIDevice device) {
-    INDIDevicePanel p = null;
-
-    try {
-      p = (INDIDevicePanel) device.getDefaultUIComponent();
-    } catch (Exception e) { 
-        LOG.error("Problem with library. Should not happen unless errors in Client library",e);
-      System.exit(-1);
+        tabs.addTab(device.getName(), p);
     }
 
-    tabs.addTab(device.getName(), p);
-  }
+    @Override
+    public void removeDevice(INDIServerConnection connection, INDIDevice device) {
+        INDIDevicePanel p = null;
 
-  @Override
-  public void removeDevice(INDIServerConnection connection, INDIDevice device) {
-    INDIDevicePanel p = null;
+        try {
+            p = (INDIDevicePanel) device.getDefaultUIComponent();
+        } catch (Exception e) {
+            LOG.error("Problem with library. Should not happen unless errors in Client library", e);
+            System.exit(-1);
+        }
 
-    try {
-      p = (INDIDevicePanel) device.getDefaultUIComponent();
-    } catch (Exception e) { 
-        LOG.error("Problem with library. Should not happen unless errors in Client library",e);
-      System.exit(-1);
+        tabs.remove(p);
     }
 
-    tabs.remove(p);
-  }
+    @Override
+    public void connectionLost(INDIServerConnection connection) {
+        addMessage("Connection lost.");
+    }
 
-  @Override
-  public void connectionLost(INDIServerConnection connection) {
-    addMessage("Connection lost.");
-  }
+    @Override
+    public void newMessage(INDIServerConnection connection, Date timestamp, String message) {
+        addMessage(timestamp + " - " + message);
+    }
 
-  @Override
-  public void newMessage(INDIServerConnection connection, Date timestamp, String message) {
-    addMessage(timestamp + " - " + message);
-  }
-
-  /**
-   * Not efficient at all. Will certainly produce problems when many mesages are
-   * printed.
-   *
-   * @param msg
-   */
-  private void addMessage(String msg) {
-    messageArea.setText(messageArea.getText() + "\n" + msg);
-  }
-
-  /**
-   * Initializes the applet SimpleINDIAppletClient
-   */
-  @Override
-  public void init() {
-
-
-    /*
-     * Create and display the applet
+    /**
+     * Not efficient at all. Will certainly produce problems when many mesages
+     * are printed.
+     * 
+     * @param msg
      */
-    try {
-      java.awt.EventQueue.invokeAndWait(new Runnable() {
-
-        @Override
-        public void run() {
-          initComponents();
-          connect();
-        }
-      });
-    } catch (Exception ex) {
-        LOG.error("Problem with library. Should not happen unless errors in Client library",ex);
+    private void addMessage(String msg) {
+        messageArea.setText(messageArea.getText() + "\n" + msg);
     }
-  }
 
-  /**
-   * This method is called from within the init() method to initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is always
-   * regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    /**
+     * Initializes the applet SimpleINDIAppletClient
+     */
+    @Override
+    public void init() {
+
+        /*
+         * Create and display the applet
+         */
+        try {
+            java.awt.EventQueue.invokeAndWait(new Runnable() {
+
+                @Override
+                public void run() {
+                    initComponents();
+                    connect();
+                }
+            });
+        } catch (Exception ex) {
+            LOG.error("Problem with library. Should not happen unless errors in Client library", ex);
+        }
+    }
+
+    /**
+     * This method is called from within the init() method to initialize the
+     * form. WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed"
+    // desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         tabs = new javax.swing.JTabbedPane();
@@ -211,10 +205,14 @@ public class SimpleINDIAppletClient extends javax.swing.JApplet implements INDIS
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+     // Variables declaration - do not modify//GEN-BEGIN:variables
+
     private javax.swing.JPanel jPanel1;
+
     private javax.swing.JScrollPane jScrollPane1;
+
     private javax.swing.JTextArea messageArea;
+
     private javax.swing.JTabbedPane tabs;
     // End of variables declaration//GEN-END:variables
 }

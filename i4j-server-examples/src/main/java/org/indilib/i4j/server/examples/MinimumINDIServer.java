@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.server.examples;
 
 /*
@@ -35,51 +34,54 @@ import org.slf4j.LoggerFactory;
  * An almost minimum INDI Server. It just has one working Driver:
  * RandomNumberGeneratorDriver (please check the INDI for Java Driver examples)
  * and it only accepts connections from 127.0.0.1 (localhost).
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.21, April 4, 2012
  */
 public class MinimumINDIServer extends DefaultINDIServer {
 
     private static Logger LOG = LoggerFactory.getLogger(MinimumINDIServer.class);
-  /**
-   * Just loads the available driver.
-   */
-  public MinimumINDIServer() {
-    super();
 
-    // Loads the Java Driver. Please note that its class must be in the classpath.
-    try {
-      loadJavaDriver(RandomNumberGeneratorDriver.class);
-    } catch (INDIException e) {
-        LOG.error("indi exception",e);
+    /**
+     * Just loads the available driver.
+     */
+    public MinimumINDIServer() {
+        super();
 
-      System.exit(-1);
+        // Loads the Java Driver. Please note that its class must be in the
+        // classpath.
+        try {
+            loadJavaDriver(RandomNumberGeneratorDriver.class);
+        } catch (INDIException e) {
+            LOG.error("indi exception", e);
+
+            System.exit(-1);
+        }
     }
-  }
 
-  /**
-   * Accepts the client if it is 127.0.0.1 (localhost).
-   *
-   * @param socket
-   * @return <code>true</code> if it is the 127.0.0.1 host.
-   */
-  @Override
-  protected boolean acceptClient(Socket socket) {
-    byte[] address = socket.getInetAddress().getAddress();
+    /**
+     * Accepts the client if it is 127.0.0.1 (localhost).
+     * 
+     * @param socket
+     * @return <code>true</code> if it is the 127.0.0.1 host.
+     */
+    @Override
+    protected boolean acceptClient(Socket socket) {
+        byte[] address = socket.getInetAddress().getAddress();
 
-    if ( (address[0] == 127) && (address[1] == 0) && (address[2] == 0) && (address[3] == 1) ) {
-      return true;
+        if ((address[0] == 127) && (address[1] == 0) && (address[2] == 0) && (address[3] == 1)) {
+            return true;
+        }
+
+        return false;
     }
-    
-    return false;
-  }
 
-  /**
-   * Just creates one instance of this server.
-   * @param args 
-   */
-  public static void main(String[] args) {
-    MinimumINDIServer s = new MinimumINDIServer();  
-  }
+    /**
+     * Just creates one instance of this server.
+     * 
+     * @param args
+     */
+    public static void main(String[] args) {
+        MinimumINDIServer s = new MinimumINDIServer();
+    }
 }

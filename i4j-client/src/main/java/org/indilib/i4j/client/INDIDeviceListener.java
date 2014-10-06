@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.client;
 
 /*
@@ -25,29 +24,37 @@ package org.indilib.i4j.client;
 
 /**
  * A interface to be notified about changes in a <code>INDIDevice</code>.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public interface INDIDeviceListener {
 
-  /**
-   * Called when a new Property is added to the Device.
-   * @param device The Device on which the Property has been addded.
-   * @param property The Property that has been added.
-   */
-  public abstract void newProperty(INDIDevice device, INDIProperty property);
+    /**
+     * Called when a new Property is added to the Device.
+     * 
+     * @param device
+     *            The Device on which the Property has been addded.
+     * @param property
+     *            The Property that has been added.
+     */
+    public abstract void newProperty(INDIDevice device, INDIProperty property);
 
-  /**
-   * Called when a Property is removed from a Device.
-   * @param device The Device to which the Property has been removed.
-   * @param property The Property that has been removed.
-   */
-  public abstract void removeProperty(INDIDevice device, INDIProperty property);
+    /**
+     * Called when a Property is removed from a Device.
+     * 
+     * @param device
+     *            The Device to which the Property has been removed.
+     * @param property
+     *            The Property that has been removed.
+     */
+    public abstract void removeProperty(INDIDevice device, INDIProperty property);
 
-  /**
-   * Called when the message for a Device has changed.
-   * @param device The device to which the message has changed.
-   */
-  public abstract void messageChanged(INDIDevice device);
+    /**
+     * Called when the message for a Device has changed.
+     * 
+     * @param device
+     *            The device to which the message has changed.
+     */
+    public abstract void messageChanged(INDIDevice device);
 }

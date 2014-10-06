@@ -1,4 +1,3 @@
-
 package org.indilib.i4j;
 
 /*
@@ -35,33 +34,33 @@ import org.w3c.dom.Element;
 
 /**
  * A class to transforms XML Elements into Strings.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */
 public class XMLToString {
 
-  /**
-   * Transforms a XML Element into a String.
-   *
-   * @param xml The XML Element
-   * @return A String representing the XML Element
-   */
-  public static String transform(Element xml) {
-    try {
-      TransformerFactory transFactory = TransformerFactory.newInstance();
+    /**
+     * Transforms a XML Element into a String.
+     * 
+     * @param xml
+     *            The XML Element
+     * @return A String representing the XML Element
+     */
+    public static String transform(Element xml) {
+        try {
+            TransformerFactory transFactory = TransformerFactory.newInstance();
 
-      Transformer transformer = transFactory.newTransformer();
+            Transformer transformer = transFactory.newTransformer();
 
-      StringWriter buffer = new StringWriter();
-      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-      transformer.transform(new DOMSource(xml),
-              new StreamResult(buffer));
-      String str = buffer.toString();
-      return str;
-    } catch (Exception e) {
+            StringWriter buffer = new StringWriter();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.transform(new DOMSource(xml), new StreamResult(buffer));
+            String str = buffer.toString();
+            return str;
+        } catch (Exception e) {
+        }
+
+        return "";
     }
-
-    return "";
-  }
 }

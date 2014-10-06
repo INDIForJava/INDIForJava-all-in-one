@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.client;
 
 /*
@@ -29,173 +28,178 @@ import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Text Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, February 4, 2012
  */
 public class INDITextElement extends INDIElement {
 
-  /**
-   * The current value of the Text Element
-   */
-  private String value;
-  /**
-   * The current desired value for the Text Element.
-   */
-  private String desiredValue;
-  /**
-   * A UI component that can be used in graphical interfaces for this Text
-   * Element.
-   */
-  private INDIElementListener UIComponent;
+    /**
+     * The current value of the Text Element
+     */
+    private String value;
 
-  /**
-   * Constructs an instance of
-   * <code>INDITextElement</code>. Usually called from a
-   * <code>INDIProperty</code>.
-   *
-   * @param xml A XML Element
-   * <code>&lt;defText&gt;</code> describing the Text Element.
-   * @param property The
-   * <code>INDIProperty</code> to which the Element belongs.
-   * @throws IllegalArgumentException if the XML Element is not well formed.
-   */
-  protected INDITextElement(Element xml, INDIProperty property) throws IllegalArgumentException {
-    super(xml, property);
+    /**
+     * The current desired value for the Text Element.
+     */
+    private String desiredValue;
 
-    desiredValue = null;
+    /**
+     * A UI component that can be used in graphical interfaces for this Text
+     * Element.
+     */
+    private INDIElementListener UIComponent;
 
-    value = xml.getTextContent().trim();
-  }
+    /**
+     * Constructs an instance of <code>INDITextElement</code>. Usually called
+     * from a <code>INDIProperty</code>.
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;defText&gt;</code> describing the Text
+     *            Element.
+     * @param property
+     *            The <code>INDIProperty</code> to which the Element belongs.
+     * @throws IllegalArgumentException
+     *             if the XML Element is not well formed.
+     */
+    protected INDITextElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+        super(xml, property);
 
-  @Override
-  public String getValue() {
-    return value;
-  }
+        desiredValue = null;
 
-  /**
-   * Sets the current value of this Text Element. It is assummed that the XML
-   * Element is really describing the new value for this particular Text
-   * Element. <p> This method will notify the change of the value to the
-   * listeners.
-   *
-   * @param xml A XML Element &lt;oneText&gt; describing the Element.
-   * @throws IllegalArgumentException if the
-   * <code>xml</code> is not well formed.
-   */
-  @Override
-  protected void setValue(Element xml) throws IllegalArgumentException {
-    value = xml.getTextContent().trim();
-
-    notifyListeners();
-  }
-
-  @Override
-  public INDIElementListener getDefaultUIComponent() throws INDIException {
-    if (UIComponent != null) {
-      removeINDIElementListener(UIComponent);
+        value = xml.getTextContent().trim();
     }
 
-
-    Object[] arguments = new Object[]{this, getProperty().getPermission()};
-    String[] possibleUIClassNames = new String[]{"org.indilib.i4j.client.ui.INDITextElementPanel", "org.indilib.i4j.androidui.INDITextElementView"};
-
-    try {
-      UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-    } catch (ClassCastException e) {
-      throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
+    @Override
+    public String getValue() {
+        return value;
     }
 
-    addINDIElementListener(UIComponent);
+    /**
+     * Sets the current value of this Text Element. It is assummed that the XML
+     * Element is really describing the new value for this particular Text
+     * Element.
+     * <p>
+     * This method will notify the change of the value to the listeners.
+     * 
+     * @param xml
+     *            A XML Element &lt;oneText&gt; describing the Element.
+     * @throws IllegalArgumentException
+     *             if the <code>xml</code> is not well formed.
+     */
+    @Override
+    protected void setValue(Element xml) throws IllegalArgumentException {
+        value = xml.getTextContent().trim();
 
-    return UIComponent;
-  }
-
-  /**
-   * Checks if a desired value would be correct to be applied to the Text
-   * Element.
-   *
-   * @param desiredValue The value to be checked.
-   * @return
-   * <code>true</code> if the
-   * <code>desiredValue</code> is a
-   * <code>String</code>.
-   * <code>false</code> otherwise.
-   * @throws INDIValueException if
-   * <code>desiredValue</code> is
-   * <code>null</code>.
-   */
-  @Override
-  public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
-    if (desiredValue == null) {
-      throw new INDIValueException(this, "null value");
+        notifyListeners();
     }
 
-    if (desiredValue instanceof String) {
-      return true;
+    @Override
+    public INDIElementListener getDefaultUIComponent() throws INDIException {
+        if (UIComponent != null) {
+            removeINDIElementListener(UIComponent);
+        }
+
+        Object[] arguments = new Object[]{
+            this,
+            getProperty().getPermission()
+        };
+        String[] possibleUIClassNames = new String[]{
+            "org.indilib.i4j.client.ui.INDITextElementPanel",
+            "org.indilib.i4j.androidui.INDITextElementView"
+        };
+
+        try {
+            UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+        } catch (ClassCastException e) {
+            throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
+        }
+
+        addINDIElementListener(UIComponent);
+
+        return UIComponent;
     }
 
-    return false;
-  }
+    /**
+     * Checks if a desired value would be correct to be applied to the Text
+     * Element.
+     * 
+     * @param desiredValue
+     *            The value to be checked.
+     * @return <code>true</code> if the <code>desiredValue</code> is a
+     *         <code>String</code>. <code>false</code> otherwise.
+     * @throws INDIValueException
+     *             if <code>desiredValue</code> is <code>null</code>.
+     */
+    @Override
+    public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
+        if (desiredValue == null) {
+            throw new INDIValueException(this, "null value");
+        }
 
-  @Override
-  public String getNameAndValueAsString() {
-    return getName() + " - " + getValue();
-  }
+        if (desiredValue instanceof String) {
+            return true;
+        }
 
-  @Override
-  public String getDesiredValue() {
-    return desiredValue;
-  }
-
-  @Override
-  public void setDesiredValue(Object desiredValue) throws INDIValueException {
-    String v = null;
-
-    try {
-      v = (String) desiredValue;
-    } catch (ClassCastException e) {
-      throw new INDIValueException(this, "Value for a Text Element must be a String");
+        return false;
     }
 
-    this.desiredValue = v;
-  }
-
-  @Override
-  public boolean isChanged() {
-    if (desiredValue != null) {
-      return true;
-    } else {
-      return false;
+    @Override
+    public String getNameAndValueAsString() {
+        return getName() + " - " + getValue();
     }
-  }
 
-  /**
-   * Returns the XML code &lt;oneText&gt; representing this Text Element with a
-   * new desired value (a
-   * <code>String</code>). Resets the desired value.
-   *
-   * @return the XML code
-   * <code>&lt;oneText&gt;</code> representing the Text Element with a new
-   * value.
-   * @see #setDesiredValue
-   */
-  @Override
-  protected String getXMLOneElementNewValue() {
-    String xml = "<oneText name=\"" + this.getName() + "\">" + desiredValue + "</oneText>";
+    @Override
+    public String getDesiredValue() {
+        return desiredValue;
+    }
 
-    desiredValue = null;
+    @Override
+    public void setDesiredValue(Object desiredValue) throws INDIValueException {
+        String v = null;
 
-    return xml;
-  }
-  
-  @Override
-  public String toString() {
-    return value; 
-  }
+        try {
+            v = (String) desiredValue;
+        } catch (ClassCastException e) {
+            throw new INDIValueException(this, "Value for a Text Element must be a String");
+        }
 
-  @Override
-  public String getValueAsString() {
-    return getValue();
-  }
+        this.desiredValue = v;
+    }
+
+    @Override
+    public boolean isChanged() {
+        if (desiredValue != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the XML code &lt;oneText&gt; representing this Text Element with
+     * a new desired value (a <code>String</code>). Resets the desired value.
+     * 
+     * @return the XML code <code>&lt;oneText&gt;</code> representing the Text
+     *         Element with a new value.
+     * @see #setDesiredValue
+     */
+    @Override
+    protected String getXMLOneElementNewValue() {
+        String xml = "<oneText name=\"" + this.getName() + "\">" + desiredValue + "</oneText>";
+
+        desiredValue = null;
+
+        return xml;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+
+    @Override
+    public String getValueAsString() {
+        return getValue();
+    }
 }

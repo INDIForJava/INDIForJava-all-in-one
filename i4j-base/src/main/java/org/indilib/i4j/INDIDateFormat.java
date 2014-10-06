@@ -1,4 +1,3 @@
-
 package org.indilib.i4j;
 
 /*
@@ -29,66 +28,70 @@ import java.util.Date;
 
 /**
  * A simple class to format and parse INDI timestamps.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public class INDIDateFormat {
 
-  /**
-   * The first possible format for INDI timestamps.
-   */
-  private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-  /**
-   * The second possible format for INDI timestamps.
-   */
-  private static SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    /**
+     * The first possible format for INDI timestamps.
+     */
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
-  /**
-   * Parses a timestamp expressed in the INDI format. If the timestamp does not
-   * have the correct format it returns the current timestamp.
-   *
-   * @param time the timestamp to be parsed
-   * @return the parsed timestamp or the current timestamp if the format of the
-   * <code>time</code> is not correct.
-   */
-  public static Date parseTimestamp(String time) {
-    Date timestamp = new Date();
+    /**
+     * The second possible format for INDI timestamps.
+     */
+    private static SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    time = time.trim();
-    
-    if (!(time.length() == 0)) {
-      try {
-        timestamp = dateFormat.parse(time);
-      } catch (ParseException e) {
-        try {
-          timestamp = dateFormat2.parse(time);
-        } catch (ParseException ee) {
-          timestamp = new Date();  // Not correct format, returning current timestamp.
+    /**
+     * Parses a timestamp expressed in the INDI format. If the timestamp does
+     * not have the correct format it returns the current timestamp.
+     * 
+     * @param time
+     *            the timestamp to be parsed
+     * @return the parsed timestamp or the current timestamp if the format of
+     *         the <code>time</code> is not correct.
+     */
+    public static Date parseTimestamp(String time) {
+        Date timestamp = new Date();
+
+        time = time.trim();
+
+        if (!(time.length() == 0)) {
+            try {
+                timestamp = dateFormat.parse(time);
+            } catch (ParseException e) {
+                try {
+                    timestamp = dateFormat2.parse(time);
+                } catch (ParseException ee) {
+                    timestamp = new Date(); // Not correct format, returning
+                                            // current timestamp.
+                }
+            }
         }
-      }
+
+        return timestamp;
     }
 
-    return timestamp;
-  }
+    /**
+     * Formats a timestamp according to the INDI format.
+     * 
+     * @param timestamp
+     *            the timestamp to be formmated
+     * @return the formatted timestamp
+     */
+    public static String formatTimestamp(Date timestamp) {
+        return dateFormat.format(timestamp);
+    }
 
-  /**
-   * Formats a timestamp according to the INDI format.
-   *
-   * @param timestamp the timestamp to be formmated
-   * @return the formatted timestamp
-   */
-  public static String formatTimestamp(Date timestamp) {
-    return dateFormat.format(timestamp);
-  }
-
-  /**
-   * Gets the current timestamp in form of a String according to the INDI
-   * specification.
-   *
-   * @return the current timestamp according to the INDI specification.
-   */
-  public static String getCurrentTimestamp() {
-    return formatTimestamp(new Date());
-  }
+    /**
+     * Gets the current timestamp in form of a String according to the INDI
+     * specification.
+     * 
+     * @return the current timestamp according to the INDI specification.
+     */
+    public static String getCurrentTimestamp() {
+        return formatTimestamp(new Date());
+    }
 }

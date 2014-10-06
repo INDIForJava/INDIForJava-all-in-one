@@ -22,7 +22,6 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
-
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberProperty;

@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -27,7 +26,7 @@ package org.indilib.i4j.driver;
  * An interface representing a NOT Loadable Driver in the INDI Protocol. INDI
  * Drivers which should not be directly instantiated by a server should
  * implement this interface.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */

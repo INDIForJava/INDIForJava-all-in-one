@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver.examples;
 
 /*
@@ -44,75 +43,76 @@ import org.indilib.i4j.driver.INDITextProperty;
  * An example class representing a very basic INDI Driver. It just defines a
  * read only Number Property that shows a pseudo random number that changes each
  * second.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.3, April 4, 2012
  */
 public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable {
 
-  /**
-   * The random number Property
-   */
-  private INDINumberProperty randomP;
-  /**
-   * The random number Element
-   */
-  private INDINumberElement randomE;
+    /**
+     * The random number Property
+     */
+    private INDINumberProperty randomP;
 
-  public RandomNumberGeneratorDriver(InputStream inputStream, OutputStream outputStream) {
-    super(inputStream, outputStream);
+    /**
+     * The random number Element
+     */
+    private INDINumberElement randomE;
 
-    // Define the Property REMEMBER TO SET IT TO RO
-    randomP = new INDINumberProperty(this, "random", "Random Number", PropertyStates.IDLE, PropertyPermissions.RO);
-    randomE = new INDINumberElement(randomP, "random", "Random Number", 0, 0, 1.0, 0, "%f");
+    public RandomNumberGeneratorDriver(InputStream inputStream, OutputStream outputStream) {
+        super(inputStream, outputStream);
 
-    this.addProperty(randomP);
+        // Define the Property REMEMBER TO SET IT TO RO
+        randomP = new INDINumberProperty(this, "random", "Random Number", PropertyStates.IDLE, PropertyPermissions.RO);
+        randomE = new INDINumberElement(randomP, "random", "Random Number", 0, 0, 1.0, 0, "%f");
 
-    Thread t = new Thread(this);
-    t.start();
-  }
+        this.addProperty(randomP);
 
-  @Override
-  public String getName() {
-    return "Random Number Generator";
-  }
-
-  @Override
-  public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
-  }
-
-  @Override
-  public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-  }
-
-  @Override
-  public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-  }
-
-  @Override
-  public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
-  }
-
-  /**
-   * Main logic: iterate forever changing the number value
-   */
-  @Override
-  public void run() {
-    while (true) {
-      double aux = Math.random();
-
-      // Update Element
-      randomE.setValue(aux);
-
-      // Set Property state to OK
-      randomP.setState(PropertyStates.OK);
-
-      // Send the changes to the Clients
-      updateProperty(randomP);
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-      }
+        Thread t = new Thread(this);
+        t.start();
     }
-  }
+
+    @Override
+    public String getName() {
+        return "Random Number Generator";
+    }
+
+    @Override
+    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
+    }
+
+    @Override
+    public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
+    }
+
+    @Override
+    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
+    }
+
+    @Override
+    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
+    }
+
+    /**
+     * Main logic: iterate forever changing the number value
+     */
+    @Override
+    public void run() {
+        while (true) {
+            double aux = Math.random();
+
+            // Update Element
+            randomE.setValue(aux);
+
+            // Set Property state to OK
+            randomP.setState(PropertyStates.OK);
+
+            // Send the changes to the Clients
+            updateProperty(randomP);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
 }

@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -30,122 +29,140 @@ import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Switch Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.11, March 26, 2012
  */
 public class INDISwitchElement extends INDIElement {
 
-  /**
-   * Current Status value for this Switch Element.
-   */
-  private SwitchStatus status;
+    /**
+     * Current Status value for this Switch Element.
+     */
+    private SwitchStatus status;
 
-  /**
-   * Constructs an instance of a
-   * <code>INDISwitchElement</code> with a
-   * <code>name</code>, a
-   * <code>label</code> and its initial
-   * <code>status</code>.
-   *
-   * @param property The Property to which this Element belongs.
-   * @param name The name of the Element.
-   * @param label The label of the Element.
-   * @param status The initial status of the Element
-   * @throws IllegalArgumentException
-   */
-  public INDISwitchElement(INDISwitchProperty property, String name, String label, SwitchStatus status) throws IllegalArgumentException {
-    super(property, name, label);
+    /**
+     * Constructs an instance of a <code>INDISwitchElement</code> with a
+     * <code>name</code>, a <code>label</code> and its initial
+     * <code>status</code>.
+     * 
+     * @param property
+     *            The Property to which this Element belongs.
+     * @param name
+     *            The name of the Element.
+     * @param label
+     *            The label of the Element.
+     * @param status
+     *            The initial status of the Element
+     * @throws IllegalArgumentException
+     */
+    public INDISwitchElement(INDISwitchProperty property, String name, String label, SwitchStatus status) throws IllegalArgumentException {
+        super(property, name, label);
 
-    this.status = status;
-  }
-
-  /**
-   * Constructs an instance of a
-   * <code>INDISwitchElement</code> with a
-   * <code>name</code>, a
-   * <code>label</code> and its initial
-   * <code>status</code>. The label of the Element will be a copy of the
-   * <code>name</code>.
-   *
-   * @param property The Property to which this Element belongs.
-   * @param name The name of the Element.
-   * @param status The initial state of the Element.
-   * @throws IllegalArgumentException
-   */
-  public INDISwitchElement(INDISwitchProperty property, String name, SwitchStatus status) throws IllegalArgumentException {
-    super(property, name);
-
-    this.status = status;
-  }
-
-  @Override
-  public INDISwitchProperty getProperty() {
-    return (INDISwitchProperty)super.getProperty();
-  }
-
-  @Override
-  public SwitchStatus getValue() {
-    return status;
-  }
-
-  /**
-   * Sets the Element value to a new value. This method ensures that if the
-   * Switch Property rule is
-   * <code>AT_MOST_ONE</code> or
-   * <code>ONE_OF_MANY</code> and the new value is
-   * <code>ON</code> the other Switch Elements of the property are turn to
-   * <code>OFF</code>.
-   *
-   * @param newValue The new value.
-   * @throws IllegalArgumentException If the <code>newValue</code> is not a
-   * valid <code>SwitchStatus</code>.
-   */
-  @Override
-  public void setValue(Object newValue) throws IllegalArgumentException {
-    SwitchStatus ss = null;
-    try {
-      ss = (SwitchStatus)newValue;
-    } catch (ClassCastException e) {
-      throw new IllegalArgumentException("Value for a Switch Element must be a SwitchStatus");
+        this.status = status;
     }
 
-    if (ss == SwitchStatus.ON) {
-      INDISwitchProperty p = getProperty();
+    /**
+     * Constructs an instance of a <code>INDISwitchElement</code> with a
+     * <code>name</code>, a <code>label</code> and its initial
+     * <code>status</code>. The label of the Element will be a copy of the
+     * <code>name</code>.
+     * 
+     * @param property
+     *            The Property to which this Element belongs.
+     * @param name
+     *            The name of the Element.
+     * @param status
+     *            The initial state of the Element.
+     * @throws IllegalArgumentException
+     */
+    public INDISwitchElement(INDISwitchProperty property, String name, SwitchStatus status) throws IllegalArgumentException {
+        super(property, name);
 
-      if ((p.getRule() == SwitchRules.AT_MOST_ONE) || (p.getRule() == SwitchRules.ONE_OF_MANY)) {  // If only one ON value is allowed in the property, set all of them to OFF
-        p.resetAllSwitches();
-      }
+        this.status = status;
     }
 
-    this.status = ss;
-  }
+    @Override
+    public INDISwitchProperty getProperty() {
+        return (INDISwitchProperty) super.getProperty();
+    }
 
-  @Override
-  public String getXMLOneElement(boolean includeMinMaxStep) {
-    String stat = Constants.getSwitchStatusAsString(status);
+    @Override
+    public SwitchStatus getValue() {
+        return status;
+    }
 
-    String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";
+    /**
+     * Sets the Element value to a new value. This method ensures that if the
+     * Switch Property rule is <code>AT_MOST_ONE</code> or
+     * <code>ONE_OF_MANY</code> and the new value is <code>ON</code> the other
+     * Switch Elements of the property are turn to <code>OFF</code>.
+     * 
+     * @param newValue
+     *            The new value.
+     * @throws IllegalArgumentException
+     *             If the <code>newValue</code> is not a valid
+     *             <code>SwitchStatus</code>.
+     */
+    @Override
+    public void setValue(Object newValue) throws IllegalArgumentException {
+        SwitchStatus ss = null;
+        try {
+            ss = (SwitchStatus) newValue;
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("Value for a Switch Element must be a SwitchStatus");
+        }
 
-    return xml;
-  }
+        if (ss == SwitchStatus.ON) {
+            INDISwitchProperty p = getProperty();
 
-  @Override
-  public String getNameAndValueAsString() {
-    return getName() + " - " + getValue();
-  }
+            if ((p.getRule() == SwitchRules.AT_MOST_ONE) || (p.getRule() == SwitchRules.ONE_OF_MANY)) { // If
+                                                                                                        // only
+                                                                                                        // one
+                                                                                                        // ON
+                                                                                                        // value
+                                                                                                        // is
+                                                                                                        // allowed
+                                                                                                        // in
+                                                                                                        // the
+                                                                                                        // property,
+                                                                                                        // set
+                                                                                                        // all
+                                                                                                        // of
+                                                                                                        // them
+                                                                                                        // to
+                                                                                                        // OFF
+                p.resetAllSwitches();
+            }
+        }
 
-  @Override
-  protected String getXMLDefElement() {
-    String stat = Constants.getSwitchStatusAsString(status);
+        this.status = ss;
+    }
 
-    String xml = "<defSwitch name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + stat + "</defSwitch>";
+    @Override
+    public String getXMLOneElement(boolean includeMinMaxStep) {
+        String stat = Constants.getSwitchStatusAsString(status);
 
-    return xml;
-  }
+        String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";
 
-  @Override
-  public Object parseOneValue(Element xml) {
-    return Constants.parseSwitchStatus(xml.getTextContent().trim());
-  }
+        return xml;
+    }
+
+    @Override
+    public String getNameAndValueAsString() {
+        return getName() + " - " + getValue();
+    }
+
+    @Override
+    protected String getXMLDefElement() {
+        String stat = Constants.getSwitchStatusAsString(status);
+
+        String xml = "<defSwitch name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + stat + "</defSwitch>";
+
+        return xml;
+    }
+
+    @Override
+    public Object parseOneValue(Element xml) {
+        return Constants.parseSwitchStatus(xml.getTextContent().trim());
+    }
 }

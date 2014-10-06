@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.driver;
 
 /*
@@ -26,14 +25,13 @@ package org.indilib.i4j.driver;
 import org.indilib.i4j.Constants.SwitchStatus;
 
 /**
- * A class representing a pair of a
- * <code>INDISwitchElement</code> and a
+ * A class representing a pair of a <code>INDISwitchElement</code> and a
  * <code>SwitchStatus</code>.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 8, 2013
  */
-public class INDISwitchElementAndValue extends INDIElementAndValue<INDISwitchElement,SwitchStatus> {
+public class INDISwitchElementAndValue extends INDIElementAndValue<INDISwitchElement, SwitchStatus> {
 
     public INDISwitchElementAndValue(INDISwitchElement element, SwitchStatus value) {
         super(element, value);

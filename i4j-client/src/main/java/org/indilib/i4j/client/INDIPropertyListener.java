@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.client;
 
 /*
@@ -25,14 +24,17 @@ package org.indilib.i4j.client;
 
 /**
  * A interface to be notified about changes in a <code>INDIProperty</code>.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public interface INDIPropertyListener {
+
     /**
-   * The method that will be called when a <code>INDIProperty</code> changes.
-   * @param property the property that has changed.
-   */
-  public abstract void propertyChanged(INDIProperty property);
+     * The method that will be called when a <code>INDIProperty</code> changes.
+     * 
+     * @param property
+     *            the property that has changed.
+     */
+    public abstract void propertyChanged(INDIProperty property);
 }

@@ -1,4 +1,3 @@
-
 package org.indilib.i4j.client;
 
 /*
@@ -28,34 +27,49 @@ import java.util.Date;
 /**
  * A interface to be notified about changes in a
  * <code>INDIServerConnection</code>
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
  */
 public interface INDIServerConnectionListener {
 
-  /**
-   * Called when a new Device is added to the Connection.
-   * @param connection The connection to which the device is added.
-   * @param device The device that has been added.
-   */
-  public abstract void newDevice(INDIServerConnection connection, INDIDevice device);
-  /**
-   * Called when a device is removed from the Connection
-   * @param connection The Connection from which the device is being removed.
-   * @param device The device being removed.
-   */
-  public abstract void removeDevice(INDIServerConnection connection, INDIDevice device);
-  /**
-   * Called when the connection is lost (explicity or not).
-   * @param connection The connection that has been lost. 
-   */
-  public abstract void connectionLost(INDIServerConnection connection);
-  /**
-   * Called when the message of the Connection is changed.
-   * @param connection The Connection of whose message has changed.
-   * @param timestamp The timestamp of the message.
-   * @param message The message.
-   */
-  public abstract void newMessage(INDIServerConnection connection, Date timestamp, String message);
+    /**
+     * Called when a new Device is added to the Connection.
+     * 
+     * @param connection
+     *            The connection to which the device is added.
+     * @param device
+     *            The device that has been added.
+     */
+    public abstract void newDevice(INDIServerConnection connection, INDIDevice device);
+
+    /**
+     * Called when a device is removed from the Connection
+     * 
+     * @param connection
+     *            The Connection from which the device is being removed.
+     * @param device
+     *            The device being removed.
+     */
+    public abstract void removeDevice(INDIServerConnection connection, INDIDevice device);
+
+    /**
+     * Called when the connection is lost (explicity or not).
+     * 
+     * @param connection
+     *            The connection that has been lost.
+     */
+    public abstract void connectionLost(INDIServerConnection connection);
+
+    /**
+     * Called when the message of the Connection is changed.
+     * 
+     * @param connection
+     *            The Connection of whose message has changed.
+     * @param timestamp
+     *            The timestamp of the message.
+     * @param message
+     *            The message.
+     */
+    public abstract void newMessage(INDIServerConnection connection, Date timestamp, String message);
 }

@@ -57,283 +57,298 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A default panel to represent a
- * <code>INDIProperty</code>.
- *
+ * A default panel to represent a <code>INDIProperty</code>.
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.36, November 18, 2013
  * @see INDIProperty
  */
 public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
+
     private static Logger LOG = LoggerFactory.getLogger(INDIDefaultPropertyPanel.class);
-  private INDIPropertyInformationDialog infoDialog;
 
-  /**
-   * Creates new form INDIDefaultPropertyPanel
-   */
-  public INDIDefaultPropertyPanel(INDIProperty ip) {
-    super(ip);
+    private INDIPropertyInformationDialog infoDialog;
 
-    initComponents();
+    /**
+     * Creates new form INDIDefaultPropertyPanel
+     */
+    public INDIDefaultPropertyPanel(INDIProperty ip) {
+        super(ip);
 
-    VerticalLayout v = new VerticalLayout(5, VerticalLayout.CENTER, VerticalLayout.CENTER);
-    buttons.setLayout(v);
-    buttons.validate();
+        initComponents();
 
-    updatePropertyData();
+        VerticalLayout v = new VerticalLayout(5, VerticalLayout.CENTER, VerticalLayout.CENTER);
+        buttons.setLayout(v);
+        buttons.validate();
 
-    boolean writable = false;
-    if (ip.getPermission() != PropertyPermissions.RO) {
-      writable = true;
+        updatePropertyData();
+
+        boolean writable = false;
+        if (ip.getPermission() != PropertyPermissions.RO) {
+            writable = true;
+        }
+
+        if (!writable) {
+            set.setVisible(false);
+            buttons.remove(set);
+            buttons.revalidate();
+        }
+
+        List<INDIElement> elems = ip.getElementsAsList();
+
+        // In case that we have a switch property we may need a button group
+        ButtonGroup bg = null;
+
+        if (ip instanceof INDISwitchProperty) {
+            INDISwitchProperty isp = (INDISwitchProperty) ip;
+
+            if (isp.getRule() == SwitchRules.ONE_OF_MANY) {
+                bg = new ButtonGroup();
+            } else if (isp.getRule() == SwitchRules.AT_MOST_ONE) {
+                bg = new ButtonGroupZeroOrOne();
+            }
+        }
+
+        for (int i = 0; i < elems.size(); i++) {
+            INDIElementPanel ep = null;
+
+            try {
+                ep = (INDIElementPanel) elems.get(i).getDefaultUIComponent();
+            } catch (Exception e) { // Problem with library. Should not happen
+                                    // unless errors in Client library
+                e.printStackTrace();
+                System.exit(-1);
+            }
+
+            if (bg != null) {
+                ((INDISwitchElementPanel) ep).setButtonGroup(bg);
+            }
+
+            ep.setINDIPropertyPanel(this);
+
+            addElementPanel(ep);
+        }
     }
 
-    if (!writable) {
-      set.setVisible(false);
-      buttons.remove(set);
-      buttons.revalidate();
+    @Override
+    protected void checkSetButton() {
+        boolean enabled = true;
+        boolean changed = false;
+
+        for (int i = 0; i < elements.getComponentCount(); i++) {
+            INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
+
+            if (elp.isDesiredValueErroneous()) {
+                enabled = false;
+            }
+
+            if (elp.isChanged()) {
+                changed = true;
+            }
+        }
+
+        if (!changed) {
+            enabled = false;
+        }
+
+        set.setEnabled(enabled);
     }
 
-    List<INDIElement> elems = ip.getElementsAsList();
+    private void updatePropertyData() {
+        name.setText(getProperty().getLabel());
+        name.setToolTipText(getProperty().getName());
 
-    // In case that we have a switch property we may need a button group
-    ButtonGroup bg = null;
+        PropertyStates st = getProperty().getState();
 
-    if (ip instanceof INDISwitchProperty) {
-      INDISwitchProperty isp = (INDISwitchProperty)ip;
-
-      if (isp.getRule() == SwitchRules.ONE_OF_MANY) {
-        bg = new ButtonGroup();
-      } else if (isp.getRule() == SwitchRules.AT_MOST_ONE) {
-        bg = new ButtonGroupZeroOrOne();
-      }
+        if (st == PropertyStates.IDLE) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_idle.png"))); // NOI18N
+        } else if (st == PropertyStates.OK) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_ok.png"))); // NOI18N
+        } else if (st == PropertyStates.BUSY) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_busy.png"))); // NOI18N
+        } else if (st == PropertyStates.ALERT) {
+            state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_alert.png"))); // NOI18N
+        }
     }
 
-    for (int i = 0 ; i < elems.size() ; i++) {
-      INDIElementPanel ep = null;
+    private void addElementPanel(INDIElementPanel panel) {
+        elements.add(panel);
 
-      try {
-        ep = (INDIElementPanel)elems.get(i).getDefaultUIComponent();
-      } catch (Exception e) { // Problem with library. Should not happen unless errors in Client library
-        e.printStackTrace();
-        System.exit(-1);
-      }
-
-      if (bg != null) {
-        ((INDISwitchElementPanel)ep).setButtonGroup(bg);
-      }
-
-      ep.setINDIPropertyPanel(this);
-
-      addElementPanel(ep);
-    }
-  }
-
-  @Override
-  protected void checkSetButton() {
-    boolean enabled = true;
-    boolean changed = false;
-
-    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
-      INDIElementPanel elp = (INDIElementPanel)elements.getComponent(i);
-
-      if (elp.isDesiredValueErroneous()) {
-        enabled = false;
-      }
-
-      if (elp.isChanged()) {
-        changed = true;
-      }
+        elements.validate();
     }
 
-    if (!changed) {
-      enabled = false;
+    private void removeElementPanel(INDIElementPanel panel) {
+        elements.remove(panel);
+
+        elements.validate();
     }
 
-    set.setEnabled(enabled);
-  }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed"
+    // desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-  private void updatePropertyData() {
-    name.setText(getProperty().getLabel());
-    name.setToolTipText(getProperty().getName());
+        jPanel1 = new javax.swing.JPanel();
+        state = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        name = new javax.swing.JLabel();
+        elements = new javax.swing.JPanel();
+        buttons = new javax.swing.JPanel();
+        set = new javax.swing.JButton();
+        information = new javax.swing.JButton();
 
-    PropertyStates st = getProperty().getState();
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        addComponentListener(new java.awt.event.ComponentAdapter() {
 
-    if (st == PropertyStates.IDLE) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_idle.png"))); // NOI18N
-    } else if (st == PropertyStates.OK) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_ok.png"))); // NOI18N
-    } else if (st == PropertyStates.BUSY) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_busy.png"))); // NOI18N
-    } else if (st == PropertyStates.ALERT) {
-      state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_alert.png"))); // NOI18N
-    }
-  }
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
+        setLayout(new java.awt.BorderLayout(10, 0));
 
-  private void addElementPanel(INDIElementPanel panel) {
-    elements.add(panel);
+        jPanel1.setLayout(new java.awt.BorderLayout(5, 0));
 
-    elements.validate();
-  }
+        state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_idle.png"))); // NOI18N
+        jPanel1.add(state, java.awt.BorderLayout.WEST);
 
-  private void removeElementPanel(INDIElementPanel panel) {
-    elements.remove(panel);
+        jPanel5.setLayout(new java.awt.BorderLayout());
+        jPanel5.add(name, java.awt.BorderLayout.CENTER);
 
-    elements.validate();
-  }
+        jPanel1.add(jPanel5, java.awt.BorderLayout.CENTER);
 
-  /**
-   * This method is called from within the constructor to initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is always
-   * regenerated by the Form Editor.
-   */
-  @SuppressWarnings("unchecked")
-  // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-  private void initComponents() {
+        add(jPanel1, java.awt.BorderLayout.WEST);
 
-    jPanel1 = new javax.swing.JPanel();
-    state = new javax.swing.JLabel();
-    jPanel5 = new javax.swing.JPanel();
-    name = new javax.swing.JLabel();
-    elements = new javax.swing.JPanel();
-    buttons = new javax.swing.JPanel();
-    set = new javax.swing.JButton();
-    information = new javax.swing.JButton();
+        elements.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        elements.setLayout(new javax.swing.BoxLayout(elements, javax.swing.BoxLayout.Y_AXIS));
+        add(elements, java.awt.BorderLayout.CENTER);
 
-    setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    addComponentListener(new java.awt.event.ComponentAdapter() {
-      public void componentResized(java.awt.event.ComponentEvent evt) {
-        formComponentResized(evt);
-      }
-    });
-    setLayout(new java.awt.BorderLayout(10, 0));
+        buttons.setLayout(new java.awt.BorderLayout(0, 5));
 
-    jPanel1.setLayout(new java.awt.BorderLayout(5, 0));
+        set.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/tick.png"))); // NOI18N
+        set.setText("Set");
+        set.setEnabled(false);
+        set.setMargin(new java.awt.Insets(1, 14, 1, 14));
+        set.addActionListener(new java.awt.event.ActionListener() {
 
-    state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_idle.png"))); // NOI18N
-    jPanel1.add(state, java.awt.BorderLayout.WEST);
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setActionPerformed(evt);
+            }
+        });
+        buttons.add(set, java.awt.BorderLayout.CENTER);
 
-    jPanel5.setLayout(new java.awt.BorderLayout());
-    jPanel5.add(name, java.awt.BorderLayout.CENTER);
+        information.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/information.png"))); // NOI18N
+        information.setText("Info");
+        information.setToolTipText("Information about the property");
+        information.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        information.setPreferredSize(new java.awt.Dimension(50, 16));
+        information.addActionListener(new java.awt.event.ActionListener() {
 
-    jPanel1.add(jPanel5, java.awt.BorderLayout.CENTER);
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                informationActionPerformed(evt);
+            }
+        });
+        buttons.add(information, java.awt.BorderLayout.SOUTH);
 
-    add(jPanel1, java.awt.BorderLayout.WEST);
+        add(buttons, java.awt.BorderLayout.EAST);
+    }// </editor-fold>//GEN-END:initComponents
 
-    elements.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-    elements.setLayout(new javax.swing.BoxLayout(elements, javax.swing.BoxLayout.Y_AXIS));
-    add(elements, java.awt.BorderLayout.CENTER);
+    private void informationActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_informationActionPerformed
+        if (infoDialog == null) {
+            infoDialog = new INDIPropertyInformationDialog((JFrame) SwingUtilities.getWindowAncestor(this), false, getProperty());
+        }
 
-    buttons.setLayout(new java.awt.BorderLayout(0, 5));
+        infoDialog.showDialog();
+    }// GEN-LAST:event_informationActionPerformed
 
-    set.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/tick.png"))); // NOI18N
-    set.setText("Set");
-    set.setEnabled(false);
-    set.setMargin(new java.awt.Insets(1, 14, 1, 14));
-    set.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        setActionPerformed(evt);
-      }
-    });
-    buttons.add(set, java.awt.BorderLayout.CENTER);
+    private void setActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_setActionPerformed
 
-    information.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/information.png"))); // NOI18N
-    information.setText("Info");
-    information.setToolTipText("Information about the property");
-    information.setMargin(new java.awt.Insets(0, 0, 0, 0));
-    information.setPreferredSize(new java.awt.Dimension(50, 16));
-    information.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        informationActionPerformed(evt);
-      }
-    });
-    buttons.add(information, java.awt.BorderLayout.SOUTH);
+        for (int i = 0; i < elements.getComponentCount(); i++) {
+            INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
 
-    add(buttons, java.awt.BorderLayout.EAST);
-  }// </editor-fold>//GEN-END:initComponents
+            if (elp.isChanged()) {
+                try {
+                    elp.getElement().setDesiredValue(elp.getDesiredValue());
+                } catch (INDIValueException e) {
+                    LOG.error("value exception", e);
+                    return;
+                }
+            }
+        }
 
-  private void informationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_informationActionPerformed
-    if (infoDialog == null) {
-      infoDialog = new INDIPropertyInformationDialog((JFrame)SwingUtilities.getWindowAncestor(this), false, getProperty());
-    }
-
-    infoDialog.showDialog();
-  }//GEN-LAST:event_informationActionPerformed
-
-  private void setActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setActionPerformed
-
-    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
-      INDIElementPanel elp = (INDIElementPanel)elements.getComponent(i);
-
-      if (elp.isChanged()) {
         try {
-          elp.getElement().setDesiredValue(elp.getDesiredValue());
+            getProperty().sendChangesToDriver();
+
+            cleanDesiredValues();
         } catch (INDIValueException e) {
-            LOG.error("value exception",e);
-          return;
+            INDIElement errorElement = e.getINDIElement();
+
+            for (int i = 0; i < elements.getComponentCount(); i++) {
+                INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
+
+                if (errorElement == elp.getElement()) {
+                    elp.setError(true, e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            LOG.error("io exception", e);
         }
-      }
-    }
+    }// GEN-LAST:event_setActionPerformed
 
-    try {
-      getProperty().sendChangesToDriver();
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {// GEN-FIRST:event_formComponentResized
+        resizeElementNames();
+    }// GEN-LAST:event_formComponentResized
 
-      cleanDesiredValues();
-    } catch (INDIValueException e) {
-      INDIElement errorElement = e.getINDIElement();
+    private void resizeElementNames() {
+        int size = 0;
 
-      for (int i = 0 ; i < elements.getComponentCount() ; i++) {
-        INDIElementPanel elp = (INDIElementPanel)elements.getComponent(i);
-
-        if (errorElement == elp.getElement()) {
-          elp.setError(true, e.getMessage());
+        for (int i = 0; i < elements.getComponentCount(); i++) {
+            INDIElementPanel ep = (INDIElementPanel) elements.getComponent(i);
+            if (size < ep.getNameSize()) {
+                size = ep.getNameSize();
+            }
         }
-      }
-    } catch (IOException e) {
-      LOG.error("io exception",e);
+        for (int i = 0; i < elements.getComponentCount(); i++) {
+            INDIElementPanel ep = (INDIElementPanel) elements.getComponent(i);
+            ep.setNameSize(size);
+        }
     }
-  }//GEN-LAST:event_setActionPerformed
 
-  private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-    resizeElementNames();
-  }//GEN-LAST:event_formComponentResized
+    private void cleanDesiredValues() {
+        for (int i = 0; i < elements.getComponentCount(); i++) {
+            INDIElementPanel elp = (INDIElementPanel) elements.getComponent(i);
 
-  private void resizeElementNames() {
-    int size = 0;
-
-    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
-      INDIElementPanel ep = (INDIElementPanel)elements.getComponent(i);
-      if (size < ep.getNameSize()) {
-        size = ep.getNameSize();
-      }
+            elp.cleanDesiredValue();
+        }
     }
-    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
-      INDIElementPanel ep = (INDIElementPanel)elements.getComponent(i);
-      ep.setNameSize(size);
-    }
-  }
 
-  private void cleanDesiredValues() {
-    for (int i = 0 ; i < elements.getComponentCount() ; i++) {
-      INDIElementPanel elp = (INDIElementPanel)elements.getComponent(i);
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel buttons;
 
-      elp.cleanDesiredValue();
-    }
-  }
-  // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JPanel buttons;
-  private javax.swing.JPanel elements;
-  private javax.swing.JButton information;
-  private javax.swing.JPanel jPanel1;
-  private javax.swing.JPanel jPanel5;
-  private javax.swing.JLabel name;
-  private javax.swing.JButton set;
-  private javax.swing.JLabel state;
-  // End of variables declaration//GEN-END:variables
+    private javax.swing.JPanel elements;
 
-  @Override
-  public void propertyChanged(INDIProperty property) {
-    if (property == getProperty()) {
-      updatePropertyData();
+    private javax.swing.JButton information;
+
+    private javax.swing.JPanel jPanel1;
+
+    private javax.swing.JPanel jPanel5;
+
+    private javax.swing.JLabel name;
+
+    private javax.swing.JButton set;
+
+    private javax.swing.JLabel state;
+
+    // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void propertyChanged(INDIProperty property) {
+        if (property == getProperty()) {
+            updatePropertyData();
+        }
     }
-  }
 }

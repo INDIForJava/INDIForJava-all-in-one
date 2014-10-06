@@ -47,85 +47,91 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A thread that reads messages from the Seletek.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.35, November 11, 2013
  */
 public class SeletekReadingThread extends Thread {
+
     private static Logger LOG = LoggerFactory.getLogger(SeletekReadingThread.class);
 
-  /**
-   * The Seletek Driver.
-   */
-  private I4JSeletekDriver driver;
-  /**
-   * The stream from which to read the messages.
-   */
-  private FileInputStream seletekInput;
-  /**
-   * To finish the thread.
-   */
-  private boolean stopReading;
-  /**
-   * The thread has ended
-   */
-  private boolean ended;
+    /**
+     * The Seletek Driver.
+     */
+    private I4JSeletekDriver driver;
 
-  /**
-   * Constructs an instance of a
-   * <code>SeletekReadingThread</code>.
-   *
-   * @param driver The driver that will parse the messages
-   * @param seletekInput The input stream from which the messages will be readed
-   */
-  public SeletekReadingThread(I4JSeletekDriver driver, FileInputStream seletekInput) {
-    this.driver = driver;
-    this.seletekInput = seletekInput;
-  }
+    /**
+     * The stream from which to read the messages.
+     */
+    private FileInputStream seletekInput;
 
-  /**
-   * Tells the thread to stop reading and finish.
-   */
-  protected synchronized void stopReading() {
-    stopReading = true;
-  }
+    /**
+     * To finish the thread.
+     */
+    private boolean stopReading;
 
-  /**
-   * Gets if the thread has already ended.
-   *
-   * @return <code>true</code> if the thread has already *    * ended, <code>false</code> otherwise
-   */
-  protected boolean hasEnded() {
-    return ended;
-  }
+    /**
+     * The thread has ended
+     */
+    private boolean ended;
 
-  @Override
-  public void run() {
-    ended = false;
-    String buffer = "";
-
-    while (!stopReading) {
-      try {
-        if (seletekInput.available() > 0) {
-          byte[] readed = new byte[4096];
-
-          int br = seletekInput.read(readed);
-
-          if (br > 0) {
-            buffer += new String(readed, 0, br);
-
-            buffer = driver.parseSeletekMessages(buffer);
-          }
-        }
-      } catch (IOException e) {
-        stopReading = true;
-      }
-
-      Utils.sleep(200);
+    /**
+     * Constructs an instance of a <code>SeletekReadingThread</code>.
+     * 
+     * @param driver
+     *            The driver that will parse the messages
+     * @param seletekInput
+     *            The input stream from which the messages will be readed
+     */
+    public SeletekReadingThread(I4JSeletekDriver driver, FileInputStream seletekInput) {
+        this.driver = driver;
+        this.seletekInput = seletekInput;
     }
 
-    LOG.info("Seletek Reader Thread Ending");
+    /**
+     * Tells the thread to stop reading and finish.
+     */
+    protected synchronized void stopReading() {
+        stopReading = true;
+    }
 
-    ended = true;
-  }
+    /**
+     * Gets if the thread has already ended.
+     * 
+     * @return <code>true</code> if the thread has already * * ended,
+     *         <code>false</code> otherwise
+     */
+    protected boolean hasEnded() {
+        return ended;
+    }
+
+    @Override
+    public void run() {
+        ended = false;
+        String buffer = "";
+
+        while (!stopReading) {
+            try {
+                if (seletekInput.available() > 0) {
+                    byte[] readed = new byte[4096];
+
+                    int br = seletekInput.read(readed);
+
+                    if (br > 0) {
+                        buffer += new String(readed, 0, br);
+
+                        buffer = driver.parseSeletekMessages(buffer);
+                    }
+                }
+            } catch (IOException e) {
+                stopReading = true;
+            }
+
+            Utils.sleep(200);
+        }
+
+        LOG.info("Seletek Reader Thread Ending");
+
+        ended = true;
+    }
 }

@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A class that acts as a abstract INDI for Java Driver for a Telescope.
- *
+ * 
  * @author Richard van Nieuwenhoven [ritchie at gmx.at]
  */
 public abstract class INDITelescope extends INDIDriver implements INDIConnectionHandler {
@@ -454,7 +454,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 this.time.setState(PropertyStates.ALERT);
             }
         } else {
-            INDITelescope.LOG.error( "Date/Time is invalid: " + utcString + " offset " + offsetString + ".");
+            INDITelescope.LOG.error("Date/Time is invalid: " + utcString + " offset " + offsetString + ".");
             this.time.setState(PropertyStates.ALERT);
         }
         updateProperty(this.time);
