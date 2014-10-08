@@ -15,7 +15,7 @@
  *  along with INDI for Java Sky Quality Meter - LU Driver.  If not, see 
  *  <http://www.gnu.org/licenses/>.
  */
-package lorg.indilib.i4j.driver.sqm;
+package org.indilib.i4j.driver.sqm;
 
 /*
  * #%L

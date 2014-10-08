@@ -102,7 +102,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.2</version>
+				<version>2.5.1</version>
 				<configuration>
 					<mavenExecutorId>forked-path</mavenExecutorId>
 				</configuration>
@@ -110,43 +110,43 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0-beta-3</version>
+				<version>3.4</version>
 				<configuration>
 					<reportPlugins>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-jxr-plugin</artifactId>
-							<version>2.2</version>
+							<version>2.4</version>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.7</version>
+							<version>2.10.1</version>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.3.1</version>
+							<version>2.7</version>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>2.7.1</version>
+							<version>2.17</version>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-pmd-plugin</artifactId>
-							<version>2.5</version>
+							<version>3.2</version>
 							<configuration>
 								<linkXref>true</linkXref>
 								<sourceEncoding>UTF-8</sourceEncoding>
-								<targetJdk>1.5</targetJdk>
+								<targetJdk>1.7</targetJdk>
 							</configuration>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-changes-plugin</artifactId>
-							<version>2.3</version>
+							<version>2.11</version>
 							<reportSets>
 								<reportSet>
 									<reports>
@@ -159,22 +159,6 @@
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>taglist-maven-plugin</artifactId>
 							<version>2.4</version>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>findbugs-maven-plugin</artifactId>
-							<version>2.3.1</version>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>cobertura-maven-plugin</artifactId>
-							<version>2.4</version>
-							<configuration>
-								<formats>
-									<format>html</format>
-									<format>xml</format>
-								</formats>
-							</configuration>
 						</plugin>
 						<plugin>
 							<groupId>org.codehaus.mojo</groupId>
@@ -211,6 +195,11 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.13</version>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
@@ -237,11 +226,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
+				<version>2.10.1</version>
 				<reportSets>
 					<reportSet><!-- by default, id = "default" -->
 						<reports><!-- select non-aggregate reports -->
 							<report>javadoc</report>
+						</reports>
+					</reportSet>
+					<reportSet><!-- aggregate reportSet, to define in poms having modules -->
+						<id>aggregate</id>
+						<inherited>false</inherited><!-- don't run aggregate in child modules -->
+						<reports>
+							<report>aggregate</report>
 						</reports>
 					</reportSet>
 				</reportSets>
@@ -249,9 +245,46 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.4</version>
 				<configuration>
 					<linkJavadoc>true</linkJavadoc>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.13</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<logViolationsToConsole>true</logViolationsToConsole>
+					<checkstyleRules>
+						<module name="Checker">
+
+							<!-- Checks for Size Violations. -->
+							<!-- See http://checkstyle.sf.net/config_sizes.html -->
+							<module name="FileLength">
+								<property name="max" value="3500" />
+								<property name="fileExtensions" value="java" />
+							</module>
+
+							<!-- Checks for whitespace -->
+							<!-- See http://checkstyle.sf.net/config_whitespace.html -->
+							<module name="FileTabCharacter" />
+
+							<module name="TreeWalker">
+								<module name="StaticVariableName" />
+								<module name="TypeName">
+									<property name="format" value="^_?[A-Z][a-zA-Z0-9]*$" />
+								</module>
+							</module>
+						</module>
+					</checkstyleRules>
 				</configuration>
 			</plugin>
 		</plugins>
