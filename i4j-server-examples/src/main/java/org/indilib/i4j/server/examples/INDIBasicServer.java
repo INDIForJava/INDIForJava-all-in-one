@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIBasicServer extends DefaultINDIServer {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIBasicServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIBasicServer.class);
 
     /**
      * The only server.

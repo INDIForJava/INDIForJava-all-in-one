@@ -1,0 +1,80 @@
+body, td, select, input, li {
+    font-family: 'SourceSansProLight',Helvetica,Arial,sans-serif;
+}
+
+#contentBox {
+	background: url(../images/eclipsetool_ligth.png) center center no-repeat;
+}
+
+body {
+	background: url(../images/top-bg-texture.png),url('../images/bottom-bg-texture.png'),url(../images/body-background.png);
+  	background-position: center top,center bottom,center top;
+  	background-repeat: no-repeat,no-repeat,repeat-y;
+	background-color: #033B57;
+}
+
+#breadcrumbs {
+    color: #FFF;
+    background-color: rgba(22, 132, 187, 0.8);
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+    margin: 5px;
+}
+
+#navcolumn {
+    color: #FFF;
+    background-color: rgba(22, 132, 187, 0.8);
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.section {
+    color: #FFF;
+    background-color: rgba(22, 132, 187, 0.8);
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+    margin: 8px;
+}
+
+table.bodyTable th {
+    background-color: rgb(14, 88, 124);
+}
+
+table.bodyTable tr.a {
+    background-color: rgb(16, 99, 140);
+}
+
+table.bodyTable tr.b {
+    background-color: rgb(19, 117, 163);
+}
+
+h2, h3, h4, h5 {
+    color: #FFF;
+    background-color: rgba(22, 132, 187, 0.8);
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2), 0px 0px 1px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+    margin: 4px;
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+a:link {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+a:visited {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#footer {
+    font-size: x-small;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#banner {
+    border-bottom: 1px solid #000;
+}
+.source {
+    border: 1px solid ;
+    border-color:  rgba(255, 255, 255, 0.2);
+}
+

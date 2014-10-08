@@ -48,7 +48,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     public static final String MOTION_TAB = "Motion Control";
 
-    private static Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
 
     /**
      * slew rate, degrees/s

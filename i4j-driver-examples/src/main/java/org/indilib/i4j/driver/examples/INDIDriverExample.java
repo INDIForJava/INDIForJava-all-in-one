@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIDriverExample extends INDIDriver implements INDIConnectionHandler {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIDriverExample.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIDriverExample.class);
 
     // The Properties and Elements of this Driver
     private INDIBLOBProperty imageP;

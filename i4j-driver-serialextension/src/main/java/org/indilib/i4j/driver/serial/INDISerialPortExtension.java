@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDISerialPortExtension.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDISerialPortExtension.class);
 
     protected static final String OPTIONS_TAB = "Options";
 

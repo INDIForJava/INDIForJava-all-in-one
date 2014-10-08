@@ -72,7 +72,7 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConnectionHandler {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIElTiempoDriver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIElTiempoDriver.class);
 
     /*
      * The properties

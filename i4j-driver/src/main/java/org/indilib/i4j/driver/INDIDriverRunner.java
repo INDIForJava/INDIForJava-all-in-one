@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIDriverRunner {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIDriverRunner.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIDriverRunner.class);
 
     /**
      * Initializes a <code>INDIDriver</code>.

@@ -66,7 +66,7 @@ public class INDIPropertyInjector {
     /**
      * Logger to log errors to.
      */
-    private static Logger LOG = LoggerFactory.getLogger(INDIPropertyInjector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIPropertyInjector.class);
 
     /**
      * During the injection process it is importent to keep the context, so that

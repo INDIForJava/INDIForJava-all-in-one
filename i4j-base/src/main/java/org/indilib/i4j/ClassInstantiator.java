@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ClassInstantiator {
 
-    private static Logger LOG = LoggerFactory.getLogger(ClassInstantiator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClassInstantiator.class);
 
     public static Object instantiate(String[] possibleClassNames, Object[] arguments) throws INDIException {
         Class[] argumentClasses = new Class[arguments.length];

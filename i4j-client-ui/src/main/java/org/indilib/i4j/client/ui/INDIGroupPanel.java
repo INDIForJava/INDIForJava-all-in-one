@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIGroupPanel extends javax.swing.JPanel {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIGroupPanel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIGroupPanel.class);
 
     private ArrayList<INDIPropertyPanel> propertyPanels;
 

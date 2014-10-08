@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleINDIAppletClient extends javax.swing.JApplet implements INDIServerConnectionListener {
 
-    private static Logger LOG = LoggerFactory.getLogger(SimpleINDIAppletClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleINDIAppletClient.class);
 
     private INDIServerConnection connection;
 

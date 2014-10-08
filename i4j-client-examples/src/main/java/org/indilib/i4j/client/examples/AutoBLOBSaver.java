@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AutoBLOBSaver implements INDIElementListener {
 
-    private static Logger LOG = LoggerFactory.getLogger(AutoBLOBSaver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AutoBLOBSaver.class);
 
     private INDIServerConnection connection;
 

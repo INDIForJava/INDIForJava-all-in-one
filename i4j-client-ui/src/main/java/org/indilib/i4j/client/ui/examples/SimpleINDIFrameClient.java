@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDIServerConnectionListener {
 
-    private static Logger LOG = LoggerFactory.getLogger(SimpleINDIFrameClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleINDIFrameClient.class);
 
     INDIServerConnection connection;
 

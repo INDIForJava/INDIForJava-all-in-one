@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class INDIFilterWheelDriver extends INDIDriver {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIFilterWheelDriver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIFilterWheelDriver.class);
 
     /**
      * The filter_names property

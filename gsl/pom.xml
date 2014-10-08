@@ -45,4 +45,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<properties>
+		<site.basedir>${project.parent.basedir}</site.basedir>
+	</properties>
 </project>

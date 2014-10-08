@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SeletekSensorStatusRequesterThread extends Thread {
 
-    private static Logger LOG = LoggerFactory.getLogger(SeletekSensorStatusRequesterThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SeletekSensorStatusRequesterThread.class);
 
     /**
      * The Seletek Driver.

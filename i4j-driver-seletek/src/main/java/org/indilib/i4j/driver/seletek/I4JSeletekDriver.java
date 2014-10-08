@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
  */
 public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandler {
 
-    private static Logger LOG = LoggerFactory.getLogger(I4JSeletekDriver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(I4JSeletekDriver.class);
 
     /**
      * The Port Property

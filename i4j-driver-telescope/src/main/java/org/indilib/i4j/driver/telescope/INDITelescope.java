@@ -123,7 +123,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         SCOPE_TRACKING
     };
 
-    private static Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
 
     protected static final String MAIN_CONTROL_TAB = "Main Control";
 

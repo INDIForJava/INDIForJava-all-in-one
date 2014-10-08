@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements INDIConnectionHandler, Runnable {
 
-    private static Logger LOG = LoggerFactory.getLogger(I4JQHYFilterWheelDriver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(I4JQHYFilterWheelDriver.class);
 
     /**
      * The PORTS property.

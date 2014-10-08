@@ -44,7 +44,7 @@ public class InMemoryDatabase {
         void loadDatabaseCallback();
     }
 
-    private static Logger LOG = LoggerFactory.getLogger(InMemoryDatabase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InMemoryDatabase.class);
 
     private static String DATABASE_FILE = "alignment.db";
 

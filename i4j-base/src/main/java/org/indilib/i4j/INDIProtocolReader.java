@@ -47,7 +47,7 @@ import org.xml.sax.SAXParseException;
  */
 public class INDIProtocolReader extends Thread {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIProtocolReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIProtocolReader.class);
 
     /**
      * The parser to which the messages will be sent.

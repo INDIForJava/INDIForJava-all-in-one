@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -165,6 +164,18 @@
 							<artifactId>findbugs-maven-plugin</artifactId>
 							<version>3.0.0</version>
 						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.13</version>
+							<configuration>
+								<configLocation>${site.basedir}/src/main/checkstyle/i4j-style.xml</configLocation>
+								<encoding>UTF-8</encoding>
+								<consoleOutput>true</consoleOutput>
+								<failsOnError>false</failsOnError>
+								<linkXRef>true</linkXRef>
+							</configuration>
+						</plugin>
 					</reportPlugins>
 				</configuration>
 			</plugin>
@@ -196,9 +207,68 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+				<artifactId>maven-java-formatter-plugin</artifactId>
+				<version>0.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<configFile>${site.basedir}/src/main/resources/eclipse/formatter.xml</configFile>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.13</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>copy-sitedescriptor</id>
+						<!-- fetch site.xml before creating site documentation -->
+						<phase>pre-site</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/src/site/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${site.basedir}/src/site/</directory>
+									<includes>
+										<include>**/site.xml</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-site-resources</id>
+						<!-- fetch site.xml before creating site documentation -->
+						<phase>pre-site</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/site/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${site.basedir}/src/site/resources/</directory>
+									<includes>
+										<include>**/*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -219,6 +289,30 @@
 							<report>issue-tracking</report>
 							<report>license</report>
 							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.13</version>
+				<configuration>
+					<configLocation>${site.basedir}/src/main/checkstyle/i4j-style.xml</configLocation>
+					<encoding>UTF-8</encoding>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>false</failsOnError>
+					<linkXRef>true</linkXRef>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+					<reportSet>
+						<reports>
+							<report>checkstyle-aggregate</report>
 						</reports>
 					</reportSet>
 				</reportSets>
@@ -250,43 +344,6 @@
 					<linkJavadoc>true</linkJavadoc>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.13</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>checkstyle</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-				<configuration>
-					<logViolationsToConsole>true</logViolationsToConsole>
-					<checkstyleRules>
-						<module name="Checker">
-
-							<!-- Checks for Size Violations. -->
-							<!-- See http://checkstyle.sf.net/config_sizes.html -->
-							<module name="FileLength">
-								<property name="max" value="3500" />
-								<property name="fileExtensions" value="java" />
-							</module>
-
-							<!-- Checks for whitespace -->
-							<!-- See http://checkstyle.sf.net/config_whitespace.html -->
-							<module name="FileTabCharacter" />
-
-							<module name="TreeWalker">
-								<module name="StaticVariableName" />
-								<module name="TypeName">
-									<property name="format" value="^_?[A-Z][a-zA-Z0-9]*$" />
-								</module>
-							</module>
-						</module>
-					</checkstyleRules>
-				</configuration>
-			</plugin>
 		</plugins>
 	</reporting>
 
@@ -316,6 +373,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.scm.id>i4j-deploy</project.scm.id>
+		<site.basedir>${project.basedir}</site.basedir>
 	</properties>
 	<profiles>
 		<profile>

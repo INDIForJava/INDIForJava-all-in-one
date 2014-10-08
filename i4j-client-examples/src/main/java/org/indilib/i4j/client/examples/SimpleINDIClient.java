@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleINDIClient implements INDIServerConnectionListener, INDIDeviceListener, INDIPropertyListener {
 
-    private static Logger LOG = LoggerFactory.getLogger(SimpleINDIClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleINDIClient.class);
 
     private INDIServerConnection connection;
 

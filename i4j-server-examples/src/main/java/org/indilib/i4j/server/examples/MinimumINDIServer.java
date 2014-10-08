@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MinimumINDIServer extends DefaultINDIServer {
 
-    private static Logger LOG = LoggerFactory.getLogger(MinimumINDIServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MinimumINDIServer.class);
 
     /**
      * Just loads the available driver.

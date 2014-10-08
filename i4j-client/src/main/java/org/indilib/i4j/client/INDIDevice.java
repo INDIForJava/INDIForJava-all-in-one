@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  */
 public class INDIDevice {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIDevice.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIDevice.class);
 
     /**
      * The name of the Device.

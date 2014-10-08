@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements INDIElementListener {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIConnectionPropertyPanel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIConnectionPropertyPanel.class);
 
     private INDISwitchElement connectedE;
 

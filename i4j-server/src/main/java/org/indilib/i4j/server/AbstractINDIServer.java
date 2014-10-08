@@ -57,7 +57,7 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractINDIServer implements Runnable {
 
-    private static Logger LOG = LoggerFactory.getLogger(AbstractINDIServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractINDIServer.class);
 
     /**
      * A list of Devices loaded by the server.

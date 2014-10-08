@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
 
-    private static Logger LOG = LoggerFactory.getLogger(INDIDefaultPropertyPanel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(INDIDefaultPropertyPanel.class);
 
     private INDIPropertyInformationDialog infoDialog;
 

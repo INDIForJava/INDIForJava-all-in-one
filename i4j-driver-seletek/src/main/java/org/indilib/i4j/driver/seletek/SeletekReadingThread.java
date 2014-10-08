@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SeletekReadingThread extends Thread {
 
-    private static Logger LOG = LoggerFactory.getLogger(SeletekReadingThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SeletekReadingThread.class);
 
     /**
      * The Seletek Driver.

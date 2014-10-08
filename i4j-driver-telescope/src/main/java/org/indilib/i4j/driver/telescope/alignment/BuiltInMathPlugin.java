@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 public class BuiltInMathPlugin implements IMathPlugin {
 
-    private static Logger LOG = LoggerFactory.getLogger(BuiltInMathPlugin.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BuiltInMathPlugin.class);
 
     public static final String INBUILT_MATH_PLUGIN_LABEL = "Inbuilt Math Plugin";
 
