@@ -77,10 +77,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
                 property.setValues(elementsAndValues);
                 property.setState(PropertyStates.OK);
-                try {
-                    updateProperty(property);
-                } catch (INDIException e) {
-                }
+                updateProperty(property);
             }
         });
         servialPortInterface = (INDISerialPortInterface) driver;
@@ -93,6 +90,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
                         serialPort.closePort();
                     }
                 } catch (Exception e) {
+                    LOG.error("exception during close of the seiral port", e);
                 }
             }
         });
@@ -100,10 +98,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     }
 
     private void handleSerialException(SerialPortException e) {
-        try {
-            updateProperty(port, "Serial port error " + e.getMessage());
-        } catch (INDIException e1) {
-        }
+        updateProperty(port, "Serial port error " + e.getMessage());
         LOG.error("Serial port error", e);
     }
 
@@ -125,7 +120,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
         if (!isActive()) {
             return;
         }
-        driver.addProperty(port);
+        addProperty(port);
     }
 
     @Override
@@ -134,7 +129,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             return;
         }
         close();
-        driver.removeProperty(port);
+        removeProperty(port);
     }
 
     public SerialPort getOpenSerialPort() {

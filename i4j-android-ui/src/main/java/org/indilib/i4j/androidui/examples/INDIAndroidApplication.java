@@ -19,7 +19,7 @@ import org.indilib.i4j.client.INDIServerConnection;
 /**
  * An Android Application to persist the Server Connection between configuration
  * changes.
- *
+ * 
  * @version 1.32, April 18, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */

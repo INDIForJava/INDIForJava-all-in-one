@@ -193,16 +193,16 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
 
     @Override
     public void connect() {
-        driver.addProperty(this.alignmentSubsystemMathPlugins);
-        driver.addProperty(this.alignmentSubsystemMathPluginInitialise);
-        driver.addProperty(this.alignmentSubsystemActive);
+        addProperty(this.alignmentSubsystemMathPlugins);
+        addProperty(this.alignmentSubsystemMathPluginInitialise);
+        addProperty(this.alignmentSubsystemActive);
     }
 
     @Override
     public void disconnect() {
-        driver.removeProperty(this.alignmentSubsystemMathPlugins);
-        driver.removeProperty(this.alignmentSubsystemMathPluginInitialise);
-        driver.removeProperty(this.alignmentSubsystemActive);
+        removeProperty(this.alignmentSubsystemMathPlugins);
+        removeProperty(this.alignmentSubsystemMathPluginInitialise);
+        removeProperty(this.alignmentSubsystemActive);
     }
 
     // These must match the function signatures in MathPlugin

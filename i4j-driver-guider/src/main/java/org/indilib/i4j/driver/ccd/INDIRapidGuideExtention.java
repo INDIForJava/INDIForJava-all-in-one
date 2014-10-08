@@ -126,10 +126,7 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
     private void newRapidGuideDataValue(INDINumberElementAndValue[] elementsAndValues) {
         rapidGuideData.setState(PropertyStates.OK);
         rapidGuideData.setValues(elementsAndValues);
-        try {
-            updateProperty(rapidGuideData);
-        } catch (INDIException e) {
-        }
+        updateProperty(rapidGuideData);
     }
 
     private void newRapidGuideSetupValue(INDISwitchElementAndValue[] elementsAndValues) {
@@ -140,10 +137,7 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
         sendImage = rapidGuideSetupSendImage.getValue() == SwitchStatus.ON;
         showMarker = rapidGuideSetupShowMarker.getValue() == SwitchStatus.ON;
 
-        try {
-            updateProperty(rapidGuideSetup);
-        } catch (INDIException e) {
-        }
+        updateProperty(rapidGuideSetup);
     }
 
     private void newRapidGuideValue(INDISwitchElementAndValue[] elementsAndValues) {
@@ -152,34 +146,30 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
         rapidGuideEnabled = (rapidGuideEnable.getValue() == SwitchStatus.ON);
 
         if (rapidGuideEnabled) {
-            driver.addProperty(rapidGuideSetup);
-            driver.addProperty(rapidGuideData);
+            addProperty(rapidGuideSetup);
+            addProperty(rapidGuideData);
         } else {
-            driver.removeProperty(rapidGuideSetup);
-            driver.removeProperty(rapidGuideData);
+            removeProperty(rapidGuideSetup);
+            removeProperty(rapidGuideData);
         }
-
-        try {
-            updateProperty(rapidGuide);
-        } catch (INDIException e) {
-        }
+        updateProperty(rapidGuide);
     }
 
     @Override
     public void connect() {
-        driver.addProperty(this.rapidGuide);
+        addProperty(this.rapidGuide);
         if (rapidGuideEnabled) {
-            driver.addProperty(this.rapidGuideSetup);
-            driver.addProperty(this.rapidGuideData);
+            addProperty(this.rapidGuideSetup);
+            addProperty(this.rapidGuideData);
         }
     }
 
     @Override
     public void disconnect() {
-        driver.removeProperty(this.rapidGuide);
+        removeProperty(this.rapidGuide);
         if (rapidGuideEnabled) {
-            driver.removeProperty(this.rapidGuideSetup);
-            driver.removeProperty(this.rapidGuideData);
+            removeProperty(this.rapidGuideSetup);
+            removeProperty(this.rapidGuideData);
         }
     }
 
@@ -200,10 +190,7 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
         }
         if (sendData) {
             guiderDataCalculator.detectGuideData(width, height, ccdImage, showMarker);
-            try {
-                updateProperty(rapidGuideData);
-            } catch (INDIException e) {
-            }
+            updateProperty(rapidGuideData);
             return true;
         }
         return false;

@@ -23,7 +23,7 @@ import org.indilib.i4j.client.INDIElement;
 
 /**
  * An class representing a View of a BLOB Element.
- *
+ * 
  * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */

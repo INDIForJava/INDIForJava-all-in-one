@@ -368,11 +368,8 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             abort.setState(PropertyStates.ALERT);
             imageExposure.setState(PropertyStates.ALERT);
         }
-        try {
-            updateProperty(abort);
-            updateProperty(imageExposure);
-        } catch (INDIException e) {
-        }
+        updateProperty(abort);
+        updateProperty(imageExposure);
     }
 
     private void newCompressedValue(INDISwitchElementAndValue[] elementsAndValues) {
@@ -382,10 +379,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         } else {
             sendCompressed = false;
         }
-        try {
-            updateProperty(compress);
-        } catch (INDIException e) {
-        }
+        updateProperty(compress);
     }
 
     private void newFrameTypeValue(INDISwitchElementAndValue[] elementsAndValues) {
@@ -408,20 +402,14 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         }
         if (!driverInterface.updateCCDFrameType(currentFrameType))
             frameType.setState(PropertyStates.ALERT);
-        try {
-            updateProperty(frameType);
-        } catch (INDIException e) {
-        }
+        updateProperty(frameType);
     }
 
     private void newImageBinValue(INDINumberElementAndValue[] elementsAndValues) {
         // We are being asked to set camera binning
         if (!capability().canBin()) {
             imageBin.setState(PropertyStates.ALERT);
-            try {
-                updateProperty(imageBin);
-            } catch (INDIException e) {
-            }
+            updateProperty(imageBin);
             return;
         }
         imageBin.setValues(elementsAndValues);
@@ -433,10 +421,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
         } else
             imageBin.setState(PropertyStates.ALERT);
-        try {
-            updateProperty(imageBin);
-        } catch (INDIException e) {
-        }
+        updateProperty(imageBin);
         return;
     }
 
@@ -450,10 +435,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             imageExposure.setState(PropertyStates.BUSY);
         else
             imageExposure.setState(PropertyStates.ALERT);
-        try {
-            updateProperty(imageExposure);
-        } catch (INDIException e) {
-        }
+        updateProperty(imageExposure);
     }
 
     private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
@@ -466,10 +448,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
         if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()))
             imageFrame.setState(PropertyStates.ALERT);
-        try {
-            updateProperty(imageFrame);
-        } catch (INDIException e) {
-        }
+        updateProperty(imageFrame);
     }
 
     private void newImagePixelSize(INDINumberElementAndValue[] elementsAndValues) {
@@ -479,10 +458,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         yResolution = imagePixelSizeMaxY.getIntValue();
         pixelSizeX = imagePixelSizePixelSizeX.getValue().floatValue();
         pixelSizeY = imagePixelSizePixelSizeY.getValue().floatValue();
-        try {
-            updateProperty(imagePixelSize);
-        } catch (INDIException e) {
-        }
+        updateProperty(imagePixelSize);
     }
 
     /**
@@ -586,37 +562,37 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     @Override
     public void connect() {
-        driver.addProperty(this.imageExposure);
+        addProperty(this.imageExposure);
         if (capability().canAbort())
-            driver.addProperty(this.abort);
+            addProperty(this.abort);
         if (!capability().canSubFrame()) {
             this.imageFrame.setPermission(PropertyPermissions.RO);
         }
-        driver.addProperty(this.imageFrame);
+        addProperty(this.imageFrame);
         if (capability().canBin())
-            driver.addProperty(this.imageBin);
-        driver.addProperty(this.imagePixelSize);
-        driver.addProperty(this.compress);
-        driver.addProperty(this.fits);
-        driver.addProperty(this.frameType);
+            addProperty(this.imageBin);
+        addProperty(this.imagePixelSize);
+        addProperty(this.compress);
+        addProperty(this.fits);
+        addProperty(this.frameType);
 
     }
 
     @Override
     public void disconnect() {
-        driver.removeProperty(this.imageExposure);
+        removeProperty(this.imageExposure);
         if (capability().canAbort())
-            driver.removeProperty(this.abort);
+            removeProperty(this.abort);
         if (!capability().canSubFrame()) {
             this.imageFrame.setPermission(PropertyPermissions.RO);
         }
-        driver.removeProperty(this.imageFrame);
+        removeProperty(this.imageFrame);
         if (capability().canBin())
-            driver.removeProperty(this.imageBin);
-        driver.removeProperty(this.imagePixelSize);
-        driver.removeProperty(this.compress);
-        driver.removeProperty(this.fits);
-        driver.removeProperty(this.frameType);
+            removeProperty(this.imageBin);
+        removeProperty(this.imagePixelSize);
+        removeProperty(this.compress);
+        removeProperty(this.fits);
+        removeProperty(this.frameType);
 
     }
 
@@ -639,10 +615,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             }
         }
         imageExposure.setState(PropertyStates.OK);
-        try {
-            updateProperty(imageExposure);
-        } catch (INDIException e) {
-        }
+        updateProperty(imageExposure);
         if (autoLoop) {
             imageExposureDuration.setValue(exposureTime);
             imageExposure.setState(PropertyStates.BUSY);
@@ -652,10 +625,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
                 LOG.error("Autoloop: CCD Exposure Error!");
                 imageExposure.setState(PropertyStates.ALERT);
             }
-            try {
-                updateProperty(imageExposure);
-            } catch (INDIException e) {
-            }
+            updateProperty(imageExposure);
         }
         return true;
     }
@@ -786,10 +756,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
                 fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + getImageExtension()));
             }
             fits.setState(PropertyStates.OK);
-            try {
-                updateProperty(fits);
-            } catch (INDIException e) {
-            }
+            updateProperty(fits);
         }
     }
 }

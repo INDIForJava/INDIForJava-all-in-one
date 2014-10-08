@@ -817,7 +817,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The message to be sended to the clients with the definition
      *            message.
      */
-    protected void addProperty(INDIProperty property, String message) {
+    protected void addProperty(INDIProperty<?> property, String message) {
         if (!properties.containsValue(property)) {
             properties.put(property.getName(), property);
 
@@ -919,10 +919,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     /**
-     * @param property
-     *            The Property to be added.
-     */
-    /**
      * Removes a Property from the Device. A XML message about it will be send
      * to the clients. Drivers must call this method if they want to remove a
      * Property.
@@ -930,7 +926,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param property
      *            The property to be removed
      */
-    public void removeProperty(INDIProperty property) {
+    public void removeProperty(INDIProperty<?> property) {
         removeProperty(property, null);
     }
 
@@ -945,7 +941,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            A message that will be included in the XML message to the
      *            client.
      */
-    protected void removeProperty(INDIProperty property, String message) {
+    protected void removeProperty(INDIProperty<?> property, String message) {
         if (properties.containsValue(property)) {
             properties.remove(property.getName());
 

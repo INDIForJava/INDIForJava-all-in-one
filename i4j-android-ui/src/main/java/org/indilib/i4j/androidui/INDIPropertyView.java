@@ -20,7 +20,7 @@ import org.indilib.i4j.client.INDIPropertyListener;
 
 /**
  * An abstract class representing a View of a Property.
- *
+ * 
  * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */

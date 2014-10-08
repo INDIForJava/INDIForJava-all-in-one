@@ -19,7 +19,7 @@ import org.indilib.i4j.INDIException;
 
 /**
  * A class to centralize a Handler and Context for all INDI Android Views.
- *
+ * 
  * @version 1.3, April 9, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
@@ -31,7 +31,7 @@ public class I4JAndroidConfig {
 
     /**
      * Sets the global Context for all INDI Views.
-     *
+     * 
      * @param newContext
      *            the global Context.
      */
@@ -42,7 +42,7 @@ public class I4JAndroidConfig {
     /**
      * Sets the global Hanlder for all views being updated from different
      * Threads.
-     *
+     * 
      * @param newHandler
      *            the global Handler.
      */
@@ -52,7 +52,7 @@ public class I4JAndroidConfig {
 
     /**
      * Gets the global Context.
-     *
+     * 
      * @return the global Context.
      * @throws INDIException
      *             if the global Context has not yet been set.
@@ -67,7 +67,7 @@ public class I4JAndroidConfig {
 
     /**
      * Gets the global Handler.
-     *
+     * 
      * @return the global Handler
      * @throws INDIException
      *             if the global Handler has not yet been set.
@@ -82,7 +82,7 @@ public class I4JAndroidConfig {
 
     /**
      * Post a Runnable object to the global Handler.
-     *
+     * 
      * @param run
      *            the Runnable to post.
      * @throws INDIException

@@ -65,7 +65,7 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         if (!isActive()) {
             return;
         }
-        driver.addProperty(park);
+        addProperty(park);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         if (!isActive()) {
             return;
         }
-        driver.removeProperty(park);
+        removeProperty(park);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         }
         this.park.setState(IDLE);
         park.resetAllSwitches();
-        driver.updateProperty(this.park);
+        updateProperty(this.park);
     }
 
     public void setNotBussy() {

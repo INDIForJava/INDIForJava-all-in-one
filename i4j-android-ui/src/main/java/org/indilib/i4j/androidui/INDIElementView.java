@@ -21,7 +21,7 @@ import org.indilib.i4j.client.INDIElementListener;
 
 /**
  * An abstract class representing a View of a Element.
- *
+ * 
  * @version 1.3, April 9, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */

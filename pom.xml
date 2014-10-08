@@ -239,28 +239,9 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9</version>
 				<reportSets>
-					<reportSet>
-						<id>doccheck</id>
-						<configuration>
-							<doclet>com.sun.tools.doclets.doccheck.DocCheck</doclet>
-							<docletArtifact>
-								<groupId>com.sun.tools.doclets</groupId>
-								<artifactId>doccheck</artifactId>
-								<version>1.2b2</version>
-							</docletArtifact>
-						</configuration>
-					</reportSet>
 					<reportSet><!-- by default, id = "default" -->
 						<reports><!-- select non-aggregate reports -->
 							<report>javadoc</report>
-							<report>test-javadoc</report>
-						</reports>
-					</reportSet>
-					<reportSet><!-- aggregate reportSet, to define in poms having modules -->
-						<id>aggregate</id>
-						<inherited>false</inherited><!-- don't run aggregate in child modules -->
-						<reports>
-							<report>aggregate</report>
 						</reports>
 					</reportSet>
 				</reportSets>
