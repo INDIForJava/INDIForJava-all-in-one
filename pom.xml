@@ -32,7 +32,8 @@
 		<site>
 			<id>i4j-deploy</id>
 			<name>Sourceforge Maven 2 Project Site</name>
-			<url>sftp://web.sourceforge.net/home/groups/i/in/indiforjava/htdocs</url>
+			<url>file://${java.io.tmpdir}/stage</url>
+<!-- 			<url>sftp://web.sourceforge.net/home/groups/i/in/indiforjava/htdocs</url> -->
 		</site>
 	</distributionManagement>
 	<developers>

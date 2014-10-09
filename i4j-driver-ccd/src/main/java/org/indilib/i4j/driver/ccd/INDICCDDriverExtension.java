@@ -1,25 +1,16 @@
 package org.indilib.i4j.driver.ccd;
 
 /*
- * #%L
- * INDI for Java Abstract CCD Driver
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Abstract CCD Driver %% Copyright (C) 2013 - 2014
+ * indiforjava %% This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+ * the GNU General Lesser Public License for more details. You should have
+ * received a copy of the GNU General Lesser Public License along with this
+ * program. If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.io.BufferedOutputStream;
@@ -440,15 +431,15 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
         imageFrame.setValues(elementsAndValues);
-
         imageFrame.setState(PropertyStates.OK);
-
-        LOG.info(String.format("Requested CCD Frame is %4.0f,%4.0f %4.0f x %4.0f", imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(),
-                imageFrameHeigth.getIntValue()));
+        String message =
+                String.format("Requested CCD Frame is %4d,%4d %4d x %4d", imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(),
+                        imageFrameHeigth.getIntValue());
+        LOG.info(message);
 
         if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue()))
             imageFrame.setState(PropertyStates.ALERT);
-        updateProperty(imageFrame);
+        updateProperty(imageFrame, message);
     }
 
     private void newImagePixelSize(INDINumberElementAndValue[] elementsAndValues) {
