@@ -26,23 +26,28 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
+import org.indilib.i4j.Constants;
 
+/**
+ * A handler for INDI connections. This is still a work in progress
+ * 
+ * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
+ * @version 1.39, October 11, 2014
+ */
 public class Handler extends URLStreamHandler {
 
-    public static final int INDI_DEFAULT_PORT = 7624;
-
     @Override
-    protected int getDefaultPort() {
-        return INDI_DEFAULT_PORT;
+    protected final int getDefaultPort() {
+        return Constants.INDI_DEFAULT_PORT;
     }
 
-    protected void parseURL(URL u, String spec, int start, int end) {
-
+    @Override
+    protected final void parseURL(final URL u, final String spec, final int start, final int end) {
         super.parseURL(u, spec, start, end);
     }
 
-    protected URLConnection openConnection(URL url) throws IOException {
-
+    @Override
+    protected final URLConnection openConnection(final URL url) throws IOException {
         return null;
     }
 }

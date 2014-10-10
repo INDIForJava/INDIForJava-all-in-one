@@ -28,9 +28,15 @@ import java.io.File;
  * A class to help dealing with Files and Directories.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 4, 2014
+ * @version 1.39, October 11, 2014
  */
-public class FileUtils {
+public final class FileUtils {
+
+    /**
+     * A private constructor to avoid instantiating this utility class.
+     */
+    private FileUtils() {
+    }
 
     /**
      * Gets the base directory while auxiliary files for the I4J library should
@@ -48,7 +54,11 @@ public class FileUtils {
         File i4jDir = new File(userDir, ".i4j");
 
         if (!i4jDir.exists()) {
-            i4jDir.mkdir();
+            boolean created = i4jDir.mkdir();
+
+            if (!created) {
+                return null;
+            }
         }
 
         return i4jDir;

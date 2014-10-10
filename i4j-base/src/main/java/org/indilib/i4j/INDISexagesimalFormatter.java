@@ -31,15 +31,71 @@ import java.util.StringTokenizer;
  * A class to format and parse numbers in sexagesimal format.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.10, March 19, 2012
+ * @version 1.39, October 11, 2014
  */
 public class INDISexagesimalFormatter {
 
+    /**
+     * The format to be used. It must begin with %, end with m and specifies a
+     * length and fractionLength in the form length.fractionLength. Valid
+     * fractionLengths are 3, 5, 6, 8 and 9. For example %5.3m.
+     */
     private String format;
 
+    /**
+     * The length of the format.
+     */
     private int length;
 
+    /**
+     * The fraction length.
+     */
     private int fractionLength;
+
+    /**
+     * Fraction Length 3.
+     */
+    private static final int FL3 = 3;
+
+    /**
+     * Fraction Length 5.
+     */
+    private static final int FL5 = 5;
+
+    /**
+     * Fraction Length 6.
+     */
+    private static final int FL6 = 6;
+
+    /**
+     * Fraction Length 8.
+     */
+    private static final int FL8 = 8;
+
+    /**
+     * Fraction Length 9.
+     */
+    private static final int FL9 = 9;
+
+    /**
+     * Minutes in a hour.
+     */
+    private static final double MINUTES_PER_HOUR = 60.0;
+
+    /**
+     * Seconds in a hour.
+     */
+    private static final double SECONDS_PER_HOUR = 3600.0;
+
+    /**
+     * Seconds in a minute.
+     */
+    private static final double SECONDS_PER_MINUTE = 60.0;
+
+    /**
+     * Zero Negative.
+     */
+    private static final double ZERO_NEG = -0.;
 
     /**
      * Constructs an instance of <code>INDISexagesimalFormatter</code> with a
@@ -53,7 +109,7 @@ public class INDISexagesimalFormatter {
      *             length.fractionLength. Valid fractionLengths are 3, 5, 6, 8
      *             and 9. For example %5.3m.
      */
-    public INDISexagesimalFormatter(String format) throws IllegalArgumentException {
+    public INDISexagesimalFormatter(final String format) throws IllegalArgumentException {
         this.format = format;
 
         checkFormat();
@@ -64,7 +120,7 @@ public class INDISexagesimalFormatter {
      * 
      * @return the format of this formatter.
      */
-    public String getFormat() {
+    public final String getFormat() {
         return format;
     }
 
@@ -104,31 +160,33 @@ public class INDISexagesimalFormatter {
             throw new IllegalArgumentException("Illegal sexagesimal length or fraction length");
         }
 
-        if ((fractionLength != 3) && (fractionLength != 5) && (fractionLength != 6) && (fractionLength != 8) && (fractionLength != 9)) {
+        if ((fractionLength != FL3) && (fractionLength != FL5) && (fractionLength != FL6) && (fractionLength != FL8) && (fractionLength != FL9)) {
             throw new IllegalArgumentException("Illegal sexagesimal fraction length");
         }
     }
 
     /**
-     * Parses a sexagesimal number. DO NOT USE IT. THIS IS A PRELIMINARY VERSION
-     * AND DOES NOT WORK AS EXPECTED. THIS METHOD WILL DISAPEAR IN FUTURE
-     * VERSIONS OF THE CLASS.
+     * Parses a sexagesimal newNumber. DO NOT USE IT. THIS IS A PRELIMINARY
+     * VERSION AND DOES NOT WORK AS EXPECTED. THIS METHOD WILL DISAPEAR IN
+     * FUTURE VERSIONS OF THE CLASS.
      * 
      * @param number
      *            NOT USED
      * @return NOT USED
      * @throws IllegalArgumentException
+     *             NOT USED
      * @deprecated
      */
     @Deprecated
-    public double parseSexagesimal2(String number) throws IllegalArgumentException {
-        number = number.replace(' ', ':');
-        number = number.replace(';', ':');
+    public final double parseSexagesimal2(final String number) throws IllegalArgumentException {
+        String newNumber = number.replace(' ', ':');
+        newNumber = newNumber.replace(';', ':');
 
-        if (number.indexOf(":") == -1) { // If there are no separators maybe
-                                         // they have sent just a single double
+        if (newNumber.indexOf(":") == -1) { // If there are no separators maybe
+                                            // they have sent just a single
+                                            // double
             try {
-                double n = Double.parseDouble(number);
+                double n = Double.parseDouble(newNumber);
 
                 return n;
             } catch (NumberFormatException e) {
@@ -136,7 +194,7 @@ public class INDISexagesimalFormatter {
             }
         }
 
-        StringTokenizer st = new StringTokenizer(number, ":", false);
+        StringTokenizer st = new StringTokenizer(newNumber, ":", false);
 
         double degrees = 0;
         double minutes = 0;
@@ -155,7 +213,7 @@ public class INDISexagesimalFormatter {
                 minutes = Double.parseDouble(aux);
             }
 
-            if (fractionLength > 5) {
+            if (fractionLength > FL5) {
                 aux = st.nextToken().trim();
 
                 if (aux.length() > 0) {
@@ -171,37 +229,38 @@ public class INDISexagesimalFormatter {
 
         double res = degrees;
         if (degrees > 0) {
-            res += (minutes / 60.0) + (seconds / 3600.0);
+            res += (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
         } else {
-            res -= (minutes / 60.0) + (seconds / 3600.0);
+            res -= (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
         }
 
         return res;
     }
 
     /**
-     * Parses a sexagesimal number. The input <code>String</code> is formatted
-     * as a maximum of three doubles separated by : ; or a blank space. The
-     * first number represents the number of degrees, the second is the number
-     * of minutes and the third is the number of seconds.
+     * Parses a sexagesimal newNumber. The input <code>String</code> is
+     * formatted as a maximum of three doubles separated by : ; or a blank
+     * space. The first newNumber represents the newNumber of degrees, the
+     * second is the newNumber of minutes and the third is the newNumber of
+     * seconds.
      * 
      * @param number
-     *            The number to be parsed.
+     *            The newNumber to be parsed.
      * @return The parsed double.
      * @throws IllegalArgumentException
-     *             if the number format is not correct.
+     *             if the newNumber format is not correct.
      */
-    public double parseSexagesimal(String number) throws IllegalArgumentException {
-        number = number.trim();
+    public final double parseSexagesimal(final String number) throws IllegalArgumentException {
+        String newNumber = number.trim();
 
-        if (number.length() == 0) {
+        if (newNumber.length() == 0) {
             throw new IllegalArgumentException("Empty number");
         }
 
-        number = number.replace(' ', ':');
-        number = number.replace(';', ':');
+        newNumber = newNumber.replace(' ', ':');
+        newNumber = newNumber.replace(';', ':');
 
-        int charCount = number.length() - number.replaceAll(":", "").length();
+        int charCount = newNumber.length() - newNumber.replaceAll(":", "").length();
 
         if (charCount > 2) {
             throw new IllegalArgumentException("Too many components for the sexagesimal formatter");
@@ -211,7 +270,7 @@ public class INDISexagesimalFormatter {
         double minutes = 0;
         double seconds = 0;
 
-        StringTokenizer st = new StringTokenizer(number, ":", false);
+        StringTokenizer st = new StringTokenizer(newNumber, ":", false);
 
         String d = st.nextToken().trim();
 
@@ -250,50 +309,50 @@ public class INDISexagesimalFormatter {
         }
 
         double res = degrees;
-        if (Double.valueOf(degrees).compareTo(-0.) > 0) {
-            res += (minutes / 60.0) + (seconds / 3600.0);
+        if (Double.valueOf(degrees).compareTo(ZERO_NEG) > 0) {
+            res += (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
         } else {
-            res -= (minutes / 60.0) + (seconds / 3600.0);
+            res -= (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
         }
 
         return res;
     }
 
     /**
-     * Fomats a number according to the number format os this formatter.
+     * Fomats a newNumber according to the newNumber format os this formatter.
      * 
      * @param number
-     *            the number to be formatted.
-     * @return The formatted number as a <code>String</code>.
+     *            the newNumber to be formatted.
+     * @return The formatted newNumber as a <code>String</code>.
      */
-    public String format(Double number) {
+    public final String format(final Double number) {
         int sign = 1;
         if (number < 0) {
             sign = -1;
         }
 
-        number = Math.abs(number);
+        double newNumber = Math.abs(number);
 
         String fractionalPart = ":";
 
         int integerPart;
 
-        integerPart = ((int) Math.floor(number));
+        integerPart = ((int) Math.floor(newNumber));
 
-        double fractional = Math.abs(number - integerPart);
+        double fractional = Math.abs(newNumber - integerPart);
 
-        if (fractionLength < 6) {
-            double minutes = fractional * 60;
+        if (fractionLength < FL6) {
+            double minutes = fractional * SECONDS_PER_MINUTE;
 
             String form = "%02.0f";
-            if (fractionLength == 5) {
+            if (fractionLength == FL5) {
                 form = "%04.1f";
             }
 
             Formatter formatter = new Formatter(Locale.US);
             String newMinutes = formatter.format(form, minutes).toString();
 
-            if (Double.parseDouble(newMinutes) >= 60.0) {
+            if (Double.parseDouble(newMinutes) >= MINUTES_PER_HOUR) {
                 minutes = 0.0;
                 integerPart++;
             }
@@ -301,23 +360,23 @@ public class INDISexagesimalFormatter {
             formatter = new Formatter(Locale.US);
             fractionalPart += formatter.format(form, minutes);
         } else {
-            double minutes = Math.floor(fractional * 60);
+            double minutes = Math.floor(fractional * MINUTES_PER_HOUR);
 
-            double rest = fractional - ((double) minutes / 60.0);
+            double rest = fractional - ((double) minutes / SECONDS_PER_MINUTE);
 
-            double seconds = rest * 3600;
+            double seconds = rest * SECONDS_PER_HOUR;
 
             String form = "%02.0f";
-            if (fractionLength == 8) {
+            if (fractionLength == FL8) {
                 form = "%04.1f";
-            } else if (fractionLength == 9) {
+            } else if (fractionLength == FL9) {
                 form = "%05.2f";
             }
 
             Formatter formatter = new Formatter(Locale.US);
             String newSeconds = formatter.format(form, seconds).toString();
 
-            if (Double.parseDouble(newSeconds) >= 60.0) {
+            if (Double.parseDouble(newSeconds) >= SECONDS_PER_MINUTE) {
                 seconds = 0.0;
                 minutes++;
             }
@@ -325,7 +384,7 @@ public class INDISexagesimalFormatter {
             formatter = new Formatter(Locale.US);
             String newMinutes = formatter.format("%02.0f", minutes).toString();
 
-            if (Double.parseDouble(newMinutes) >= 60.0) {
+            if (Double.parseDouble(newMinutes) >= MINUTES_PER_HOUR) {
                 minutes = 0.0;
                 integerPart++;
             }
@@ -354,15 +413,18 @@ public class INDISexagesimalFormatter {
      *            The maximum size of the padded <code>String</code>.
      * @return The padded <code>String</code>
      */
-    private String padLeft(String s, int n) {
+    private String padLeft(final String s, final int n) {
         if (s.length() >= n) {
             return s;
         }
-        String spaces = "";
 
-        for (int i = 0; i < n - s.length(); i++) {
-            spaces += " ";
+        int nSpaces = n - s.length();
+
+        if (nSpaces <= 0) {
+            return s;
         }
+
+        String spaces = new String(new char[nSpaces]).replace("\0", s);
 
         return spaces + s;
     }

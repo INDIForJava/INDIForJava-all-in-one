@@ -26,14 +26,23 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 
+/**
+ * A class to handle INDI Streams.
+ * 
+ * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
+ * @version 1.39, October 11, 2014
+ */
 public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
+    /**
+     * DOC MISSING.
+     */
     public static void init() {
         URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
     }
 
     @Override
-    public URLStreamHandler createURLStreamHandler(String protocol) {
+    public final URLStreamHandler createURLStreamHandler(final String protocol) {
         if ("indi".equals(protocol)) {
             return new Handler();
         }

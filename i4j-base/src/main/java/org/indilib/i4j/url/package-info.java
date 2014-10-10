@@ -1,5 +1,3 @@
-package org.indilib.i4j;
-
 /*
  * #%L
  * INDI for Java Base Library
@@ -22,37 +20,11 @@ package org.indilib.i4j;
  * #L%
  */
 
-import java.io.InputStream;
-
-import org.w3c.dom.Document;
-
 /**
- * A interface representing a generic INDI Protocol Parser.
- * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * Provides some classes for handling connections via INDI Urls. This is still a work in progress.
+ * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
  * @version 1.39, October 11, 2014
  */
-public interface INDIProtocolParser {
 
-    /**
-     * Parses a XML Document.
-     * 
-     * @param doc
-     *            The XML document to parse. It presumably consists on INDI
-     *            Protocol messages.
-     */
-    void parseXML(Document doc);
+package org.indilib.i4j.url;
 
-    /**
-     * Gets the input stream from where the messages will be read.
-     * 
-     * @return The input stream from where the messages will be read.
-     */
-    InputStream getInputStream();
-
-    /**
-     * Called when the reader finishes the readings (communications broken /
-     * stopped).
-     */
-    void finishReader();
-}

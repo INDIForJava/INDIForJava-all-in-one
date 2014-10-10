@@ -1,7 +1,5 @@
 package org.indilib.i4j;
 
-import org.indilib.i4j.url.Handler;
-
 /*
  * #%L INDI for Java Base Library %% Copyright (C) 2013 - 2014 indiforjava %%
  * This program is free software: you can redistribute it and/or modify it under
@@ -20,11 +18,25 @@ import org.indilib.i4j.url.Handler;
  * them used in several parts of the INDI for Java libraries.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.31, April 10, 2012
+ * @version 1.39, October 11, 2014
  */
-public class Constants {
+public final class Constants {
 
-    public static final int INDI_DEFAULT_PORT = Handler.INDI_DEFAULT_PORT;
+    /**
+     * The default port for the INDI protocol.
+     */
+    public static final int INDI_DEFAULT_PORT = 7624;
+
+    /**
+     * Default size for buffers.
+     */
+    public static final int BUFFER_SIZE = 1000000;
+
+    /**
+     * A private constructor to avoid instantiating this utility class.
+     */
+    private Constants() {
+    }
 
     /**
      * Possible Light State Values.
@@ -32,25 +44,25 @@ public class Constants {
     public enum LightStates {
 
         /**
-         * Idle State
+         * Idle State.
          */
         IDLE,
         /**
-         * Ok State
+         * Ok State.
          */
         OK,
         /**
-         * Busy State
+         * Busy State.
          */
         BUSY,
         /**
-         * Alert State
+         * Alert State.
          */
         ALERT
     };
 
     /**
-     * Parses a Light State
+     * Parses a Light State.
      * 
      * @param state
      *            a string representation of the Light State to be parsed
@@ -59,7 +71,7 @@ public class Constants {
      * @throws IllegalArgumentException
      *             if the <code>state</code> is not a valid one.
      */
-    public static LightStates parseLightState(String state) throws IllegalArgumentException {
+    public static LightStates parseLightState(final String state) throws IllegalArgumentException {
         if (state.compareTo("Alert") == 0) {
             return LightStates.ALERT;
         } else if (state.compareTo("Busy") == 0) {
@@ -81,7 +93,7 @@ public class Constants {
      * @return <code>true</code> if it corresponds to a valid LightState.
      *         <code>false</code> otherwise.
      */
-    public static boolean isValidLightState(String state) {
+    public static boolean isValidLightState(final String state) {
         try {
             parseLightState(state);
         } catch (IllegalArgumentException e) {
@@ -98,7 +110,7 @@ public class Constants {
      *            The Light State
      * @return A String representation of the Light State
      */
-    public static String getLightStateAsString(LightStates lightState) {
+    public static String getLightStateAsString(final LightStates lightState) {
         if (lightState == LightStates.ALERT) {
             return "Alert";
         } else if (lightState == LightStates.BUSY) {
@@ -118,11 +130,11 @@ public class Constants {
     public enum SwitchStatus {
 
         /**
-         * Off Status
+         * Off Status.
          */
         OFF,
         /**
-         * On Status
+         * On Status.
          */
         ON
     };
@@ -137,7 +149,7 @@ public class Constants {
      * @throws IllegalArgumentException
      *             if the <code>status</code> is not a valid one.
      */
-    public static SwitchStatus parseSwitchStatus(String status) throws IllegalArgumentException {
+    public static SwitchStatus parseSwitchStatus(final String status) throws IllegalArgumentException {
         if (status.compareTo("Off") == 0) {
             return SwitchStatus.OFF;
         } else if (status.compareTo("On") == 0) {
@@ -155,7 +167,7 @@ public class Constants {
      * @return <code>true</code> if it corresponds to a valid SwitchStatus.
      *         <code>false</code> otherwise.
      */
-    public static boolean isValidSwitchStatus(String status) {
+    public static boolean isValidSwitchStatus(final String status) {
         try {
             parseSwitchStatus(status);
         } catch (IllegalArgumentException e) {
@@ -172,7 +184,7 @@ public class Constants {
      *            The Switch Status
      * @return A String representation of the Switch Status
      */
-    public static String getSwitchStatusAsString(SwitchStatus switchStatus) {
+    public static String getSwitchStatusAsString(final SwitchStatus switchStatus) {
         if (switchStatus == SwitchStatus.ON) {
             return "On";
         } else if (switchStatus == SwitchStatus.OFF) {
@@ -183,26 +195,26 @@ public class Constants {
     }
 
     /**
-     * Possible perimssions for a INDI Property
+     * Possible perimssions for a INDI Property.
      */
     public enum PropertyPermissions {
 
         /**
-         * Read Only
+         * Read Only.
          */
         RO,
         /**
-         * Read Write
+         * Read Write.
          */
         RW,
         /**
-         * Write Only
+         * Write Only.
          */
         WO
     };
 
     /**
-     * Parses a Property Permission
+     * Parses a Property Permission.
      * 
      * @param permission
      *            a string representation of the Property Permission to be
@@ -211,7 +223,7 @@ public class Constants {
      * @throws IllegalArgumentException
      *             if the <code>permission</code> is not a valid one.
      */
-    public static PropertyPermissions parsePropertyPermission(String permission) throws IllegalArgumentException {
+    public static PropertyPermissions parsePropertyPermission(final String permission) throws IllegalArgumentException {
         if (permission.compareTo("ro") == 0) {
             return PropertyPermissions.RO;
         } else if (permission.compareTo("rw") == 0) {
@@ -231,7 +243,7 @@ public class Constants {
      * @return <code>true</code> if it corresponds to a valid
      *         PropertyPermission. <code>false</code> otherwise.
      */
-    public static boolean isValidPropertyPermission(String permission) {
+    public static boolean isValidPropertyPermission(final String permission) {
         try {
             parsePropertyPermission(permission);
         } catch (IllegalArgumentException e) {
@@ -248,7 +260,7 @@ public class Constants {
      *            The Property Permission
      * @return A String representation of the Property Permission.
      */
-    public static String getPropertyPermissionAsString(PropertyPermissions permission) {
+    public static String getPropertyPermissionAsString(final PropertyPermissions permission) {
         if (permission == PropertyPermissions.RO) {
             return "ro";
         } else if (permission == PropertyPermissions.RW) {
@@ -261,24 +273,24 @@ public class Constants {
     }
 
     /**
-     * Possible States for a INDI Property
+     * Possible States for a INDI Property.
      */
     public enum PropertyStates {
 
         /**
-         * Idle
+         * Idle.
          */
         IDLE,
         /**
-         * Ok
+         * Ok.
          */
         OK,
         /**
-         * Busy
+         * Busy.
          */
         BUSY,
         /**
-         * Alert
+         * Alert.
          */
         ALERT
     };
@@ -293,7 +305,7 @@ public class Constants {
      * @throws IllegalArgumentException
      *             if the <code>state</code> is not a valid one.
      */
-    public static PropertyStates parsePropertyState(String state) throws IllegalArgumentException {
+    public static PropertyStates parsePropertyState(final String state) throws IllegalArgumentException {
         if (state.compareTo("Alert") == 0) {
             return PropertyStates.ALERT;
         } else if (state.compareTo("Busy") == 0) {
@@ -315,7 +327,7 @@ public class Constants {
      * @return <code>true</code> if it corresponds to a valid PropertyState.
      *         <code>false</code> otherwise.
      */
-    public static boolean isValidPropertyState(String state) {
+    public static boolean isValidPropertyState(final String state) {
         try {
             parsePropertyState(state);
         } catch (IllegalArgumentException e) {
@@ -332,7 +344,7 @@ public class Constants {
      *            The Property State
      * @return A String representation of the Property State
      */
-    public static String getPropertyStateAsString(PropertyStates propertyState) {
+    public static String getPropertyStateAsString(final PropertyStates propertyState) {
         if (propertyState == PropertyStates.ALERT) {
             return "Alert";
         } else if (propertyState == PropertyStates.BUSY) {
@@ -366,7 +378,7 @@ public class Constants {
     };
 
     /**
-     * Parses a Switch Rule
+     * Parses a Switch Rule.
      * 
      * @param rule
      *            a string representation of the Switch Rule to be parsed
@@ -375,7 +387,7 @@ public class Constants {
      * @throws IllegalArgumentException
      *             if the <code>rule</code> is not a valid one.
      */
-    public static SwitchRules parseSwitchRule(String rule) throws IllegalArgumentException {
+    public static SwitchRules parseSwitchRule(final String rule) throws IllegalArgumentException {
         if (rule.compareTo("OneOfMany") == 0) {
             return SwitchRules.ONE_OF_MANY;
         } else if (rule.compareTo("AtMostOne") == 0) {
@@ -395,7 +407,7 @@ public class Constants {
      * @return <code>true</code> if it corresponds to a valid SwitchRule.
      *         <code>false</code> otherwise.
      */
-    public static boolean isValidSwitchRule(String rule) {
+    public static boolean isValidSwitchRule(final String rule) {
         try {
             parseSwitchRule(rule);
         } catch (IllegalArgumentException e) {
@@ -412,7 +424,7 @@ public class Constants {
      *            The Switch Rule
      * @return A String representation of the Switch Rule.
      */
-    public static String getSwitchRuleAsString(SwitchRules rule) {
+    public static String getSwitchRuleAsString(final SwitchRules rule) {
         if (rule == SwitchRules.ONE_OF_MANY) {
             return "OneOfMany";
         } else if (rule == SwitchRules.AT_MOST_ONE) {
@@ -430,52 +442,52 @@ public class Constants {
     public enum BLOBEnables {
 
         /**
-         * Never (no BLOB values are sent)
+         * Never (no BLOB values are sent).
          */
         NEVER,
         /**
-         * Also (every value is sent)
+         * Also (every value is sent).
          */
         ALSO,
         /**
-         * Only (just the BLOB values are sent)
+         * Only (just the BLOB values are sent).
          */
         ONLY
     };
 
     /**
-     * Parses a BLOB Enable
+     * Parses a BLOB Enable.
      * 
-     * @param BLOBEnable
+     * @param blobEnable
      *            a string representation of the BLOB Enable to be parsed
      *            ("Never" or "Also" or "Only").
      * @return The BLOB Enable
      * @throws IllegalArgumentException
-     *             if the <code>BLOBEnable</code> is not a valid one.
+     *             if the <code>blobEnable</code> is not a valid one.
      */
-    public static BLOBEnables parseBLOBEnable(String BLOBEnable) throws IllegalArgumentException {
-        if (BLOBEnable.compareTo("Never") == 0) {
+    public static BLOBEnables parseBLOBEnable(final String blobEnable) throws IllegalArgumentException {
+        if (blobEnable.compareTo("Never") == 0) {
             return BLOBEnables.NEVER;
-        } else if (BLOBEnable.compareTo("Also") == 0) {
+        } else if (blobEnable.compareTo("Also") == 0) {
             return BLOBEnables.ALSO;
-        } else if (BLOBEnable.compareTo("Only") == 0) {
+        } else if (blobEnable.compareTo("Only") == 0) {
             return BLOBEnables.ONLY;
         }
 
-        throw new IllegalArgumentException("Invalid BLOBEnable String: '" + BLOBEnable + "'");
+        throw new IllegalArgumentException("Invalid BLOBEnable String: '" + blobEnable + "'");
     }
 
     /**
-     * Checks if a string corresponds to a valid BLOBEnable.
+     * Checks if a string corresponds to a valid blobEnable.
      * 
-     * @param BLOBEnable
+     * @param blobEnable
      *            The string to check
-     * @return <code>true</code> if it corresponds to a valid BLOBEnable.
+     * @return <code>true</code> if it corresponds to a valid blobEnable.
      *         <code>false</code> otherwise.
      */
-    public static boolean isValidBLOBEnable(String BLOBEnable) {
+    public static boolean isValidBLOBEnable(final String blobEnable) {
         try {
-            parseBLOBEnable(BLOBEnable);
+            parseBLOBEnable(blobEnable);
         } catch (IllegalArgumentException e) {
             return false;
         }
@@ -486,16 +498,16 @@ public class Constants {
     /**
      * Gets a String representation of the BLOB Enable.
      * 
-     * @param BLOBEnable
-     *            The BLOBEnable
+     * @param blobEnable
+     *            The blobEnable
      * @return A String representation of the BLOB Enable.
      */
-    public static String getBLOBEnableAsString(BLOBEnables BLOBEnable) {
-        if (BLOBEnable == BLOBEnables.NEVER) {
+    public static String getBLOBEnableAsString(final BLOBEnables blobEnable) {
+        if (blobEnable == BLOBEnables.NEVER) {
             return "Never";
-        } else if (BLOBEnable == BLOBEnables.ALSO) {
+        } else if (blobEnable == BLOBEnables.ALSO) {
             return "Also";
-        } else if (BLOBEnable == BLOBEnables.ONLY) {
+        } else if (blobEnable == BLOBEnables.ONLY) {
             return "Only";
         }
 

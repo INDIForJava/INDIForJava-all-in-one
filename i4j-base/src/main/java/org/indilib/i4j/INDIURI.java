@@ -28,7 +28,7 @@ package org.indilib.i4j;
  * obtained from the class when the URI is not correct should not be used.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 5, 2014
+ * @version 1.39, October 11, 2014
  */
 public class INDIURI {
 
@@ -70,23 +70,23 @@ public class INDIURI {
      * @param uri
      *            The URI to be parsed.
      */
-    public INDIURI(String uri) {
+    public INDIURI(final String uri) {
         host = "127.0.0.1";
         port = Constants.INDI_DEFAULT_PORT;
         device = null;
         property = null;
         element = null;
 
-        uri = uri.trim();
+        String newUri = uri.trim();
 
-        if (!uri.startsWith("indi://")) {
+        if (!newUri.startsWith("indi://")) {
             correct = false;
             return;
         }
 
-        uri = uri.substring(7);
+        newUri = newUri.substring(7);
 
-        String[] parts = uri.split("/", -1);
+        String[] parts = newUri.split("/", -1);
 
         if (parts.length > 4) {
             correct = false;
@@ -121,7 +121,6 @@ public class INDIURI {
         }
 
         if (parts.length > 1) {
-
             if (!parts[1].isEmpty()) {
                 device = parts[1];
 
@@ -148,7 +147,7 @@ public class INDIURI {
      * @return <code>true</code> if the parsed URI is correct.
      *         <code>false</code> otherwise.
      */
-    public boolean isCorrect() {
+    public final boolean isCorrect() {
         return correct;
     }
 
@@ -157,7 +156,7 @@ public class INDIURI {
      * 
      * @return The Host of the URI.
      */
-    public String getHost() {
+    public final String getHost() {
         return host;
     }
 
@@ -166,7 +165,7 @@ public class INDIURI {
      * 
      * @return The Port of the URI.
      */
-    public int getPort() {
+    public final int getPort() {
         return port;
     }
 
@@ -175,7 +174,7 @@ public class INDIURI {
      * 
      * @return The Device of the URI.
      */
-    public String getDevice() {
+    public final String getDevice() {
         return device;
     }
 
@@ -184,7 +183,7 @@ public class INDIURI {
      * 
      * @return The Property of the URI.
      */
-    public String getProperty() {
+    public final String getProperty() {
         return property;
     }
 
@@ -193,7 +192,7 @@ public class INDIURI {
      * 
      * @return The Element of the URI.
      */
-    public String getElement() {
+    public final String getElement() {
         return element;
     }
 }

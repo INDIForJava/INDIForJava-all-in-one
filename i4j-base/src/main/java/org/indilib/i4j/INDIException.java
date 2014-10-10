@@ -23,14 +23,20 @@ package org.indilib.i4j;
  */
 
 /**
- * A class representing a generic INDI Exception
+ * A class representing a generic INDI Exception.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.11, March 26, 2012
+ * @version 1.39, October 11, 2014
  */
 public class INDIException extends Exception {
 
-    public INDIException(String msg) {
+    /**
+     * Creates a INDI Exception.
+     * 
+     * @param msg
+     *            The message for the exception.
+     */
+    public INDIException(final String msg) {
         super(msg);
     }
 }

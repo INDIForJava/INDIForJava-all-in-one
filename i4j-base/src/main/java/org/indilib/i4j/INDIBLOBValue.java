@@ -27,43 +27,42 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
-
 import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI BLOB Value (some bytes and a format).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.10, March 19, 2012
+ * @version 1.39, October 11, 2014
  */
 public class INDIBLOBValue {
 
     /**
-     * The BLOB data
+     * The BLOB data.
      */
-    private byte[] BLOBData;
+    private byte[] blobData;
 
     /**
-     * The format of the data
+     * The format of the data.
      */
     private String format;
 
     /**
-     * The encoded data
+     * The encoded data.
      */
     private String base64EncodedData;
 
     /**
      * Constructs a new BLOB Value from its coresponding bytes and format.
      * 
-     * @param BLOBData
+     * @param blobData
      *            the data for the BLOB
      * @param format
      *            the format of the data
      */
-    public INDIBLOBValue(byte[] BLOBData, String format) {
+    public INDIBLOBValue(final byte[] blobData, final String format) {
         this.format = format;
-        this.BLOBData = BLOBData;
+        this.blobData = blobData;
         this.base64EncodedData = null;
     }
 
@@ -75,7 +74,7 @@ public class INDIBLOBValue {
      * @throws IllegalArgumentException
      *             if the XML element is not correct.
      */
-    public INDIBLOBValue(Element xml) throws IllegalArgumentException {
+    public INDIBLOBValue(final Element xml) throws IllegalArgumentException {
         int size = 0;
         String f;
 
@@ -127,24 +126,24 @@ public class INDIBLOBValue {
         }
 
         format = f;
-        BLOBData = val;
+        blobData = val;
     }
 
     /**
-     * Gets the BLOB data
+     * Gets the BLOB data.
      * 
      * @return the BLOB data
      */
-    public byte[] getBLOBData() {
-        return BLOBData;
+    public final byte[] getBLOBData() {
+        return blobData;
     }
 
     /**
-     * Gets the BLOB data in base64
+     * Gets the BLOB data in base64.
      * 
      * @return the BLOB data
      */
-    public String getBase64BLOBData() {
+    public final String getBase64BLOBData() {
         if (base64EncodedData == null) {
             base64EncodedData = Base64.encodeBytes(getBLOBData());
         }
@@ -153,21 +152,21 @@ public class INDIBLOBValue {
     }
 
     /**
-     * Gets the BLOB data format
+     * Gets the BLOB data format.
      * 
      * @return the BLOB data format
      */
-    public String getFormat() {
+    public final String getFormat() {
         return format;
     }
 
     /**
-     * Gets the size of the BLOB data
+     * Gets the size of the BLOB data.
      * 
      * @return the size of the BLOB data
      */
-    public int getSize() {
-        return BLOBData.length;
+    public final int getSize() {
+        return blobData.length;
     }
 
     /**
@@ -178,11 +177,9 @@ public class INDIBLOBValue {
      * @throws IOException
      *             if there is some problem writting the file.
      */
-    public void saveBLOBData(File file) throws IOException {
-        FileOutputStream fos = new FileOutputStream(file);
-
-        fos.write(BLOBData);
-
-        fos.close();
+    public final void saveBLOBData(final File file) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(blobData);
+        }
     }
 }

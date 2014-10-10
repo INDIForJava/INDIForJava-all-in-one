@@ -29,16 +29,28 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
  * A class to transforms XML Elements into Strings.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
+ * @version 1.39, October 11, 2014
  */
-public class XMLToString {
+public final class XMLToString {
+
+    /**
+     * A logger for the errors.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(XMLToString.class);
+
+    /**
+     * A private constructor to avoid instantiating this utility class.
+     */
+    private XMLToString() {
+    }
 
     /**
      * Transforms a XML Element into a String.
@@ -47,7 +59,7 @@ public class XMLToString {
      *            The XML Element
      * @return A String representing the XML Element
      */
-    public static String transform(Element xml) {
+    public static String transform(final Element xml) {
         try {
             TransformerFactory transFactory = TransformerFactory.newInstance();
 
@@ -59,6 +71,7 @@ public class XMLToString {
             String str = buffer.toString();
             return str;
         } catch (Exception e) {
+            LOG.error("Problem transforming XML to String", e);
         }
 
         return "";

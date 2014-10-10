@@ -24,7 +24,6 @@ package org.indilib.i4j;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,18 +32,40 @@ import org.slf4j.LoggerFactory;
  * parameters.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.13, April 4, 2012
+ * @version 1.39, October 11, 2014
  */
-public class ClassInstantiator {
+public final class ClassInstantiator {
 
+    /**
+     * A logger for the errors.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(ClassInstantiator.class);
 
-    public static Object instantiate(String[] possibleClassNames, Object[] arguments) throws INDIException {
-        Class[] argumentClasses = new Class[arguments.length];
+    /**
+     * A private constructor to avoid instantiating this utility class.
+     */
+    private ClassInstantiator() {
+    }
 
-        for (int i = 0; i < argumentClasses.length; i++) {
-            argumentClasses[i] = arguments[i].getClass();
-        }
+    /**
+     * Instantiates an object from a list of possible classes. The object will
+     * be of the class of the first instantiable class in an array.
+     * 
+     * @param possibleClassNames
+     *            An array of class names from which to try to instantiate a
+     *            object.
+     * @param arguments
+     *            The arguments for the constructors.
+     * @return The first object that can be instantiated from a list of classes.
+     * @throws INDIException
+     *             if there is no suitable class to be instantiated.
+     */
+    public static Object instantiate(final String[] possibleClassNames, final Object[] arguments) throws INDIException {
+        /*
+         * Class[] argumentClasses = new Class[arguments.length]; for (int i =
+         * 0; i < argumentClasses.length; i++) { argumentClasses[i] =
+         * arguments[i].getClass(); }
+         */
 
         for (int i = 0; i < possibleClassNames.length; i++) {
             String className = possibleClassNames[i];
@@ -71,7 +92,19 @@ public class ClassInstantiator {
         throw new INDIException("No suitable class to instantiate. Probably some libraries are missing in the classpath.");
     }
 
-    private static Constructor getSuitableConstructor(Constructor[] constructors, Object[] arguments) throws INDIException {
+    /**
+     * Gets a suitable Constructor from a list. It check for the parameters to
+     * coincide with a list of parameter classes.
+     * 
+     * @param constructors
+     *            The list of constructors from which to get a suitable one.
+     * @param arguments
+     *            The array of parameters objects for the constructor.
+     * @return The first suitable constructor for a set of parameters.
+     * @throws INDIException
+     *             If no suitable constructor is found.
+     */
+    private static Constructor getSuitableConstructor(final Constructor[] constructors, final Object[] arguments) throws INDIException {
         for (int i = 0; i < constructors.length; i++) {
             Constructor c = constructors[i];
 

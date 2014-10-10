@@ -30,9 +30,9 @@ import java.util.Date;
  * A simple class to format and parse INDI timestamps.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.10, March 19, 2012
+ * @version 1.39, October 11, 2014
  */
-public class INDIDateFormat {
+public final class INDIDateFormat {
 
     /**
      * The first possible format for INDI timestamps.
@@ -45,6 +45,12 @@ public class INDIDateFormat {
     private static SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     /**
+     * A private constructor to avoid instantiating this utility class.
+     */
+    private INDIDateFormat() {
+    }
+
+    /**
      * Parses a timestamp expressed in the INDI format. If the timestamp does
      * not have the correct format it returns the current timestamp.
      * 
@@ -53,17 +59,17 @@ public class INDIDateFormat {
      * @return the parsed timestamp or the current timestamp if the format of
      *         the <code>time</code> is not correct.
      */
-    public static Date parseTimestamp(String time) {
+    public static Date parseTimestamp(final String time) {
         Date timestamp = new Date();
 
-        time = time.trim();
+        String newTime = time.trim();
 
-        if (!(time.length() == 0)) {
+        if (!(newTime.length() == 0)) {
             try {
-                timestamp = dateFormat.parse(time);
+                timestamp = dateFormat.parse(newTime);
             } catch (ParseException e) {
                 try {
-                    timestamp = dateFormat2.parse(time);
+                    timestamp = dateFormat2.parse(newTime);
                 } catch (ParseException ee) {
                     timestamp = new Date(); // Not correct format, returning
                                             // current timestamp.
@@ -81,7 +87,7 @@ public class INDIDateFormat {
      *            the timestamp to be formmated
      * @return the formatted timestamp
      */
-    public static String formatTimestamp(Date timestamp) {
+    public static String formatTimestamp(final Date timestamp) {
         return dateFormat.format(timestamp);
     }
 

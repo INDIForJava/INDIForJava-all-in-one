@@ -21,15 +21,12 @@ package org.indilib.i4j;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -43,10 +40,13 @@ import org.xml.sax.SAXParseException;
  * parser.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.2, April 1, 2012
+ * @version 1.39, October 11, 2014
  */
 public class INDIProtocolReader extends Thread {
 
+    /**
+     * A logger for the errors.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIProtocolReader.class);
 
     /**
@@ -65,7 +65,7 @@ public class INDIProtocolReader extends Thread {
      * @param parser
      *            The parser to which the readed messages will be sent.
      */
-    public INDIProtocolReader(INDIProtocolParser parser) {
+    public INDIProtocolReader(final INDIProtocolParser parser) {
         this.parser = parser;
     }
 
@@ -73,7 +73,7 @@ public class INDIProtocolReader extends Thread {
      * The main body of the reader.
      */
     @Override
-    public void run() {
+    public final void run() {
         DocumentBuilderFactory docBuilderFactory;
 
         DocumentBuilder docBuilder;
@@ -83,27 +83,25 @@ public class INDIProtocolReader extends Thread {
             docBuilder.setErrorHandler(new ErrorHandler() {
 
                 @Override
-                public void warning(SAXParseException e) throws SAXException {
+                public void warning(final SAXParseException e) throws SAXException {
                 }
 
                 @Override
-                public void fatalError(SAXParseException e) throws SAXException {
+                public void fatalError(final SAXParseException e) throws SAXException {
                 }
 
                 @Override
-                public void error(SAXParseException e) throws SAXException {
+                public void error(final SAXParseException e) throws SAXException {
                 }
             });
         } catch (Exception e) {
-            LOG.error("could not parse doc", e);
+            LOG.error("Could not parse doc", e);
             return;
         }
 
-        int BUFFER_SIZE = 1000000;
-
         StringBuffer bufferedInput = new StringBuffer();
 
-        char[] buffer = new char[BUFFER_SIZE];
+        char[] buffer = new char[Constants.BUFFER_SIZE];
 
         stop = false;
 
@@ -111,11 +109,11 @@ public class INDIProtocolReader extends Thread {
 
         try {
             while (!stop) {
-                int nReaded = in.read(buffer, 0, BUFFER_SIZE);
+                int nReaded = in.read(buffer, 0, Constants.BUFFER_SIZE);
 
                 if (nReaded != -1) {
                     bufferedInput.append(buffer, 0, nReaded); // Appending to
-                                                              // the buffer
+                    // the buffer
 
                     boolean errorParsing = false;
 
@@ -144,6 +142,12 @@ public class INDIProtocolReader extends Thread {
             }
         } catch (IOException e) {
             LOG.error("could not parse doc", e);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                LOG.error("Could not close Doc", e);
+            }
         }
 
         parser.finishReader();
@@ -154,8 +158,9 @@ public class INDIProtocolReader extends Thread {
      * gracefully stop after the next read.
      * 
      * @param stop
+     *            The stop parameter
      */
-    public void setStop(boolean stop) {
+    public final void setStop(final boolean stop) {
         this.stop = stop;
     }
 }
