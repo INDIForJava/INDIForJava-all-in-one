@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.indilib.i4j</groupId>
@@ -10,6 +11,17 @@
 	<packaging>apk</packaging>
 	<name>INDI for Java Android App</name>
 	<description>INDI for Java Android App</description>
+	<!-- prohibit normal deployment, we will copy the result to sourceforge -->
+	<distributionManagement>
+		<repository>
+			<id>skip</id>
+			<url>file://${java.io.tmpdir}</url>
+		</repository>
+		<snapshotRepository>
+			<id>skip</id>
+			<url>file://${java.io.tmpdir}</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
@@ -24,6 +36,33 @@
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
 				</configuration>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<generateReports>false</generateReports>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-5</version>
+				<executions>
+					<execution>
+						<id>upload-to-sourceforge</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+						<configuration>
+							<serverId>sourceforge-deploy</serverId>
+							<fromDir>${project.build.directory}</fromDir>
+							<includes>*.apk</includes>
+							<url>sftp://frs.sourceforge.net/</url>
+							<toDir>/home/frs/project/indiforjava</toDir>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

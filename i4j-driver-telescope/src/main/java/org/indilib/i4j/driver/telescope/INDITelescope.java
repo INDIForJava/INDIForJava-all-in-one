@@ -78,15 +78,48 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class that acts as a abstract INDI for Java Driver for a Telescope.
+ * A class that acts as a abstract INDI for Java Driver for any Telescope. All
+ * telescope drivers should subclass this abstract drivser. The initali version
+ * was a port of the indilib c++ version.
  * 
  * @author Richard van Nieuwenhoven [ritchie at gmx.at]
  */
 public abstract class INDITelescope extends INDIDriver implements INDIConnectionHandler {
 
+    /**
+     * When two doubles are compared, at what precision are they interpreted as
+     * equal.
+     */
+    private static final double EQUALITY_PRECISION = 0.000000000001;
+
+    /**
+     * how many milliseconds in a second.
+     */
+    private static final long ONE_SECOND_IN_MILLISECONDS = 1000L;
+
+    /**
+     * The minimal value for right ascension in hours.
+     */
+    private static final double MIN_RIGHT_ACENSION_HOURS = 0d;
+
+    /**
+     * The maximal value for right ascension in hours.
+     */
+    private static final double MAX_RIGHT_ACENSION_HOURS = 24d;
+
+    /**
+     * The minimal value for declination in degrees.
+     */
+    private static final double MAX_DECLINATION_DEGREES = 90d;
+
+    /**
+     * The maximal value for declination in degrees.
+     */
+    private static final double MIN_DECLINATION_DEGREES = -90d;
+
     private final class ScopeStaturUpdater implements Runnable {
 
-        boolean running = true;
+        private boolean running = true;
 
         @Override
         public void run() {
@@ -95,7 +128,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 try {
                     Thread.sleep(updateInterfall());
                 } catch (InterruptedException e) {
-                    // ignore this
+                    LOG.error("thread interupted", e);
                 }
             }
         }
@@ -123,6 +156,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         SCOPE_TRACKING
     };
 
+    /**
+     * The logger for any messages.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
 
     protected static final String MAIN_CONTROL_TAB = "Main Control";
@@ -137,7 +173,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     private final SimpleDateFormat extractISOTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    private PropertyStates last_state = null;
+    private PropertyStates lastState = null;
 
     private ScopeStaturUpdater scopStatusUpdater;
 
@@ -147,7 +183,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectElement(name = "RA", label = "RA (hh:mm:ss)", maximum = 24d, numberFormat = "%010.6m")
     protected INDINumberElement eqnRa;
 
-    @InjectElement(name = "DEC", label = "DEC (dd:mm:ss)", minimum = -90d, maximum = 90d, numberFormat = "%010.6m")
+    @InjectElement(name = "DEC", label = "DEC (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement eqnDec;
 
     @InjectProperty(name = "TIME_UTC", label = "UTC", group = SITE_TAB)
@@ -162,7 +198,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     @InjectProperty(name = "GEOGRAPHIC_COORD", label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
     protected INDINumberProperty location;
 
-    @InjectElement(name = "LAT", label = "Lat (dd:mm:ss)", minimum = -90d, maximum = 90d, numberFormat = "%010.6m")
+    @InjectElement(name = "LAT", label = "Lat (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement locationLat;
 
     @InjectElement(name = "LONG", label = "Lon (dd:mm:ss)", maximum = 360d, numberFormat = "%010.6m")
@@ -257,14 +293,14 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
-                newLocationValue(property, elementsAndValues);
+                newLocationValue(elementsAndValues);
             }
         });
         this.time.setEventHandler(new TextEvent() {
 
             @Override
             public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
-                newTimeValue(property, elementsAndValues);
+                newTimeValue(elementsAndValues);
             }
         });
         this.coord.setEventHandler(new SwitchEvent() {
@@ -286,7 +322,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
-                newScopeParameter(property, elementsAndValues);
+                newScopeParameter(elementsAndValues);
             }
         });
         this.movementNSS.setEventHandler(new SwitchEvent() {
@@ -307,6 +343,13 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     }
 
+    /**
+     * convert an iso time string to a java date.
+     * 
+     * @param isoTime
+     *            the String representing the date.
+     * @return the java date representation of the isoTime String.
+     */
     private synchronized Date extractISOTime(String isoTime) {
         try {
             return this.extractISOTimeFormat1.parse(isoTime);
@@ -320,8 +363,11 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
     }
 
+    /**
+     * the indi client send an abort of the current operation.
+     */
     private void newAbortValue() {
-        resetSwitch(this.abort);
+        this.abort.resetAllSwitches();
         if (abort()) {
             this.abort.setState(OK);
             parkExtension.setNotBussy();
@@ -340,6 +386,12 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
     }
 
+    /**
+     * neu goto values received from the indi client.
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
     private void newEqnValue(INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
         // this is for us, and it is a goto
         double ra = -1;
@@ -353,7 +405,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             }
         }
 
-        if (ra >= 0d && ra <= 24d && dec >= -90d && dec <= 90d) {
+        if (ra >= MIN_RIGHT_ACENSION_HOURS && ra <= MAX_RIGHT_ACENSION_HOURS && dec >= MIN_DECLINATION_DEGREES && dec <= MAX_DECLINATION_DEGREES) {
             // we got an ra and a dec, both in range
             // And now we let the underlying hardware specific class
             // perform the goto
@@ -372,11 +424,18 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
     }
 
-    private void newLocationValue(INDINumberProperty property, INDINumberElementAndValue[] elementsAndValues) {
+    /**
+     * the client send new values for the telescope location properties. process
+     * the values and call the scope implementation.
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
+    private void newLocationValue(INDINumberElementAndValue[] elementsAndValues) {
         Double targetLat = null;
         Double targetLong = null;
         Double targetElev = null;
-
+        // TODO: check if this for loop can be eliminated.
         for (INDINumberElementAndValue indiNumberElementAndValue : elementsAndValues) {
             if (this.locationLat == indiNumberElementAndValue.getElement()) {
                 targetLat = indiNumberElementAndValue.getValue();
@@ -391,7 +450,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             INDITelescope.LOG.error("Location data missing or corrupted.");
         } else {
             if (updateLocation(targetLat, targetLong, targetElev)) {
-                property.setValues(elementsAndValues);
+                this.location.setValues(elementsAndValues);
                 this.location.setState(PropertyStates.OK);
             } else {
                 this.location.setState(PropertyStates.ALERT);
@@ -400,6 +459,12 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         updateProperty(this.location);
     }
 
+    /**
+     * new values where send from the client for the move north/south property
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
     private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementNSS.setValues(elementsAndValues);
         movementNSS.setState(PropertyStates.BUSY);
@@ -410,27 +475,46 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
     }
 
+    /**
+     * new values where send from the client for the move west/east property
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
     private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementWES.setValues(elementsAndValues);
         movementWES.setState(PropertyStates.BUSY);
         if (this.movementWESWest.getValue() == SwitchStatus.ON) {
             moveWE(TelescopeMotionWE.MOTION_WEST);
         } else {
-            moveWE(TelescopeMotionWE.MOTION_WEST);
+            moveWE(TelescopeMotionWE.MOTION_EAST);
 
         }
     }
 
-    private void newScopeParameter(INDINumberProperty property, INDINumberElementAndValue[] elementsAndValues) {
+    /**
+     * The scope parameters where changes by the client.
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
+    private void newScopeParameter(INDINumberElementAndValue[] elementsAndValues) {
         this.scopeParameters.setState(OK);
-        property.setValues(elementsAndValues);
+        this.scopeParameters.setValues(elementsAndValues);
 
         updateProperty(this.scopeParameters);
     }
 
-    private void newTimeValue(INDITextProperty property, INDITextElementAndValue[] elementsAndValues) {
+    /**
+     * The current time was changed by the client.
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
+    private void newTimeValue(INDITextElementAndValue[] elementsAndValues) {
         String utcString = "";
         String offsetString = "0";
+        // TODO: is this loop removeable?
         for (INDITextElementAndValue indiTextElementAndValue : elementsAndValues) {
             if (this.timeutc == indiTextElementAndValue.getElement()) {
                 utcString = indiTextElementAndValue.getValue();
@@ -446,7 +530,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
         Date utc = extractISOTime(utcString);
         if (utc != null && offset != null) {
-            property.setValues(elementsAndValues);
+            this.time.setValues(elementsAndValues);
             if (updateTime(utc, offset.doubleValue())) {
                 this.time.setState(PropertyStates.OK);
 
@@ -460,36 +544,66 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         updateProperty(this.time);
     }
 
-    private void resetSwitch(INDISwitchProperty property) {
-        for (INDIElement element : property.getElementsAsList()) {
-            element.setValue(SwitchStatus.OFF);
-        }
-    }
+    /**
+     * The driver implementation should try to halt the current operation. And
+     * return true if the operation succeeded.
+     * 
+     * @return if the operation succeeded .
+     */
+    abstract protected boolean abort();
 
-    protected boolean abort() {
-        return false;
-    }
+    /**
+     * The driver implementation should now goto the specified coordinates.
+     * 
+     * @param ra
+     *            the right ascension of the goto point in space
+     * @param dec
+     *            the declination of the point in space
+     */
+    abstract protected void doGoto(double ra, double dec);
 
-    protected void doGoto(double ra, double dec) {
-
-    }
-
+    /**
+     * this is the default implementation if the scope does not support
+     * North/South motion. Subclasses should override this method to support it.
+     * 
+     * @param dir
+     *            The direction to move to
+     * @return true is successful
+     */
     protected boolean moveNS(TelescopeMotionNS dir) {
         INDITelescope.LOG.error("Mount does not support North/South motion.");
-        resetSwitch(this.movementNSS);
+        this.movementNSS.resetAllSwitches();
         this.movementNSS.setState(IDLE);
         updateProperty(this.movementNSS);
         return false;
     }
 
+    /**
+     * this is the default implementation if the scope does not support
+     * West/East motion. Subclasses should override this method to support it.
+     * 
+     * @param dir
+     *            The direction to move to
+     * @return true is successful
+     */
     protected boolean moveWE(TelescopeMotionWE dir) {
         INDITelescope.LOG.error("Mount does not support West/East motion.");
-        resetSwitch(this.movementWES);
+        this.movementWES.resetAllSwitches();
         this.movementWES.setState(IDLE);
         updateProperty(this.movementWES);
         return false;
     }
 
+    /**
+     * The scope is now pointing here, resport the pointing position back to the
+     * indi client. Subclasses should call this method to send the new pointing
+     * data to the indi client.
+     * 
+     * @param ra
+     *            the right ascension of the goto point in space
+     * @param dec
+     *            the declination of the point in space
+     */
     protected void newRaDec(double ra, double dec) {
         // Lets set our eq values to these numbers
         // which came from the hardware
@@ -513,30 +627,39 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
         // IDLog("newRA DEC RA %g - DEC %g --- EqN[0] %g --- EqN[1] %g --- EqN.state %d\n",
         // ra, dec, EqN[0].value, EqN[1].value, EqNP.s);
-        if (this.eqnRa.getValue() != ra || this.eqnDec.getValue() != dec || this.eqn.getState() != this.last_state) {
+        if (!eq(this.eqnRa.getValue(), ra) || !eq(this.eqnDec.getValue(), dec) || this.eqn.getState() != this.lastState) {
             this.eqnRa.setValue(ra);
             this.eqnDec.setValue(dec);
-            this.last_state = this.eqn.getState();
+            this.lastState = this.eqn.getState();
             updateProperty(this.eqn);
         }
 
     }
 
-    protected void readScopeStatus() {
-
+    /**
+     * equal doubles are two doubles equal? Subclasses my use this helper
+     * method.
+     * 
+     * @param double1
+     *            the first value
+     * @param double2
+     *            the other value
+     * @return true if the 2 doubles are equal up to the precision
+     *         {@link EQUALITY_PRECISION}.
+     */
+    protected boolean eq(double double1, double double2) {
+        return Math.abs(double1 - double2) < EQUALITY_PRECISION;
     }
+
+    abstract protected void readScopeStatus();
 
     protected long updateInterfall() {
-        return 1000L;
+        return ONE_SECOND_IN_MILLISECONDS;
     }
 
-    protected boolean updateLocation(double targetLat, double targetLong, double targetElev) {
-        return true;
-    }
+    abstract protected boolean updateLocation(double targetLat, double targetLong, double targetElev);
 
-    protected boolean updateTime(Date utc, double d) {
-        return true;
-    }
+    abstract protected boolean updateTime(Date utc, double d);
 
     @Override
     public void driverConnect(Date timestamp) throws INDIException {

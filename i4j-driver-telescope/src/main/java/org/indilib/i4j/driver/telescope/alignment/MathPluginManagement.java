@@ -148,7 +148,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
 
     private void newAlignmentSubsystemMathPluginInitialiseValue() {
         alignmentSubsystemMathPluginInitialise.setState(OK);
-        alignmentSubsystemMathPluginInitialise.reset();
+        alignmentSubsystemMathPluginInitialise.resetAllSwitches();
         // Update client
         driver.updateProperty(alignmentSubsystemMathPluginInitialise);
         // Initialise or reinitialise the current math plugin

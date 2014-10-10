@@ -31,7 +31,7 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<site>
-			<id>i4j-deploy</id>
+			<id>sourceforge-deploy</id>
 			<name>Sourceforge Maven 2 Project Site</name>
 			<url>file://${java.io.tmpdir}/stage</url>
 <!-- 			<url>sftp://web.sourceforge.net/home/groups/i/in/indiforjava/htdocs</url> -->
@@ -120,8 +120,6 @@
 				<executions>
 					<execution>
 						<id>initialize-doxia-include-macro</id>
-						<!-- Use "initialize" when the 'site' was not given as 'phase'. -->
-						<!-- phase>initialize</phase -->
 						<phase>pre-site</phase>
 						<goals>
 							<goal>initialize</goal>
@@ -134,8 +132,6 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.4</version>
 				<dependencies>
-					<!-- additional dependencies required by "source-class" implementations 
-						are added here -->
 					<dependency>
 						<groupId>org.tinyjee.dim</groupId>
 						<artifactId>doxia-include-macro</artifactId>
@@ -255,25 +251,6 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.5</version>
 				<executions>
-					<!-- <execution> -->
-					<!-- <id>copy-sitedescriptor</id> -->
-					<!-- fetch site.xml before creating site documentation -->
-					<!-- <phase>pre-site</phase> -->
-					<!-- <goals> -->
-					<!-- <goal>copy-resources</goal> -->
-					<!-- </goals> -->
-					<!-- <configuration> -->
-					<!-- <outputDirectory>${basedir}/src/site/</outputDirectory> -->
-					<!-- <resources> -->
-					<!-- <resource> -->
-					<!-- <directory>${site.basedir}/src/site/</directory> -->
-					<!-- <includes> -->
-					<!-- <include>**/site.xml</include> -->
-					<!-- </includes> -->
-					<!-- </resource> -->
-					<!-- </resources> -->
-					<!-- </configuration> -->
-					<!-- </execution> -->
 					<execution>
 						<id>copy-site-resources</id>
 						<!-- fetch site.xml before creating site documentation -->

@@ -78,7 +78,7 @@ public class InMemoryDatabase {
      * 
      * @return A reference to the in memory database.
      */
-    List<AlignmentDatabaseEntry> GetAlignmentDatabase() {
+    protected List<AlignmentDatabaseEntry> GetAlignmentDatabase() {
         return mySyncPoints;
     }
 
@@ -90,7 +90,7 @@ public class InMemoryDatabase {
      *            position in
      * @return True if successful
      */
-    boolean GetDatabaseReferencePosition(LnLnlatPosn Position) {
+    protected boolean GetDatabaseReferencePosition(LnLnlatPosn Position) {
         return false;
     }
 
@@ -101,9 +101,11 @@ public class InMemoryDatabase {
      *            The name of the current device.
      * @return True if successful
      */
-    boolean LoadDatabase(String DeviceName) {
+    protected boolean loadDatabase(String DeviceName) {
         File db = getDataBaseFile(DeviceName);
-        db.getParentFile().mkdirs();
+        if (db.getParentFile().mkdirs()) {
+            LOG.error("sync point db directory created");
+        }
         try (ObjectInputStream out = new ObjectInputStream(new FileInputStream(db))) {
             mySyncPoints = (List<AlignmentDatabaseEntry>) out.readObject();
             return true;
@@ -128,9 +130,11 @@ public class InMemoryDatabase {
      *            The name of the current device.
      * @return True if successful
      */
-    boolean SaveDatabase(String DeviceName) {
+    protected boolean saveDatabase(String DeviceName) {
         File db = getDataBaseFile(DeviceName);
-        db.getParentFile().mkdirs();
+        if (db.getParentFile().mkdirs()) {
+            LOG.error("sync point db directory created");
+        }
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(db))) {
             out.writeObject(mySyncPoints);
         } catch (IOException e) {
@@ -146,7 +150,7 @@ public class InMemoryDatabase {
      * @param Latitude
      * @param Longitude
      */
-    void SetDatabaseReferencePosition(double Latitude, double Longitude) {
+    protected void SetDatabaseReferencePosition(double Latitude, double Longitude) {
     }
 
     /**
@@ -157,7 +161,7 @@ public class InMemoryDatabase {
      * @param ThisPointer
      *            A pointer to the class object of the callback function
      */
-    void SetLoadDatabaseCallback(LoadDatabaseCallback callback) {
+    protected void SetLoadDatabaseCallback(LoadDatabaseCallback callback) {
         callbacks.add(callback);
     }
 

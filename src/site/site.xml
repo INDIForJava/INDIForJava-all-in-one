@@ -17,5 +17,8 @@
 		</breadcrumbs>
 		<menu ref="modules" />
 		<menu ref="reports" />
+		<menu name="Sourceforge">
+			<item name="home" href="https://sourceforge.net/projects/indiforjava/" />
+		</menu>
 	</body>
 </project>

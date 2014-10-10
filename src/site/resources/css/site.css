@@ -3,7 +3,7 @@
   font-family: "SourceSansProLight";
   font-style: normal;
   font-weight: normal;
-  src: url("css/SourceSansPro-Light-webfont.eot?#iefix") format("embedded-opentype"), url("css/SourceSansPro-Light-webfont.woff") format("woff"), url("css/SourceSansPro-Light-webfont.ttf") format("truetype"), url("css/SourceSansPro-Light-webfont.svg#SourceSansProLight") format("svg");
+  src: url("SourceSansPro-Light-webfont.eot?#iefix") format("embedded-opentype"), url("SourceSansPro-Light-webfont.woff") format("woff"), url("SourceSansPro-Light-webfont.ttf") format("truetype"), url("SourceSansPro-Light-webfont.svg#SourceSansProLight") format("svg");
 
 }
 
@@ -11,11 +11,11 @@
   font-family: "SourceSansProRegular";
   font-style: normal;
   font-weight: normal;
-  src: url("css/SourceSansPro-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("css/SourceSansPro-Regular-webfont.woff") format("woff"), url("css/SourceSansPro-Regular-webfont.ttf") format("truetype"), url("css/SourceSansPro-Regular-webfont.svg#SourceSansRegular") format("svg");
+  src: url("SourceSansPro-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("SourceSansPro-Regular-webfont.woff") format("woff"), url("SourceSansPro-Regular-webfont.ttf") format("truetype"), url("SourceSansPro-Regular-webfont.svg#SourceSansRegular") format("svg");
 }
 
 body, td, select, input, li {
-    font-family: 'SourceSansProLight',Helvetica,Arial,sans-serif;
+    font-family: Helvetica,Arial,sans-serif;
 }
 
 #contentBox {
@@ -106,9 +106,20 @@ a:visited {
     background-color: #FFF;
 }
 
-#apt-box h1 , #apt-box h2,#apt-box h3 ,#apt-box h4 , #apt-box h5 {
+#apt-box h1 , #apt-box h2, #apt-box h3 ,#apt-box h4 , #apt-box h5 {
+    font-size: 39px;
+    font-family: 'SourceSansProLight',Helvetica,Arial,sans-serif;
     color: #7E7E7E;
     background-color: #FFF;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#apt-box h2, #apt-box h3 ,#apt-box h4 , #apt-box h5 {
+    font-size: 25px;
+}
+
+#navcolumn h1 , #navcolumn h2, #navcolumn h3 ,#navcolumn h4 , #navcolumn h5 {
     box-shadow: none;
     text-shadow: none;
 }
@@ -121,4 +132,8 @@ a:visited {
     box-shadow: none;
     border: 0px;
     margin: 8px;
+}
+
+#navcolumn a:link, #navcolumn a:visited {
+    color: #FFF;
 }
