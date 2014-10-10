@@ -13,6 +13,7 @@
 	</poweredBy>
 	<body>
 		<breadcrumbs>
+			<item name="INDI for Java" href="../index.html" />
 			<item name="${project.name}" href="index.html" />
 		</breadcrumbs>
 		<menu ref="modules" />

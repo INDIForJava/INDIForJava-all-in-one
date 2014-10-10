@@ -1,0 +1,11 @@
+%{include|source-content=<div id\="apt-box">}
+
+Example Tutorrial
+
+ Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something.
+
+%{include|source=org.indilib.i4j.driver.examples.INDIDriverExample|snippet=#fields|source-is-template=true|projectVersion=1.0}
+
+ Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something. Now we should do something.
+
+%{include|source-content=</div>}

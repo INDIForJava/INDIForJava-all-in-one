@@ -1,0 +1,25 @@
+<document>
+  <body>
+    <release version="1.11" date="March 26, 2012"  >
+      <action dev="Zerjillo" type="update"  >Driver library: INDIElements must specify its owner Property. Thus, it is not necessary to add them to the property. At the time of its construction they are added to the property.</action>
+      <action dev="Zerjillo" type="update"  >Driver library: INDISwitchElement ensure that the other elements are not selected if their owning Property has a rule of ONE_OF_MANY or AT_MOST_ONE and the new value is ON.</action>
+      <action dev="Zerjillo" type="update"  >Driver library: The generic CONNECTION property is handled via the new INDIConnectionHandler interface. The Drivers will automatically add and handle the property if the Driver implements the interface.</action>
+      <action dev="Zerjillo" type="add"  >Driver library: Added a printMessage method to allow the easy printing of messages in the Server console.</action>
+      <action dev="Zerjillo" type="update"  >Driver library: Fixed a major bug that avoided the correct removal of properties when INDIDriver.removeProperty(...) was called.</action>
+      <action dev="Zerjillo" type="add"  >General library: Added a INDIException from which all specific exceptions will inherit</action>
+    </release>
+    <release version="1.1" date="March 19, 2012"  >
+      <action dev="Zerjillo" type="add"  >Added the Driver Library. Now it is possible to create INDI Drivers!</action>
+      <action dev="Zerjillo" type="update"  >A lots of refactoring in the INDI Client.</action>
+      <action dev="Zerjillo" type="add"  >Added a generic Library with the classes shared by the Clients and Drivers.</action>
+      <action dev="Zerjillo" type="update"  >The update Properties method for the Client has been improved. Now it is simpler to ask the Driver to change some Property values.</action>
+      <action dev="Zerjillo" type="add"  >The complete directories of each one of the three libraries is released (source code, Netbeans project, Java Docs and dist files).</action>
+    </release>
+    <release version="1.01" date="March 06, 2012" description="JApplet INDI Client example" >
+      <action dev="Zerjillo" type="add"  >  Added a new JApplet INDI Client example application.        </action>
+    </release>
+    <release version="1.0" date="March 06, 2012" description="Initial Version of the Library" >
+      <action dev="Zerjillo" type="add" >Initial Version of the Library (just the Client). </action>
+    </release>
+  </body>
+</document>

@@ -59,6 +59,7 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
 
     private static final Logger LOG = LoggerFactory.getLogger(INDIDriverExample.class);
 
+    // START SNIPPET: fields
     // The Properties and Elements of this Driver
     private INDIBLOBProperty imageP;
 
@@ -67,6 +68,8 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
     private INDISwitchProperty sendP;
 
     private INDISwitchElement sendE;
+
+    // END SNIPPET: fields
 
     public INDIDriverExample(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);

@@ -9,7 +9,8 @@
 	<publishDate position="left" format="yyyy-MM-dd" />
 	<version position="right" />
 	<poweredBy>
-		<logo name="Maven" href="http://maven.apache.org/" img="http://maven.apache.org/images/logos/maven-feather.png" />
+		<logo name="Maven" href="http://maven.apache.org/"
+			img="http://maven.apache.org/images/logos/maven-feather.png" />
 	</poweredBy>
 	<body>
 		<breadcrumbs>
@@ -18,5 +19,8 @@
 		</breadcrumbs>
 		<menu ref="modules" />
 		<menu ref="reports" />
+		<menu name="Tutorial">
+			<item name="Driver" href="exampletext.html" />
+		</menu>
 	</body>
 </project>
