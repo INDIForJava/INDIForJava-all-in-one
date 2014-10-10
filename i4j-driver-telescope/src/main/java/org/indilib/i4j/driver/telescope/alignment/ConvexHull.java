@@ -26,7 +26,7 @@ import org.gnu.savannah.gsl.GslMatrix;
 
 public class ConvexHull {
 
-    public class Edge {
+    public static class Edge {
 
         Face[] adjface = {
             new Face(),
@@ -41,25 +41,25 @@ public class ConvexHull {
         /**
          * pointer to incident cone face.
          */
-        Face newface;
+        protected Face newface;
 
         /**
          * True iff edge should be delete.
          */
-        boolean delete_it;
+        protected boolean delete_it;
 
-        Edge next, prev;
+        protected Edge next, prev;
     }
 
-    public class Face {
+    public static class Face {
 
-        Edge[] edge = {
+        protected Edge[] edge = {
             new Edge(),
             new Edge(),
             new Edge()
         };
 
-        Vertex[] vertex = {
+        protected Vertex[] vertex = {
             new Vertex(),
             new Vertex(),
             new Vertex()
@@ -68,62 +68,57 @@ public class ConvexHull {
         /**
          * True iff face visible from new point.
          */
-        boolean visible;
+        protected boolean visible;
 
-        Face next, prev;
+        protected Face next, prev;
 
-        GslMatrix pMatrix = new GslMatrix(3, 3);
+        protected GslMatrix pMatrix = new GslMatrix(3, 3);
     }
 
-    public class Vertex {
+    public static class Vertex {
 
-        int[] v = new int[3];
+        protected int[] v = new int[3];
 
-        int vnum;
+        protected int vnum;
 
         /**
          * pointer to incident cone edge (or NULL)
          */
-        Edge duplicate;
+        protected Edge duplicate;
 
         /**
          * True iff point on hull.
          */
-        boolean onhull;
+        protected boolean onhull;
 
         /**
          * True iff point already processed.
          */
-        boolean mark;
+        protected boolean mark;
 
-        Vertex next, prev;
+        protected Vertex next, prev;
     };
 
-    public Face faces;;
+    public Face faces;
 
     public void constructHull() {
-        // TODO Auto-generated method stub
-
+        // TODO to be implemented
     }
 
     public void doubleTriangle() {
-        // TODO Auto-generated method stub
-
+        // TODO to be implemented
     }
 
     public void edgeOrderOnFaces() {
-        // TODO Auto-generated method stub
-
+        // TODO to be implemented
     }
 
     public void makeNewVertex(double d, double e, double f, int i) {
-        // TODO Auto-generated method stub
-
+        // TODO to be implemented
     }
 
     public void reset() {
-        // TODO Auto-generated method stub
-
+        // TODO to be implemented
     }
 
 }

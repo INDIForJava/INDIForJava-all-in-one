@@ -361,12 +361,10 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * hold.
      */
     public void resetAllSwitches() {
-        List<INDISwitchElement> list = getElementsAsList();
-
-        for (int i = 0; i < list.size(); i++) {
-            INDISwitchElement e = list.get(i);
-
-            e.setValue(SwitchStatus.OFF);
+        for (INDIElement element : getElementsAsList()) {
+            if (element.getValue() == SwitchStatus.ON) {
+                ((INDISwitchElement) element).setValue(SwitchStatus.OFF);
+            }
         }
     }
 
@@ -521,16 +519,4 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         }
     }
 
-    /**
-     * reset all elements to off
-     * 
-     * @return
-     */
-    public void reset() {
-        for (INDIElement element : getElementsAsList()) {
-            if (element.getValue() == SwitchStatus.ON) {
-                ((INDISwitchElement) element).setValue(SwitchStatus.OFF);
-            }
-        }
-    }
 }

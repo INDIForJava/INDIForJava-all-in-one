@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
@@ -44,62 +43,72 @@ import org.indilib.i4j.driver.event.SwitchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is the scope simulator class, basicly a copy of the c++ version. it will
+ * simulate a scopes behavior for any indi-client.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class TelescopeSimulator extends INDITelescope implements INDITelescopeParkInterface, INDITelescopeSyncInterface {
 
+    /**
+     * the tab souble the motion control properties be displayed
+     */
     public static final String MOTION_TAB = "Motion Control";
 
+    /**
+     * The logger for any messages.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
 
     /**
      * slew rate, degrees/s
      */
-    static final double GOTO_RATE = 2d;
-
-    /** slew rate, degrees/s */
-    static final double SLEW_RATE = 0.5d;
+    private static final double GOTO_RATE = 2d;
 
     /**
      * slew rate, degrees/s
      */
-    static final double FINE_SLEW_RATE = 0.1d;
+    private static final double SLEW_RATE = 0.5d;
+
+    /**
+     * slew rate, degrees/s
+     */
+    private static final double FINE_SLEW_RATE = 0.1d;
 
     /**
      * sidereal rate, degrees/s
      */
-    static final double SID_RATE = 0.004178d;
+    private static final double SID_RATE = 0.004178d;
 
     /**
      * Move at GOTO_RATE until distance from target is GOTO_LIMIT degrees
      */
-    static final double GOTO_LIMIT = 5d;
+    private static final double GOTO_LIMIT = 5d;
 
     /**
      * Move at SLEW_LIMIT until distance from target is SLEW_LIMIT degrees
      */
-    static final double SLEW_LIMIT = 2d;
+    private static final double SLEW_LIMIT = 2d;
 
     /**
      * Move at FINE_SLEW_RATE until distance from target is FINE_SLEW_LIMIT
      * degrees
      */
-    static final double FINE_SLEW_LIMIT = 0.5d;
+    private static final double FINE_SLEW_LIMIT = 0.5d;
 
     /**
      * poll period, ms
      */
-    static final long POLLMS = 250;
+    private static final long POLLMS = 250L;
 
-    static final long RA_AXIS = 0;
+    private static final int GUIDE_NORTH = 0;
 
-    static final long DEC_AXIS = 1;
+    private static final int GUIDE_SOUTH = 1;
 
-    static final int GUIDE_NORTH = 0;
+    private static final int GUIDE_WEST = 0;
 
-    static final int GUIDE_SOUTH = 1;
-
-    static final int GUIDE_WEST = 0;
-
-    static final int GUIDE_EAST = 1;
+    private static final int GUIDE_EAST = 1;
 
     private double currentRA;
 
@@ -108,8 +117,6 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
     private double targetRA;
 
     private double targetDEC;
-
-    private boolean Parked;
 
     /**
      * Simulated periodic error in RA, DEC
@@ -177,7 +184,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         super(inputStream, outputStream);
         currentRA = 0;
         currentDEC = 90;
-        Parked = false;
+        parkExtension.setParked(false);
 
         // Let's simulate it to be an F/10 8" telescope
         scopeParametersAperture.setValue(203d);
@@ -345,7 +352,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         RAStr = fs_sexa(targetRA, 2, 3600);
         DecStr = fs_sexa(targetDEC, 2, 3600);
 
-        Parked = false;
+        parkExtension.setParked(false);
         trackState = TelescopeStatus.SCOPE_SLEWING;
 
         eqn.setState(PropertyStates.BUSY);
@@ -413,7 +420,6 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
     public void park() {
         targetRA = 0;
         targetDEC = 90;
-        Parked = true;
         trackState = TelescopeStatus.SCOPE_PARKING;
         LOG.info("Parking telescope in progress...");
     }
@@ -591,16 +597,16 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                 RA_TARGET = fs_sexa(targetRA, 2, 3600);
                 DEC_TARGET = fs_sexa(targetDEC, 2, 3600);
 
-                if ((dx != last_dx || dy != last_dy || ra_guide_dt != 0 || dec_guide_dt != 0)) {
+                if ((!eq(dx, last_dx) || !eq(dy, last_dy) || !eq(ra_guide_dt, 0) || !eq(dec_guide_dt, 0))) {
                     last_dx = dx;
                     last_dy = dy;
-                    LOG.info(String.format("dt is %g\n", dt));
-                    LOG.info(String.format("RA Displacement (%c%s) %s -- %s of target RA %s\n", dx >= 0 ? '+' : '-', RA_DISP, RA_PE, (eqPenRa.getValue() - targetRA) > 0
+                    LOG.info(String.format("dt is %g", dt));
+                    LOG.info(String.format("RA Displacement (%c%s) %s -- %s of target RA %s", dx >= 0 ? '+' : '-', RA_DISP, RA_PE, (eqPenRa.getValue() - targetRA) > 0
                             ? "East" : "West", RA_TARGET));
-                    LOG.info(String.format("DEC Displacement (%c%s) %s -- %s of target RA %s\n", dy >= 0 ? '+' : '-', DEC_DISP, DEC_PE, (eqPenDec.getValue() - targetDEC) > 0
+                    LOG.info(String.format("DEC Displacement (%c%s) %s -- %s of target RA %s", dy >= 0 ? '+' : '-', DEC_DISP, DEC_PE, (eqPenDec.getValue() - targetDEC) > 0
                             ? "North" : "South", DEC_TARGET));
-                    LOG.info(String.format("RA Guide Correction (%g) %s -- Direction %s\n", ra_guide_dt, RA_GUIDE, ra_guide_dt > 0 ? "East" : "West"));
-                    LOG.info(String.format("DEC Guide Correction (%g) %s -- Direction %s\n", dec_guide_dt, DEC_GUIDE, dec_guide_dt > 0 ? "North" : "South"));
+                    LOG.info(String.format("RA Guide Correction (%g) %s -- Direction %s", ra_guide_dt, RA_GUIDE, ra_guide_dt > 0 ? "East" : "West"));
+                    LOG.info(String.format("DEC Guide Correction (%g) %s -- Direction %s", dec_guide_dt, DEC_GUIDE, dec_guide_dt > 0 ? "North" : "South"));
                 }
 
                 if (ns_guide_dir != -1 || we_guide_dir != -1) {
@@ -643,7 +649,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     @Override
     protected long updateInterfall() {
-        return 250L;
+        return POLLMS;
     }
 
     public void driverConnect(Date timestamp) throws INDIException {
@@ -671,6 +677,18 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
     @Override
     public String getName() {
         return getDefaultName();
+    }
+
+    @Override
+    protected boolean updateLocation(double targetLat, double targetLong, double targetElev) {
+        // we will ignore the setting of the current location in the simulator
+        return true;
+    }
+
+    @Override
+    protected boolean updateTime(Date utc, double d) {
+        // we will ignore the setting of current time in the simulator
+        return true;
     }
 
 }

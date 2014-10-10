@@ -35,15 +35,36 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.SwitchEvent;
 
+/**
+ * This park extension should be enabled for every telescope that supports a
+ * "park" position. The telescope-driver should implement the
+ * {@link INDITelescopeParkInterface} if it is supported.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescope> {
 
+    /**
+     * the parking property.
+     */
     @InjectProperty(name = "TELESCOPE_PARK", label = "Park", group = INDITelescope.MAIN_CONTROL_TAB)
     private INDISwitchProperty park;
 
+    /**
+     * the element to activate the park command.
+     */
     @InjectElement(name = "PARK", label = "Park")
     private INDISwitchElement parkElement;
 
+    /**
+     * who to call if the telescope receives a request to park.
+     */
     private INDITelescopeParkInterface parkInterface;
+
+    /**
+     * is the telescope parked at the moment?.
+     */
+    private boolean parked;
 
     public INDITelescopeParkExtension(INDITelescope telecopeDriver) {
         super(telecopeDriver);
@@ -54,6 +75,7 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                parked = true;
                 parkInterface.park();
             }
         });
@@ -107,4 +129,11 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
 
     }
 
+    public boolean isParked() {
+        return parked;
+    }
+
+    public void setParked(boolean parked) {
+        this.parked = parked;
+    }
 }

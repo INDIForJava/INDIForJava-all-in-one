@@ -22,6 +22,8 @@ package org.indilib.i4j.driver.telescope.alignment;
  * #L%
  */
 
+import java.io.Serializable;
+
 import net.sourceforge.novaforjava.Utility;
 import net.sourceforge.novaforjava.api.LnEquPosn;
 import net.sourceforge.novaforjava.api.LnHrzPosn;
@@ -40,7 +42,12 @@ import org.gnu.savannah.gsl.GslVector;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class TelescopeDirectionVector implements Cloneable {
+public class TelescopeDirectionVector implements Cloneable, Serializable {
+
+    /**
+     * Servial version id.
+     */
+    private static final long serialVersionUID = 7085347593351496492L;
 
     /**
      * Calculates a normalised direction vector from the supplied altitude and
