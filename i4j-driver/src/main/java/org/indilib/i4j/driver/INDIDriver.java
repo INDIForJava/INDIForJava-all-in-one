@@ -380,7 +380,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Must be implemented in Drivers to take care of the new values sent by
      * clients. It will be called with correct Properties and Elements. Any
      * incorrect Text Message received will be discarded and this method will
-     * not be called.
+     * not be called. It is not abstract anymore because of the alternative way
+     * to attach event handler directly to the properties.
      * 
      * @param property
      *            The Text Property asked to change.
@@ -390,7 +391,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            An array of pairs of Text Elements and its requested values to
      *            be parsed.
      */
-    public abstract void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues);
+    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
+    }
 
     /**
      * Parses a &lt;newSwitchVector&gt; XML message. If the switch is the
@@ -490,7 +492,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Must be implemented in Drivers to take care of the new values sent by
      * clients. It will be called with correct Properties and Elements. Any
      * incorrect Switch Message received will be discarded and this method will
-     * not be called.
+     * not be called.It is not abstract anymore because of the alternative way
+     * to attach event handler directly to the properties.
      * 
      * @param property
      *            The Switch Property asked to change.
@@ -500,7 +503,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            An array of pairs of Switch Elements and its requested values
      *            to be parsed.
      */
-    public abstract void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues);
+    public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
+    }
 
     /**
      * Parses a &lt;newNumberVector&gt; XML message.
@@ -541,7 +545,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Must be implemented in Drivers to take care of the new values sent by
      * clients. It will be called with correct Properties and Elements. Any
      * incorrect Number Message received will be discarded and this method will
-     * not be called.
+     * not be called.It is not abstract anymore because of the alternative way
+     * to attach event handler directly to the properties.
      * 
      * @param property
      *            The Number Property asked to change.
@@ -551,7 +556,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            An array of pairs of Number Elements and its requested values
      *            to be parsed.
      */
-    public abstract void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues);
+    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
+
+    }
 
     /**
      * Parses a &lt;newBLOBVector&gt; XML message.
@@ -591,7 +598,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Must be implemented in Drivers to take care of the new values sent by
      * clients. It will be called with correct Properties and Elements. Any
      * incorrect BLOB Message received will be discarded and this method will
-     * not be called.
+     * not be called.It is not abstract anymore because of the alternative way
+     * to attach event handler directly to the properties.
      * 
      * @param property
      *            The BLOB Property asked to change.
@@ -601,7 +609,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            An array of pairs of BLOB Elements and its requested values to
      *            be parsed.
      */
-    public abstract void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues);
+    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
+    }
 
     /**
      * Returns an array of Elements and its corresponded requested values from a

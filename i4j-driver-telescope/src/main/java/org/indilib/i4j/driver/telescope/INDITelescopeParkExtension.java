@@ -66,6 +66,14 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
      */
     private boolean parked;
 
+    /**
+     * Constructor of the part extension, you should realy know what you are
+     * doing if you call this yourself. Better to let it be used by the
+     * injector.
+     * 
+     * @param telecopeDriver
+     *            the telescope driver to attact this extention to.
+     */
     public INDITelescopeParkExtension(INDITelescope telecopeDriver) {
         super(telecopeDriver);
         if (!isActive()) {
@@ -103,6 +111,9 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         return driver instanceof INDITelescopeParkInterface;
     }
 
+    /**
+     * @return are we busy parking?
+     */
     public boolean isBusy() {
         if (!isActive()) {
             return false;
@@ -110,6 +121,9 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         return park.getState() == PropertyStates.BUSY;
     }
 
+    /**
+     * any action is stopped returning to idle state.
+     */
     public void setIdle() {
         if (!isActive()) {
             return;
@@ -119,6 +133,9 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         updateProperty(this.park);
     }
 
+    /**
+     * Reset the current state to not busy.
+     */
     public void setNotBussy() {
         if (!isActive()) {
             return;
@@ -129,10 +146,19 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
 
     }
 
+    /**
+     * @return is the telescope parked at the moment?
+     */
     public boolean isParked() {
         return parked;
     }
 
+    /**
+     * set the telescope as parked.
+     * 
+     * @param parked
+     *            the new parked state.
+     */
     public void setParked(boolean parked) {
         this.parked = parked;
     }

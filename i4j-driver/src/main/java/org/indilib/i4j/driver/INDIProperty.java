@@ -679,15 +679,16 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * set the event handler that will be invoked on a client change.
      * 
      * @param eventHandler
+     *            that will be triggerd on the change.
      */
-    public void setEventHandler(IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler) {
+    public final void setEventHandler(IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler) {
         this.eventHandler = eventHandler;
     }
 
     /**
-     * @return event handler for this property
+     * @return event handler for this property.
      */
-    public IEventHandler<? extends INDIProperty<Element>, Element, ?> getEventHandler() {
+    public final IEventHandler<? extends INDIProperty<Element>, Element, ?> getEventHandler() {
         return eventHandler;
     }
 

@@ -21,13 +21,15 @@ package org.indilib.i4j.driver.telescope;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+import static org.indilib.i4j.Constants.PropertyStates.OK;
+import static org.indilib.i4j.Constants.PropertyStates.IDLE;
+import static org.indilib.i4j.Constants.PropertyStates.BUSY;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDINumberElement;
@@ -52,7 +54,7 @@ import org.slf4j.LoggerFactory;
 public class TelescopeSimulator extends INDITelescope implements INDITelescopeParkInterface, INDITelescopeSyncInterface {
 
     /**
-     * the tab souble the motion control properties be displayed
+     * the tab where the motion control properties will be displayed
      */
     public static final String MOTION_TAB = "Motion Control";
 
@@ -62,37 +64,37 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
     private static final Logger LOG = LoggerFactory.getLogger(TelescopeSimulator.class);
 
     /**
-     * slew rate, degrees/s
+     * slew rate, degrees/s.
      */
     private static final double GOTO_RATE = 2d;
 
     /**
-     * slew rate, degrees/s
+     * slew rate, degrees/s.
      */
     private static final double SLEW_RATE = 0.5d;
 
     /**
-     * slew rate, degrees/s
+     * slew rate, degrees/s.
      */
     private static final double FINE_SLEW_RATE = 0.1d;
 
     /**
-     * sidereal rate, degrees/s
+     * sidereal rate, degrees/s.
      */
     private static final double SID_RATE = 0.004178d;
 
     /**
-     * Move at GOTO_RATE until distance from target is GOTO_LIMIT degrees
+     * Move at GOTO_RATE until distance from target is GOTO_LIMIT degrees.
      */
     private static final double GOTO_LIMIT = 5d;
 
     /**
-     * Move at SLEW_LIMIT until distance from target is SLEW_LIMIT degrees
+     * Move at SLEW_LIMIT until distance from target is SLEW_LIMIT degrees.
      */
     private static final double SLEW_LIMIT = 2d;
 
     /**
-     * Move at FINE_SLEW_RATE until distance from target is FINE_SLEW_LIMIT
+     * Move at FINE_SLEW_RATE until distance from target is FINE_SLEW_LIMIT.
      * degrees
      */
     private static final double FINE_SLEW_LIMIT = 0.5d;
@@ -229,9 +231,10 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         boolean isneg;
 
         /* save whether it's negative but do all the rest with a positive */
-        isneg = (a < 0);
-        if (isneg)
+        isneg = a < 0;
+        if (isneg) {
             a = -a;
+        }
 
         /* convert to an integral number of whole portions */
         n = (long) (a * fracbase + 0.5);
@@ -239,11 +242,11 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         f = (int) (n % fracbase);
 
         /* form the whole part; "negative 0" is a special case */
-        if (isneg && d == 0)
+        if (isneg && d == 0) {
             out += String.format("%s%s-0", w - 2, "");
-        else
+        } else {
             out += String.format("%d%d", w, isneg ? -d : d);
-
+        }
         /* do the rest */
         switch (fracbase) {
             case 60: /* dd:mm */
@@ -277,13 +280,13 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     private void newGuideRateValue(INDINumberElementAndValue[] elementsAndValues) {
         this.guideRate.setValues(elementsAndValues);
-        guideRate.setState(PropertyStates.OK);
+        guideRate.setState(OK);
         updateProperty(this.guideRate);
     };
 
     private void newPErrNSValue(INDISwitchElementAndValue[] elementsAndValues) {
         periodicErrorNS.setValues(elementsAndValues);
-        periodicErrorNS.setState(PropertyStates.OK);
+        periodicErrorNS.setState(OK);
 
         if (periodicErrorNSNorth.getValue() == SwitchStatus.ON) {
             eqPenDec.setValue(eqPenDec.getValue() + (SID_RATE * guideRateNS.getValue()));
@@ -299,7 +302,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     private void newPErrWEValue(INDISwitchElementAndValue[] elementsAndValues) {
         periodicErrorWE.setValues(elementsAndValues);
-        periodicErrorWE.setState(PropertyStates.OK);
+        periodicErrorWE.setState(OK);
 
         if (periodicErrorWEWest.getValue() == SwitchStatus.ON) {
             eqPenRa.setValue(eqPenRa.getValue() - (SID_RATE / 15d * guideRateWE.getValue()));
@@ -316,25 +319,25 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     @Override
     protected boolean abort() {
-        if (movementNSS.getState() == PropertyStates.BUSY) {
+        if (movementNSS.getState() == BUSY) {
             movementNSS.resetAllSwitches();
-            movementNSS.setState(PropertyStates.IDLE);
+            movementNSS.setState(IDLE);
             updateProperty(movementNSS);
         }
-        if (movementWES.getState() == PropertyStates.BUSY) {
+        if (movementWES.getState() == BUSY) {
             movementWES.resetAllSwitches();
-            movementWES.setState(PropertyStates.IDLE);
+            movementWES.setState(IDLE);
             updateProperty(movementWES);
         }
         if (parkExtension.isBusy()) {
             parkExtension.setIdle();
         }
-        if (eqn.getState() == PropertyStates.BUSY) {
-            eqn.setState(PropertyStates.IDLE);
+        if (eqn.getState() == BUSY) {
+            eqn.setState(IDLE);
             updateProperty(eqn);
         }
         trackState = TelescopeStatus.SCOPE_IDLE;
-        abort.setState(PropertyStates.OK);
+        abort.setState(OK);
         abort.resetAllSwitches();
         updateProperty(abort);
         LOG.info("Telescope aborted.");
@@ -355,7 +358,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         parkExtension.setParked(false);
         trackState = TelescopeStatus.SCOPE_SLEWING;
 
-        eqn.setState(PropertyStates.BUSY);
+        eqn.setState(BUSY);
 
         LOG.info(String.format("Slewing to RA: %s - DEC: %s", RAStr, DecStr));
     }
@@ -369,7 +372,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                     moveNSlast_motion = TelescopeMotionNS.MOTION_NORTH;
                 else {
                     movementNSS.resetAllSwitches();
-                    movementNSS.setState(PropertyStates.IDLE);
+                    movementNSS.setState(IDLE);
                     updateProperty(movementNSS);
                 }
                 break;
@@ -379,7 +382,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                     moveNSlast_motion = TelescopeMotionNS.MOTION_SOUTH;
                 else {
                     movementNSS.resetAllSwitches();
-                    movementNSS.setState(PropertyStates.IDLE);
+                    movementNSS.setState(IDLE);
                     updateProperty(movementNSS);
                 }
                 break;
@@ -397,7 +400,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                     moveWElast_motion = TelescopeMotionWE.MOTION_WEST;
                 else {
                     movementWES.resetAllSwitches();
-                    movementWES.setState(PropertyStates.IDLE);
+                    movementWES.setState(IDLE);
                     updateProperty(movementWES);
                 }
                 break;
@@ -407,7 +410,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                     moveWElast_motion = TelescopeMotionWE.MOTION_EAST;
                 else {
                     movementWES.resetAllSwitches();
-                    movementWES.setState(PropertyStates.IDLE);
+                    movementWES.setState(IDLE);
                     updateProperty(movementWES);
                 }
                 break;
@@ -452,7 +455,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         } else {
             da_dec = FINE_SLEW_RATE * dt;
         }
-        if (this.movementNSS.getState() == PropertyStates.BUSY) {
+        if (this.movementNSS.getState() == BUSY) {
             if (this.movementNSSNorth.getValue() == SwitchStatus.ON)
                 currentDEC += da_dec;
             else if (this.movementNSSSouth.getValue() == SwitchStatus.ON)
@@ -462,7 +465,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
             return;
         }
 
-        if (this.movementWES.getState() == PropertyStates.BUSY) {
+        if (this.movementWES.getState() == BUSY) {
             if (this.movementWESWest.getValue() == SwitchStatus.ON)
                 currentRA += da_ra / 15d;
             else if (this.movementWESEast.getValue() == SwitchStatus.ON)
@@ -505,7 +508,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                 else
                     currentDEC -= da_dec;
 
-                eqn.setState(PropertyStates.BUSY);
+                eqn.setState(BUSY);
 
                 if (nlocked == 2) {
                     if (trackState == TelescopeStatus.SCOPE_SLEWING) {
@@ -516,11 +519,11 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                         updateProperty(this.eqn);
                         trackState = TelescopeStatus.SCOPE_TRACKING;
 
-                        eqn.setState(PropertyStates.OK);
+                        eqn.setState(OK);
                         LOG.info("Telescope slew is complete. Tracking...");
                     } else {
                         trackState = TelescopeStatus.SCOPE_PARKED;
-                        eqn.setState(PropertyStates.IDLE);
+                        eqn.setState(IDLE);
                         LOG.info("Telescope parked successfully.");
                     }
                 }
@@ -640,7 +643,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         LOG.info("Sync is successful.");
 
         trackState = TelescopeStatus.SCOPE_IDLE;
-        eqn.setState(PropertyStates.OK);
+        eqn.setState(OK);
 
         newRaDec(currentRA, currentDEC);
 

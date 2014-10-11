@@ -22,28 +22,55 @@ package org.indilib.i4j.driver.telescope;
  * #L%
  */
 
-import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.annotation.InjectElement;
 
+/**
+ * The sync extension handles the system that improves the calibration of the
+ * telescope with every sync of a position. If a telescope supports this syncing
+ * (with is highly recommenced) than this extension is used for it.
+ */
 public class INDITelescopeSyncExtension extends INDIDriverExtension<INDITelescope> {
 
+    /**
+     * an aditional element for the the on coordinates set property. That sync's
+     * as soon as the scope reaches the destination.
+     */
     @InjectElement(property = "ON_COORD_SET", name = "SYNC", label = "Sync")
     private INDISwitchElement coordSync;
 
-    INDITelescopeSyncInterface syncInterface;
+    /**
+     * The interface to indicate that the telescope supports syncing.
+     */
+    private INDITelescopeSyncInterface syncInterface;
 
-    public INDITelescopeSyncExtension(INDITelescope driver) {
-        super(driver);
+    /**
+     * Constructor of the extension, you should really know what you are doing
+     * if you call this yourself. Better to let it be used by the injector.
+     * 
+     * @param telecopeDriver
+     *            the telescope driver to attact this extention to.
+     */
+    public INDITelescopeSyncExtension(INDITelescope telecopeDriver) {
+        super(telecopeDriver);
         if (!isActive()) {
             return;
         }
-        syncInterface = (INDITelescopeSyncInterface) driver;
+        syncInterface = (INDITelescopeSyncInterface) telecopeDriver;
     }
 
+    /**
+     * sync the current coordinates.
+     * 
+     * @param ra
+     *            the right ascension of the goto point in space
+     * @param dec
+     *            the declination of the point in space
+     * @return true if successful.
+     */
     public boolean doSync(double ra, double dec) {
-        if (isActive() && this.coordSync.getValue() == SwitchStatus.ON) {
+        if (isActive() && this.coordSync.isOn()) {
             return syncInterface.sync(ra, dec);
         }
         return false;

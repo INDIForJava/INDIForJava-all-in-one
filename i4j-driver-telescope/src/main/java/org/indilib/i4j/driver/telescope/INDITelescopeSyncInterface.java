@@ -21,9 +21,23 @@ package org.indilib.i4j.driver.telescope;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+/**
+ * If a telescope driver supports the sync meganism, it should implement this
+ * interface.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public interface INDITelescopeSyncInterface {
 
+    /**
+     * sync the current coordinates.
+     * 
+     * @param ra
+     *            the right ascension of the goto point in space
+     * @param dec
+     *            the declination of the point in space
+     * @return true if successful.
+     */
     boolean sync(double ra, double dec);
 
 }

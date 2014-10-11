@@ -165,4 +165,18 @@ public class INDISwitchElement extends INDIElement {
     public Object parseOneValue(Element xml) {
         return Constants.parseSwitchStatus(xml.getTextContent().trim());
     }
+
+    /**
+     * @return true is the value of this switch is OFF.
+     */
+    public final boolean isOff() {
+        return getValue() == SwitchStatus.OFF;
+    }
+
+    /**
+     * @return true is the value of this switch is ON.
+     */
+    public final boolean isOn() {
+        return getValue() == SwitchStatus.ON;
+    }
 }

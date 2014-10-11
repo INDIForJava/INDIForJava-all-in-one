@@ -40,6 +40,12 @@ import org.indilib.i4j.driver.event.TextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Most astronomical devices are controlled by a serial connection, this
+ * extension handles the connection for the driver so the driver does only have
+ * to know the connection specification and tehn work with the input- and
+ * output-streams.
+ */
 public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     private static final Logger LOG = LoggerFactory.getLogger(INDISerialPortExtension.class);

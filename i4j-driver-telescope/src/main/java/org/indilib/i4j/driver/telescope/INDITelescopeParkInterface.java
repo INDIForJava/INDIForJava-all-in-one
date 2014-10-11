@@ -21,9 +21,17 @@ package org.indilib.i4j.driver.telescope;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+/**
+ * If a telescope supports a parking position, the driver should implement this
+ * interface.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public interface INDITelescopeParkInterface {
 
+    /**
+     * The indi client gave the command to park the scope. now do it!
+     */
     void park();
 
 }
