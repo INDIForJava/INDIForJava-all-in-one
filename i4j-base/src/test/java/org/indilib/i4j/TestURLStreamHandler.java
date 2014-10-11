@@ -13,6 +13,8 @@ package org.indilib.i4j;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
+import static org.junit.Assert.*;
+
 import java.net.URL;
 
 import org.indilib.i4j.url.INDIURLStreamHandlerFactory;
@@ -29,5 +31,10 @@ public class TestURLStreamHandler {
     public void testName1() throws Exception {
 
         Assert.assertEquals(7624, new URL("indi://localhost").getDefaultPort());
+    }
+    
+    @Test
+    public void testSexa() throws Exception {
+        System.out.println(new INDISexagesimalFormatter("%2.6m").format(0.66));
     }
 }

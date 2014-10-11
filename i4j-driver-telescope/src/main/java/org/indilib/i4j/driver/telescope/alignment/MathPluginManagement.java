@@ -220,14 +220,14 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
     }
 
     public boolean transformCelestialToTelescope(double rightAscension, double declination, double julianOffset, TelescopeDirectionVector apparentTelescopeDirectionVector) {
-        if (alignmentSubsystemActiveElement.getValue() == SwitchStatus.ON)
+        if (alignmentSubsystemActiveElement.isOn())
             return plugin().transformCelestialToTelescope(rightAscension, declination, julianOffset, apparentTelescopeDirectionVector);
         else
             return false;
     }
 
     public boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination) {
-        if (alignmentSubsystemActiveElement.getValue() == SwitchStatus.ON)
+        if (alignmentSubsystemActiveElement.isOn())
             return plugin().transformTelescopeToCelestial(apparentTelescopeDirectionVector, rightAscension, declination);
         else
             return false;

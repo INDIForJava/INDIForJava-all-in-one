@@ -52,7 +52,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
@@ -114,12 +113,12 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * The minimal value for declination in degrees.
      */
-    private static final double MAX_DECLINATION_DEGREES = 90d;
+    protected static final double MAX_DECLINATION_DEGREES = 90d;
 
     /**
      * The maximal value for declination in degrees.
      */
-    private static final double MIN_DECLINATION_DEGREES = -90d;
+    protected static final double MIN_DECLINATION_DEGREES = -90d;
 
     /**
      * The scope status updater thats will run perioticaly to check the status
@@ -662,7 +661,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementNSS.setValues(elementsAndValues);
         movementNSS.setState(PropertyStates.BUSY);
-        if (this.movementNSSNorth.getValue() == SwitchStatus.ON) {
+        if (this.movementNSSNorth.isOn()) {
             moveNS(TelescopeMotionNS.MOTION_NORTH);
         } else {
             moveNS(TelescopeMotionNS.MOTION_SOUTH);
@@ -678,7 +677,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementWES.setValues(elementsAndValues);
         movementWES.setState(PropertyStates.BUSY);
-        if (this.movementWESWest.getValue() == SwitchStatus.ON) {
+        if (this.movementWESWest.isOn()) {
             moveWE(TelescopeMotionWE.MOTION_WEST);
         } else {
             moveWE(TelescopeMotionWE.MOTION_EAST);

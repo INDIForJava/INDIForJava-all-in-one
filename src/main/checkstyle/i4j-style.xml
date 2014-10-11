@@ -118,7 +118,7 @@
 
 		<!-- Checks for common coding problems -->
 		<!-- See http://checkstyle.sf.net/config_coding.html -->
-		<module name="AvoidInlineConditionals" />
+		<!-- <module name="AvoidInlineConditionals" /> i think simple cases are ok, not generally bad -->
 		<module name="EmptyStatement" />
 		<module name="EqualsHashCode" />
 		<module name="HiddenField">
