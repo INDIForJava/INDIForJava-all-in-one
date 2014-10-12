@@ -1,20 +1,3 @@
-/*
- *  This file is part of INDI for Java Sky Quality Meter - LU Driver.
- * 
- *  INDI for Java QHY Sky Quality Meter - LU Driver is free software: you can 
- *  redistribute it and/or modify it under the terms of the GNU General Public 
- *  License as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Sky Quality Meter - LU Driver is distributed in the hope that it
- *  will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Sky Quality Meter - LU Driver.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
 package org.indilib.i4j.driver.sqm;
 
 /*
@@ -82,6 +65,74 @@ import org.slf4j.LoggerFactory;
  */
 public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
+    /**
+     * index in the measurements for the sensor temperature.
+     */
+    private static final int SENSOR_TEMPERATURE_P_INDEX = 4;
+
+    /**
+     * index in the measurements for the sensor period sp.
+     */
+    private static final int SENSOR_PERIOD_SP_INDEX = 3;
+
+    /**
+     * index in the measurements for the sensor period cp.
+     */
+    private static final int SENSOR_PERIOD_CP_INDEX = 2;
+
+    /**
+     * index in the measurements for the sensor freq p.
+     */
+    private static final int SENSOR_FREQ_P_INDEX = 1;
+
+    /**
+     * index in the measurements for the sensor reading p.
+     */
+    private static final int SENSOR_READING_P_INDEX = 0;
+
+    /**
+     * the timeout to use for the serial port.
+     */
+    private static final int SERIAL_PORT_TIMEOUT = 2000;
+
+    /**
+     * baud rate of the serial device.
+     */
+    private static final int BAUD_RATE = 115200;
+
+    /**
+     * stepping for the sensor temperature.
+     */
+    private static final double SENSOR_TEMPERATURE_STEPPING = 0.1;
+
+    /**
+     * stepping for the sensor reading.
+     */
+    private static final double SENSOR_READING_STEPPING = 0.01;
+
+    /**
+     * stepping for the sensor period.
+     */
+    private static final double SENSOR_PERIOD_STEP = 0.001;
+
+    /**
+     * a very big number to be used as a maximum number.
+     */
+    private static final int BIG_MAXIMUM_VALUE = 1000000000;
+
+    /**
+     * the maximal value for the sensor reading property.
+     */
+    private static final int MAXIMUM_SENSOR_READING = 100000;
+
+    /**
+     * the minimal value for the sensor reading property.
+     */
+    private static final int MINIMUM_SENSOR_READING = -100000;
+
+    /**
+     * the logger for messages.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(I4JSQMDriver.class);
 
     /**
@@ -89,8 +140,14 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
      */
     private SerialPort serialPort;
 
+    /**
+     * the output stream to the serial port.
+     */
     private OutputStream os;
 
+    /**
+     * the buffered reader over the serial port input stream.
+     */
     private BufferedReader br;
 
     /**
@@ -99,63 +156,60 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
     private INDIPortProperty portP;
 
     /**
-     * Protocol Number property
+     * Protocol Number property.
      */
     private INDIOneElementTextProperty protocolNumberP;
 
     /**
-     * Model Number property
+     * Model Number property.
      */
     private INDIOneElementTextProperty modelNumberP;
 
     /**
-     * Feature Number property
+     * Feature Number property.
      */
     private INDIOneElementTextProperty featureNumberP;
 
     /**
-     * Serial Number property
+     * Serial Number property.
      */
     private INDIOneElementTextProperty serialNumberP;
 
     /**
-     * Sensor Reading property
+     * Sensor Reading property.
      */
     private INDIOneElementNumberProperty sensorReadingP;
 
     /**
-     * Sensor Frequency property
+     * Sensor Frequency property.
      */
     private INDIOneElementNumberProperty sensorFreqP;
 
     /**
-     * Sensor Period (Cycles) property
+     * Sensor Period (Cycles) property.
      */
     private INDIOneElementNumberProperty sensorPeriodCP;
 
     /**
-     * Sensor Period (Seconds) property
+     * Sensor Period (Seconds) property.
      */
     private INDIOneElementNumberProperty sensorPeriodSP;
 
     /**
-     * Sensor Temperature property
+     * Sensor Temperature property.
      */
     private INDIOneElementNumberProperty sensorTempP;
 
     /**
-     * Number of Readings property
-     */
-    // private INDIOneElementNumberProperty nReadingsP;
-    /**
-     * Do Readings Property
+     * Do Readings Property.
      */
     private INDISwitchOneOrNoneProperty doReadingP;
 
     /**
      * Constructs an instance of a <code>I4JSQMDriver</code> with a particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-     * <code>outputStream</code> to write the messages to the clients.
+     * <code>inputStream</code> from which to read the incoming messages (from
+     * clients) and a <code>outputStream</code> to write the messages to the
+     * clients.
      * 
      * @param inputStream
      *            The stream from which to read messages.
@@ -175,20 +229,20 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
         serialNumberP = new INDIOneElementTextProperty(this, "serialNumber", "Serial Number", "Device Info", PropertyStates.IDLE, PropertyPermissions.RO, "-");
 
         sensorReadingP =
-                new INDIOneElementNumberProperty(this, "sensorReading", "Sensor Reading (m/sas)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, -100000, 100000,
-                        0.01, "%5.2f", 0);
+                new INDIOneElementNumberProperty(this, "sensorReading", "Sensor Reading (m/sas)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO,
+                        MINIMUM_SENSOR_READING, MAXIMUM_SENSOR_READING, SENSOR_READING_STEPPING, "%5.2f", 0);
         sensorFreqP =
-                new INDIOneElementNumberProperty(this, "sensorFrequency", "Sensor Frequency (Hz)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0, 1000000000, 1,
-                        "%10.0f", 0);
+                new INDIOneElementNumberProperty(this, "sensorFrequency", "Sensor Frequency (Hz)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0,
+                        BIG_MAXIMUM_VALUE, 1, "%10.0f", 0);
         sensorPeriodCP =
-                new INDIOneElementNumberProperty(this, "sensorPeriodC", "Sensor Period (counts)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0, 1000000000, 1,
-                        "%10.0f", 0);
+                new INDIOneElementNumberProperty(this, "sensorPeriodC", "Sensor Period (counts)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0,
+                        BIG_MAXIMUM_VALUE, 1, "%10.0f", 0);
         sensorPeriodSP =
-                new INDIOneElementNumberProperty(this, "sensorPeriodS", "Sensor Period (s)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0, 10000000, 0.001,
-                        "%10.3f", 0);
+                new INDIOneElementNumberProperty(this, "sensorPeriodS", "Sensor Period (s)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0, BIG_MAXIMUM_VALUE,
+                        SENSOR_PERIOD_STEP, "%10.3f", 0);
         sensorTempP =
-                new INDIOneElementNumberProperty(this, "sensorTemperature", "Sensor Temperature (C)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0, 10000000,
-                        0.1, "%4.1f", 0);
+                new INDIOneElementNumberProperty(this, "sensorTemperature", "Sensor Temperature (C)", "Readings", PropertyStates.IDLE, PropertyPermissions.RO, 0,
+                        BIG_MAXIMUM_VALUE, SENSOR_TEMPERATURE_STEPPING, "%4.1f", 0);
 
         // nReadingsP =
         // INDIOneElementNumberProperty.createSaveableOneElementNumberProperty(this,
@@ -243,8 +297,8 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 
         try {
             CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-            serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), 2000);
-            serialPort.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), SERIAL_PORT_TIMEOUT);
+            serialPort.setSerialPortParams(BAUD_RATE, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
         } catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException e) {
             serialPort = null;
             throw new INDIException("Problem connecting to " + portName + ".\n" + e.toString());
@@ -283,6 +337,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
                 os.close();
                 br.close();
             } catch (IOException e) {
+                LOG.error("could not close the serial port", e);
             }
 
             os = null;
@@ -331,15 +386,15 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
          */
 
         double[] measurements = getMeasurement();
-        sensorReadingP.setValue(measurements[0]);
+        sensorReadingP.setValue(measurements[SENSOR_READING_P_INDEX]);
         sensorReadingP.setState(PropertyStates.OK);
-        sensorFreqP.setValue(measurements[1]);
+        sensorFreqP.setValue(measurements[SENSOR_FREQ_P_INDEX]);
         sensorFreqP.setState(PropertyStates.OK);
-        sensorPeriodCP.setValue(measurements[2]);
+        sensorPeriodCP.setValue(measurements[SENSOR_PERIOD_CP_INDEX]);
         sensorPeriodCP.setState(PropertyStates.OK);
-        sensorPeriodSP.setValue(measurements[3]);
+        sensorPeriodSP.setValue(measurements[SENSOR_PERIOD_SP_INDEX]);
         sensorPeriodSP.setState(PropertyStates.OK);
-        sensorTempP.setValue(measurements[4]);
+        sensorTempP.setValue(measurements[SENSOR_TEMPERATURE_P_INDEX]);
         sensorTempP.setState(PropertyStates.OK);
 
         updateProperty(sensorReadingP);
@@ -373,30 +428,30 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
             return null;
         }
 
-        double[] res = new double[5];
+        double[] res = new double[SENSOR_TEMPERATURE_P_INDEX + 1];
         StringTokenizer st = new StringTokenizer(answer, ",", false);
 
         st.nextToken(); // Ignore "r"
 
         String aux = st.nextToken();
         aux = aux.substring(0, aux.length() - 1);
-        res[0] = Double.parseDouble(aux);
+        res[SENSOR_READING_P_INDEX] = Double.parseDouble(aux);
 
         aux = st.nextToken();
         aux = aux.substring(0, aux.length() - 2);
-        res[1] = Double.parseDouble(aux);
+        res[SENSOR_FREQ_P_INDEX] = Double.parseDouble(aux);
 
         aux = st.nextToken();
         aux = aux.substring(0, aux.length() - 1);
-        res[2] = Double.parseDouble(aux);
+        res[SENSOR_PERIOD_CP_INDEX] = Double.parseDouble(aux);
 
         aux = st.nextToken();
         aux = aux.substring(0, aux.length() - 1);
-        res[3] = Double.parseDouble(aux);
+        res[SENSOR_PERIOD_SP_INDEX] = Double.parseDouble(aux);
 
         aux = st.nextToken();
         aux = aux.substring(0, aux.length() - 1);
-        res[4] = Double.parseDouble(aux);
+        res[SENSOR_TEMPERATURE_P_INDEX] = Double.parseDouble(aux);
 
         return res;
     }
