@@ -70,6 +70,21 @@ import org.indilib.i4j.driver.focuser.INDIFocuserDriver;
 public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadableDriver, Runnable {
 
     /**
+     * initial absolute position.
+     */
+    private static final int INITIAL_ABSOLUTE_POSITION = 50000;
+
+    /**
+     * maximum absolute position.
+     */
+    private static final int MAXIMUM_ABSOLUTE_POSITION = 100000;
+
+    /**
+     * Maximum speed.
+     */
+    private static final int MAXIMUM_SPEED = 10;
+
+    /**
      * The Seletek port number to which the focuser is attached.
      */
     private int seletekPort;
@@ -91,39 +106,40 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
     private boolean updatePosition;
 
     /**
-     * The Wire Mode Property
+     * The Wire Mode Property.
      */
     private INDISwitchOneOfManyProperty wireModeP;
 
     /**
-     * The Model Property
+     * The Model Property.
      */
     private INDISwitchOneOfManyProperty modelP;
 
     /**
-     * The Half Step Property
+     * The Half Step Property.
      */
     private INDISwitchOneOrNoneProperty halfStepP;
 
     /**
-     * The Move Power Property
+     * The Move Power Property.
      */
     private INDINumberProperty powerSettingsP;
 
     /**
-     * The Move Power Element
+     * The Move Power Element.
      */
     private INDINumberElement movePowerE;
 
     /**
-     * The Move Power Element
+     * The Move Power Element.
      */
     private INDINumberElement stopPowerE;
 
     /**
      * Constructs an instance of a <code>SeletekFocuser</code> with a particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-     * <code>outputStream</code> to write the messages to the clients.
+     * <code>inputStream</code> from which to read the incoming messages (from
+     * clients) and a <code>outputStream</code> to write the messages to the
+     * clients.
      * 
      * @param inputStream
      *            The stream from which to read messages
@@ -183,8 +199,8 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
         driver.setStepperHalfStep(seletekPort, half);
 
         powerSettingsP = INDINumberProperty.createSaveableNumberProperty(this, "stepper_pow", "Power Settings", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW);
-        movePowerE = new INDINumberElement(powerSettingsP, "move_power", "Moving Power", 1023, 0, 1023, 1, "%1.0f");
-        stopPowerE = new INDINumberElement(powerSettingsP, "stop_power", "Stopped Power", 0, 0, 1023, 1, "%1.0f");
+        movePowerE = new INDINumberElement(powerSettingsP, "move_power", "Moving Power", I4JSeletekDriver.MAX_POWER_VALUE, 0, I4JSeletekDriver.MAX_POWER_VALUE, 1, "%1.0f");
+        stopPowerE = new INDINumberElement(powerSettingsP, "stop_power", "Stopped Power", 0, 0, I4JSeletekDriver.MAX_POWER_VALUE, 1, "%1.0f");
         movePowerE = powerSettingsP.getElement("move_power");
         stopPowerE = powerSettingsP.getElement("stop_power");
         addProperty(powerSettingsP);
@@ -265,7 +281,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
 
     @Override
     public int getMaximumSpeed() {
-        return 10;
+        return MAXIMUM_SPEED;
     }
 
     @Override
@@ -282,7 +298,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
 
     @Override
     public final int getMaximumAbsPos() {
-        return 100000;
+        return MAXIMUM_ABSOLUTE_POSITION;
     }
 
     @Override
@@ -292,7 +308,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
 
     @Override
     public final int getInitialAbsPos() {
-        return 50000;
+        return INITIAL_ABSOLUTE_POSITION;
     }
 
     @Override
@@ -318,7 +334,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
     }
 
     /**
-     * The Seletek informs about the focuser position
+     * The Seletek informs about the focuser position.
      * 
      * @param position
      *            The position of the focuser
@@ -336,7 +352,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
     public void isBeingDestroyed() {
         stopPositionReaderThread = true;
 
-        Utils.sleep(200);
+        Utils.sleep(I4JSeletekDriver.MILLISECONDS_TO_WAIT_BEFORE_CLOSE_PORTS);
 
         super.isBeingDestroyed();
     }
@@ -352,7 +368,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
                 driver.getStepperPos(seletekPort);
             }
 
-            Utils.sleep(200);
+            Utils.sleep(I4JSeletekDriver.MILLISECONDS_TO_WAIT_BEFORE_CLOSE_PORTS);
         }
     }
 }

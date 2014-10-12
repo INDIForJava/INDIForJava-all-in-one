@@ -53,6 +53,14 @@ import org.slf4j.LoggerFactory;
  */
 public class SeletekReadingThread extends Thread {
 
+    /**
+     * Buffer size.
+     */
+    private static final int BUFFER_SIZE = 4096;
+
+    /**
+     * Logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(SeletekReadingThread.class);
 
     /**
@@ -71,7 +79,7 @@ public class SeletekReadingThread extends Thread {
     private boolean stopReading;
 
     /**
-     * The thread has ended
+     * The thread has ended.
      */
     private boolean ended;
 
@@ -113,7 +121,7 @@ public class SeletekReadingThread extends Thread {
         while (!stopReading) {
             try {
                 if (seletekInput.available() > 0) {
-                    byte[] readed = new byte[4096];
+                    byte[] readed = new byte[BUFFER_SIZE];
 
                     int br = seletekInput.read(readed);
 
@@ -127,7 +135,7 @@ public class SeletekReadingThread extends Thread {
                 stopReading = true;
             }
 
-            Utils.sleep(200);
+            Utils.sleep(I4JSeletekDriver.MILLISECONDS_TO_WAIT_BEFORE_CLOSE_PORTS);
         }
 
         LOG.info("Seletek Reader Thread Ending");

@@ -51,14 +51,11 @@ import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIBLOBElementAndValue;
-import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDILightElement;
 import org.indilib.i4j.driver.INDILightProperty;
 import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDIPortProperty;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
@@ -79,128 +76,166 @@ import org.slf4j.LoggerFactory;
  */
 public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandler {
 
+    /**
+     * index in the seletek version string of the build number.
+     */
+    private static final int SELETEK_VERSION_BUILT_INDEX = 3;
+
+    /**
+     * index in the seletek version string of the sub version number.
+     */
+    private static final int SELETEK_VERSION_SUB_VERSION_INDEX = 2;
+
+    /**
+     * index in the seletek version string of the main version number.
+     */
+    private static final int SELETEK_VERSION_MAIN_VERSION_INDEX = 1;
+
+    /**
+     * index in the seletek version string of the model type.
+     */
+    private static final int SELETEK_VERSION_TYPE_INDEX = 0;
+
+    /**
+     * minus 15 degrees.
+     */
+    private static final int MINUS_15_DEGREES = -15;
+
+    /**
+     * the maximum power value.
+     */
+    protected static final int MAX_POWER_VALUE = 1023;
+
+    /**
+     * the number of milliseconds to wait before closing the ports.
+     */
+    protected static final int MILLISECONDS_TO_WAIT_BEFORE_CLOSE_PORTS = 200;
+
+    /**
+     * logger to use.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(I4JSeletekDriver.class);
 
     /**
-     * The Port Property
+     * The Port Property.
      */
     private INDIPortProperty portP;
 
     /**
-     * The Information Property
+     * The Information Property.
      */
     private INDITextProperty seletekInfoP;
 
     /**
-     * The Seletek Version Element
+     * The Seletek Version Element.
      */
     private INDITextElement seletekVersionE;
 
     /**
-     * The Seletek Serial Number Element
+     * The Seletek Serial Number Element.
      */
     private INDITextElement seletekSerialNumberE;
 
     /**
-     * The Main Device Property
+     * The Main Device Property.
      */
     private INDISwitchOneOfManyProperty mainDeviceP;
 
     /**
-     * The Exp Device Property
+     * The Exp Device Property.
      */
     private INDISwitchOneOfManyProperty expDeviceP;
 
     /**
-     * The Third Device Property
+     * The Third Device Property.
      */
     private INDISwitchOneOfManyProperty thirdDeviceP;
 
     /**
-     * The Temperature Sensors Property
+     * The Temperature Sensors Property.
      */
     private INDINumberProperty temperatureSensorsP;
 
     /**
-     * The internal temperature Element
+     * The internal temperature Element.
      */
     private INDINumberElement internalTemperatureE;
 
     /**
-     * The external temperature Eleent
+     * The external temperature Eleent.
      */
     private INDINumberElement externalTemperatureE;
 
     /**
-     * The Power OK Property
+     * The Power OK Property.
      */
     private INDILightProperty powerOkP;
 
     /**
-     * The Power Ok Element
+     * The Power Ok Element.
      */
     private INDILightElement powerOkE;
 
     /**
-     * The input stream from which to read from the Seletek
+     * The input stream from which to read from the Seletek.
      */
     private FileInputStream seletekInput;
 
     /**
-     * The output stream to write to the Seletek
+     * The output stream to write to the Seletek.
      */
     private FileOutputStream seletekOutput;
 
     /**
-     * The thread that reads the messages from the Seletek
+     * The thread that reads the messages from the Seletek.
      */
     private SeletekReadingThread readingThread;
 
     /**
-     * The thread that asks for the temperatures and sernsors of the Seletek
+     * The thread that asks for the temperatures and sernsors of the Seletek.
      */
     private SeletekSensorStatusRequesterThread sensorStatusThread;
 
     /**
-     * Readed internal temperatures
+     * Readed internal temperatures.
      */
     private double[] internalTemperatures;
 
     /**
-     * The current internal temperature
+     * The current internal temperature.
      */
-    int currentInternalTemperature;
+    private int currentInternalTemperature;
 
     /**
-     * Readed external temperatures
+     * Readed external temperatures.
      */
     private double[] externalTemperatures;
 
     /**
-     * The current external temerature
+     * The current external temerature.
      */
-    int currentExternalTemperature;
+    private int currentExternalTemperature;
 
     /**
-     * The main subdriver
+     * The main subdriver.
      */
     private INDIDriver mainSubdriver;
 
     /**
-     * The exp subdriver
+     * The exp subdriver.
      */
     private INDIDriver expSubdriver;
 
     /**
-     * The third subdriver
+     * The third subdriver.
      */
     private INDIDriver thirdSubdriver;
 
     /**
      * Constructs an instance of a <code>I4JSeletekDriver</code> with a
-     * particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-     * <code>outputStream</code> to write the messages to the clients.
+     * particular <code>inputStream</code> from which to read the incoming
+     * messages (from clients) and a <code>outputStream</code> to write the
+     * messages to the clients.
      * 
      * @param inputStream
      *            The stream from which to read messages
@@ -340,7 +375,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     }
 
     /**
-     * Destroys the Main subdriver
+     * Destroys the Main subdriver.
      */
     private void destroyMainSubdriver() {
         if (mainSubdriver != null) {
@@ -351,7 +386,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     }
 
     /**
-     * Destroys the Exp subdriver
+     * Destroys the Exp subdriver.
      */
     private void destroyExpSubdriver() {
         if (expSubdriver != null) {
@@ -362,7 +397,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     }
 
     /**
-     * Destroys the Third subdriver
+     * Destroys the Third subdriver.
      */
     private void destroyThirdSubdriver() {
         if (thirdSubdriver != null) {
@@ -370,14 +405,6 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
             thirdSubdriver.isBeingDestroyed();
             thirdSubdriver = null;
         }
-    }
-
-    @Override
-    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-    }
-
-    @Override
-    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
     }
 
     @Override
@@ -435,7 +462,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
             destroyExpSubdriver();
             destroyThirdSubdriver();
 
-            Utils.sleep(200);
+            Utils.sleep(MILLISECONDS_TO_WAIT_BEFORE_CLOSE_PORTS);
 
             if (seletekInput != null) {
                 seletekInput.close();
@@ -445,6 +472,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
             seletekInput = null;
             seletekOutput = null;
         } catch (IOException e) {
+            LOG.error("io exception durin close", e);
         }
 
         this.removeProperty(seletekInfoP);
@@ -475,7 +503,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * Sends the command to the Seletek to get the internal termperature sensor
      * reading.
      */
-    void askForInternalTemperature() {
+    protected void askForInternalTemperature() {
         sendCommandToSeletek("!read temps 0#");
     }
 
@@ -483,7 +511,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * Sends the command to the Seletek to get the external termperature sensor
      * reading.
      */
-    void askForExternalTemperature() {
+    protected void askForExternalTemperature() {
         sendCommandToSeletek("!read temps 1#");
     }
 
@@ -491,7 +519,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * Sends the command to the Seletek to get information about its power
      * status.
      */
-    void askForPowerOk() {
+    protected void askForPowerOk() {
         sendCommandToSeletek("!seletek powok#");
     }
 
@@ -501,7 +529,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * @param port
      *            0 for Main port, 1 for Exp port, 2 for Third port
      */
-    void getStepperPos(int port) {
+    protected void getStepperPos(int port) {
         sendCommandToSeletek("!step getpos " + port + "#");
     }
 
@@ -513,11 +541,11 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * @param speed
      *            The new speed for the focuser
      */
-    void setStepperSpeed(int port, int speed) {
+    protected void setStepperSpeed(int port, int speed) {
         if (speed < 0) {
             speed = 0;
         }
-
+        // TODO: a java doc explination would be very good here.
         int newSpeed = 21 - speed * 2 + 5;
 
         sendCommandToSeletek("!step speed " + port + " " + newSpeed + "#");
@@ -532,7 +560,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * @param position
      *            The desired position for the focuser
      */
-    void stepperGotoAbs(int port, int position) {
+    protected void stepperGotoAbs(int port, int position) {
         sendCommandToSeletek("!step goto " + port + " " + position + "#");
     }
 
@@ -542,7 +570,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * @param port
      *            0 for Main port, 1 for Exp port, 2 for Third port
      */
-    void stopStepper(int port) {
+    protected void stopStepper(int port) {
         sendCommandToSeletek("!step stop " + port + "#");
     }
 
@@ -555,7 +583,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      *            0 - Lunático, 1 - Lunático Inverted, 2 - RF/Moonlite, 3 -
      *            RF/Moonlite Inverted
      */
-    void setStepperWireMode(int port, int wireMode) {
+    protected void setStepperWireMode(int port, int wireMode) {
         sendCommandToSeletek("!step wiremode " + port + " " + wireMode + "#");
     }
 
@@ -567,7 +595,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * @param model
      *            0 - Unipolar, 1 - Bipolar, 2 - DC, 3 - Step and Dir
      */
-    void setStepperModel(int port, int model) {
+    protected void setStepperModel(int port, int model) {
         sendCommandToSeletek("!step model " + port + " " + model + "#");
     }
 
@@ -580,7 +608,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      *            <code>true</code> if the ficuser must be set at half step
      *            mode.
      */
-    void setStepperHalfStep(int port, boolean halfStep) {
+    protected void setStepperHalfStep(int port, boolean halfStep) {
         int h = 0;
         if (halfStep) {
             h = 1;
@@ -594,18 +622,12 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * 
      * @param port
      *            0 for Main port, 1 for Exp port, 2 for Third port
-     * @param speed
+     * @param power
      *            The new power for the focuser when moving
      */
     void setStepperMovePower(int port, int power) {
-        if (power < 0) {
-            power = 0;
-        }
-
-        if (power > 1023) {
-            power = 1023;
-        }
-
+        power = Math.max(power, 0);
+        power = Math.min(power, MAX_POWER_VALUE);
         sendCommandToSeletek("!step movepow " + port + " " + power + "#");
     }
 
@@ -615,18 +637,12 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * 
      * @param port
      *            0 for Main port, 1 for Exp port, 2 for Third port
-     * @param speed
+     * @param power
      *            The new power for the focuser when stopped
      */
     void setStepperStopPower(int port, int power) {
-        if (power < 0) {
-            power = 0;
-        }
-
-        if (power > 1023) {
-            power = 1023;
-        }
-
+        power = Math.max(power, 0);
+        power = Math.min(power, MAX_POWER_VALUE);
         sendCommandToSeletek("!step stoppow " + port + " " + power + "#");
     }
 
@@ -713,6 +729,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     private void parseExternalTemperature(String temp) {
         int t = Integer.parseInt(temp);
 
+        // TODO: document this "black magic"?
         double nt = (((t - 192) * 1.7) - 0) / 10;
 
         externalTemperatures[currentExternalTemperature] = nt;
@@ -730,7 +747,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
             double averageTemp = sum / SeletekSensorStatusRequesterThread.TEMPERATURE_READINGS;
 
-            if (averageTemp > -15) {
+            if (averageTemp > MINUS_15_DEGREES) {
                 temperatureSensorsP.setState(PropertyStates.OK);
                 externalTemperatureE.setValue("" + averageTemp);
 
@@ -749,6 +766,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
     private void parseInternalTemperature(String temp) {
         int t = Integer.parseInt(temp);
 
+        // TODO: document this "black magic"?
         double nt = (((t - 261) * 1.8) - 250) / 10;
 
         internalTemperatures[currentInternalTemperature] = nt;
@@ -879,7 +897,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      */
     private void parseVersion(String versionParam) {
         String version = "";
-        if (versionParam.charAt(0) == '1') {
+        if (versionParam.charAt(SELETEK_VERSION_TYPE_INDEX) == '1') {
             version += "Original Seletek";
         } else if (versionParam.charAt(0) == '2') {
             version += "Armadillo Seletek";
@@ -896,10 +914,10 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
         }
 
         version += " - ";
-        version += versionParam.charAt(1);
+        version += versionParam.charAt(SELETEK_VERSION_MAIN_VERSION_INDEX);
         version += ".";
-        version += versionParam.charAt(2);
-        version += " (Build " + versionParam.charAt(3);
+        version += versionParam.charAt(SELETEK_VERSION_SUB_VERSION_INDEX);
+        version += " (Build " + versionParam.charAt(SELETEK_VERSION_BUILT_INDEX);
         version += ")";
 
         seletekInfoP.setState(PropertyStates.OK);

@@ -50,6 +50,19 @@ import org.slf4j.LoggerFactory;
  */
 public class SeletekSensorStatusRequesterThread extends Thread {
 
+    /**
+     * Wait time in milliseconds after a stop.
+     */
+    private static final int WAIT_MILLISECONDS_AFTER_STOP = 60000;
+
+    /**
+     * wait time in milliseconds after a request.
+     */
+    private static final int WAIT_MILLISECONDS_AFTER_REQUEST = 100;
+
+    /**
+     * Logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(SeletekSensorStatusRequesterThread.class);
 
     /**
@@ -93,22 +106,22 @@ public class SeletekSensorStatusRequesterThread extends Thread {
             for (int i = 0; i < TEMPERATURE_READINGS; i++) {
                 if (!stopRequesting) {
                     driver.askForInternalTemperature();
-                    Utils.sleep(100);
+                    Utils.sleep(WAIT_MILLISECONDS_AFTER_REQUEST);
                 }
 
                 if (!stopRequesting) {
                     driver.askForExternalTemperature();
-                    Utils.sleep(100);
+                    Utils.sleep(WAIT_MILLISECONDS_AFTER_REQUEST);
                 }
             }
 
             if (!stopRequesting) {
                 driver.askForPowerOk();
-                Utils.sleep(100);
+                Utils.sleep(WAIT_MILLISECONDS_AFTER_REQUEST);
             }
 
             if (!stopRequesting) {
-                Utils.sleep(60000);
+                Utils.sleep(WAIT_MILLISECONDS_AFTER_STOP);
             }
         }
 
