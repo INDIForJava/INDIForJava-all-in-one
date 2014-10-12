@@ -1,20 +1,3 @@
-/*
- *  This file is part of INDI for Java Raspberry PI GPIO Driver.
- * 
- *  INDI for Java Raspberry PI GPIO Driver is free software: you can 
- *  redistribute it and/or modify it under the terms of the GNU General Public 
- *  License as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Raspberry PI GPIO Driver is distributed in the hope that it
- *  will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Raspberry PI GPIO Driver.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
 package org.indilib.i4j.driver.raspberrypi;
 
 /*
@@ -71,6 +54,8 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -96,45 +81,130 @@ import com.pi4j.system.SystemInfo;
 public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnectionHandler, GpioPinListenerDigital {
 
     /**
-     * GPIO Pins Config Property
+     * Number of seconds per minute.
+     */
+    private static final int SECONDS_PER_MINUTE = 60;
+
+    /**
+     * Number of minutes per hour.
+     */
+    private static final int MINUTES_PER_HOUR = 60;
+
+    /**
+     * Number of hours per day.
+     */
+    private static final int HOURS_PER_DAY = 24;
+
+    /**
+     * Number of days per week.
+     */
+    private static final int DAY_TO_WEEK_DIVIDER = 7;
+
+    /**
+     * Number of seconds per hour.
+     */
+    private static final int SECONDS_PER_HOUR = MINUTES_PER_HOUR * SECONDS_PER_MINUTE;
+
+    /**
+     * Number of seconds per day.
+     */
+    private static final int SECONDS_PER_DAY = HOURS_PER_DAY * SECONDS_PER_HOUR;
+
+    /**
+     * Number of seconds per week.
+     */
+    private static final int SECONDS_PER_WEEK = DAY_TO_WEEK_DIVIDER * SECONDS_PER_DAY;
+
+    /**
+     * option index for output pwm.
+     */
+    private static final int SWITCH_OUTPUT_PWM_INDEX = 5;
+
+    /**
+     * option index for input pull up.
+     */
+    private static final int SWITCH_INPUT_PULL_UP_INDEX = 4;
+
+    /**
+     * option index for input pull down.
+     */
+    private static final int SWITCH_INPUT_PULL_DOWN_INDEX = 3;
+
+    /**
+     * option index for input.
+     */
+    private static final int SWITCH_INPUT_INDEX = 2;
+
+    /**
+     * option index for output.
+     */
+    private static final int SWITCH_OUTPUT_INDEX = 1;
+
+    /**
+     * convert hz to megahez by dividing by.
+     */
+    private static final double HZ_TO_MEGAHERZ_DIVIDER = 1000000.0;
+
+    /**
+     * logger to use.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(I4JRaspberryPiGPIODriver.class);
+
+    /**
+     * max property value 10000 as String.
+     */
+    private static final String MAX_VALUE_10000_STRING = "10000";
+
+    /**
+     * the number of bytes in one megabyte.
+     */
+    private static final double ONE_MEGABYTE = 1024.0 * 1024.0;
+
+    /**
+     * maximum value for the puls wave modulator.
+     */
+    private static final double MAXIMUM_PWM_VALUE = 1000.0;
+
+    /**
+     * GPIO Pins Config Property.
      */
     private INDISwitchOneOfManyProperty[] pinsConfigP;
 
     /**
-     * GPIO pins names Property
+     * GPIO pins names Property.
      */
     private INDITextProperty pinsNamesP;
 
     /**
-     * GPIO pins names Elements
+     * GPIO pins names Elements.
      */
     private INDITextElement[] pinsNamesE;
 
     /**
-     * The number of GPIO Pins
+     * The number of GPIO Pins.
      */
     private static final int NUMBER_OF_PINS = 21;
 
     /**
-     * The GPIO Controller
+     * The GPIO Controller.
      */
     private GpioController gpio;
 
     /**
-     * The actual pins for the controller
+     * The actual pins for the controller.
      */
     private GpioPin[] pins;
 
     /**
      * Each of the controlling pins Properties (Switch for Output, Number for
-     * PWM or Light for Input)
+     * PWM or Light for Input).
      */
-    private INDIProperty[] pinsProperties;
+    private INDIProperty<?>[] pinsProperties;
 
     /**
-     * An convenience array of the available pins
+     * An convenience array of the available pins.
      */
-    private static final Pin[] pinsArray = new Pin[]{
+    private static final Pin[] PINS_ARRAY = new Pin[]{
         RaspiPin.GPIO_00,
         RaspiPin.GPIO_01,
         RaspiPin.GPIO_02,
@@ -159,85 +229,85 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     };
 
     /**
-     * CPU Temperature Property
+     * CPU Temperature Property.
      */
     private INDINumberProperty cpuTemperatureP;
 
     /**
-     * CPU Temperature Element
+     * CPU Temperature Element.
      */
     private INDINumberElement cpuTemperatureE;
 
     /**
-     * Memory Property
+     * Memory Property.
      */
     private INDINumberProperty memoryP;
 
     /**
-     * Used Memory Element
+     * Used Memory Element.
      */
     private INDINumberElement memoryUsedE;
 
     /**
-     * Free Memory Element
+     * Free Memory Element.
      */
     private INDINumberElement memoryFreeE;
 
     /**
-     * Buffers Element
+     * Buffers Element.
      */
     private INDINumberElement memoryBuffersE;
 
     /**
-     * Cached Memory Element
+     * Cached Memory Element.
      */
     private INDINumberElement memoryCachedE;
 
     /**
-     * Shared Memory Element
+     * Shared Memory Element.
      */
     private INDINumberElement memorySharedE;
 
     /**
-     * Uptime Property
+     * Uptime Property.
      */
     private INDINumberProperty uptimeP;
 
     /**
-     * Uptime Element
+     * Uptime Element.
      */
     private INDINumberElement uptimeE;
 
     /**
-     * Idle Uptime Element
+     * Idle Uptime Element.
      */
     private INDINumberElement uptimeIdleE;
 
     /**
-     * Uptime (in Text format) Property
+     * Uptime (in Text format) Property.
      */
     private INDITextProperty uptimeTextP;
 
     /**
-     * Uptime (in Text format) Element
+     * Uptime (in Text format) Element.
      */
     private INDITextElement uptimeTextE;
 
     /**
-     * Idle Uptime (in Text format) Element
+     * Idle Uptime (in Text format) Element.
      */
     private INDITextElement uptimeIdleTextE;
 
     /**
-     * A thread that reads Raspberry Pi sensors
+     * A thread that reads Raspberry Pi sensors.
      */
     private RaspberryPiSensorReaderThread readerThread;
 
     /**
      * Constructs an instance of a <code>I4JRaspberryPiGPIODriver</code> with a
-     * particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-     * <code>outputStream</code> to write the messages to the clients.
+     * particular <code>inputStream</code> from which to read the incoming
+     * messages (from clients) and a <code>outputStream</code> to write the
+     * messages to the clients.
      * 
      * @param inputStream
      *            The stream from which to read messages.
@@ -245,125 +315,152 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      *            The stream to which to write the messages.
      */
     public I4JRaspberryPiGPIODriver(InputStream inputStream, OutputStream outputStream) {
-    super(inputStream, outputStream);
+        super(inputStream, outputStream);
 
-    pins = new GpioPin[NUMBER_OF_PINS];
+        pins = new GpioPin[NUMBER_OF_PINS];
 
-    pinsProperties = new INDIProperty[NUMBER_OF_PINS];
+        pinsProperties = new INDIProperty[NUMBER_OF_PINS];
 
-    pinsNamesP = INDITextProperty.createSaveableTextProperty(this, "pin_names", "Pin Names", "Pin Names", PropertyStates.IDLE, PropertyPermissions.RW);
-    pinsNamesE = new INDITextElement[NUMBER_OF_PINS];
-    for (int i = 0 ; i < NUMBER_OF_PINS ; i++) {
-      pinsNamesE[i] = pinsNamesP.getElement("pin_" + i + "name");
+        pinsNamesP = INDITextProperty.createSaveableTextProperty(this, "pin_names", "Pin Names", "Pin Names", PropertyStates.IDLE, PropertyPermissions.RW);
+        pinsNamesE = new INDITextElement[NUMBER_OF_PINS];
+        for (int i = 0; i < NUMBER_OF_PINS; i++) {
+            pinsNamesE[i] = pinsNamesP.getElement("pin_" + i + "name");
 
-      if (pinsNamesE[i] == null) {
-        pinsNamesE[i] = new INDITextElement(pinsNamesP, "pin_" + i + "_name", "Pin " + i + " Name", "" + i);
-      }
+            if (pinsNamesE[i] == null) {
+                pinsNamesE[i] = new INDITextElement(pinsNamesP, "pin_" + i + "_name", "Pin " + i + " Name", "" + i);
+            }
+        }
+
+        pinsConfigP = new INDISwitchOneOfManyProperty[NUMBER_OF_PINS];
+
+        for (int i = 0; i < pinsConfigP.length; i++) {
+            if (i == 1) {
+                pinsConfigP[i] =
+                        INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "pin_" + i + "_config", "GPIO " + i, "Configuration", PropertyStates.IDLE,
+                                PropertyPermissions.RW, new String[]{
+                                    "Not Used",
+                                    "Output",
+                                    "Input",
+                                    "Input - Pull Down",
+                                    "Input - Pull Up",
+                                    "Output - PWM"
+                                }, 0);
+            } else {
+                pinsConfigP[i] =
+                        INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "pin_" + i + "_config", "GPIO " + i, "Configuration", PropertyStates.IDLE,
+                                PropertyPermissions.RW, new String[]{
+                                    "Not Used",
+                                    "Output",
+                                    "Input",
+                                    "Input - Pull Down",
+                                    "Input - Pull Up"
+                                }, 0);
+            }
+        }
+
+        try {
+            INDITextProperty board = new INDITextProperty(this, "board", "Board", "System Info", PropertyStates.OK, PropertyPermissions.RO);
+            new INDITextElement(board, "type", "Type", SystemInfo.getBoardType() + "");
+            new INDITextElement(board, "revision", "Revision", SystemInfo.getRevision());
+            new INDITextElement(board, "serial", "Serial Number", SystemInfo.getSerial());
+            addProperty(board);
+
+            INDIOneElementTextProperty bogoMIPS =
+                    new INDIOneElementTextProperty(this, "bogo_mips", "Bogo MIPS", "System Info", PropertyStates.OK, PropertyPermissions.RO, getBogoMIPS());
+            addProperty(bogoMIPS);
+
+            INDINumberProperty clockFrequencies =
+                    new INDINumberProperty(this, "clock_frequencies", "Clock Frequencies (MHz)", "System Info", PropertyStates.OK, PropertyPermissions.RO);
+            new INDINumberElement(clockFrequencies, "arm", "Arm", (SystemInfo.getClockFrequencyArm() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            new INDINumberElement(clockFrequencies, "core", "Core", (SystemInfo.getClockFrequencyCore() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
+                    "%1.2f");
+            new INDINumberElement(clockFrequencies, "dpi", "DPI", (SystemInfo.getClockFrequencyDPI() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            new INDINumberElement(clockFrequencies, "emmc", "EMMC", (SystemInfo.getClockFrequencyEMMC() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
+                    "%1.2f");
+            new INDINumberElement(clockFrequencies, "h264", "H264", (SystemInfo.getClockFrequencyH264() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
+                    "%1.2f");
+            new INDINumberElement(clockFrequencies, "hdmi", "HDMI", (SystemInfo.getClockFrequencyHDMI() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
+                    "%1.2f");
+            new INDINumberElement(clockFrequencies, "isp", "ISP", (SystemInfo.getClockFrequencyISP() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            new INDINumberElement(clockFrequencies, "pixel", "Pixel", (SystemInfo.getClockFrequencyPixel() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
+                    "%1.2f");
+            new INDINumberElement(clockFrequencies, "pwm", "PWM", (SystemInfo.getClockFrequencyPWM() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            new INDINumberElement(clockFrequencies, "arm", "Arm", (SystemInfo.getClockFrequencyArm() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            new INDINumberElement(clockFrequencies, "uart", "UART", (SystemInfo.getClockFrequencyUART() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
+                    "%1.2f");
+            new INDINumberElement(clockFrequencies, "v3d", "V3D", (SystemInfo.getClockFrequencyV3D() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            new INDINumberElement(clockFrequencies, "vec", "VEC", (SystemInfo.getClockFrequencyVEC() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            addProperty(clockFrequencies);
+
+            INDILightProperty codecs = new INDILightProperty(this, "codecs", "Codecs", "System Info", PropertyStates.OK);
+            new INDILightElement(codecs, "h264", "H264", SystemInfo.getCodecH264Enabled() ? LightStates.OK : LightStates.IDLE);
+            new INDILightElement(codecs, "mpg2", "MPG2", SystemInfo.getCodecMPG2Enabled() ? LightStates.OK : LightStates.IDLE);
+            new INDILightElement(codecs, "wvc1", "WVC1", SystemInfo.getCodecWVC1Enabled() ? LightStates.OK : LightStates.IDLE);
+            addProperty(codecs);
+
+            INDITextProperty cpu = new INDITextProperty(this, "cpu", "CPU", "System Info", PropertyStates.OK, PropertyPermissions.RO);
+            new INDITextElement(cpu, "processor", "Processor", getProcessor());
+            new INDITextElement(cpu, "features", "Features", Arrays.toString(SystemInfo.getCpuFeatures()));
+            new INDITextElement(cpu, "hardware", "Hardware", SystemInfo.getHardware());
+            new INDITextElement(cpu, "architecture", "Architecture", SystemInfo.getCpuArchitecture());
+            new INDITextElement(cpu, "implementer", "Implementer", SystemInfo.getCpuImplementer());
+            new INDITextElement(cpu, "part", "Part", SystemInfo.getCpuPart());
+            new INDITextElement(cpu, "revision", "Revision", SystemInfo.getCpuRevision());
+            new INDITextElement(cpu, "variant", "Variant", SystemInfo.getCpuVariant());
+            new INDITextElement(cpu, "voltage", "Voltage", SystemInfo.getCpuVoltage() + "");
+            addProperty(cpu);
+
+            INDINumberProperty memoryVoltage = new INDINumberProperty(this, "memory_voltages", "Memory Voltages", "System Info", PropertyStates.OK, PropertyPermissions.RO);
+            new INDINumberElement(memoryVoltage, "voltage_sdram_c", "Voltage SDRAM C", SystemInfo.getMemoryVoltageSDRam_C() + "", "0", "100", "1", "%1.2f");
+            new INDINumberElement(memoryVoltage, "voltage_sdram_i", "Voltage SDRAM I", SystemInfo.getMemoryVoltageSDRam_I() + "", "0", "100", "1", "%1.2f");
+            new INDINumberElement(memoryVoltage, "voltage_sdram_p", "Voltage SDRAM P", SystemInfo.getMemoryVoltageSDRam_P() + "", "0", "100", "1", "%1.2f");
+            addProperty(memoryVoltage);
+
+            INDITextProperty os = new INDITextProperty(this, "os", "Operating System", "System Info", PropertyStates.OK, PropertyPermissions.RO);
+            new INDITextElement(os, "name", "Name", SystemInfo.getOsName());
+            new INDITextElement(os, "version", "Version", SystemInfo.getOsVersion());
+            new INDITextElement(os, "architecture", "Architecture", SystemInfo.getOsArch());
+            new INDITextElement(os, "firmware_build", "Firmware Build", SystemInfo.getOsFirmwareBuild());
+            new INDITextElement(os, "firmware_date", "Firmware Date", SystemInfo.getOsFirmwareDate());
+            new INDITextElement(os, "float_abi", "Float Abi", SystemInfo.isHardFloatAbi() ? "Hard" : "Soft");
+            addProperty(os);
+
+            INDITextProperty java = new INDITextProperty(this, "java", "Java", "System Info", PropertyStates.OK, PropertyPermissions.RO);
+            new INDITextElement(java, "runtime", "Runtime", SystemInfo.getJavaRuntime());
+            new INDITextElement(java, "version", "Version", SystemInfo.getJavaVersion());
+            new INDITextElement(java, "virtual_machine", "Virtual Machine", SystemInfo.getJavaVirtualMachine());
+            new INDITextElement(java, "vendor", "Vendor", SystemInfo.getJavaVendor());
+            new INDITextElement(java, "vendor_url", "Vendor URL", SystemInfo.getJavaVendorUrl());
+            addProperty(java);
+
+            memoryP = new INDINumberProperty(this, "memory", "Memory (MB)", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
+            new INDINumberElement(memoryP, "total", "Total", (SystemInfo.getMemoryTotal() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            memoryUsedE = new INDINumberElement(memoryP, "used", "Used", (SystemInfo.getMemoryUsed() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            memoryFreeE = new INDINumberElement(memoryP, "free", "Free", (SystemInfo.getMemoryFree() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            memoryBuffersE =
+                    new INDINumberElement(memoryP, "buffers", "Buffers", (SystemInfo.getMemoryBuffers() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            memoryCachedE = new INDINumberElement(memoryP, "cached", "Cached", (SystemInfo.getMemoryCached() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            memorySharedE = new INDINumberElement(memoryP, "shared", "Shared", (SystemInfo.getMemoryShared() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+
+            cpuTemperatureP = new INDINumberProperty(this, "cpu_temperature", "CPU Temperature", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
+            cpuTemperatureE = new INDINumberElement(cpuTemperatureP, "cpu_temperature", "Temperature (°C)", SystemInfo.getCpuTemperature() + "", "0", "200", "1", "%1.2f");
+        } catch (IOException | InterruptedException | ParseException e) {
+            LOG.error("exception during property creation", e);
+        }
+
+        uptimeP = new INDINumberProperty(this, "uptime", "System Uptime", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
+        uptimeE = new INDINumberElement(uptimeP, "uptime", "Uptime (secs)", "0", "0", "10000000000", "1", "%1.0f");
+        uptimeIdleE = new INDINumberElement(uptimeP, "uptime_idle", "Idle Uptime (secs)", "0", "0", "10000000000", "1", "%1.0f");
+
+        uptimeTextP = new INDITextProperty(this, "uptimet", "System Uptime (Text)", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
+        uptimeTextE = new INDITextElement(uptimeTextP, "uptimet", "Uptime", "0");
+        uptimeIdleTextE = new INDITextElement(uptimeTextP, "uptime_idlet", "Idle Uptime", "0");
     }
-
-    pinsConfigP = new INDISwitchOneOfManyProperty[NUMBER_OF_PINS];
-
-    for (int i = 0 ; i < pinsConfigP.length ; i++) {
-      if (i == 1) {
-        pinsConfigP[i] = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "pin_" + i + "_config", "GPIO " + i, "Configuration", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"Not Used", "Output", "Input", "Input - Pull Down", "Input - Pull Up", "Output - PWM"}, 0);
-      } else {
-        pinsConfigP[i] = INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "pin_" + i + "_config", "GPIO " + i, "Configuration", PropertyStates.IDLE, PropertyPermissions.RW, new String[]{"Not Used", "Output", "Input", "Input - Pull Down", "Input - Pull Up"}, 0);
-      }
-    }
-
-    try {
-      INDITextProperty board = new INDITextProperty(this, "board", "Board", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-      new INDITextElement(board, "type", "Type", SystemInfo.getBoardType() + "");
-      new INDITextElement(board, "revision", "Revision", SystemInfo.getRevision());
-      new INDITextElement(board, "serial", "Serial Number", SystemInfo.getSerial());
-      addProperty(board);
-
-      INDIOneElementTextProperty bogoMIPS = new INDIOneElementTextProperty(this, "bogo_mips", "Bogo MIPS", "System Info", PropertyStates.OK, PropertyPermissions.RO, getBogoMIPS());
-      addProperty(bogoMIPS);
-
-      INDINumberProperty clockFrequencies = new INDINumberProperty(this, "clock_frequencies", "Clock Frequencies (MHz)", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-      new INDINumberElement(clockFrequencies, "arm", "Arm", (SystemInfo.getClockFrequencyArm() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "core", "Core", (SystemInfo.getClockFrequencyCore() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "dpi", "DPI", (SystemInfo.getClockFrequencyDPI() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "emmc", "EMMC", (SystemInfo.getClockFrequencyEMMC() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "h264", "H264", (SystemInfo.getClockFrequencyH264() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "hdmi", "HDMI", (SystemInfo.getClockFrequencyHDMI() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "isp", "ISP", (SystemInfo.getClockFrequencyISP() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "pixel", "Pixel", (SystemInfo.getClockFrequencyPixel() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "pwm", "PWM", (SystemInfo.getClockFrequencyPWM() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "arm", "Arm", (SystemInfo.getClockFrequencyArm() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "uart", "UART", (SystemInfo.getClockFrequencyUART() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "v3d", "V3D", (SystemInfo.getClockFrequencyV3D() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      new INDINumberElement(clockFrequencies, "vec", "VEC", (SystemInfo.getClockFrequencyVEC() / 1000000.0) + "", "0", "10000", "1", "%1.2f");
-      addProperty(clockFrequencies);
-
-      INDILightProperty codecs = new INDILightProperty(this, "codecs", "Codecs", "System Info", PropertyStates.OK);
-      new INDILightElement(codecs, "h264", "H264", SystemInfo.getCodecH264Enabled() ? LightStates.OK : LightStates.IDLE);
-      new INDILightElement(codecs, "mpg2", "MPG2", SystemInfo.getCodecMPG2Enabled() ? LightStates.OK : LightStates.IDLE);
-      new INDILightElement(codecs, "wvc1", "WVC1", SystemInfo.getCodecWVC1Enabled() ? LightStates.OK : LightStates.IDLE);
-      addProperty(codecs);
-
-      INDITextProperty cpu = new INDITextProperty(this, "cpu", "CPU", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-      new INDITextElement(cpu, "processor", "Processor", getProcessor());
-      new INDITextElement(cpu, "features", "Features", Arrays.toString(SystemInfo.getCpuFeatures()));
-      new INDITextElement(cpu, "hardware", "Hardware", SystemInfo.getHardware());
-      new INDITextElement(cpu, "architecture", "Architecture", SystemInfo.getCpuArchitecture());
-      new INDITextElement(cpu, "implementer", "Implementer", SystemInfo.getCpuImplementer());
-      new INDITextElement(cpu, "part", "Part", SystemInfo.getCpuPart());
-      new INDITextElement(cpu, "revision", "Revision", SystemInfo.getCpuRevision());
-      new INDITextElement(cpu, "variant", "Variant", SystemInfo.getCpuVariant());
-      new INDITextElement(cpu, "voltage", "Voltage", SystemInfo.getCpuVoltage() + "");
-      addProperty(cpu);
-
-      INDINumberProperty memoryVoltage = new INDINumberProperty(this, "memory_voltages", "Memory Voltages", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-      new INDINumberElement(memoryVoltage, "voltage_sdram_c", "Voltage SDRAM C", SystemInfo.getMemoryVoltageSDRam_C() + "", "0", "100", "1", "%1.2f");
-      new INDINumberElement(memoryVoltage, "voltage_sdram_i", "Voltage SDRAM I", SystemInfo.getMemoryVoltageSDRam_I() + "", "0", "100", "1", "%1.2f");
-      new INDINumberElement(memoryVoltage, "voltage_sdram_p", "Voltage SDRAM P", SystemInfo.getMemoryVoltageSDRam_P() + "", "0", "100", "1", "%1.2f");
-      addProperty(memoryVoltage);
-
-      INDITextProperty os = new INDITextProperty(this, "os", "Operating System", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-      new INDITextElement(os, "name", "Name", SystemInfo.getOsName());
-      new INDITextElement(os, "version", "Version", SystemInfo.getOsVersion());
-      new INDITextElement(os, "architecture", "Architecture", SystemInfo.getOsArch());
-      new INDITextElement(os, "firmware_build", "Firmware Build", SystemInfo.getOsFirmwareBuild());
-      new INDITextElement(os, "firmware_date", "Firmware Date", SystemInfo.getOsFirmwareDate());
-      new INDITextElement(os, "float_abi", "Float Abi", SystemInfo.isHardFloatAbi() ? "Hard" : "Soft");
-      addProperty(os);
-
-      INDITextProperty java = new INDITextProperty(this, "java", "Java", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-      new INDITextElement(java, "runtime", "Runtime", SystemInfo.getJavaRuntime());
-      new INDITextElement(java, "version", "Version", SystemInfo.getJavaVersion());
-      new INDITextElement(java, "virtual_machine", "Virtual Machine", SystemInfo.getJavaVirtualMachine());
-      new INDITextElement(java, "vendor", "Vendor", SystemInfo.getJavaVendor());
-      new INDITextElement(java, "vendor_url", "Vendor URL", SystemInfo.getJavaVendorUrl());
-      addProperty(java);
-
-      memoryP = new INDINumberProperty(this, "memory", "Memory (MB)", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-      new INDINumberElement(memoryP, "total", "Total", (SystemInfo.getMemoryTotal() / (1024.0 * 1024.0)) + "", "0", "10000", "1", "%1.2f");
-      memoryUsedE = new INDINumberElement(memoryP, "used", "Used", (SystemInfo.getMemoryUsed() / (1024.0 * 1024.0)) + "", "0", "10000", "1", "%1.2f");
-      memoryFreeE = new INDINumberElement(memoryP, "free", "Free", (SystemInfo.getMemoryFree() / (1024.0 * 1024.0)) + "", "0", "10000", "1", "%1.2f");
-      memoryBuffersE = new INDINumberElement(memoryP, "buffers", "Buffers", (SystemInfo.getMemoryBuffers() / (1024.0 * 1024.0)) + "", "0", "10000", "1", "%1.2f");
-      memoryCachedE = new INDINumberElement(memoryP, "cached", "Cached", (SystemInfo.getMemoryCached() / (1024.0 * 1024.0)) + "", "0", "10000", "1", "%1.2f");
-      memorySharedE = new INDINumberElement(memoryP, "shared", "Shared", (SystemInfo.getMemoryShared() / (1024.0 * 1024.0)) + "", "0", "10000", "1", "%1.2f");
-
-      cpuTemperatureP = new INDINumberProperty(this, "cpu_temperature", "CPU Temperature", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-      cpuTemperatureE = new INDINumberElement(cpuTemperatureP, "cpu_temperature", "Temperature (°C)", SystemInfo.getCpuTemperature() + "", "0", "200", "1", "%1.2f");
-    } catch (IOException | InterruptedException | ParseException e) {
-    }
-
-    uptimeP = new INDINumberProperty(this, "uptime", "System Uptime", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-    uptimeE = new INDINumberElement(uptimeP, "uptime", "Uptime (secs)", "0", "0", "10000000000", "1", "%1.0f");
-    uptimeIdleE = new INDINumberElement(uptimeP, "uptime_idle", "Idle Uptime (secs)", "0", "0", "10000000000", "1", "%1.0f");
-
-    uptimeTextP = new INDITextProperty(this, "uptimet", "System Uptime (Text)", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-    uptimeTextE = new INDITextElement(uptimeTextP, "uptimet", "Uptime", "0");
-    uptimeIdleTextE = new INDITextElement(uptimeTextP, "uptime_idlet", "Idle Uptime", "0");
-  }
 
     /**
-     * Currently buggy in p4j 0.0.5 so disabled
+     * Currently buggy in p4j 0.0.5 so disabled.
      * 
-     * @return
+     * @return bogo mips
      */
     private String getBogoMIPS() {
         // return SystemInfo.getBogoMIPS();
@@ -371,9 +468,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     }
 
     /**
-     * Currently buggy in p4j 0.0.5 so disabled
+     * Currently buggy in p4j 0.0.5 so disabled.
      * 
-     * @return
+     * @return processor description.
      */
     private String getProcessor() {
         // return SystemInfo.getProcessor();
@@ -386,7 +483,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     }
 
     @Override
-    public void processNewNumberValue(INDINumberProperty property, Date Timestamp, INDINumberElementAndValue[] elementsAndValues) {
+    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
         int pin = -1;
 
         for (int i = 0; i < NUMBER_OF_PINS; i++) {
@@ -446,15 +543,15 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
                     pins[pin] = null;
                 }
 
-                if (pinsConfigP[pin].getSelectedIndex() == 1) {
+                if (pinsConfigP[pin].getSelectedIndex() == SWITCH_OUTPUT_INDEX) {
                     createOutputPin(pin);
-                } else if (pinsConfigP[pin].getSelectedIndex() == 2) {
+                } else if (pinsConfigP[pin].getSelectedIndex() == SWITCH_INPUT_INDEX) {
                     createInputPin(pin, PinPullResistance.OFF);
-                } else if (pinsConfigP[pin].getSelectedIndex() == 3) {
+                } else if (pinsConfigP[pin].getSelectedIndex() == SWITCH_INPUT_PULL_DOWN_INDEX) {
                     createInputPin(pin, PinPullResistance.PULL_DOWN);
-                } else if (pinsConfigP[pin].getSelectedIndex() == 4) {
+                } else if (pinsConfigP[pin].getSelectedIndex() == SWITCH_INPUT_PULL_UP_INDEX) {
                     createInputPin(pin, PinPullResistance.PULL_UP);
-                } else if (pinsConfigP[pin].getSelectedIndex() == 5) {
+                } else if (pinsConfigP[pin].getSelectedIndex() == SWITCH_OUTPUT_PWM_INDEX) {
                     createPWMOutputPin(pin);
                 }
             }
@@ -501,7 +598,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      *            The pin that is going to be used as output
      */
     private void createOutputPin(int pin) {
-        pins[pin] = gpio.provisionDigitalOutputPin(pinsArray[pin], PinState.LOW);
+        pins[pin] = gpio.provisionDigitalOutputPin(PINS_ARRAY[pin], PinState.LOW);
         pinsProperties[pin] =
                 new INDISwitchOneOfManyProperty(this, "gpiopin_" + pin, "Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")", "Main Control", PropertyStates.IDLE,
                         PropertyPermissions.RW, new String[]{
@@ -518,13 +615,13 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      *            The pin that is going to be used as PWM
      */
     private void createPWMOutputPin(int pin) {
-        pins[pin] = gpio.provisionPwmOutputPin(pinsArray[pin]);
+        pins[pin] = gpio.provisionPwmOutputPin(PINS_ARRAY[pin]);
 
         INDINumberProperty np =
                 new INDINumberProperty(this, "gpiopin_" + pin, "Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")", "Main Control", PropertyStates.IDLE,
                         PropertyPermissions.RW);
         pinsProperties[pin] = np;
-        new INDINumberElement(np, "value", "PWM Value", 0.0, 0.0, 1000.0, 1.0, "%1.0f");
+        new INDINumberElement(np, "value", "PWM Value", 0.0, 0.0, MAXIMUM_PWM_VALUE, 1.0, "%1.0f");
         addProperty(pinsProperties[pin]);
     }
 
@@ -533,9 +630,11 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      * 
      * @param pin
      *            The pin that is going to be used as input
+     * @param pull
+     *            Pin pull up/down resistance definition.
      */
     private void createInputPin(int pin, PinPullResistance pull) {
-        pins[pin] = gpio.provisionDigitalInputPin(pinsArray[pin], pull);
+        pins[pin] = gpio.provisionDigitalInputPin(PINS_ARRAY[pin], pull);
         ((GpioPinDigitalInput) pins[pin]).addListener(this);
 
         INDILightProperty lp = new INDILightProperty(this, "gpiopin_" + pin, "Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")", "Main Control", PropertyStates.IDLE);
@@ -576,15 +675,15 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
         for (int i = 0; i < pinsConfigP.length; i++) {
             addProperty(pinsConfigP[i]);
 
-            if (pinsConfigP[i].getSelectedIndex() == 1) {
+            if (pinsConfigP[i].getSelectedIndex() == SWITCH_OUTPUT_INDEX) {
                 createOutputPin(i);
-            } else if (pinsConfigP[i].getSelectedIndex() == 2) {
+            } else if (pinsConfigP[i].getSelectedIndex() == SWITCH_INPUT_INDEX) {
                 createInputPin(i, PinPullResistance.OFF);
-            } else if (pinsConfigP[i].getSelectedIndex() == 3) {
+            } else if (pinsConfigP[i].getSelectedIndex() == SWITCH_INPUT_PULL_DOWN_INDEX) {
                 createInputPin(i, PinPullResistance.PULL_DOWN);
-            } else if (pinsConfigP[i].getSelectedIndex() == 4) {
+            } else if (pinsConfigP[i].getSelectedIndex() == SWITCH_INPUT_PULL_UP_INDEX) {
                 createInputPin(i, PinPullResistance.PULL_UP);
-            } else if (pinsConfigP[i].getSelectedIndex() == 5) {
+            } else if (pinsConfigP[i].getSelectedIndex() == SWITCH_OUTPUT_PWM_INDEX) {
                 createPWMOutputPin(i);
             }
         }
@@ -646,49 +745,47 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      * @see RaspberryPiSensorReaderThread
      */
     protected void setSensors() {
-    try {
-      memoryUsedE.setValue((SystemInfo.getMemoryUsed() / (1024.0 * 1024.0)) + "");
-      memoryFreeE.setValue((SystemInfo.getMemoryFree() / (1024.0 * 1024.0)) + "");
-      memoryBuffersE.setValue((SystemInfo.getMemoryBuffers() / (1024.0 * 1024.0)) + "");
-      memoryCachedE.setValue((SystemInfo.getMemoryCached() / (1024.0 * 1024.0)) + "");
-      memorySharedE.setValue((SystemInfo.getMemoryShared() / (1024.0 * 1024.0)) + "");
+        try {
+            memoryUsedE.setValue((SystemInfo.getMemoryUsed() / ONE_MEGABYTE) + "");
+            memoryFreeE.setValue((SystemInfo.getMemoryFree() / ONE_MEGABYTE) + "");
+            memoryBuffersE.setValue((SystemInfo.getMemoryBuffers() / ONE_MEGABYTE) + "");
+            memoryCachedE.setValue((SystemInfo.getMemoryCached() / ONE_MEGABYTE) + "");
+            memorySharedE.setValue((SystemInfo.getMemoryShared() / ONE_MEGABYTE) + "");
 
-      cpuTemperatureE.setValue(SystemInfo.getCpuTemperature() + "");
-    } catch (IOException | InterruptedException e) {
+            cpuTemperatureE.setValue(SystemInfo.getCpuTemperature() + "");
+        } catch (IOException | InterruptedException e) {
+            LOG.error("io exception", e);
+        }
+
+        updateProperty(cpuTemperatureP);
+        updateProperty(memoryP);
+
+        try {
+            Scanner sc = new Scanner(new FileInputStream("/proc/uptime"));
+            String aux1 = sc.next();
+            String aux2 = sc.next();
+            sc.close();
+
+            long ut = (Double.valueOf(aux1)).longValue();
+            long uti = (Double.valueOf(aux2)).longValue();
+
+            uptimeE.setValue(ut + "");
+            uptimeIdleE.setValue(uti + "");
+
+            uptimeTextE.setValue(secondsToWeeksDaysHoursMinutesSeconds(ut));
+            uptimeIdleTextE.setValue(secondsToWeeksDaysHoursMinutesSeconds(uti));
+        } catch (FileNotFoundException e) {
+            LOG.error("file not found", e);
+        }
+
+        updateProperty(uptimeP);
+        updateProperty(uptimeTextP);
+
     }
-
-
-      updateProperty(cpuTemperatureP);
-      updateProperty(memoryP);
-
-
-    try {
-      Scanner sc = new Scanner(new FileInputStream("/proc/uptime"));
-      String aux1 = sc.next();
-      String aux2 = sc.next();
-      sc.close();
-
-      long ut = (Double.valueOf(aux1)).longValue();
-      long uti = (Double.valueOf(aux2)).longValue();
-
-      uptimeE.setValue(ut + "");
-      uptimeIdleE.setValue(uti + "");
-
-      uptimeTextE.setValue(secondsToWeeksDaysHoursMinutesSeconds(ut));
-      uptimeIdleTextE.setValue(secondsToWeeksDaysHoursMinutesSeconds(uti));
-    } catch (FileNotFoundException e) {
-    }
-
-
-      updateProperty(uptimeP);
-      updateProperty(uptimeTextP);
-
-  }
 
     /**
      * Converts a number of seconds into a string of the format
-     * <em>[X Weeks, ][X
-     * Days, ][X Hours, ][X Minutes, ]X seconds</em>
+     * <em>[X Weeks, ][X Days, ][X Hours, ][X Minutes, ]X seconds</em>.
      * 
      * @param seconds
      *            The number of seconds to be converted.
@@ -698,17 +795,17 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     private String secondsToWeeksDaysHoursMinutesSeconds(long seconds) {
         long accum = seconds;
 
-        int weeks = (int) TimeUnit.SECONDS.toDays(accum) / 7;
-        accum -= weeks * 7 * 24 * 60 * 60;
+        int weeks = (int) TimeUnit.SECONDS.toDays(accum) / DAY_TO_WEEK_DIVIDER;
+        accum -= weeks * SECONDS_PER_WEEK;
 
         int days = (int) TimeUnit.SECONDS.toDays(accum);
-        accum -= days * 24 * 60 * 60;
+        accum -= days * SECONDS_PER_DAY;
 
         long hours = TimeUnit.SECONDS.toHours(accum);
-        accum -= hours * 60 * 60;
+        accum -= hours * SECONDS_PER_HOUR;
 
         long minutes = TimeUnit.SECONDS.toMinutes(accum);
-        accum -= minutes * 60;
+        accum -= minutes * SECONDS_PER_MINUTE;
 
         long secs = accum;
 

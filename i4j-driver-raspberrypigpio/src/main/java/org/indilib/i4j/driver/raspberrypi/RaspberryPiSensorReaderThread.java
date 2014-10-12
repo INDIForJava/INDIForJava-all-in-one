@@ -17,6 +17,9 @@
  */
 package org.indilib.i4j.driver.raspberrypi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * #%L
  * INDI for Java Driver for the Raspberry PI
@@ -49,12 +52,22 @@ package org.indilib.i4j.driver.raspberrypi;
 public class RaspberryPiSensorReaderThread extends Thread {
 
     /**
+     * Ten seconds in milliseconds.
+     */
+    private static final int TEN_SECONDS_IN_MILLISECONDS = 10000;
+
+    /**
+     * logger to use.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(RaspberryPiSensorReaderThread.class);
+
+    /**
      * To stop the Thread.
      */
     private boolean stopReading;
 
     /**
-     * The Raspberry Pi GPIO Driver
+     * The Raspberry Pi GPIO Driver.
      */
     private I4JRaspberryPiGPIODriver driver;
 
@@ -80,7 +93,7 @@ public class RaspberryPiSensorReaderThread extends Thread {
     public void run() {
         while (!stopReading) {
             driver.setSensors();
-            sleep(10000);
+            sleep(TEN_SECONDS_IN_MILLISECONDS);
         }
     }
 
@@ -94,6 +107,7 @@ public class RaspberryPiSensorReaderThread extends Thread {
         try {
             Thread.sleep(milis);
         } catch (InterruptedException e) {
+            LOG.error("sleep interupted", e);
         }
     }
 }
