@@ -50,7 +50,7 @@ public class INDITelescopeSyncExtension extends INDIDriverExtension<INDITelescop
      * if you call this yourself. Better to let it be used by the injector.
      * 
      * @param telecopeDriver
-     *            the telescope driver to attact this extention to.
+     *            the telescope driver to attach this extension to.
      */
     public INDITelescopeSyncExtension(INDITelescope telecopeDriver) {
         super(telecopeDriver);

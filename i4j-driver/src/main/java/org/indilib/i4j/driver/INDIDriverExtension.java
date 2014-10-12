@@ -22,7 +22,6 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.util.INDIPropertyInjector;
 
 /**
@@ -87,6 +86,7 @@ public abstract class INDIDriverExtension<Driver extends INDIDriver> {
      * @param property
      *            The Property whose values have change and about which the
      *            clients must be notified.
+     * @return true im successful
      */
     protected boolean updateProperty(INDIProperty<?> property) {
         return driver.updateProperty(property);
@@ -103,6 +103,7 @@ public abstract class INDIDriverExtension<Driver extends INDIDriver> {
      * @param message
      *            The message to be sended to the clients with the udpate
      *            message.
+     * @return true im successful
      */
     protected boolean updateProperty(INDIProperty<?> property, String message) {
         return driver.updateProperty(property, message);
@@ -121,9 +122,10 @@ public abstract class INDIDriverExtension<Driver extends INDIDriver> {
      * @param message
      *            The message to be sended to the clients with the udpate
      *            message.
+     * @return true im successful
      */
-    protected boolean updateProperty(INDIProperty<?> property, boolean updateminmax, String message) throws INDIException {
-        return driver.updateProperty(property, updateminmax, message);
+    protected boolean updateProperty(INDIProperty<?> property, boolean includeMinMax, String message) {
+        return driver.updateProperty(property, includeMinMax, message);
     }
 
     /**

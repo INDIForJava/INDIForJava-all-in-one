@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A class that acts as a abstract INDI for Java Driver for any Telescope. All
- * telescope drivers should subclass this abstract drivser. The initali version
+ * telescope drivers should subclass this abstract driver. The initial version
  * was a port of the indilib c++ version.
  * 
  * @author Richard van Nieuwenhoven [ritchie at gmx.at]
@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
 public abstract class INDITelescope extends INDIDriver implements INDIConnectionHandler {
 
     /**
-     * Telescope elevations under 200 meter below seelevel are not supported.
+     * Telescope elevations under 200 meter below see level are not supported.
      */
     private static final double MINIMUM_ELEVATION = -200d;
 
@@ -119,6 +119,31 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * The maximal value for declination in degrees.
      */
     protected static final double MIN_DECLINATION_DEGREES = -90d;
+
+    /**
+     * The logger for any messages.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
+
+    /**
+     * The property tab for the main controls of the telescope.
+     */
+    protected static final String MAIN_CONTROL_TAB = "Main Control";
+
+    /**
+     * The property tab for the site defintion properties.
+     */
+    protected static final String SITE_TAB = "Site";
+
+    /**
+     * The property tab for the scope options.
+     */
+    protected static final String OPTIONS_TAB = "Options";
+
+    /**
+     * The property tab for the motion controls.
+     */
+    protected static final String MOTION_TAB = "Motion";
 
     /**
      * The scope status updater thats will run perioticaly to check the status
@@ -204,31 +229,6 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
          */
         SCOPE_TRACKING
     };
-
-    /**
-     * The logger for any messages.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
-
-    /**
-     * The property tab for the main controls of the telescope.
-     */
-    protected static final String MAIN_CONTROL_TAB = "Main Control";
-
-    /**
-     * The property tab for the site defintion properties.
-     */
-    protected static final String SITE_TAB = "Site";
-
-    /**
-     * The property tab for the scope options.
-     */
-    protected static final String OPTIONS_TAB = "Options";
-
-    /**
-     * The property tab for the motion controls.
-     */
-    protected static final String MOTION_TAB = "Motion";
 
     /**
      * First variant of the iso time format.

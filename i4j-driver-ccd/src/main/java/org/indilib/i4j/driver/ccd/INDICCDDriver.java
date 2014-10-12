@@ -19,12 +19,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
+import nom.tam.fits.BasicHDU;
+
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIBLOBElementAndValue;
-import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
@@ -46,57 +46,139 @@ import org.indilib.i4j.driver.event.TextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is the abstract cdd driver, all ccd drivers should subclass it. the
+ * initial verion of the Functionality is a port of the c++ driver.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDICCDDriverInterface {
 
+    /**
+     * The minimum temperature for the ccd chip in degrees celcius.
+     */
+    private static final double MAXIMUM_CCD_TEMPERATURE = 50d;
+
+    /**
+     * The maximum temperature for the ccd chip in degrees celcius.
+     */
+    private static final double MINIMAL_CCD_TEMPERATURE = -50d;
+
+    /**
+     * The logger to log the messages to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDICCDDriver.class);
 
+    /**
+     * The property tab for the main controls of the ccd.
+     */
     protected static final String MAIN_CONTROL_TAB = "Main Control";
 
+    /**
+     * The property tab for the image settings..
+     */
     protected static final String IMAGE_SETTINGS_TAB = "Image Settings";
 
+    /**
+     * The property tab for the image information.
+     */
     protected static final String IMAGE_INFO_TAB = "Image Info";
 
+    /**
+     * The property tab for the options of the ccd.
+     */
     protected static final String OPTIONS_TAB = "Options";
 
+    /**
+     * The temperature of the ccd chip.
+     */
     @InjectProperty(name = "CCD_TEMPERATURE", label = "Temperature", group = INDICCDDriver.MAIN_CONTROL_TAB)
     protected INDINumberProperty temperature;
 
-    @InjectElement(name = "CCD_TEMPERATURE_VALUE", label = "Temperature (C)", minimum = -50d, maximum = 50d, numberFormat = "%5.2f")
+    /**
+     * The temperature of the ccd chip.
+     */
+    @InjectElement(name = "CCD_TEMPERATURE_VALUE", label = "Temperature (C)", minimum = MINIMAL_CCD_TEMPERATURE, maximum = MAXIMUM_CCD_TEMPERATURE, numberFormat = "%5.2f")
     private INDINumberElement temperatureTemp;
 
+    /**
+     * The upload mode for the images, if they should be saved on the server or
+     * send to the client.
+     */
     @InjectProperty(name = "UPLOAD_MODE", label = "Upload", group = INDICCDDriver.OPTIONS_TAB, timeout = 0, saveable = true)
     private INDISwitchProperty upload;
 
+    /**
+     * should the images be send to the client?
+     */
     @InjectElement(name = "UPLOAD_CLIENT", label = "Client", switchValue = SwitchStatus.ON)
     private INDISwitchElement uploadClient;
 
+    /**
+     * should the images be stored locally (where the driver resides)?
+     */
     @InjectElement(name = "UPLOAD_LOCAL", label = "Local")
     private INDISwitchElement uploadLocal;
 
+    /**
+     * should the images be send to the client and stored locally (where the
+     * driver resides).
+     */
     @InjectElement(name = "UPLOAD_BOTH", label = "Both")
     private INDISwitchElement uploadBoth;
 
+    /**
+     * Upload directory and filenames for local storage.
+     */
     @InjectProperty(name = "UPLOAD_SETTINGS", label = "Upload Settings", group = INDICCDDriver.OPTIONS_TAB, saveable = true)
     private INDITextProperty uploadSettings;
 
+    /**
+     * Upload directory for local storage.
+     */
     @InjectElement(name = "UPLOAD_DIR", label = "Dir")
     private INDITextElement uploadSettingsDir;
 
+    /**
+     * The prefix for the images to store. (The "XX" part of the name will be
+     * replaced by a number).
+     */
     @InjectElement(name = "UPLOAD_PREFIX", label = "Prefix", textValue = "IMAGE_XX")
     private INDITextElement uploadSettingsPrefix;
 
+    /**
+     * the CCD extention, where the real ccd interfacing happens, this is the
+     * primary ccd.
+     */
     @InjectExtension(prefix = "CCD_", rename = {
         @Rename(name = "CCD", to = "CCD0")
     })
     protected INDICCDDriverExtension primaryCCD;
 
+    /**
+     * the CCD extention, where the real guider ccd interfacing happens, this is
+     * the guider ccd.
+     */
     @InjectExtension(prefix = "GUIDER_", rename = {
         @Rename(name = "CCD", to = "CCD1")
     })
     protected INDICCDDriverExtension guiderCCD;
 
+    /**
+     * a capability object with booleans that specify what this dirver can and
+     * can not do.
+     */
     private final Capability capability = defineCapabilities();
 
+    /**
+     * The CCD driver constructor, all subclasses must call this. All local
+     * event handlers are here attached to the properties.
+     * 
+     * @param inputStream
+     *            The stream from which to read messages.
+     * @param outputStream
+     *            The stream to which to write the messages.
+     */
     public INDICCDDriver(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
         primaryCCD.setDriverInterface(this);
@@ -125,29 +207,43 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         });
     }
 
+    /**
+     * the client send a new value for the temperature.
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
     private void newTemperatureValue(INDINumberElementAndValue[] elementsAndValues) {
         temperature.setValues(elementsAndValues);
         Boolean rc = setTemperature(temperatureTemp.getValue());
-        if (rc == null)
+        if (rc == null) {
             temperature.setState(PropertyStates.ALERT);
-        else if (rc.booleanValue())
+        } else if (rc.booleanValue()) {
             temperature.setState(PropertyStates.OK);
-        else
+        } else {
             temperature.setState(PropertyStates.BUSY);
+        }
         updateProperty(temperature);
     }
 
+    /**
+     * the client send a new value for the upload directory.
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
+     */
     private void newUploadValue(INDISwitchElementAndValue[] elementsAndValues) {
         upload.setValues(elementsAndValues);
         upload.setState(PropertyStates.OK);
 
         updateProperty(upload);
-        if (uploadClient.getValue() == SwitchStatus.ON)
+        if (uploadClient.isOn()) {
             LOG.debug(String.format("Upload settings set to client only."));
-        else if (uploadLocal.getValue() == SwitchStatus.ON)
+        } else if (uploadLocal.isOn()) {
             LOG.debug(String.format("Upload settings set to local only."));
-        else
+        } else {
             LOG.debug(String.format("Upload settings set to client and local."));
+        }
     }
 
     /**
@@ -166,11 +262,11 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     /**
      * Uploads target Chip exposed buffer as FITS to the client. Dervied classes
-     * should call this functon when an exposure is complete. This function must
-     * be implemented in the child class
+     * should call this functon when an exposure is complete.
      * 
      * @param targetChip
      *            chip that contains upload image data
+     * @return true if the operation was successful.
      */
     protected boolean exposureComplete(INDICCDDriverExtension targetChip) {
         if (targetChip == primaryCCD) {
@@ -180,6 +276,15 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         }
     }
 
+    /**
+     * calculate a unique non existent filename to save an image localy.
+     * 
+     * @param extension
+     *            the file extension to use (file format)
+     * @return the file to use to store the next image.
+     * @throws IOException
+     *             if the driver could not read on the filesystem.
+     */
     protected File getFileWithIndex(String extension) throws IOException {
         String dir = uploadSettingsDir.getValue();
         String prefix = uploadSettingsPrefix.getValue();
@@ -214,7 +319,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * Once the temperature reaches the requested value, change the state to OK.
      * This must be implemented in the child class
      * 
-     * @param temperature
+     * @param theTargetTemperature
      *            CCD temperature in degrees celcius.
      * @return true or false if setting the temperature call to the hardware is
      *         successful. null if an error is encountered. Return false if
@@ -222,16 +327,19 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      *         true if setting the temperature to the requested value is
      *         complete.
      */
-    abstract protected Boolean setTemperature(double temperature);
+    protected abstract Boolean setTemperature(double theTargetTemperature);
 
     /**
-     * Abort ongoing exposure
+     * Abort ongoing exposure.
      * 
      * @return true is abort is successful, false otherwise.
      */
     public abstract boolean abortExposure();
 
-    public Capability capability() {
+    /**
+     * @return a collection of capabilities of this driver.
+     */
+    protected Capability capability() {
         return capability;
     }
 
@@ -265,30 +373,19 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         removeProperty(uploadSettings);
     }
 
-    @Override
-    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
-
-    }
-
-    @Override
-    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-
-    }
-
-    @Override
-    public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-    }
-
-    @Override
-    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
-    }
-
+    /**
+     * @return true if the images should be saved locally (where the driver
+     *         resides).
+     */
     public boolean shouldSaveImage() {
-        return uploadLocal.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON;
+        return uploadLocal.isOn() || uploadBoth.isOn();
     }
 
+    /**
+     * @return true if the image should be send to the client.
+     */
     public boolean shouldSendImage() {
-        return uploadClient.getValue() == SwitchStatus.ON || uploadBoth.getValue() == SwitchStatus.ON;
+        return uploadClient.isOn() || uploadBoth.isOn();
     }
 
     /**
@@ -341,4 +438,12 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * @return true is CCD chip update is successful, false otherwise.
      */
     public abstract boolean updateCCDFrameType(CcdFrame fType);
+
+    /**
+     * add any aditinal fits header information to the fits image.
+     * 
+     * @param fitsHeader
+     *            the header to write the attributes.
+     */
+    public abstract void addFITSKeywords(BasicHDU fitsHeader);
 }

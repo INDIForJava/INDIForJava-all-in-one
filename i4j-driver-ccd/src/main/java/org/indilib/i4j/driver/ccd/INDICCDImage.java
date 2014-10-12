@@ -24,50 +24,243 @@ package org.indilib.i4j.driver.ccd;
 
 import java.io.DataOutputStream;
 
+import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
+import nom.tam.fits.FitsFactory;
 
+/**
+ * This class represends an captured ccd images. it will handle any needed
+ * conversions and hides away the image processing from the driver itself. This
+ * is an abstract class that has apropriate subclasses as innerclasses for the
+ * different bit-per-pixel types.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public abstract class INDICCDImage {
 
-    public class INDI16BitCCDImage extends INDICCDImage {
-
-        private short[][] imageData;
+    /**
+     * create a ccd image with the specified size and bpp.
+     * 
+     * @param width
+     *            the width of the image
+     * @param height
+     *            the height of the image
+     * @param bpp
+     *            the bits per pixel of the image.
+     */
+    private INDICCDImage(int width, int height, int bpp) {
+        this.width = width;
+        this.height = height;
+        this.bpp = bpp;
     }
 
-    public class INDI32BitCCDImage extends INDICCDImage {
+    /**
+     * If the image has less or equal 8 bit per pixel the data fits in a byte
+     * array.
+     */
+    private static final class INDI8BitCCDImage extends INDICCDImage {
 
-        private int[][] imageData;
+        /**
+         * the max bit per pixel supported by this class.
+         */
+        private static final int MAX_BPP = 8;
+
+        /**
+         * create a ccd image with the specified size and bpp.
+         * 
+         * @param width
+         *            the width of the image
+         * @param height
+         *            the height of the image
+         * @param bpp
+         *            the bits per pixel of the image.
+         */
+        private INDI8BitCCDImage(int width, int height, int bpp) {
+            super(width, height, bpp);
+        }
+
+        /**
+         * the image data.
+         */
+        private byte[] imageData;
+
+        @Override
+        Object getImageData() {
+            return imageData;
+        }
+    }
+
+    /**
+     * If the image has more than 8 but less or equal 16 bit per pixel the data
+     * fits in a short array.
+     */
+    private static final class INDI16BitCCDImage extends INDICCDImage {
+
+        /**
+         * the max bit per pixel supported by this class.
+         */
+        private static final int MAX_BPP = 16;
+
+        /**
+         * create a ccd image with the specified size and bpp.
+         * 
+         * @param width
+         *            the width of the image
+         * @param height
+         *            the height of the image
+         * @param bpp
+         *            the bits per pixel of the image.
+         */
+        public INDI16BitCCDImage(int width, int height, int bpp) {
+            super(width, height, bpp);
+        }
+
+        /**
+         * the image data.
+         */
+        private short[] imageData;
+
+        @Override
+        Object getImageData() {
+            return imageData;
+        }
+    }
+
+    /**
+     * If the image has more than 16 but less or equal 32 bit per pixel the data
+     * fits in a int array.
+     */
+    private static final class INDI32BitCCDImage extends INDICCDImage {
+
+        /**
+         * the max bit per pixel supported by this class.
+         */
+        private static final int MAX_BPP = 32;
+
+        /**
+         * create a ccd image with the specified size and bpp.
+         * 
+         * @param width
+         *            the width of the image
+         * @param height
+         *            the height of the image
+         * @param bpp
+         *            the bits per pixel of the image.
+         */
+        public INDI32BitCCDImage(int width, int height, int bpp) {
+            super(width, height, bpp);
+        }
+
+        /**
+         * the image data.
+         */
+        private int[] imageData;
+
+        @Override
+        Object getImageData() {
+            return imageData;
+        }
 
     }
 
-    public class INDI8BitCCDImage extends INDICCDImage {
+    /**
+     * the image width.
+     */
+    protected final int width;
 
-        private byte[][] imageData;
+    /**
+     * the image height.
+     */
+    protected final int height;
 
-    }
+    /**
+     * bits per pixel.
+     */
+    protected final int bpp;
 
-    private int width;
-
-    private int height;
-
+    /**
+     * the fits representation.
+     */
     private Fits f;
 
-    private void convertToFits() {
-
+    /**
+     * convert the current imageData to a fits image.
+     * 
+     * @throws FitsException
+     *             if the image could not be converted
+     */
+    private void convertToFits() throws FitsException {
+        f = new Fits();
+        BasicHDU imageFits = FitsFactory.HDUFactory(getImageData());
+        f.addHDU(imageFits);
     }
 
+    /**
+     * @return the primitive array of the image.
+     */
+    abstract Object getImageData();
+
+    /**
+     * create a ccd image with the specified size and bpp.
+     * 
+     * @param width
+     *            the width of the image
+     * @param height
+     *            the height of the image
+     * @param bpp
+     *            the bits per pixel of the image.
+     * @return the newly created image.
+     */
+    public static INDICCDImage createImage(int width, int height, int bpp) {
+        if (bpp <= INDI8BitCCDImage.MAX_BPP) {
+            return new INDI8BitCCDImage(width, height, bpp);
+        } else if (bpp <= INDI16BitCCDImage.MAX_BPP) {
+            return new INDI16BitCCDImage(width, height, bpp);
+        } else if (bpp <= INDI32BitCCDImage.MAX_BPP) {
+            return new INDI32BitCCDImage(width, height, bpp);
+        } else {
+            throw new IllegalArgumentException("not supported bits per pixel " + bpp);
+        }
+    }
+
+    /**
+     * @return the fits image representing the current data.
+     */
     public Fits asFitsImage() {
         if (f == null) {
-            convertToFits();
+            try {
+                convertToFits();
+            } catch (FitsException e) {
+                throw new IllegalStateException("Fits image could not be created!", e);
+            }
         }
         return f;
     }
 
-    public void write(DataOutputStream os, int left, int top, int width, int heigth, String extention) throws FitsException {
-        if ("fits".equals(extention)) {
+    /**
+     * write the ccd image to the output stream.
+     * 
+     * @param os
+     *            the output stream
+     * @param left
+     *            start in x
+     * @param top
+     *            start in y
+     * @param subwidth
+     *            width in pixel
+     * @param subheigth
+     *            height in pixel
+     * @param extension
+     *            the file extension (currently only fits allowed.
+     * @throws FitsException
+     *             if the file could not be written.
+     */
+    public void write(DataOutputStream os, int left, int top, int subwidth, int subheigth, String extension) throws FitsException {
+        if ("fits".equals(extension)) {
             asFitsImage().write(os);
         } else {
-            // todo
+            throw new IllegalArgumentException("extention " + extension + " not supported");
         }
     }
 }

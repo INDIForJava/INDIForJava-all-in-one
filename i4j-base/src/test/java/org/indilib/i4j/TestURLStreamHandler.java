@@ -32,7 +32,7 @@ public class TestURLStreamHandler {
 
         Assert.assertEquals(7624, new URL("indi://localhost").getDefaultPort());
     }
-    
+
     @Test
     public void testSexa() throws Exception {
         System.out.println(new INDISexagesimalFormatter("%2.6m").format(0.66));

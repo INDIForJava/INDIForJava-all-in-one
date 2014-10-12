@@ -22,18 +22,42 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
+/**
+ * This class collects the different capabilities of the current ccd driver. It
+ * consists of a list of booleans that can be set with the "builder" paradigm.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class Capability {
 
+    /**
+     * Can this driver abort a running exposure?
+     */
     private boolean canAbort = false;
 
+    /**
+     * Can this driver bin pixel together?
+     */
     private boolean canBin = false;
 
+    /**
+     * can this driver do expose a subframe?
+     */
     private boolean canSubFrame = false;
 
+    /**
+     * Does this driver have a cooler (and a temperature sensor)?
+     */
     private boolean hasCooler = false;
 
+    /**
+     * Does this ccd have a second ccd chip as a guider?
+     */
     private boolean hasGuideHead = false;
 
+    /**
+     * does this ccd have an shutter (that the driver can operate)?
+     */
     private boolean hasShutter = false;
 
     /**
@@ -43,8 +67,15 @@ public class Capability {
         return canAbort;
     }
 
-    public Capability canAbort(boolean canAbort) {
-        this.canAbort = canAbort;
+    /**
+     * set the can abort value.
+     * 
+     * @param canAbortValue
+     *            the new value
+     * @return this to specify more capabilities
+     */
+    public Capability canAbort(boolean canAbortValue) {
+        this.canAbort = canAbortValue;
         return this;
     }
 
@@ -55,8 +86,15 @@ public class Capability {
         return canBin;
     }
 
-    public Capability canBin(boolean canBin) {
-        this.canBin = canBin;
+    /**
+     * set the can bin value.
+     * 
+     * @param canBinValue
+     *            the new value
+     * @return this to specify more capabilities
+     */
+    public Capability canBin(boolean canBinValue) {
+        this.canBin = canBinValue;
         return this;
     }
 
@@ -67,8 +105,15 @@ public class Capability {
         return canSubFrame;
     }
 
-    public Capability canSubFrame(boolean canSubFrame) {
-        this.canSubFrame = canSubFrame;
+    /**
+     * set the can subframe value.
+     * 
+     * @param canSubFrameValue
+     *            the new value
+     * @return this to specify more capabilities
+     */
+    public Capability canSubFrame(boolean canSubFrameValue) {
+        this.canSubFrame = canSubFrameValue;
         return this;
     }
 
@@ -80,8 +125,15 @@ public class Capability {
         return hasCooler;
     }
 
-    public Capability hasCooler(boolean hasCooler) {
-        this.hasCooler = hasCooler;
+    /**
+     * set the has cooler value.
+     * 
+     * @param hasCoolerValue
+     *            the new value
+     * @return this to specify more capabilities
+     */
+    public Capability hasCooler(boolean hasCoolerValue) {
+        this.hasCooler = hasCoolerValue;
         return this;
     }
 
@@ -92,8 +144,15 @@ public class Capability {
         return hasGuideHead;
     }
 
-    public Capability hasGuideHead(boolean hasGuideHead) {
-        this.hasGuideHead = hasGuideHead;
+    /**
+     * set the has guider head value.
+     * 
+     * @param hasGuideHeadValue
+     *            the new value
+     * @return this to specify more capabilities
+     */
+    public Capability hasGuideHead(boolean hasGuideHeadValue) {
+        this.hasGuideHead = hasGuideHeadValue;
         return this;
     }
 
@@ -105,8 +164,15 @@ public class Capability {
         return hasShutter;
     }
 
-    public Capability hasShutter(boolean hasShutter) {
-        this.hasShutter = hasShutter;
+    /**
+     * set the has shutter value.
+     * 
+     * @param hasShutterValue
+     *            the new value
+     * @return this to specify more capabilities
+     */
+    public Capability hasShutter(boolean hasShutterValue) {
+        this.hasShutter = hasShutterValue;
         return this;
     }
 
