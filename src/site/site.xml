@@ -15,7 +15,26 @@
 		<breadcrumbs>
 			<item name="${project.name}" href="index.html" />
 		</breadcrumbs>
-		<menu ref="modules" />
+		<menu name="Modules" >
+			<item name="Base Library" href="i4j-base/index.html" />
+			<item name="Client Library" href="i4j-client/index.html" />
+			<item name="Client UI Library" href="i4j-client-ui/index.html" />
+			<item name="Driver Library" href="i4j-driver/index.html" />
+			<item name="Server Library" href="i4j-server/index.html" />
+			<item name="Abstract Filter Wheel Driver" href="i4j-driver-filterwheel/index.html" />
+			<item name="Abstract Focuser Driver" href="i4j-driver-focuser/index.html" />
+			<item name="Abstract Telescope Driver" href="i4j-driver-telescope/index.html" />
+			<item name="Abstract CCD Driver" href="i4j-driver-ccd/index.html" />
+			<item name="Serial Port Extension" href="index.html" />
+			<item name="Driver for the Raspberry PI" href="i4j-driver-raspberrypigpio/index.html" />
+			<item name="Driver for the QHY Filter Wheel" href="i4j-driver-qhyfilterwheel/index.html" />
+			<item name="Driver for the Seletek" href="i4j-driver-seletek/index.html" />
+			<item name="Driver for the Sky Quality Meter - LU" href="i4j-driver-sqm/index.html" />
+			<item name="GNU Scientific Library port" href="index.html" />
+			<item name="Driver Examples" href="i4j-driver-examples/index.html" />
+			<item name="Server Examples" href="i4j-server-examples/index.html" />
+			<item name="Client Examples" href="i4j-client-examples/index.html" />
+		</menu>
 		<menu ref="reports" />
 		<menu name="Sourceforge">
 			<item name="home" href="https://sourceforge.net/projects/indiforjava/" />

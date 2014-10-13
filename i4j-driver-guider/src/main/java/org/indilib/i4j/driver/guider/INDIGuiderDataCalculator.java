@@ -1,4 +1,4 @@
-package org.indilib.i4j.driver.ccd;
+package org.indilib.i4j.driver.guider;
 
 /*
  * #%L

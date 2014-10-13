@@ -91,8 +91,8 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     private INDISwitchOneOrNoneProperty stopFocusingP;
 
     /**
-     * Constructs a INDIFocuserDriver with a particular
-     * <code>inputStream</code> from which to read the incoming messages (from clients) and a
+     * Constructs a INDIFocuserDriver with a particular <code>inputStream</code>
+     * from which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
      * 
      * @param inputStream

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -34,7 +33,7 @@
 			<id>sourceforge-deploy</id>
 			<name>Sourceforge Maven 2 Project Site</name>
 			<url>file://${java.io.tmpdir}/stage</url>
-<!-- 			<url>sftp://web.sourceforge.net/home/groups/i/in/indiforjava/htdocs</url> -->
+			<!-- <url>sftp://web.sourceforge.net/home/groups/i/in/indiforjava/htdocs</url> -->
 		</site>
 	</distributionManagement>
 	<developers>
@@ -191,6 +190,8 @@
 							<version>2.13</version>
 							<configuration>
 								<configLocation>${site.basedir}/src/main/checkstyle/i4j-style.xml</configLocation>
+								<suppressionsLocation>${site.basedir}/src/main/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+								<suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
 								<encoding>UTF-8</encoding>
 								<consoleOutput>true</consoleOutput>
 								<failsOnError>false</failsOnError>
@@ -301,6 +302,8 @@
 				<version>2.13</version>
 				<configuration>
 					<configLocation>${site.basedir}/src/main/checkstyle/i4j-style.xml</configLocation>
+					<suppressionsLocation>${site.basedir}/src/main/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+					<suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
 					<encoding>UTF-8</encoding>
 					<consoleOutput>true</consoleOutput>
 					<failsOnError>false</failsOnError>
