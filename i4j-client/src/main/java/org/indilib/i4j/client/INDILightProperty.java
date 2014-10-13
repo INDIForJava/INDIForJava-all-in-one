@@ -42,7 +42,7 @@ public class INDILightProperty extends INDIProperty {
      * A UI component that can be used in graphical interfaces for this Light
      * Property.
      */
-    private INDIPropertyListener UIComponent;
+    private INDIPropertyListener uiComponent;
 
     /**
      * Constructs an instance of <code>INDILightProperty</code>.
@@ -54,11 +54,8 @@ public class INDILightProperty extends INDIProperty {
      *            the Property.
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Property is not well formed (for example if the
-     *             Elements are not well formed).
      */
-    protected INDILightProperty(Element xml, INDIDevice device) throws IllegalArgumentException {
+    protected INDILightProperty(Element xml, INDIDevice device) {
         super(xml, device);
 
         NodeList list = xml.getElementsByTagName("defLight");
@@ -70,8 +67,7 @@ public class INDILightProperty extends INDIProperty {
 
             INDIElement iel = getElement(name);
 
-            if (iel != null) { // It already exists
-            } else { // Does not exist
+            if (iel == null) { // Does not exist
                 INDILightElement ite = new INDILightElement(child, this);
                 addElement(ite);
             }
@@ -129,8 +125,8 @@ public class INDILightProperty extends INDIProperty {
 
     @Override
     public INDIPropertyListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIPropertyListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIPropertyListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -142,14 +138,14 @@ public class INDILightProperty extends INDIProperty {
         };
 
         try {
-            UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIPropertyListener(UIComponent);
+        addINDIPropertyListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**

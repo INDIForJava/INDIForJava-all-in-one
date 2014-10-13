@@ -44,22 +44,20 @@ public class INDILightElement extends INDIElement {
      * A UI component that can be used in graphical interfaces for this Light
      * Element.
      */
-    private INDIElementListener UIComponent;
+    private INDIElementListener uiComponent;
 
     /**
      * Constructs an instance of <code>INDILightElement</code>. Usually called
-     * from a <code>INDIProperty</code>.
+     * from a <code>INDIProperty</code>. Throws IllegalArgumentException if the
+     * XML Element is not well formed or the value is not a valid one.
      * 
      * @param xml
      *            A XML Element <code>&lt;defLight&gt;</code> describing the
      *            Light Element.
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Element is not well formed or the value is not a
-     *             valid one.
      */
-    protected INDILightElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+    protected INDILightElement(Element xml, INDIProperty property) {
         super(xml, property);
 
         String sta = xml.getTextContent().trim();
@@ -75,18 +73,16 @@ public class INDILightElement extends INDIElement {
     /**
      * Sets the current value of this Light Element. It is assummed that the XML
      * Element is really describing the new value for this particular Light
-     * Element.
+     * Element. Throws IllegalArgumentException if the <code>xml</code> is not
+     * well formed (the light status is not correct).
      * <p>
      * This method will notify the change of the value to the listeners.
      * 
      * @param xml
      *            A XML Element &lt;oneLight&gt; describing the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>xml</code> is not well formed (the light status
-     *             is not correct).
      */
     @Override
-    protected void setValue(Element xml) throws IllegalArgumentException {
+    protected void setValue(Element xml) {
         String sta = xml.getTextContent().trim();
 
         setValue(sta);
@@ -95,15 +91,13 @@ public class INDILightElement extends INDIElement {
     }
 
     /**
-     * Sets the state of the Light Element.
+     * Sets the state of the Light Element. Throws IllegalArgumentException if
+     * the new state is not correct ("Idle" or "Ok" or "Busy" or "Alert").
      * 
      * @param newState
      *            The new state of the Light Element
-     * @throws IllegalArgumentException
-     *             if the new state is not correct ("Idle" or "Ok" or "Busy" or
-     *             "Alert").
      */
-    private void setValue(String newState) throws IllegalArgumentException {
+    private void setValue(String newState) {
         if (newState.compareTo("Idle") == 0) {
             state = LightStates.IDLE;
         } else if (newState.compareTo("Ok") == 0) {
@@ -119,8 +113,8 @@ public class INDILightElement extends INDIElement {
 
     @Override
     public INDIElementListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIElementListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIElementListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -132,19 +126,25 @@ public class INDILightElement extends INDIElement {
         };
 
         try {
-            UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIElementListener(UIComponent);
+        addINDIElementListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**
      * Always returns true. This method should never be called as lights cannot
      * be setted by a client.
+     * 
+     * @param desiredValue
+     *            DO NOT USE
+     * @return true
+     * @throws INDIValueException
+     *             NEVER THROWN
      */
     @Override
     public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {

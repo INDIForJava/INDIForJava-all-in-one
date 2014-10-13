@@ -42,40 +42,39 @@ import org.w3c.dom.Element;
 public abstract class INDIElement {
 
     /**
-     * The property to which this Element belongs
+     * The property to which this Element belongs.
      */
     private INDIProperty property;
 
     /**
-     * The name of the Element
+     * The name of the Element.
      */
     private String name;
 
     /**
-     * The label of the Element
+     * The label of the Element.
      */
     private String label;
 
     /**
-     * The list of listeners of this Element
+     * The list of listeners of this Element.
      */
     private ArrayList<INDIElementListener> listeners;
 
     /**
      * Constructs an instance of <code>INDIElement</code>. Called by its
      * sub-classes. <code>INDIElement</code>s are not usually directly
-     * instantiated. Usually used by <code>INDIProperty</code>.
+     * instantiated. Usually used by <code>INDIProperty</code>. Throws
+     * IllegalArgumentException if the XML Element is not well formed (does not
+     * contain a <code>name</code> attribute).
      * 
      * @param xml
      *            A XML Element <code>&lt;defXXX&gt;</code> describing the
      *            Element.
      * @param property
      *            The <code>INDIProperty</code> to which this Element belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Element is not well formed (does not contain a
-     *             <code>name</code> attribute).
      */
-    protected INDIElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+    protected INDIElement(Element xml, INDIProperty property) {
         this.property = property;
 
         name = xml.getAttribute("name").trim();
@@ -115,7 +114,7 @@ public abstract class INDIElement {
     }
 
     /**
-     * Notifies the listeners about changes of the value of the Element
+     * Notifies the listeners about changes of the value of the Element.
      */
     protected void notifyListeners() {
         ArrayList<INDIElementListener> lCopy = (ArrayList<INDIElementListener>) listeners.clone();
@@ -176,10 +175,8 @@ public abstract class INDIElement {
      * 
      * @param xml
      *            A XML Element &lt;oneXXX&gt; describing the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>xml</code> is not well formed.
      */
-    protected abstract void setValue(Element xml) throws IllegalArgumentException;
+    protected abstract void setValue(Element xml);
 
     /**
      * Gets the desired value of the Element.
@@ -190,7 +187,7 @@ public abstract class INDIElement {
     public abstract Object getDesiredValue();
 
     /**
-     * Sets the desired value of the Element to <code>desiredValue</code>
+     * Sets the desired value of the Element to <code>desiredValue</code>.
      * 
      * @param desiredValue
      *            The desired value for the property.
@@ -220,6 +217,8 @@ public abstract class INDIElement {
      * will be active.
      * 
      * @return A UI component that handles this Element.
+     * @throws INDIException
+     *             if there is a problem instantiating the Component.
      */
     public abstract INDIElementListener getDefaultUIComponent() throws INDIException;
 
@@ -248,7 +247,7 @@ public abstract class INDIElement {
     protected abstract String getXMLOneElementNewValue();
 
     /**
-     * Gets the name of the element and its current value
+     * Gets the name of the element and its current value.
      * 
      * @return a String with the name of the Element and Its Value
      */

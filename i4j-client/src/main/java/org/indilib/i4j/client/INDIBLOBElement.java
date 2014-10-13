@@ -36,12 +36,12 @@ import org.w3c.dom.Element;
 public class INDIBLOBElement extends INDIElement {
 
     /**
-     * The current value of the BLOB Element
+     * The current value of the BLOB Element.
      */
     private INDIBLOBValue value;
 
     /**
-     * The current desired value of the BLOB Element
+     * The current desired value of the BLOB Element.
      */
     private INDIBLOBValue desiredValue;
 
@@ -49,7 +49,7 @@ public class INDIBLOBElement extends INDIElement {
      * A UI component that can be used in graphical interfaces for this BLOB
      * Element.
      */
-    private INDIElementListener UIComponent;
+    private INDIElementListener uiComponent;
 
     /**
      * Constructs an instance of <code>INDIBLOBElement</code>. Usually called
@@ -60,10 +60,8 @@ public class INDIBLOBElement extends INDIElement {
      *            Element.
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Element is not well formed.
      */
-    protected INDIBLOBElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+    protected INDIBLOBElement(Element xml, INDIProperty property) {
         super(xml, property);
 
         desiredValue = null;
@@ -82,15 +80,15 @@ public class INDIBLOBElement extends INDIElement {
      * Element.
      * <p>
      * This method will notify the change of the value to the listeners.
+     * <p>
+     * Throws IllegalArgumentException if the <code>xml</code> is not well
+     * formed (no size, no format or incorrectly coded data
      * 
      * @param xml
      *            A XML Element &lt;oneBLOB&gt; describing the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>xml</code> is not well formed (no size, no
-     *             format or incorrectly coded data
      */
     @Override
-    public void setValue(Element xml) throws IllegalArgumentException {
+    public void setValue(Element xml) {
         value = new INDIBLOBValue(xml);
 
         notifyListeners();
@@ -98,8 +96,8 @@ public class INDIBLOBElement extends INDIElement {
 
     @Override
     public INDIElementListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIElementListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIElementListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -112,34 +110,34 @@ public class INDIBLOBElement extends INDIElement {
         };
 
         try {
-            UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIElementListener(UIComponent);
+        addINDIElementListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**
      * Checks if a desired value would be correct to be applied to the BLOB
      * Element.
      * 
-     * @param desiredValue
+     * @param valueToCheck
      *            The value to be checked.
-     * @return <code>true</code> if the <code>desiredValue</code> is a
+     * @return <code>true</code> if the <code>valueToCheck</code> is a
      *         <code>INDIBLOBValue</code>. <code>false</code> otherwise
      * @throws INDIValueException
-     *             if <code>desiredValue</code> is <code>null</code>.
+     *             if <code>valueToCheck</code> is <code>null</code>.
      */
     @Override
-    public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
-        if (desiredValue == null) {
+    public boolean checkCorrectValue(Object valueToCheck) throws INDIValueException {
+        if (valueToCheck == null) {
             throw new IllegalArgumentException("null value");
         }
 
-        if (!(desiredValue instanceof INDIBLOBValue)) {
+        if (!(valueToCheck instanceof INDIBLOBValue)) {
             return false;
         }
 
@@ -170,11 +168,7 @@ public class INDIBLOBElement extends INDIElement {
 
     @Override
     public boolean isChanged() {
-        if (desiredValue != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return desiredValue != null;
     }
 
     /**

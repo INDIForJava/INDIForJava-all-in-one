@@ -47,6 +47,9 @@ import org.w3c.dom.Element;
  */
 public class INDIDevice {
 
+    /**
+     * A logger for the errors.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIDevice.class);
 
     /**
@@ -55,12 +58,12 @@ public class INDIDevice {
     private String name;
 
     /**
-     * The Server Connection to which this Device Belongs
+     * The Server Connection to which this Device Belongs.
      */
     private INDIServerConnection server;
 
     /**
-     * The collection of properties for this Device
+     * The collection of properties for this Device.
      */
     private LinkedHashMap<String, INDIProperty> properties;
 
@@ -72,7 +75,7 @@ public class INDIDevice {
     /**
      * A UI component that can be used in graphical interfaces for this Device.
      */
-    private INDIDeviceListener UIComponent;
+    private INDIDeviceListener uiComponent;
 
     /**
      * The timestamp for the last message.
@@ -88,6 +91,16 @@ public class INDIDevice {
      * The number of <code>BLOBProperties</code> in this Device.
      */
     private int blobCount;
+
+    /**
+     * The number of milliseconds used in the dinamic wait for property methods.
+     */
+    private static final int WAITING_INTERVAL = 500;
+
+    /**
+     * Milliseconds in a second.
+     */
+    private static final int MILLISECONDS_IN_A_SECOND = 1000;
 
     /**
      * Constructs an instance of <code>INDIDevice</code>. Usually called from a
@@ -133,7 +146,7 @@ public class INDIDevice {
     }
 
     /**
-     * Notifies the listeners of a new <code>INDIProperty</code>
+     * Notifies the listeners of a new <code>INDIProperty</code>.
      * 
      * @param property
      *            The new property
@@ -149,7 +162,7 @@ public class INDIDevice {
     }
 
     /**
-     * Notifies the listeners of a removed <code>INDIProperty</code>
+     * Notifies the listeners of a removed <code>INDIProperty</code>.
      * 
      * @param property
      *            The removed property
@@ -381,50 +394,52 @@ public class INDIDevice {
     }
 
     /**
-     * This function waits until a Property with a <code>name</code> exists in
-     * this device and returns it. The wait is dinamic, so it should be called
-     * from a different Thread or the app will freeze until the property exists.
+     * This function waits until a Property with a <code>propertyName</code>
+     * exists in this device and returns it. The wait is dinamic, so it should
+     * be called from a different Thread or the app will freeze until the
+     * property exists.
      * 
-     * @param name
-     *            The name of the Property to wait for.
+     * @param propertyName
+     *            The propertyName of the Property to wait for.
      * @return The Property once it exists in this device.
      */
-    public INDIProperty waitForProperty(String name) {
-        return waitForProperty(name, Integer.MAX_VALUE);
+    public INDIProperty waitForProperty(String propertyName) {
+        return waitForProperty(propertyName, Integer.MAX_VALUE);
     }
 
     /**
-     * This function waits until a Property with a <code>name</code> exists in
-     * this device and returns it. The wait is dinamic, so it should be called
-     * from a different Thread or the app will freeze until the property exists
-     * or the <code>maxWait</code> number of seconds have elapsed.
+     * This function waits until a Property with a <code>propertyName</code>
+     * exists in this device and returns it. The wait is dinamic, so it should
+     * be called from a different Thread or the app will freeze until the
+     * property exists or the <code>maxWait</code> number of seconds have
+     * elapsed.
      * 
-     * @param name
-     *            The name of the Property to wait for.
+     * @param propertyName
+     *            The propertyName of the Property to wait for.
      * @param maxWait
      *            Maximum number of seconds to wait for the Property
      * @return The Property once it exists in this Device or <code>null</code>
      *         if the maximum wait is achieved.
      */
-    public INDIProperty waitForProperty(String name, int maxWait) {
+    public INDIProperty waitForProperty(String propertyName, int maxWait) {
         INDIProperty p = null;
 
         long startTime = (new Date()).getTime();
         boolean timeElapsed = false;
 
         while ((p == null) && (!timeElapsed)) {
-            p = this.getProperty(name);
+            p = this.getProperty(propertyName);
 
             if (p == null) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(WAITING_INTERVAL);
                 } catch (InterruptedException e) {
                 }
             }
 
             long endTime = (new Date()).getTime();
 
-            if (((endTime - startTime) / 1000) > maxWait) {
+            if (((endTime - startTime) / MILLISECONDS_IN_A_SECOND) > maxWait) {
                 timeElapsed = true;
             }
         }
@@ -448,33 +463,23 @@ public class INDIDevice {
             INDIProperty p = getProperty(propertyName);
 
             if (p != null) { // If it does not exist else ignore
-                if ((p.getClass() == INDITextProperty.class) && (xml.getTagName().compareTo("setTextVector") == 0)) { // If
-                                                                                                                      // types
-                                                                                                                      // coincide
+                if ((p.getClass() == INDITextProperty.class) && (xml.getTagName().compareTo("setTextVector") == 0)) {
                     p.update(xml);
                 }
 
-                if ((p.getClass() == INDINumberProperty.class) && (xml.getTagName().compareTo("setNumberVector") == 0)) { // If
-                                                                                                                          // types
-                                                                                                                          // coincide
+                if ((p.getClass() == INDINumberProperty.class) && (xml.getTagName().compareTo("setNumberVector") == 0)) {
                     p.update(xml);
                 }
 
-                if ((p.getClass() == INDISwitchProperty.class) && (xml.getTagName().compareTo("setSwitchVector") == 0)) { // If
-                                                                                                                          // types
-                                                                                                                          // coincide
+                if ((p.getClass() == INDISwitchProperty.class) && (xml.getTagName().compareTo("setSwitchVector") == 0)) {
                     p.update(xml);
                 }
 
-                if ((p.getClass() == INDILightProperty.class) && (xml.getTagName().compareTo("setLightVector") == 0)) { // If
-                                                                                                                        // types
-                                                                                                                        // coincide
+                if ((p.getClass() == INDILightProperty.class) && (xml.getTagName().compareTo("setLightVector") == 0)) {
                     p.update(xml);
                 }
 
-                if ((p.getClass() == INDIBLOBProperty.class) && (xml.getTagName().compareTo("setBLOBVector") == 0)) { // If
-                                                                                                                      // types
-                                                                                                                      // coincide
+                if ((p.getClass() == INDIBLOBProperty.class) && (xml.getTagName().compareTo("setBLOBVector") == 0)) {
                     p.update(xml);
                 }
             }
@@ -550,6 +555,7 @@ public class INDIDevice {
      * necessary.
      * 
      * @param property
+     *            The property to be added.
      */
     private void addProperty(INDIProperty property) {
         properties.put(property.getName(), property);
@@ -564,6 +570,7 @@ public class INDIDevice {
      * necessary.
      * 
      * @param property
+     *            The property to be removed.
      */
     private void removeProperty(INDIProperty property) {
         properties.remove(property.getName());
@@ -585,15 +592,15 @@ public class INDIDevice {
     }
 
     /**
-     * Gets a Property by its name.
+     * Gets a Property by its propertyName.
      * 
-     * @param name
-     *            the name of the Property to be retrieved.
-     * @return the Property with the <code>name</code> or <code>null</code> if
-     *         there is no Property with that name.
+     * @param propertyName
+     *            the propertyName of the Property to be retrieved.
+     * @return the Property with the <code>propertyName</code> or
+     *         <code>null</code> if there is no Property with that propertyName.
      */
-    public INDIProperty getProperty(String name) {
-        return properties.get(name);
+    public INDIProperty getProperty(String propertyName) {
+        return properties.get(propertyName);
     }
 
     /**
@@ -687,13 +694,13 @@ public class INDIDevice {
     /**
      * Sends a XML message to the Server.
      * 
-     * @param XMLMessage
+     * @param xmlMessage
      *            the message to be sent.
      * @throws IOException
      *             if there is some problem with the connection to the server.
      */
-    protected void sendMessageToServer(String XMLMessage) throws IOException {
-        server.sendMessageToServer(XMLMessage);
+    protected void sendMessageToServer(String xmlMessage) throws IOException {
+        server.sendMessageToServer(xmlMessage);
     }
 
     /**
@@ -707,11 +714,11 @@ public class INDIDevice {
      * 
      * @return A UI component that handles this Device.
      * @throws INDIException
-     *             if no UIComponent is found in the classpath.
+     *             if no uiComponent is found in the classpath.
      */
     public INDIDeviceListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIDeviceListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIDeviceListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -722,14 +729,14 @@ public class INDIDevice {
             "org.indilib.i4j.androidui.INDIDeviceView"
         };
         try {
-            UIComponent = (INDIDeviceListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIDeviceListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIDeviceListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIDeviceListener(UIComponent);
+        addINDIDeviceListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**
