@@ -68,6 +68,21 @@ public class INDIURI {
     private static final int MAX_PARTS = 4;
 
     /**
+     * Device position in the URI.
+     */
+    private static final int DEVICE_POSITION = 1;
+
+    /**
+     * Property position in the URI.
+     */
+    private static final int PROPERTY_POSITION = 2;
+
+    /**
+     * Element position in the URI.
+     */
+    private static final int ELEMENT_POSITION = 3;
+
+    /**
      * Creates the INDIURI and parses it. The method <code>isCorrect()</code>
      * should be called to check if the URI is correct:
      * <code>indi://[host][:port][/device[/property[/element]]]</code>
@@ -127,17 +142,17 @@ public class INDIURI {
             }
         }
 
-        if (parts.length > 1) {
-            if (!parts[1].isEmpty()) {
-                device = parts[1];
+        if (parts.length > DEVICE_POSITION) {
+            if (!parts[DEVICE_POSITION].isEmpty()) {
+                device = parts[DEVICE_POSITION];
 
-                if (parts.length > 2) {
-                    if (!parts[2].isEmpty()) {
-                        property = parts[2];
+                if (parts.length > PROPERTY_POSITION) {
+                    if (!parts[PROPERTY_POSITION].isEmpty()) {
+                        property = parts[PROPERTY_POSITION];
 
-                        if (parts.length > 3) {
-                            if (!parts[3].isEmpty()) {
-                                element = parts[3];
+                        if (parts.length > ELEMENT_POSITION) {
+                            if (!parts[ELEMENT_POSITION].isEmpty()) {
+                                element = parts[ELEMENT_POSITION];
                             }
                         }
                     }
