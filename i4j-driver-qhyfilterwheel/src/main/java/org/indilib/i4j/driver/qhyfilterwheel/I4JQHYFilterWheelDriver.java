@@ -59,12 +59,105 @@ import org.slf4j.LoggerFactory;
  */
 public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements INDIConnectionHandler, Runnable {
 
+    /**
+     * bit filter for the second byte.
+     */
+    private static final int HIGH_BYTE_FILTER = 0xff00;
+
+    /**
+     * bit filter for a byte.
+     */
+    private static final int BYTE_FILTER = 0xff;
+
+    /**
+     * Device send a filter changed info response.
+     */
+    private static final int FILTER_RESPONSE_FILTER_CHANGED = 1;
+
+    /**
+     * Device send a new filter status info response.
+     */
+    private static final int FILTER_RESPONSE_STATUS_INFO = 17;
+
+    /**
+     * buffer size for reading commands from the device.
+     */
+    private static final int READ_BUFFER_SIZE = 512;
+
+    /**
+     * To be documented value of non existent filter position 6.
+     */
+    private static final int FILTER_POSITION_VALUE_6 = 600;
+
+    /**
+     * To be documented value of non existent filter position 7.
+     */
+    private static final int FILTER_POSITION_VALUE_7 = 700;
+
+    /**
+     * To be documented value of non existent filter position 8.
+     */
+    private static final int FILTER_POSITION_VALUE_8 = 800;
+
+    /**
+     * how many bits in a byte.
+     */
+    private static final int BITS_PER_BYTE = 8;
+
+    /**
+     * Milliseconds wait time between send and setup.
+     */
+    private static final int MILLISECONDS_TIME_BEWEEN_SEND_AND_SETUP = 10;
+
+    /**
+     * Milliseconds wait time before closing.
+     */
+    private static final int MILLISECONDS_TIME_BEFORE_CLOSE = 200;
+
+    /**
+     * maximum filter position.
+     */
+    private static final int MAXIMUM_FILTER_POSITION = 1000;
+
+    /**
+     * filter position 1.
+     */
+    private static final int FILTER_POSITIONS_1 = 0;
+
+    /**
+     * filter position 2.
+     */
+    private static final int FILTER_POSITIONS_2 = 1;
+
+    /**
+     * filter position 3.
+     */
+    private static final int FILTER_POSITIONS_3 = 2;
+
+    /**
+     * filter position 4.
+     */
+    private static final int FILTER_POSITIONS_4 = 3;
+
+    /**
+     * filter position 5.
+     */
+    private static final int FILTER_POSITIONS_5 = 4;
+
+    /**
+     * number of filter position.
+     */
+    private static final int NUMBER_OF_FILTER_POSITIONS = 5;
+
+    /**
+     * Logger to log.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(I4JQHYFilterWheelDriver.class);
 
     /**
      * The PORTS property.
      */
-    INDIPortProperty portP;
+    private INDIPortProperty portP;
 
     /**
      * The serial input stream to communicate with the filter wheel.
@@ -82,30 +175,30 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     private Thread readingThread;
 
     /**
-     * The filter positions (to configure the wheel)
+     * The filter positions (to configure the wheel).
      */
     private INDINumberProperty filterPositionsP;
 
     /**
-     * The filter positions (to configure the wheel)
+     * The filter positions (to configure the wheel).
      */
     private INDINumberElement[] filterPositionsE;
 
     /**
-     * To return to factory settings
+     * To return to factory settings.
      */
     private INDISwitchProperty factorySettingsP;
 
     /**
-     * To return to factory settings
+     * To return to factory settings.
      */
     private INDISwitchElement factorySettingsE;
 
     /**
      * Constructs an instance of a <code>I4JQHYFilterWheelDriver</code> with a
-     * particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-     * <code>outputStream</code> to write the messages to the clients.
+     * particular <code>inputStream</code> from which to read the incoming
+     * messages (from clients) and a <code>outputStream</code> to write the
+     * messages to the clients.
      * 
      * @param inputStream
      *            The stream from which to read messages.
@@ -121,13 +214,13 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
         filterPositionsP = new INDINumberProperty(this, "filter_positions", "Filter Positions", "Expert Configuration", PropertyStates.IDLE, PropertyPermissions.RW, 0);
 
-        filterPositionsE = new INDINumberElement[5];
+        filterPositionsE = new INDINumberElement[NUMBER_OF_FILTER_POSITIONS];
 
-        filterPositionsE[0] = new INDINumberElement(filterPositionsP, "filter_1_position", "Filter 1 Position", 0, 0, 1000, 1, "%1.0f");
-        filterPositionsE[1] = new INDINumberElement(filterPositionsP, "filter_2_position", "Filter 2 Position", 0, 0, 1000, 1, "%1.0f");
-        filterPositionsE[2] = new INDINumberElement(filterPositionsP, "filter_3_position", "Filter 3 Position", 0, 0, 1000, 1, "%1.0f");
-        filterPositionsE[3] = new INDINumberElement(filterPositionsP, "filter_4_position", "Filter 4 Position", 0, 0, 1000, 1, "%1.0f");
-        filterPositionsE[4] = new INDINumberElement(filterPositionsP, "filter_5_position", "Filter 5 Position", 0, 0, 1000, 1, "%1.0f");
+        filterPositionsE[FILTER_POSITIONS_1] = new INDINumberElement(filterPositionsP, "filter_1_position", "Filter 1 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
+        filterPositionsE[FILTER_POSITIONS_2] = new INDINumberElement(filterPositionsP, "filter_2_position", "Filter 2 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
+        filterPositionsE[FILTER_POSITIONS_3] = new INDINumberElement(filterPositionsP, "filter_3_position", "Filter 3 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
+        filterPositionsE[FILTER_POSITIONS_4] = new INDINumberElement(filterPositionsP, "filter_4_position", "Filter 4 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
+        filterPositionsE[FILTER_POSITIONS_5] = new INDINumberElement(filterPositionsP, "filter_5_position", "Filter 5 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
 
         factorySettingsP =
                 new INDISwitchProperty(this, "factory_settings", "Factory Settings", "Expert Configuration", PropertyStates.IDLE, PropertyPermissions.RW, 0,
@@ -154,7 +247,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         if (property == factorySettingsP) {
             sendMessageToFilterWheel("SEF");
 
-            sleep(10);
+            sleep(MILLISECONDS_TIME_BEWEEN_SEND_AND_SETUP);
 
             getSetupPositions();
 
@@ -170,7 +263,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         super.processNewNumberValue(property, timestamp, elementsAndValues);
 
         if (property == filterPositionsP) {
-            int[] positions = new int[5];
+            int[] positions = new int[NUMBER_OF_FILTER_POSITIONS];
             for (int i = 0; i < filterPositionsE.length; i++) {
                 positions[i] = filterPositionsE[i].getValue().intValue();
             }
@@ -185,7 +278,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
             sendSetupPositions(positions);
 
-            sleep(10);
+            sleep(MILLISECONDS_TIME_BEWEEN_SEND_AND_SETUP);
 
             getSetupPositions();
         }
@@ -236,7 +329,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
                 readingThread = null;
             }
 
-            sleep(200);
+            sleep(MILLISECONDS_TIME_BEFORE_CLOSE);
 
             if (fwInput != null) {
                 fwInput.close();
@@ -246,6 +339,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
             fwInput = null;
             fwOutput = null;
         } catch (IOException e) {
+            LOG.error("io exception", e);
         }
 
         hideFilterSlotAndNameProperties();
@@ -258,7 +352,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
     @Override
     public int getNumberOfFilters() {
-        return 5;
+        return NUMBER_OF_FILTER_POSITIONS;
     }
 
     @Override
@@ -280,8 +374,8 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
      *            The new positions.
      */
     private void setSetupPositions(int[] newPositions) {
-        for (int i = 0; i < 5; i++) {
-            if ((newPositions[i] < 0) || (newPositions[i] > 1000)) {
+        for (int i = 0; i < NUMBER_OF_FILTER_POSITIONS; i++) {
+            if ((newPositions[i] < 0) || (newPositions[i] > MAXIMUM_FILTER_POSITION)) {
                 newPositions[i] = 0;
             }
             filterPositionsE[i].setValue("" + newPositions[i]);
@@ -307,27 +401,28 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
      *            The positions for each slot.
      */
     private void sendSetupPositions(int[] positions) {
-        byte[] message = new byte[20];
-        message[0] = 'S';
-        message[1] = 'E';
-        message[2] = 'W';
-        message[3] = 0;
-        message[4] = (byte) (positions[0] >>> 8);
-        message[5] = (byte) (positions[0]);
-        message[6] = (byte) (positions[1] >>> 8);
-        message[7] = (byte) (positions[1]);
-        message[8] = (byte) (positions[2] >>> 8);
-        message[9] = (byte) (positions[2]);
-        message[10] = (byte) (positions[3] >>> 8);
-        message[11] = (byte) (positions[3]);
-        message[12] = (byte) (positions[4] >>> 8);
-        message[13] = (byte) (positions[4]);
-        message[14] = (byte) (600 >>> 8);
-        message[15] = (byte) (600);
-        message[16] = (byte) (700 >>> 8);
-        message[17] = (byte) (700);
-        message[18] = (byte) (800 >>> 8);
-        message[19] = (byte) (800);
+        byte[] message = new byte[]{
+            'S',
+            'E',
+            'W',
+            0,
+            (byte) (positions[FILTER_POSITIONS_1] >>> BITS_PER_BYTE),
+            (byte) (positions[FILTER_POSITIONS_1]),
+            (byte) (positions[FILTER_POSITIONS_2] >>> BITS_PER_BYTE),
+            (byte) (positions[FILTER_POSITIONS_2]),
+            (byte) (positions[FILTER_POSITIONS_3] >>> BITS_PER_BYTE),
+            (byte) (positions[FILTER_POSITIONS_3]),
+            (byte) (positions[FILTER_POSITIONS_4] >>> BITS_PER_BYTE),
+            (byte) (positions[FILTER_POSITIONS_4]),
+            (byte) (positions[FILTER_POSITIONS_5] >>> BITS_PER_BYTE),
+            (byte) (positions[FILTER_POSITIONS_5]),
+            (byte) (FILTER_POSITION_VALUE_6 >>> BITS_PER_BYTE),
+            (byte) (FILTER_POSITION_VALUE_6),
+            (byte) (FILTER_POSITION_VALUE_7 >>> BITS_PER_BYTE),
+            (byte) (FILTER_POSITION_VALUE_7),
+            (byte) (FILTER_POSITION_VALUE_8 >>> BITS_PER_BYTE),
+            (byte) (FILTER_POSITION_VALUE_8)
+        };
 
         sendMessageToFilterWheel(message);
     }
@@ -352,7 +447,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         try {
             for (int i = 0; i < message.length; i++) {
                 fwOutput.write(message[i]);
-                sleep(10);
+                sleep(MILLISECONDS_TIME_BEWEEN_SEND_AND_SETUP);
             }
             fwOutput.flush();
         } catch (IOException e) {
@@ -371,7 +466,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     private boolean readerEnded;
 
     /**
-     * Used to know which was the last asked filter
+     * Used to know which was the last asked filter.
      */
     private int lastAskedFilter;
 
@@ -385,21 +480,22 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         while (!readerEnd) {
             try {
                 if (fwInput.available() > 0) {
-                    byte[] readed = new byte[512];
+                    byte[] readed = new byte[READ_BUFFER_SIZE];
 
                     int br = fwInput.read(readed);
-                    if (br == 1) {
+                    if (br == FILTER_RESPONSE_FILTER_CHANGED) {
                         if (readed[0] == '-') {
                             filterHasBeenChanged(lastAskedFilter);
                         }
-                    } else if (br == 17) {
-                        int[] filterPositions = new int[5];
+                    } else if (br == FILTER_RESPONSE_STATUS_INFO) {
+                        int[] filterPositions = new int[NUMBER_OF_FILTER_POSITIONS];
 
-                        filterPositions[0] = (readed[1] << 8) & 0xff00 | (readed[2]) & 0xff;
-                        filterPositions[1] = (readed[3] << 8) & 0xff00 | (readed[4]) & 0xff;
-                        filterPositions[2] = (readed[5] << 8) & 0xff00 | (readed[6]) & 0xff;
-                        filterPositions[3] = (readed[7] << 8) & 0xff00 | (readed[8]) & 0xff;
-                        filterPositions[4] = (readed[9] << 8) & 0xff00 | (readed[10]) & 0xff;
+                        int index = 1;
+                        filterPositions[FILTER_POSITIONS_1] = (readed[index++] << BITS_PER_BYTE) & HIGH_BYTE_FILTER | (readed[index++]) & BYTE_FILTER;
+                        filterPositions[FILTER_POSITIONS_2] = (readed[index++] << BITS_PER_BYTE) & HIGH_BYTE_FILTER | (readed[index++]) & BYTE_FILTER;
+                        filterPositions[FILTER_POSITIONS_3] = (readed[index++] << BITS_PER_BYTE) & HIGH_BYTE_FILTER | (readed[index++]) & BYTE_FILTER;
+                        filterPositions[FILTER_POSITIONS_4] = (readed[index++] << BITS_PER_BYTE) & HIGH_BYTE_FILTER | (readed[index++]) & BYTE_FILTER;
+                        filterPositions[FILTER_POSITIONS_5] = (readed[index++] << BITS_PER_BYTE) & HIGH_BYTE_FILTER | (readed[index++]) & BYTE_FILTER;
 
                         setSetupPositions(filterPositions);
                     }
@@ -408,7 +504,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
                 readerEnd = true;
             }
 
-            sleep(200);
+            sleep(MILLISECONDS_TIME_BEFORE_CLOSE);
         }
 
         LOG.info("QHY Filter Wheel Reader Thread Ending");
@@ -426,6 +522,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         try {
             Thread.sleep(milis);
         } catch (InterruptedException e) {
+            LOG.error("sleep interrupted", e);
         }
     }
 }
