@@ -57,20 +57,46 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIDriverExample extends INDIDriver implements INDIConnectionHandler {
 
+    /**
+     * logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIDriverExample.class);
 
     // START SNIPPET: fields
     // The Properties and Elements of this Driver
+    /**
+     * the image property.
+     */
     private INDIBLOBProperty imageP;
 
+    /**
+     * the image element.
+     */
     private INDIBLOBElement imageE;
 
+    /**
+     * switch property.
+     */
     private INDISwitchProperty sendP;
 
+    /**
+     * switch element.
+     */
     private INDISwitchElement sendE;
 
     // END SNIPPET: fields
 
+    /**
+     * Constructs an instance of a <code>INDIDriverExample</code> with a
+     * particular <code>inputStream</code> from which to read the incoming
+     * messages (from clients) and a <code>outputStream</code> to write the
+     * messages to the clients.
+     * 
+     * @param inputStream
+     *            The stream from which to read messages.
+     * @param outputStream
+     *            The stream to which to write the messages.
+     */
     public INDIDriverExample(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
 
@@ -167,9 +193,12 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         this.removeProperty(sendP);
     }
 
-    // Loads the image "image.jpg" from the same directory into the image
-    // property. Returns true if the loading has been succesful. false
-    // otherwise.
+    /**
+     * Loads the image "image.jpg" from the same directory into the image
+     * property.
+     * 
+     * @return true if the loading has been succesful. false otherwise.
+     */
     private boolean loadImageFromFile() {
         if (imageE.getValue().getSize() == 0) { // If it has not been already
                                                 // loaded

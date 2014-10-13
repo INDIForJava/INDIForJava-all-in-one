@@ -24,20 +24,14 @@ package org.indilib.i4j.driver.examples;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.driver.INDIBLOBElementAndValue;
-import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An example class representing a very basic INDI Driver. It just defines a
@@ -50,15 +44,33 @@ import org.indilib.i4j.driver.INDITextProperty;
 public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable {
 
     /**
-     * The random number Property
+     * interfall between number generations.
+     */
+    private static final int GENERATE_INTERFALL = 1000;
+
+    /**
+     * logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(RandomNumberGeneratorDriver.class);
+
+    /**
+     * The random number Property.
      */
     private INDINumberProperty randomP;
 
     /**
-     * The random number Element
+     * The random number Element.
      */
     private INDINumberElement randomE;
 
+    /**
+     * Initializes the driver. It creates the Proerties and its Elements.
+     * 
+     * @param inputStream
+     *            The input stream from which the Driver will read.
+     * @param outputStream
+     *            The output stream to which the Driver will write.
+     */
     public RandomNumberGeneratorDriver(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
 
@@ -77,24 +89,8 @@ public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable 
         return "Random Number Generator";
     }
 
-    @Override
-    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
-    }
-
-    @Override
-    public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-    }
-
-    @Override
-    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-    }
-
-    @Override
-    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
-    }
-
     /**
-     * Main logic: iterate forever changing the number value
+     * Main logic: iterate forever changing the number value.
      */
     @Override
     public void run() {
@@ -110,8 +106,9 @@ public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable 
             // Send the changes to the Clients
             updateProperty(randomP);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(GENERATE_INTERFALL);
             } catch (InterruptedException e) {
+                LOG.error("sleep interrupted", e);
             }
         }
     }

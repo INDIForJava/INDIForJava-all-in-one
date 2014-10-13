@@ -86,13 +86,13 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     private INDINumberElement focusAbsolutePositionE;
 
     /**
-     * The <code>stop_focusing</code> property (not standard, but very useful)
+     * The <code>stop_focusing</code> property (not standard, but very useful).
      */
     private INDISwitchOneOrNoneProperty stopFocusingP;
 
     /**
      * Constructs a INDIFocuserDriver with a particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
+     * <code>inputStream</code> from which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
      * 
      * @param inputStream
@@ -263,7 +263,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
 
     /**
      * Must be called by drivers when the focuser stops (only when it has been
-     * asked to stop)
+     * asked to stop).
      */
     protected void stopped() {
         stopFocusingP.setState(PropertyStates.OK);

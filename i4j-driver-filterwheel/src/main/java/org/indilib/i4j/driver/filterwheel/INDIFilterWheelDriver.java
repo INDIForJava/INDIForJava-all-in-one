@@ -61,30 +61,33 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class INDIFilterWheelDriver extends INDIDriver {
 
+    /**
+     * Logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIFilterWheelDriver.class);
 
     /**
-     * The filter_names property
+     * The filter_names property.
      */
     private INDITextProperty filterNamesP;
 
     /**
-     * The FILTER_SLOT property
+     * The FILTER_SLOT property.
      */
     private INDINumberProperty filterSlotP;
 
     /**
-     * The FILTER_SLOT_VALUE element
+     * The FILTER_SLOT_VALUE element.
      */
     private INDINumberElement filterSlotValueE;
 
     /**
-     * The FILTER_NAME property
+     * The FILTER_NAME property.
      */
     private INDITextProperty filterNameP;
 
     /**
-     * The FILTER_NAME_VALUE element property
+     * The FILTER_NAME_VALUE element property.
      */
     private INDITextElement filterNameValueE;
 
@@ -97,8 +100,9 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
 
     /**
      * Constructs a INDIFilterWheelDriver with a particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
-     * <code>outputStream</code> to write the messages to the clients.
+     * <code>inputStream</code> from which to read the incoming messages (from
+     * clients) and a <code>outputStream</code> to write the messages to the
+     * clients.
      * 
      * @param inputStream
      *            The stream from which to read messages
@@ -125,7 +129,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
                             Constants.PropertyPermissions.RW, 0);
 
             for (int i = 0; i < getNumberOfFilters(); i++) {
-                INDITextElement te = new INDITextElement(filterNamesP, "filter_name_" + (i + 1), "Filter " + (i + 1), "Filter " + (i + 1));
+                new INDITextElement(filterNamesP, "filter_name_" + (i + 1), "Filter " + (i + 1), "Filter " + (i + 1));
             }
         }
 
@@ -203,6 +207,9 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
         updateProperty(filterSlotP);
     }
 
+    /**
+     * set the filterslot and name to busy.
+     */
     protected void setBusy() {
         filterSlotP.setState(Constants.PropertyStates.BUSY);
         filterNameP.setState(Constants.PropertyStates.BUSY);

@@ -31,7 +31,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
@@ -41,19 +40,14 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElement;
-import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
-import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,29 +66,102 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConnectionHandler {
 
+    /**
+     * number of milliseconds in 15 minutes.
+     */
+    private static final int MILLISECONDS_IN_15_MUNUTES = 15 * 60 * 1000;
+
+    /**
+     * buffer size for image reading.
+     */
+    private static final int BUFFER_SIZE = 65536;
+
+    /**
+     * property timeout to use.
+     */
+    private static final int TIMEOUT_IN_SECONDS = 3;
+
+    /**
+     * fixed string position 5.
+     */
+    private static final int FIXED_STRING_POSITION_5 = 5;
+
+    /**
+     * fixed string position 7.
+     */
+    private static final int FIXED_STRING_POSITION_7 = 7;
+
+    /**
+     * fixed string position 9.
+     */
+    private static final int FIXED_STRING_POSITION_9 = 9;
+
+    /**
+     * fixed string position 11.
+     */
+    private static final int FIXED_STRING_POSITION_11 = 11;
+
+    /**
+     * fixed string position 13.
+     */
+    private static final int FIXED_STRING_POSITION_13 = 13;
+
+    /**
+     * logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIElTiempoDriver.class);
 
     /*
      * The properties
      */
+    /**
+     * an image element.
+     */
     private INDISwitchElement sendImage;
 
+    /**
+     * an send property.
+     */
     private INDISwitchProperty send;
 
+    /**
+     * an spain image property.
+     */
     private INDIBLOBProperty spainImageProp;
 
+    /**
+     * an spain image element.
+     */
     private INDIBLOBElement spainImageElem;
 
+    /**
+     * an spain image name property.
+     */
     private INDITextProperty spainImageNameProp;
 
+    /**
+     * an spain image name element.
+     */
     private INDITextElement spainImageNameElem;
 
+    /**
+     * europe image property.
+     */
     private INDIBLOBProperty europeImageProp;
 
+    /**
+     * europe image element.
+     */
     private INDIBLOBElement europeImageElem;
 
+    /**
+     * europe image name property.
+     */
     private INDITextProperty europeImageNameProp;
 
+    /**
+     * europe image name element.
+     */
     private INDITextElement europeImageNameElem;
 
     /**
@@ -104,7 +171,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     private Thread runningThread;
 
     /**
-     * A signal to stop the thread
+     * A signal to stop the thread.
      */
     private boolean stop;
 
@@ -121,7 +188,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
 
         // We create the Switch Property with only one Switch Element
 
-        send = new INDISwitchProperty(this, "SEND", "Send Image", "Main Control", PropertyStates.IDLE, PropertyPermissions.RW, 3, SwitchRules.AT_MOST_ONE);
+        send = new INDISwitchProperty(this, "SEND", "Send Image", "Main Control", PropertyStates.IDLE, PropertyPermissions.RW, TIMEOUT_IN_SECONDS, SwitchRules.AT_MOST_ONE);
         sendImage = new INDISwitchElement(send, "SEND", "Send Image", SwitchStatus.OFF);
 
         addProperty(send);
@@ -133,7 +200,8 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         addProperty(spainImageProp);
 
         // We create the Text Property for the Spain image name
-        spainImageNameProp = new INDITextProperty(this, "SPAIN_IMAGE_NAME", "Spain Image Name", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, 3);
+        spainImageNameProp =
+                new INDITextProperty(this, "SPAIN_IMAGE_NAME", "Spain Image Name", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, TIMEOUT_IN_SECONDS);
         spainImageNameElem = new INDITextElement(spainImageNameProp, "SPAIN_IMAGE_NAME", "Spain Image Name", "");
 
         addProperty(spainImageNameProp);
@@ -145,7 +213,8 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         addProperty(europeImageProp);
 
         // We create the Text Property for the Europe image name
-        europeImageNameProp = new INDITextProperty(this, "EUROPE_IMAGE_NAME", "Europe Image Name", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, 3);
+        europeImageNameProp =
+                new INDITextProperty(this, "EUROPE_IMAGE_NAME", "Europe Image Name", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, TIMEOUT_IN_SECONDS);
         europeImageNameElem = new INDITextElement(europeImageNameProp, "EUROPE_IMAGE_NAME", "Europe Image Name", "");
 
         addProperty(europeImageNameProp);
@@ -154,7 +223,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     }
 
     /**
-     * Gets the name of the Driver
+     * @return Gets the name of the Driver.
      */
     @Override
     public String getName() {
@@ -162,23 +231,16 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     }
 
     /**
-     * Nothing happens as there are no writable Text Properties
-     * 
-     * @param property
-     * @param timestamp
-     * @param elementsAndValues
-     */
-    @Override
-    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
-    }
-
-    /**
      * If we receive the Switch Value ON of the property "SEND" we check for new
      * images in the web, download them and send them to the client.
      * 
      * @param property
+     *            The Switch Property asked to change.
      * @param timestamp
+     *            The timestamp of the received message
      * @param elementsAndValues
+     *            An array of pairs of Switch Elements and its requested values
+     *            to be parsed.
      */
     @Override
     public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
@@ -225,6 +287,13 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         }
     }
 
+    /**
+     * get an image of europe from the internet.
+     * 
+     * @param alwaysSend
+     *            if true the image is send in any case if false only if it is
+     *            new.
+     */
     private void checksForEuropeImage(boolean alwaysSend) {
         boolean newImage = checkForImage("http://www.eltiempo.es/europa/satelite/", "EUROPE");
         INDIBLOBValue v = europeImageElem.getValue();
@@ -243,31 +312,15 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     }
 
     /**
-     * Nothing happens as there are no writable Number Properties
-     * 
-     * @param property
-     * @param timestamp
-     * @param elementsAndValues
-     */
-    @Override
-    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-    }
-
-    /**
-     * Nothing happens as there are no writable BLOB Properties
-     * 
-     * @param property
-     * @param timestamp
-     * @param elementsAndValues
-     */
-    @Override
-    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
-    }
-
-    /**
      * Checks for a new image in the <code>url</code> and if it has changed,
      * saves it to the appropriate BLOB Property (data) and Text Property (name)
      * - according to the <code>imagePrefix</code>.
+     * 
+     * @param url
+     *            url to get the image form.
+     * @param imagePrefix
+     *            prefix for the image.
+     * @return true if successful.
      */
     private boolean checkForImage(String url, String imagePrefix) {
         File webpage = new File("web.html");
@@ -293,13 +346,13 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
 
         start += searchString.length();
 
-        int stop = text.indexOf("\"", start + 1);
+        int stringStrop = text.indexOf("\"", start + 1);
 
-        if (stop == -1) {
+        if (stringStrop == -1) {
             return false;
         }
 
-        String imgURL = text.substring(start, stop);
+        String imgURL = text.substring(start, stringStrop);
 
         int lastBar = imgURL.lastIndexOf("/");
 
@@ -340,8 +393,10 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         int pos1 = fileName.lastIndexOf("-");
 
         String name =
-                fileName.substring(pos1, pos1 + 5) + "/" + fileName.substring(pos1 + 5, pos1 + 7) + "/" + fileName.substring(pos1 + 7, pos1 + 9) + " "
-                        + fileName.substring(pos1 + 9, pos1 + 11) + ":" + fileName.substring(pos1 + 11, pos1 + 13);
+                fileName.substring(pos1, pos1 + FIXED_STRING_POSITION_5) + "/" + fileName.substring(pos1 + FIXED_STRING_POSITION_5, pos1 + FIXED_STRING_POSITION_7) + "/"
+                        + fileName.substring(pos1 + FIXED_STRING_POSITION_7, pos1 + FIXED_STRING_POSITION_9) + " "
+                        + fileName.substring(pos1 + FIXED_STRING_POSITION_9, pos1 + FIXED_STRING_POSITION_11) + ":"
+                        + fileName.substring(pos1 + FIXED_STRING_POSITION_11, pos1 + FIXED_STRING_POSITION_13);
 
         INDITextProperty pn = (INDITextProperty) getProperty(imagePrefix + "_IMAGE_NAME");
         INDITextElement en = (INDITextElement) pn.getElement(imagePrefix + "_IMAGE_NAME");
@@ -358,6 +413,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
      *            The file to read
      * @return The contents of the file
      * @throws IOException
+     *             when the file could not be read.
      */
     private String readFile(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -374,12 +430,13 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     }
 
     /**
-     * Reads a binary file and returns its contents as a byte[]
+     * Reads a binary file and returns its contents as a byte[].
      * 
      * @param file
      *            The file to be read
      * @return The contents of the file
      * @throws IOException
+     *             when the file could not be read.
      */
     private byte[] readBinaryFile(File file) throws IOException {
         int fileSize = (int) file.length();
@@ -406,13 +463,15 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
      * Downloads a <code>url</code> and saves its contents to <code>file</code>.
      * 
      * @param url
+     *            url to load the image from
      * @param file
+     *            file to save th image to
      * @throws IOException
-     * @throws MalformedURLException
+     *             if the file could not be written or the image could not be
+     *             downloaded
      */
-    private void downloadAndSave(String url, File file) throws IOException, MalformedURLException {
-        int bufsize = 65536;
-        byte[] buffer = new byte[bufsize];
+    private void downloadAndSave(String url, File file) throws IOException {
+        byte[] buffer = new byte[BUFFER_SIZE];
 
         URL u = new URL(url);
         InputStream is = u.openStream(); // throws an IOException
@@ -441,8 +500,9 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     public void run() {
         while (!stop) {
             try {
-                Thread.sleep(15 * 60 * 1000);
+                Thread.sleep(MILLISECONDS_IN_15_MUNUTES);
             } catch (InterruptedException e) {
+                LOG.error("sleep interrupted", e);
             }
 
             if (!stop) {
@@ -456,16 +516,14 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     }
 
     /**
-     * Creates a new thread which reads new images every 15 minutes and sends
-     * them back to the clients.
+     * The method that will handle the connection.
      * 
      * @param timestamp
-     * @throws INDIException
-     * @see #run()
+     *            when the connection message has been received.
      */
     @Override
-    public void driverConnect(Date timestamp) throws INDIException {
-        if (stop == true) {
+    public void driverConnect(Date timestamp) {
+        if (stop) {
             printMessage("Starting El Tiempo Driver");
             stop = false;
             runningThread = new Thread(this);
@@ -473,8 +531,14 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         }
     }
 
+    /**
+     * The method that will handle the disconnection.
+     * 
+     * @param timestamp
+     *            when the disconnection message has been received.
+     */
     @Override
-    public void driverDisconnect(Date timestamp) throws INDIException {
+    public void driverDisconnect(Date timestamp) {
         printMessage("Stopping El Tiempo Driver");
 
         stop = true;
