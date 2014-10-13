@@ -99,17 +99,15 @@ public class INDISexagesimalFormatter {
 
     /**
      * Constructs an instance of <code>INDISexagesimalFormatter</code> with a
-     * particular format.
+     * particular format. Throws IllegalArgumentException if the format is not
+     * correct: begins with %, ends with m and specifies a length and
+     * fractionLength in the form length.fractionLength. Valid fractionLengths
+     * are 3, 5, 6, 8 and 9. For example %5.3m.
      * 
      * @param format
      *            The desired format
-     * @throws IllegalArgumentException
-     *             if the format is not correct: begins with %, ends with m and
-     *             specifies a length and fractionLength in the form
-     *             length.fractionLength. Valid fractionLengths are 3, 5, 6, 8
-     *             and 9. For example %5.3m.
      */
-    public INDISexagesimalFormatter(final String format) throws IllegalArgumentException {
+    public INDISexagesimalFormatter(final String format) {
         this.format = format;
 
         checkFormat();
@@ -125,15 +123,12 @@ public class INDISexagesimalFormatter {
     }
 
     /**
-     * Checks the specified format string.
-     * 
-     * @throws IllegalArgumentException
-     *             if the format string is not valid: begins with %, ends with m
-     *             and specifies a length and fractionLength in the form
-     *             length.fractionLength. Valid fractionLengths are 3, 5, 6, 8
-     *             and 9. For example %5.3m.
+     * Checks the specified format string. Throws IllegalArgumentException if
+     * the format string is not valid: begins with %, ends with m and specifies
+     * a length and fractionLength in the form length.fractionLength. Valid
+     * fractionLengths are 3, 5, 6, 8 and 9. For example %5.3m.
      */
-    private void checkFormat() throws IllegalArgumentException {
+    private void checkFormat() {
         if (!format.startsWith("%")) {
             throw new IllegalArgumentException("Number format not starting with %");
         }
@@ -173,12 +168,10 @@ public class INDISexagesimalFormatter {
      * @param number
      *            NOT USED
      * @return NOT USED
-     * @throws IllegalArgumentException
-     *             NOT USED
      * @deprecated
      */
     @Deprecated
-    public final double parseSexagesimal2(final String number) throws IllegalArgumentException {
+    public final double parseSexagesimal2(final String number) {
         String newNumber = number.replace(' ', ':');
         newNumber = newNumber.replace(';', ':');
 
@@ -247,10 +240,8 @@ public class INDISexagesimalFormatter {
      * @param number
      *            The newNumber to be parsed.
      * @return The parsed double.
-     * @throws IllegalArgumentException
-     *             if the newNumber format is not correct.
      */
-    public final double parseSexagesimal(final String number) throws IllegalArgumentException {
+    public final double parseSexagesimal(final String number) {
         String newNumber = number.trim();
 
         if (newNumber.length() == 0) {

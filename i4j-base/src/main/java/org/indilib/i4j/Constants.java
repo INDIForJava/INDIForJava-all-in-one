@@ -68,10 +68,8 @@ public final class Constants {
      *            a string representation of the Light State to be parsed
      *            ("Alert" or "Busy" or "Ok" or "Idle").
      * @return The parsed Light State
-     * @throws IllegalArgumentException
-     *             if the <code>state</code> is not a valid one.
      */
-    public static LightStates parseLightState(final String state) throws IllegalArgumentException {
+    public static LightStates parseLightState(final String state) {
         if (state.compareTo("Alert") == 0) {
             return LightStates.ALERT;
         } else if (state.compareTo("Busy") == 0) {
@@ -146,10 +144,8 @@ public final class Constants {
      *            a string representation of the Switch Status to be parsed
      *            ("Off" or "On").
      * @return The parsed Switch Status
-     * @throws IllegalArgumentException
-     *             if the <code>status</code> is not a valid one.
      */
-    public static SwitchStatus parseSwitchStatus(final String status) throws IllegalArgumentException {
+    public static SwitchStatus parseSwitchStatus(final String status) {
         if (status.compareTo("Off") == 0) {
             return SwitchStatus.OFF;
         } else if (status.compareTo("On") == 0) {
@@ -220,10 +216,8 @@ public final class Constants {
      *            a string representation of the Property Permission to be
      *            parsed ("ro" or "rw" or "wo").
      * @return The parsed Property Permission
-     * @throws IllegalArgumentException
-     *             if the <code>permission</code> is not a valid one.
      */
-    public static PropertyPermissions parsePropertyPermission(final String permission) throws IllegalArgumentException {
+    public static PropertyPermissions parsePropertyPermission(final String permission) {
         if (permission.compareTo("ro") == 0) {
             return PropertyPermissions.RO;
         } else if (permission.compareTo("rw") == 0) {
@@ -302,10 +296,8 @@ public final class Constants {
      *            a string representation of the Property State to be parsed
      *            ("Alert" or "Busy" or "Ok" or "Idle").
      * @return The parsed Property State
-     * @throws IllegalArgumentException
-     *             if the <code>state</code> is not a valid one.
      */
-    public static PropertyStates parsePropertyState(final String state) throws IllegalArgumentException {
+    public static PropertyStates parsePropertyState(final String state) {
         if (state.compareTo("Alert") == 0) {
             return PropertyStates.ALERT;
         } else if (state.compareTo("Busy") == 0) {
@@ -384,10 +376,8 @@ public final class Constants {
      *            a string representation of the Switch Rule to be parsed
      *            ("OneOfMany" or "AtMostOne" or "AnyOfMany").
      * @return The Switch Rule
-     * @throws IllegalArgumentException
-     *             if the <code>rule</code> is not a valid one.
      */
-    public static SwitchRules parseSwitchRule(final String rule) throws IllegalArgumentException {
+    public static SwitchRules parseSwitchRule(final String rule) {
         if (rule.compareTo("OneOfMany") == 0) {
             return SwitchRules.ONE_OF_MANY;
         } else if (rule.compareTo("AtMostOne") == 0) {
@@ -462,10 +452,8 @@ public final class Constants {
      *            a string representation of the BLOB Enable to be parsed
      *            ("Never" or "Also" or "Only").
      * @return The BLOB Enable
-     * @throws IllegalArgumentException
-     *             if the <code>blobEnable</code> is not a valid one.
      */
-    public static BLOBEnables parseBLOBEnable(final String blobEnable) throws IllegalArgumentException {
+    public static BLOBEnables parseBLOBEnable(final String blobEnable) {
         if (blobEnable.compareTo("Never") == 0) {
             return BLOBEnables.NEVER;
         } else if (blobEnable.compareTo("Also") == 0) {

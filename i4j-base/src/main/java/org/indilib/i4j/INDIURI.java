@@ -63,6 +63,11 @@ public class INDIURI {
     private boolean correct;
 
     /**
+     * Maximum number of parts in the URI separated by /.
+     */
+    private static final int MAX_PARTS = 4;
+
+    /**
      * Creates the INDIURI and parses it. The method <code>isCorrect()</code>
      * should be called to check if the URI is correct:
      * <code>indi://[host][:port][/device[/property[/element]]]</code>
@@ -79,16 +84,18 @@ public class INDIURI {
 
         String newUri = uri.trim();
 
-        if (!newUri.startsWith("indi://")) {
+        String prefix = "indi://";
+
+        if (!newUri.startsWith(prefix)) {
             correct = false;
             return;
         }
 
-        newUri = newUri.substring(7);
+        newUri = newUri.substring(prefix.length());
 
         String[] parts = newUri.split("/", -1);
 
-        if (parts.length > 4) {
+        if (parts.length > MAX_PARTS) {
             correct = false;
             return;
         }

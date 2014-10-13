@@ -71,10 +71,8 @@ public class INDIBLOBValue {
      * 
      * @param xml
      *            the &lt;oneBLOB&gt; XML element
-     * @throws IllegalArgumentException
-     *             if the XML element is not correct.
      */
-    public INDIBLOBValue(final Element xml) throws IllegalArgumentException {
+    public INDIBLOBValue(final Element xml) {
         int size = 0;
         String f;
 
