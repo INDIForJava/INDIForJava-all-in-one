@@ -33,6 +33,16 @@ public final class Constants {
     public static final int BUFFER_SIZE = 1000000;
 
     /**
+     * The number of milliseconds used in the dinamic wait for property methods.
+     */
+    public static final int WAITING_INTERVAL = 500;
+
+    /**
+     * Milliseconds in a second.
+     */
+    public static final int MILLISECONDS_IN_A_SECOND = 1000;
+
+    /**
      * A private constructor to avoid instantiating this utility class.
      */
     private Constants() {

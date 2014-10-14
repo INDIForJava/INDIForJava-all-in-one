@@ -40,7 +40,7 @@ public class INDISwitchElement extends INDIElement {
      * A UI component that can be used in graphical interfaces for this Switch
      * Element.
      */
-    private INDIElementListener UIComponent;
+    private INDIElementListener uiComponent;
 
     /**
      * Current Status value for this Switch Element.
@@ -54,18 +54,16 @@ public class INDISwitchElement extends INDIElement {
 
     /**
      * Constructs an instance of <code>INDISwitchElement</code>. Usually called
-     * from a <code>INDIProperty</code>.
+     * from a <code>INDIProperty</code>. Throws IllegalArgumentException if the
+     * XML Element is not well formed (switch value not correct).
      * 
      * @param xml
      *            A XML Element <code>&lt;defSwitch&gt;</code> describing the
      *            Switch Element.
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Element is not well formed (switch value not
-     *             correct).
      */
-    protected INDISwitchElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+    protected INDISwitchElement(Element xml, INDIProperty property) {
         super(xml, property);
 
         desiredStatus = null;
@@ -89,11 +87,9 @@ public class INDISwitchElement extends INDIElement {
      * 
      * @param xml
      *            A XML Element &lt;oneSwitch&gt; describing the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>xml</code> is not well formed.
      */
     @Override
-    protected void setValue(Element xml) throws IllegalArgumentException {
+    protected void setValue(Element xml) {
         String sta = xml.getTextContent().trim();
 
         setValue(sta);
@@ -102,14 +98,13 @@ public class INDISwitchElement extends INDIElement {
     }
 
     /**
-     * Sets the value of the Switch Property.
+     * Sets the value of the Switch Property. Throws IllegalArgumentException if
+     * the new status is not a correct one ("On" or "Off")
      * 
      * @param newStatus
      *            the new status of the property
-     * @throws IllegalArgumentException
-     *             if the new status is not a correct one ("On" or "Off");
      */
-    private void setValue(String newStatus) throws IllegalArgumentException {
+    private void setValue(String newStatus) {
         if (newStatus.compareTo("Off") == 0) {
             status = SwitchStatus.OFF;
         } else if (newStatus.compareTo("On") == 0) {
@@ -121,8 +116,8 @@ public class INDISwitchElement extends INDIElement {
 
     @Override
     public INDIElementListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIElementListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIElementListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -135,14 +130,14 @@ public class INDISwitchElement extends INDIElement {
         };
 
         try {
-            UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIElementListener(UIComponent);
+        addINDIElementListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**

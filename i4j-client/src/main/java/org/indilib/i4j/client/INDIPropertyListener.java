@@ -36,5 +36,5 @@ public interface INDIPropertyListener {
      * @param property
      *            the property that has changed.
      */
-    public abstract void propertyChanged(INDIProperty property);
+    void propertyChanged(INDIProperty property);
 }

@@ -93,16 +93,6 @@ public class INDIDevice {
     private int blobCount;
 
     /**
-     * The number of milliseconds used in the dinamic wait for property methods.
-     */
-    private static final int WAITING_INTERVAL = 500;
-
-    /**
-     * Milliseconds in a second.
-     */
-    private static final int MILLISECONDS_IN_A_SECOND = 1000;
-
-    /**
      * Constructs an instance of <code>INDIDevice</code>. Usually called from a
      * <code>INDIServerConnection</code>.
      * 
@@ -199,7 +189,7 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      */
-    public void BLOBsEnable(BLOBEnables enable) throws IOException {
+    public void blobsEnable(BLOBEnables enable) throws IOException {
         String xml = "<enableBLOB device=\"" + getName() + "\">" + Constants.getBLOBEnableAsString(enable) + "</enableBLOB>";
 
         sendMessageToServer(xml);
@@ -216,7 +206,7 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      */
-    public void BLOBsEnable(BLOBEnables enable, INDIProperty property) throws IOException {
+    public void blobsEnable(BLOBEnables enable, INDIProperty property) throws IOException {
         if ((properties.containsValue(property)) && (property instanceof INDIBLOBProperty)) {
             String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">" + Constants.getBLOBEnableAsString(enable) + "</enableBLOB>";
 
@@ -231,10 +221,10 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      * @deprecated Replaced by
-     *             {@link #BLOBsEnable(org.indilib.i4j.Constants.BLOBEnables)}
+     *             {@link #blobsEnable(org.indilib.i4j.Constants.BLOBEnables)}
      */
     @Deprecated
-    public void BLOBsEnableNever() throws IOException {
+    public void blobsEnableNever() throws IOException {
         String xml = "<enableBLOB device=\"" + getName() + "\">Never</enableBLOB>";
 
         sendMessageToServer(xml);
@@ -247,10 +237,10 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      * @deprecated Replaced by
-     *             {@link #BLOBsEnable(org.indilib.i4j.Constants.BLOBEnables)}
+     *             {@link #blobsEnable(org.indilib.i4j.Constants.BLOBEnables)}
      */
     @Deprecated
-    public void BLOBsEnableAlso() throws IOException {
+    public void blobsEnableAlso() throws IOException {
         String xml = "<enableBLOB device=\"" + getName() + "\">Also</enableBLOB>";
 
         sendMessageToServer(xml);
@@ -263,10 +253,10 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      * @deprecated Replaced by
-     *             {@link #BLOBsEnable(org.indilib.i4j.Constants.BLOBEnables)}
+     *             {@link #blobsEnable(org.indilib.i4j.Constants.BLOBEnables)}
      */
     @Deprecated
-    public void BLOBsEnableOnly() throws IOException {
+    public void blobsEnableOnly() throws IOException {
         String xml = "<enableBLOB device=\"" + getName() + "\">Only</enableBLOB>";
 
         sendMessageToServer(xml);
@@ -281,10 +271,10 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      * @deprecated Replaced by
-     *             {@link #BLOBsEnable(org.indilib.i4j.Constants.BLOBEnables, INDIProperty)}
+     *             {@link #blobsEnable(org.indilib.i4j.Constants.BLOBEnables, INDIProperty)}
      */
     @Deprecated
-    public void BLOBsEnableNever(INDIBLOBProperty property) throws IOException {
+    public void blobsEnableNever(INDIBLOBProperty property) throws IOException {
         String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Never</enableBLOB>";
 
         sendMessageToServer(xml);
@@ -299,10 +289,10 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      * @deprecated Replaced by
-     *             {@link #BLOBsEnable(org.indilib.i4j.Constants.BLOBEnables, INDIProperty)}
+     *             {@link #blobsEnable(org.indilib.i4j.Constants.BLOBEnables, INDIProperty)}
      */
     @Deprecated
-    public void BLOBsEnableAlso(INDIBLOBProperty property) throws IOException {
+    public void blobsEnableAlso(INDIBLOBProperty property) throws IOException {
         String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Also</enableBLOB>";
 
         sendMessageToServer(xml);
@@ -317,10 +307,10 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      * @deprecated Replaced by
-     *             {@link #BLOBsEnable(org.indilib.i4j.Constants.BLOBEnables, INDIProperty)}
+     *             {@link #blobsEnable(org.indilib.i4j.Constants.BLOBEnables, INDIProperty)}
      */
     @Deprecated
-    public void BLOBsEnableOnly(INDIBLOBProperty property) throws IOException {
+    public void blobsEnableOnly(INDIBLOBProperty property) throws IOException {
         String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Only</enableBLOB>";
 
         sendMessageToServer(xml);
@@ -432,14 +422,14 @@ public class INDIDevice {
 
             if (p == null) {
                 try {
-                    Thread.sleep(WAITING_INTERVAL);
+                    Thread.sleep(Constants.WAITING_INTERVAL);
                 } catch (InterruptedException e) {
                 }
             }
 
             long endTime = (new Date()).getTime();
 
-            if (((endTime - startTime) / MILLISECONDS_IN_A_SECOND) > maxWait) {
+            if (((endTime - startTime) / Constants.MILLISECONDS_IN_A_SECOND) > maxWait) {
                 timeElapsed = true;
             }
         }

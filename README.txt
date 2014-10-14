@@ -1,3 +1,10 @@
+TO TAKE INTO ACCOUNT FOR THE 1.50 RELEASE:
+
+  - In the client library some methods in the class INDIDevice have been renamed to comply wth code style recommendations: BLOBsEnable, BLOBsEnableNever, BLOBsEnableAlso, BLOBsEnableOnly... This change will break some existing client code. Fixing it is trivial, just changing the names.  However, we must clearly say so in the docs, maybe some small tutorial, etc.
+
+
+
+
 
 RELEASED FILES:
   + I4JBase_vX.XX.zip: Basic classes that support the other libraries. Needed to create any Client, Driver and Server.

@@ -51,8 +51,8 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
     public SimpleINDIClient(String host, int port) {
         connection = new INDIServerConnection(host, port);
 
-        connection.addINDIServerConnectionListener(this); // We listen to all
-                                                          // server events
+        // Listen to all server events
+        connection.addINDIServerConnectionListener(this);
 
         try {
             connection.connect();
@@ -67,9 +67,8 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
         // We just simply listen to this Device
         System.out.println("New device: " + device.getName());
         try {
-            device.BLOBsEnable(Constants.BLOBEnables.ALSO); // Enable receiving
-                                                            // BLOBs from this
-                                                            // Device
+            // Enable receiving BLOBs from this Device
+            device.blobsEnable(Constants.BLOBEnables.ALSO);
         } catch (IOException e) {
         }
         device.addINDIDeviceListener(this);

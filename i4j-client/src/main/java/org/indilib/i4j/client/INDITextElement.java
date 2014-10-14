@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 public class INDITextElement extends INDIElement {
 
     /**
-     * The current value of the Text Element
+     * The current value of the Text Element.
      */
     private String value;
 
@@ -48,7 +48,7 @@ public class INDITextElement extends INDIElement {
      * A UI component that can be used in graphical interfaces for this Text
      * Element.
      */
-    private INDIElementListener UIComponent;
+    private INDIElementListener uiComponent;
 
     /**
      * Constructs an instance of <code>INDITextElement</code>. Usually called
@@ -59,10 +59,8 @@ public class INDITextElement extends INDIElement {
      *            Element.
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Element is not well formed.
      */
-    protected INDITextElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+    protected INDITextElement(Element xml, INDIProperty property) {
         super(xml, property);
 
         desiredValue = null;
@@ -84,11 +82,9 @@ public class INDITextElement extends INDIElement {
      * 
      * @param xml
      *            A XML Element &lt;oneText&gt; describing the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>xml</code> is not well formed.
      */
     @Override
-    protected void setValue(Element xml) throws IllegalArgumentException {
+    protected void setValue(Element xml) {
         value = xml.getTextContent().trim();
 
         notifyListeners();
@@ -96,8 +92,8 @@ public class INDITextElement extends INDIElement {
 
     @Override
     public INDIElementListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIElementListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIElementListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -110,34 +106,34 @@ public class INDITextElement extends INDIElement {
         };
 
         try {
-            UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIElementListener(UIComponent);
+        addINDIElementListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**
      * Checks if a desired value would be correct to be applied to the Text
      * Element.
      * 
-     * @param desiredValue
+     * @param valueToCheck
      *            The value to be checked.
-     * @return <code>true</code> if the <code>desiredValue</code> is a
+     * @return <code>true</code> if the <code>valueToCheck</code> is a
      *         <code>String</code>. <code>false</code> otherwise.
      * @throws INDIValueException
-     *             if <code>desiredValue</code> is <code>null</code>.
+     *             if <code>valueToCheck</code> is <code>null</code>.
      */
     @Override
-    public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
-        if (desiredValue == null) {
+    public boolean checkCorrectValue(Object valueToCheck) throws INDIValueException {
+        if (valueToCheck == null) {
             throw new INDIValueException(this, "null value");
         }
 
-        if (desiredValue instanceof String) {
+        if (valueToCheck instanceof String) {
             return true;
         }
 
@@ -169,11 +165,7 @@ public class INDITextElement extends INDIElement {
 
     @Override
     public boolean isChanged() {
-        if (desiredValue != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return desiredValue != null;
     }
 
     /**

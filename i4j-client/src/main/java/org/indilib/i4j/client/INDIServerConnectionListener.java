@@ -26,7 +26,7 @@ import java.util.Date;
 
 /**
  * A interface to be notified about changes in a
- * <code>INDIServerConnection</code>
+ * <code>INDIServerConnection</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.10, March 19, 2012
@@ -41,17 +41,17 @@ public interface INDIServerConnectionListener {
      * @param device
      *            The device that has been added.
      */
-    public abstract void newDevice(INDIServerConnection connection, INDIDevice device);
+    void newDevice(INDIServerConnection connection, INDIDevice device);
 
     /**
-     * Called when a device is removed from the Connection
+     * Called when a device is removed from the Connection.
      * 
      * @param connection
      *            The Connection from which the device is being removed.
      * @param device
      *            The device being removed.
      */
-    public abstract void removeDevice(INDIServerConnection connection, INDIDevice device);
+    void removeDevice(INDIServerConnection connection, INDIDevice device);
 
     /**
      * Called when the connection is lost (explicity or not).
@@ -59,7 +59,7 @@ public interface INDIServerConnectionListener {
      * @param connection
      *            The connection that has been lost.
      */
-    public abstract void connectionLost(INDIServerConnection connection);
+    void connectionLost(INDIServerConnection connection);
 
     /**
      * Called when the message of the Connection is changed.
@@ -71,5 +71,5 @@ public interface INDIServerConnectionListener {
      * @param message
      *            The message.
      */
-    public abstract void newMessage(INDIServerConnection connection, Date timestamp, String message);
+    void newMessage(INDIServerConnection connection, Date timestamp, String message);
 }

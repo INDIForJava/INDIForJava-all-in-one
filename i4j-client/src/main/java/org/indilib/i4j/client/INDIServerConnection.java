@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
 public class INDIServerConnection implements INDIProtocolParser {
 
     /**
-     * The name of the Connection.
+     * The elementName of the Connection.
      */
     private String name;
 
@@ -80,7 +80,7 @@ public class INDIServerConnection implements INDIProtocolParser {
     /**
      * A reader to read from the Connection.
      */
-    INDIProtocolReader reader;
+    private INDIProtocolReader reader;
 
     /**
      * The set of the devices associated to this Connection.
@@ -93,11 +93,16 @@ public class INDIServerConnection implements INDIProtocolParser {
     private ArrayList<INDIServerConnectionListener> listeners;
 
     /**
+     * The timeout for the connection.
+     */
+    private static final int SOCKET_TIMEOUT = 20000;
+
+    /**
      * Constructs an instance of <code>INDIServerConnection</code>. The
      * Connection is NOT stablished.
      * 
      * @param name
-     *            The name of the Connection.
+     *            The elementName of the Connection.
      * @param host
      *            The host of the Connection.
      * @param port
@@ -108,8 +113,8 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Constructs an instance of <code>INDIServerConnection</code> with no name.
-     * The Connection is NOT stablished.
+     * Constructs an instance of <code>INDIServerConnection</code> with no
+     * elementName. The Connection is NOT stablished.
      * 
      * @param host
      *            The host of the Connection.
@@ -121,10 +126,10 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Constructs an instance of <code>INDIServerConnection</code> with no name.
-     * The parameter can take the form of an <code>INDIURI</code>. If the URI is
-     * not correct it will be used as the host of the connection. The Connection
-     * is NOT stablished.
+     * Constructs an instance of <code>INDIServerConnection</code> with no
+     * elementName. The parameter can take the form of an <code>INDIURI</code>.
+     * If the URI is not correct it will be used as the host of the connection.
+     * The Connection is NOT stablished.
      * 
      * @param uri
      *            The INDIURI that specifies the parameters of the Connection.
@@ -143,19 +148,19 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Initilizes the Connection
+     * Initilizes the Connection.
      * 
-     * @param name
-     *            The name of the Connection.
-     * @param host
-     *            The host of the Connection.
-     * @param port
-     *            The port of the Connection.
+     * @param connectionName
+     *            The connectionName of the Connection.
+     * @param connectionHost
+     *            The connectionHost of the Connection.
+     * @param connectionPort
+     *            The connectionPort of the Connection.
      */
-    private void init(String name, String host, int port) {
-        this.name = name;
-        this.host = host;
-        this.port = port;
+    private void init(String connectionName, String connectionHost, int connectionPort) {
+        this.name = connectionName;
+        this.host = connectionHost;
+        this.port = connectionPort;
         this.socket = null;
         this.out = null;
         this.reader = null;
@@ -166,51 +171,51 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * This function waits until a Device with a <code>name</code> exists in
-     * this Connection and returns it. The wait is dinamic, so it should be
+     * This function waits until a Device with a <code>deviceName</code> exists
+     * in this Connection and returns it. The wait is dinamic, so it should be
      * called from a different Thread or the app will freeze until the Device
      * exists.
      * 
-     * @param name
-     *            The name of the evice to wait for.
+     * @param deviceName
+     *            The deviceName of the evice to wait for.
      * @return The Device once it exists in this Connection.
      */
-    public INDIDevice waitForDevice(String name) {
-        return waitForDevice(name, Integer.MAX_VALUE);
+    public INDIDevice waitForDevice(String deviceName) {
+        return waitForDevice(deviceName, Integer.MAX_VALUE);
     }
 
     /**
-     * This function waits until a Device with a <code>name</code> exists in
-     * this Connection and returns it. The wait is dinamic, so it should be
+     * This function waits until a Device with a <code>deviceName</code> exists
+     * in this Connection and returns it. The wait is dinamic, so it should be
      * called from a different Thread or the app will freeze until the Device
      * exists or the <code>maxWait</code> number of seconds have elapsed.
      * 
-     * @param name
-     *            The name of the evice to wait for.
+     * @param deviceName
+     *            The deviceName of the device to wait for.
      * @param maxWait
      *            Maximum number of seconds to wait for the Device
      * @return The Device once it exists in this Connection or <code>null</code>
      *         if the maximum wait is achieved.
      */
-    public INDIDevice waitForDevice(String name, int maxWait) {
+    public INDIDevice waitForDevice(String deviceName, int maxWait) {
         INDIDevice d = null;
 
         long startTime = (new Date()).getTime();
         boolean timeElapsed = false;
 
         while ((d == null) && (!timeElapsed)) {
-            d = this.getDevice(name);
+            d = this.getDevice(deviceName);
 
             if (d == null) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(Constants.WAITING_INTERVAL);
                 } catch (InterruptedException e) {
                 }
             }
 
             long endTime = (new Date()).getTime();
 
-            if (((endTime - startTime) / 1000) > maxWait) {
+            if (((endTime - startTime) / Constants.MILLISECONDS_IN_A_SECOND) > maxWait) {
                 timeElapsed = true;
             }
         }
@@ -219,20 +224,21 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Changes the name, host and port of the Connection if it is not connected.
+     * Changes the elementName, host and port of the Connection if it is not
+     * connected.
      * 
-     * @param name
-     *            The new name of the Connection.
-     * @param host
-     *            The new host of the Connection.
-     * @param port
-     *            The new port of the Connection.
+     * @param connectionName
+     *            The new connectionName of the Connection.
+     * @param connectionHost
+     *            The new connectionHost of the Connection.
+     * @param connectionPort
+     *            The new connectionPort of the Connection.
      */
-    public void setData(String name, String host, int port) {
+    public void setData(String connectionName, String connectionHost, int connectionPort) {
         if (!isConnected()) {
-            this.name = name;
-            this.host = host;
-            this.port = port;
+            this.name = connectionName;
+            this.host = connectionHost;
+            this.port = connectionPort;
         }
     }
 
@@ -246,9 +252,9 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Gets the name of the Connection.
+     * Gets the elementName of the Connection.
      * 
-     * @return the name of the Connection.
+     * @return the elementName of the Connection.
      */
     public String getName() {
         return name;
@@ -274,7 +280,7 @@ public class INDIServerConnection implements INDIProtocolParser {
             socket = new Socket();
 
             try {
-                socket.connect(new InetSocketAddress(host, port), 20000);
+                socket.connect(new InetSocketAddress(host, port), SOCKET_TIMEOUT);
             } catch (IOException e) {
                 socket = null;
                 throw e;
@@ -297,7 +303,7 @@ public class INDIServerConnection implements INDIProtocolParser {
                 socket.shutdownInput();
                 out.close();
                 // socket.close();
-            } catch (IOException e) {
+            } catch (IOException e) { // LOG IT, but probably will never happen
             }
 
             socket = null;
@@ -338,7 +344,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      * particular Device of the Server.
      * 
      * @param device
-     *            the Device name that is asked for.
+     *            the Device elementName that is asked for.
      * @throws IOException
      *             if there is some problem with the Connection.
      */
@@ -353,9 +359,9 @@ public class INDIServerConnection implements INDIProtocolParser {
      * particular Property of a particular Device of the Server.
      * 
      * @param device
-     *            the Device name of whose property is asked for.
+     *            the Device elementName of whose property is asked for.
      * @param propertyName
-     *            the Property name that is asked for.
+     *            the Property elementName that is asked for.
      * @throws IOException
      *             if there is some problem with the Connection.
      */
@@ -366,15 +372,15 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Sends a XML message to the server.
+     * Sends a xmlMessage message to the server.
      * 
-     * @param XML
+     * @param xmlMessage
      *            the message to be sent.
      * @throws IOException
      *             if there is some problem with the Connection.
      */
-    protected void sendMessageToServer(String XML) throws IOException {
-        out.print(XML);
+    protected void sendMessageToServer(String xmlMessage) throws IOException {
+        out.print(xmlMessage);
         out.flush();
     }
 
@@ -397,15 +403,15 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Gets a particular Device by its name.
+     * Gets a particular Device by its elementName.
      * 
-     * @param name
-     *            the name of the Device
-     * @return the Device with the <code>name</code> or <code>null</code> if
-     *         there is no Device with that name.
+     * @param deviceName
+     *            the deviceName of the Device
+     * @return the Device with the <code>deviceName</code> or <code>null</code>
+     *         if there is no Device with that deviceName.
      */
-    public INDIDevice getDevice(String name) {
-        return devices.get(name);
+    public INDIDevice getDevice(String deviceName) {
+        return devices.get(deviceName);
     }
 
     /**
@@ -413,11 +419,11 @@ public class INDIServerConnection implements INDIProtocolParser {
      * names.
      * 
      * @param deviceName
-     *            the name of the Device.
+     *            the elementName of the Device.
      * @param propertyName
-     *            the name of the Property.
-     * @return the Property with <code>propertyName</code> as name of the device
-     *         with <code>deviceName</code> as name.
+     *            the elementName of the Property.
+     * @return the Property with <code>propertyName</code> as elementName of the
+     *         device with <code>deviceName</code> as elementName.
      */
     public INDIProperty getProperty(String deviceName, String propertyName) {
         INDIDevice d = getDevice(deviceName);
@@ -434,14 +440,14 @@ public class INDIServerConnection implements INDIProtocolParser {
      * specifiying their names.
      * 
      * @param deviceName
-     *            the name of the Property.
+     *            the elementName of the Property.
      * @param propertyName
-     *            the name of the Element.
+     *            the elementName of the Element.
      * @param elementName
-     *            the name of the Element.
-     * @return the Element with a <code>elementName</code> as a name of a
-     *         Property with <code>propertyName</code> as name of the device
-     *         with <code>deviceName</code> as name.
+     *            the elementName of the Element.
+     * @return the Element with a <code>elementName</code> as a elementName of a
+     *         Property with <code>propertyName</code> as elementName of the
+     *         device with <code>deviceName</code> as elementName.
      */
     public INDIElement getElement(String deviceName, String propertyName, String elementName) {
         INDIDevice d = getDevice(deviceName);
@@ -475,17 +481,17 @@ public class INDIServerConnection implements INDIProtocolParser {
             if (n instanceof Element) {
                 Element child = (Element) n;
 
-                String name = child.getNodeName();
+                String elementName = child.getNodeName();
 
-                if ((name.equals("defTextVector")) || (name.equals("defNumberVector")) || (name.equals("defSwitchVector")) || (name.equals("defLightVector"))
-                        || (name.equals("defBLOBVector"))) {
+                if ((elementName.equals("defTextVector")) || (elementName.equals("defNumberVector")) || (elementName.equals("defSwitchVector"))
+                        || (elementName.equals("defLightVector")) || (elementName.equals("defBLOBVector"))) {
                     addProperty(child);
-                } else if ((name.equals("setTextVector")) || (name.equals("setNumberVector")) || (name.equals("setSwitchVector")) || (name.equals("setLightVector"))
-                        || (name.equals("setBLOBVector"))) {
+                } else if ((elementName.equals("setTextVector")) || (elementName.equals("setNumberVector")) || (elementName.equals("setSwitchVector"))
+                        || (elementName.equals("setLightVector")) || (elementName.equals("setBLOBVector"))) {
                     updateProperty(child);
-                } else if (name.equals("message")) {
+                } else if (elementName.equals("message")) {
                     messageReceived(child);
-                } else if (name.equals("delProperty")) {
+                } else if (elementName.equals("delProperty")) {
                     deleteProperty(child);
                 }
             }
@@ -592,7 +598,7 @@ public class INDIServerConnection implements INDIProtocolParser {
     /**
      * Parses a XML &lt;setXXXVector&gt; element.
      * 
-     * @param xml
+     * @param el
      *            the element to be parsed.
      */
     private void updateProperty(Element el) {
@@ -626,7 +632,7 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Adds a listener to all the Devices from this Connection
+     * Adds a listener to all the Devices from this Connection.
      * 
      * @param listener
      *            the listener to add
@@ -642,7 +648,7 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Removes a listener from all the Devices from this Connection
+     * Removes a listener from all the Devices from this Connection.
      * 
      * @param listener
      *            the listener to remove
@@ -685,10 +691,10 @@ public class INDIServerConnection implements INDIProtocolParser {
 
     /**
      * A convenience method to add a listener to a Device (identified by its
-     * name) of this Connection.
+     * elementName) of this Connection.
      * 
      * @param deviceName
-     *            the Device name to which add the listener
+     *            the Device elementName to which add the listener
      * @param listener
      *            the listener to add
      */
@@ -704,10 +710,10 @@ public class INDIServerConnection implements INDIProtocolParser {
 
     /**
      * A convenience method to remove a listener from a Device (identified by
-     * its name) of this Connection.
+     * its elementName) of this Connection.
      * 
      * @param deviceName
-     *            the Device name to which remove the listener
+     *            the Device elementName to which remove the listener
      * @param listener
      *            the listener to remove
      */

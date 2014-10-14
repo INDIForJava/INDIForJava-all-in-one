@@ -49,7 +49,7 @@ public class INDISwitchProperty extends INDIProperty {
      * A UI component that can be used in graphical interfaces for this Switch
      * Property.
      */
-    private INDIPropertyListener UIComponent;
+    private INDIPropertyListener uiComponent;
 
     /**
      * The current Rule for this Switch Property.
@@ -59,18 +59,17 @@ public class INDISwitchProperty extends INDIProperty {
     /**
      * Constructs an instance of <code>INDISwitchProperty</code>.
      * <code>INDISwitchProperty</code>s are not usually directly instantiated.
-     * Usually used by <code>INDIDevice</code>.
+     * Usually used by <code>INDIDevice</code>. Throws IllegalArgumentException
+     * if the XML Property is not well formed (for example if the Elements are
+     * not well formed or if the Rule is not valid).
      * 
      * @param xml
      *            A XML Element <code>&lt;defSwitchVector&gt;</code> describing
      *            the Property.
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Property is not well formed (for example if the
-     *             Elements are not well formed or if the Rule is not valid).
      */
-    protected INDISwitchProperty(Element xml, INDIDevice device) throws IllegalArgumentException {
+    protected INDISwitchProperty(Element xml, INDIDevice device) {
         super(xml, device);
 
         String rul = xml.getAttribute("rule").trim();
@@ -94,8 +93,7 @@ public class INDISwitchProperty extends INDIProperty {
 
             INDIElement iel = getElement(name);
 
-            if (iel != null) { // It already exists
-            } else { // Does not exist
+            if (iel == null) { // Does not exist
                 INDISwitchElement ite = new INDISwitchElement(child, this);
                 addElement(ite);
             }
@@ -121,7 +119,7 @@ public class INDISwitchProperty extends INDIProperty {
     }
 
     /**
-     * Gets the current Rule for this Switch Property
+     * Gets the current Rule for this Switch Property.
      * 
      * @return the current Rule for this Switch Property
      */
@@ -216,8 +214,8 @@ public class INDISwitchProperty extends INDIProperty {
 
     @Override
     public INDIPropertyListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIPropertyListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIPropertyListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -244,14 +242,14 @@ public class INDISwitchProperty extends INDIProperty {
         }
 
         try {
-            UIComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIPropertyListener(UIComponent);
+        addINDIPropertyListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**

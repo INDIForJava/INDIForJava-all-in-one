@@ -236,7 +236,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
     private void blobsNeverActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_blobsNeverActionPerformed
         try {
             addMessage("Setting BLOBs Never");
-            device.BLOBsEnable(BLOBEnables.NEVER);
+            device.blobsEnable(BLOBEnables.NEVER);
         } catch (IOException e) {
             addMessage("Problem setting BLOBs Never");
         }
@@ -245,7 +245,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
     private void blobsOnlyActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_blobsOnlyActionPerformed
         try {
             addMessage("Setting BLOBs Only");
-            device.BLOBsEnable(BLOBEnables.ONLY);
+            device.blobsEnable(BLOBEnables.ONLY);
         } catch (IOException e) {
             addMessage("Problem setting BLOBs Only");
         }
@@ -254,7 +254,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
     private void blobsAlsoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_blobsAlsoActionPerformed
         try {
             addMessage("Setting BLOBs Also");
-            device.BLOBsEnable(BLOBEnables.ALSO);
+            device.blobsEnable(BLOBEnables.ALSO);
         } catch (IOException e) {
             addMessage("Problem setting BLOBs Also");
         }

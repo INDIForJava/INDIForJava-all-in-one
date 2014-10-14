@@ -49,66 +49,65 @@ import org.w3c.dom.NodeList;
 public abstract class INDIProperty {
 
     /**
-     * The INDI Device to which this property belongs
+     * The INDI Device to which this property belongs.
      */
     private INDIDevice device;
 
     /**
-     * This property name
+     * This property name.
      */
     private String name;
 
     /**
-     * This property label
+     * This property label.
      */
     private String label;
 
     /**
-     * The group to which this Property might be assigned
+     * The group to which this Property might be assigned.
      */
     private String group;
 
     /**
-     * The current state of this Property
+     * The current state of this Property.
      */
     private PropertyStates state;
 
     /**
-     * The permission of this Property
+     * The permission of this Property.
      */
     private PropertyPermissions permission;
 
     /**
-     * The timeout of this Property
+     * The timeout of this Property.
      */
     private int timeout;
 
     /**
-     * A list of elements for this Property
+     * A list of elements for this Property.
      */
     private LinkedHashMap<String, INDIElement> elements;
 
     /**
-     * The list of listeners of this Property
+     * The list of listeners of this Property.
      */
     private ArrayList<INDIPropertyListener> listeners;
 
     /**
      * Constructs an instance of <code>INDIProperty</code>. Called by its
      * sub-classes. <code>INDIProperty</code>s are not usually directly
-     * instantiated. Usually used by <code>INDIDevice</code>.
+     * instantiated. Usually used by <code>INDIDevice</code>. Throws
+     * IllegalArgumentException if the XML Property is not well formed (does not
+     * contain a <code>name</code> attribute or the permissions are not
+     * correct).
      * 
      * @param xml
      *            A XML Element <code>&lt;defXXXVector&gt;</code> describing the
      *            Property.
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Property is not well formed (does not contain a
-     *             <code>name</code> attribute or the permissions are not
-     *             correct).
      */
-    protected INDIProperty(Element xml, INDIDevice device) throws IllegalArgumentException {
+    protected INDIProperty(Element xml, INDIDevice device) {
 
         this.device = device;
 
@@ -231,23 +230,20 @@ public abstract class INDIProperty {
      *            The new state for this Property in form of a String:
      *            <code>Idle</code>, <code>Ok</code>, <code>Busy</code> or
      *            <code>Alert</code>.
-     * @throws IllegalArgumentException
-     *             if the <code>newState</code> is not a valid one.
      */
-    private void setState(String newState) throws IllegalArgumentException {
+    private void setState(String newState) {
         state = Constants.parsePropertyState(newState);
     }
 
     /**
-     * Sets the current timeout for this Property
+     * Sets the current timeout for this Property. Throws
+     * IllegalArgumentException if the format of the timeout is not correct (a
+     * positive integer).
      * 
      * @param newTimeout
      *            The new current timeout.
-     * @throws IllegalArgumentException
-     *             if the format of the timeout is not correct (a positive
-     *             integer).
      */
-    private void setTimeout(String newTimeout) throws IllegalArgumentException {
+    private void setTimeout(String newTimeout) {
         try {
             timeout = Integer.parseInt(newTimeout);
 
@@ -296,7 +292,7 @@ public abstract class INDIProperty {
     }
 
     /**
-     * Gets the name of this Property
+     * Gets the name of this Property.
      * 
      * @return the name of this Property
      */
@@ -305,7 +301,7 @@ public abstract class INDIProperty {
     }
 
     /**
-     * Gets the number of Elements in this Property
+     * Gets the number of Elements in this Property.
      * 
      * @return the number of Elements in this Property.
      */
@@ -375,16 +371,16 @@ public abstract class INDIProperty {
     }
 
     /**
-     * Gets a particular Element of this Property by its name.
+     * Gets a particular Element of this Property by its elementName.
      * 
-     * @param name
-     *            The name of the Element to be returned
-     * @return The Element of this Property with the given <code>name</code>.
-     *         <code>null</code> if there is no Element with that
-     *         <code>name</code>.
+     * @param elementName
+     *            The elementName of the Element to be returned
+     * @return The Element of this Property with the given
+     *         <code>elementName</code>. <code>null</code> if there is no
+     *         Element with that <code>elementName</code>.
      */
-    public INDIElement getElement(String name) {
-        return elements.get(name);
+    public INDIElement getElement(String elementName) {
+        return elements.get(elementName);
     }
 
     /**
@@ -496,6 +492,9 @@ public abstract class INDIProperty {
      * listen for the property.
      * 
      * @return A UI component that handles this Property.
+     * @throws INDIException
+     *             if there is a problem instantiating an UI component for a
+     *             Property.
      */
     public abstract INDIPropertyListener getDefaultUIComponent() throws INDIException;
 

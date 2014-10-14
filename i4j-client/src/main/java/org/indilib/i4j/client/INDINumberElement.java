@@ -44,7 +44,7 @@ public class INDINumberElement extends INDIElement {
     private double value;
 
     /**
-     * The current desired value for the Element
+     * The current desired value for the Element.
      */
     private Double desiredValue;
 
@@ -77,23 +77,22 @@ public class INDINumberElement extends INDIElement {
      * A UI component that can be used in graphical interfaces for this Number
      * Element.
      */
-    private INDIElementListener UIComponent;
+    private INDIElementListener uiComponent;
 
     /**
      * Constructs an instance of <code>INDINumberElement</code>. Usually called
-     * from a <code>INDIProperty</code>.
+     * from a <code>INDIProperty</code>. Throws IllegalArgumentException if the
+     * XML Element is not well formed (any of the max, min, step or value are
+     * not correct numbers, if the format if not correct or if the value is not
+     * within [min, max]).
      * 
      * @param xml
      *            A XML Element <code>&lt;defNumber&gt;</code> describing the
      *            Number Element.
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
-     * @throws IllegalArgumentException
-     *             if the XML Element is not well formed (any of the max, min,
-     *             step or value are not correct numbers, if the format if not
-     *             correct or if the value is not within [min, max]).
      */
-    protected INDINumberElement(Element xml, INDIProperty property) throws IllegalArgumentException {
+    protected INDINumberElement(Element xml, INDIProperty property) {
         super(xml, property);
 
         desiredValue = null;
@@ -120,10 +119,8 @@ public class INDINumberElement extends INDIElement {
      * 
      * @param newNumberFormat
      *            The new number format.
-     * @throws IllegalArgumentException
-     *             if the number format is not correct.
      */
-    private void setNumberFormat(String newNumberFormat) throws IllegalArgumentException {
+    private void setNumberFormat(String newNumberFormat) {
         newNumberFormat = newNumberFormat.trim();
 
         if (!newNumberFormat.startsWith("%")) {
@@ -256,15 +253,16 @@ public class INDINumberElement extends INDIElement {
      * Element.
      * <p>
      * This method will notify the change of the value to the listeners.
+     * <p>
+     * Throws IllegalArgumentException if the <code>xml</code> is not well
+     * formed (the value is not a correct number or it is not in the [min, max]
+     * range).
      * 
      * @param xml
      *            A XML Element &lt;oneNumber&gt; describing the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>xml</code> is not well formed (the value is not
-     *             a correct number or it is not in the [min, max] range).
      */
     @Override
-    protected void setValue(Element xml) throws IllegalArgumentException {
+    protected void setValue(Element xml) {
         String valueS = xml.getTextContent().trim();
 
         setValue(valueS);
@@ -273,7 +271,7 @@ public class INDINumberElement extends INDIElement {
     }
 
     /**
-     * Sets the maximum of this Number Element
+     * Sets the maximum of this Number Element.
      * 
      * @param maxS
      *            A String with the maximum value of this Number Element
@@ -283,9 +281,9 @@ public class INDINumberElement extends INDIElement {
     }
 
     /**
-     * Sets the minimum of this Number Element
+     * Sets the minimum of this Number Element.
      * 
-     * @param maxS
+     * @param minS
      *            A String with the minimum value of this Number Element
      */
     private void setMin(String minS) {
@@ -293,9 +291,9 @@ public class INDINumberElement extends INDIElement {
     }
 
     /**
-     * Sets the step of this Number Element
+     * Sets the step of this Number Element.
      * 
-     * @param maxS
+     * @param stepS
      *            A String with the step value of this Number Element
      */
     private void setStep(String stepS) {
@@ -303,15 +301,17 @@ public class INDINumberElement extends INDIElement {
     }
 
     /**
-     * Sets the value of this Number Element
+     * Sets the value of this Number Element. Initially it threw
+     * IllegalArgumentException the value is not a correct number or it is not
+     * in the [min, max] range. However some existing drivers send values
+     * outside the [min, max] range. Therefore it does not throw the exception
+     * when the value is outside the range. HERE WE SHOULD LOG THIS PROBLEM IN
+     * ORDER TO TELL DRIVER PROGRAMERS TO AVOID THESE INCORRECT VALUES.
      * 
      * @param valueS
      *            A String with the new value of this Number Element
-     * @throws IllegalArgumentException
-     *             the value is not a correct number or it is not in the [min,
-     *             max] range.
      */
-    private void setValue(String valueS) throws IllegalArgumentException {
+    private void setValue(String valueS) {
         value = parseNumber(valueS);
 
         if ((value < min) || (value > max)) {
@@ -323,13 +323,14 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Parses a number according to the Number Format of this Number Element.
+     * Throws IllegalArgumentException if the <code>number</code> is not
+     * correctly formatted.
      * 
      * @param number
      *            The number to be parsed.
-     * @return the parsed number @throw IllegalArgumentException if the
-     *         <code>number</code> is not correctly formatted.
+     * @return the parsed number
      */
-    private double parseNumber(String number) throws IllegalArgumentException {
+    private double parseNumber(String number) {
         double res;
 
         if (numberFormat.endsWith("m")) {
@@ -347,8 +348,8 @@ public class INDINumberElement extends INDIElement {
 
     @Override
     public INDIElementListener getDefaultUIComponent() throws INDIException {
-        if (UIComponent != null) {
-            removeINDIElementListener(UIComponent);
+        if (uiComponent != null) {
+            removeINDIElementListener(uiComponent);
         }
 
         Object[] arguments = new Object[]{
@@ -361,45 +362,45 @@ public class INDINumberElement extends INDIElement {
         };
 
         try {
-            UIComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
+            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
         } catch (ClassCastException e) {
             throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
         }
 
-        addINDIElementListener(UIComponent);
+        addINDIElementListener(uiComponent);
 
-        return UIComponent;
+        return uiComponent;
     }
 
     /**
-     * Checks if a desired desiredValue would be correct to be applied to the
+     * Checks if a desired valueToCheck would be correct to be applied to the
      * Number Element.
      * 
-     * @param desiredValue
-     *            The desiredValue to be checked (usually a String, but can be a
+     * @param valueToCheck
+     *            The valueToCheck to be checked (usually a String, but can be a
      *            Double).
-     * @return <code>true</code> if the <code>desiredValue</code> is a valid
+     * @return <code>true</code> if the <code>valueToCheck</code> is a valid
      *         Double or a correct String according to the Number Format.
      *         <code>false</code> otherwise.
      * @throws INDIValueException
-     *             if <code>desiredValue</code> is <code>null</code> or if it is
+     *             if <code>valueToCheck</code> is <code>null</code> or if it is
      *             not a Double or a correctly formatted <code>String</code>.
      */
     @Override
-    public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
-        if (desiredValue == null) {
+    public boolean checkCorrectValue(Object valueToCheck) throws INDIValueException {
+        if (valueToCheck == null) {
             throw new INDIValueException(this, "null value");
         }
 
         double d;
 
-        if (desiredValue instanceof Double) {
-            d = ((Double) desiredValue).doubleValue();
+        if (valueToCheck instanceof Double) {
+            d = ((Double) valueToCheck).doubleValue();
         } else {
-            if (desiredValue instanceof String) {
+            if (valueToCheck instanceof String) {
                 String val;
 
-                val = ((String) desiredValue).trim();
+                val = ((String) valueToCheck).trim();
                 try {
                     d = parseNumber(val);
                 } catch (IllegalArgumentException e) {
@@ -445,16 +446,16 @@ public class INDINumberElement extends INDIElement {
     /**
      * Sets the desired value from a String.
      * 
-     * @param desiredValue
+     * @param newDesiredValue
      *            The new desired Value
-     * @throws IllegalArgumentException
+     * @throws INDIValueException
      *             if the desired value not in range
      */
-    private void setDesiredValueAsString(String desiredValue) throws INDIValueException {
-        double dd = parseNumber(desiredValue);
+    private void setDesiredValueAsString(String newDesiredValue) throws INDIValueException {
+        double dd = parseNumber(newDesiredValue);
 
         if ((dd < min) || (dd > max)) {
-            throw new INDIValueException(this, getName() + " ; " + "Number (" + desiredValue + ") not in range [" + min + ", " + max + "]");
+            throw new INDIValueException(this, getName() + " ; " + "Number (" + newDesiredValue + ") not in range [" + min + ", " + max + "]");
         }
 
         this.desiredValue = new Double(dd);
@@ -463,13 +464,13 @@ public class INDINumberElement extends INDIElement {
     /**
      * Sets the desired value from a double.
      * 
-     * @param desiredValue
+     * @param newDesiredValue
      *            The new desired Value
-     * @throws IllegalArgumentException
+     * @throws INDIValueException
      *             if the desired value not in range
      */
-    private void setDesiredValueAsdouble(double desiredValue) throws INDIValueException {
-        double dd = desiredValue;
+    private void setDesiredValueAsdouble(double newDesiredValue) throws INDIValueException {
+        double dd = newDesiredValue;
 
         if ((dd < min) || (dd > max)) {
             throw new INDIValueException(this, getName() + " ; " + "Number (" + value + ") not in range [" + min + ", " + max + "]");
@@ -480,11 +481,7 @@ public class INDINumberElement extends INDIElement {
 
     @Override
     public boolean isChanged() {
-        if (desiredValue != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return desiredValue != null;
     }
 
     /**
