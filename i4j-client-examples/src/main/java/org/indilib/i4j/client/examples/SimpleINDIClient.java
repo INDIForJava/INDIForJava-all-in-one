@@ -44,19 +44,33 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleINDIClient implements INDIServerConnectionListener, INDIDeviceListener, INDIPropertyListener {
 
+    /**
+     * A logger for errors.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(SimpleINDIClient.class);
 
-    private INDIServerConnection connection;
+    /**
+     * The connection to a INDI server.
+     */
+    private INDIServerConnection currentConnection;
 
+    /**
+     * Creates aSimpleINDIClient that will connect to a particular INDI Server.
+     * 
+     * @param host
+     *            The host of the server
+     * @param port
+     *            The port of the server
+     */
     public SimpleINDIClient(String host, int port) {
-        connection = new INDIServerConnection(host, port);
+        currentConnection = new INDIServerConnection(host, port);
 
         // Listen to all server events
-        connection.addINDIServerConnectionListener(this);
+        currentConnection.addINDIServerConnectionListener(this);
 
         try {
-            connection.connect();
-            connection.askForDevices(); // Ask for all the devices.
+            currentConnection.connect();
+            currentConnection.askForDevices(); // Ask for all the devices.
         } catch (IOException e) {
             LOG.error("Problem with the connection: " + host + ":" + port, e);
         }
@@ -121,6 +135,7 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
      * Parses the arguments and creates the Client if they are correct.
      * 
      * @param args
+     *            The arguments of the application
      */
     public static void main(String[] args) {
         if ((args.length < 1) || (args.length > 2)) {
@@ -141,6 +156,9 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
         SimpleINDIClient sic = new SimpleINDIClient(host, port);
     }
 
+    /**
+     * Prints a error message and exits the application.
+     */
     private static void printErrorMessageAndExit() {
         System.out.println("The program must be called in the following way:");
 

@@ -45,24 +45,83 @@ import org.slf4j.LoggerFactory;
  */
 public class AutoBLOBSaver implements INDIElementListener {
 
+    /**
+     * A logger for errors.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(AutoBLOBSaver.class);
 
+    /**
+     * The connection to a INDI server.
+     */
     private INDIServerConnection connection;
 
+    /**
+     * The device name.
+     */
     private String deviceName;
 
+    /**
+     * The BLOB property name.
+     */
     private String propertyName;
 
+    /**
+     * The BLOB element name.
+     */
     private String elementName;
 
+    /**
+     * The first parameter of the application is the device to listen.
+     */
+    private static final int DEVICE_PARAMETER = 0;
+
+    /**
+     * The second parameter of the application is the property to listen.
+     */
+    private static final int PROPERTY_PARAMETER = 1;
+
+    /**
+     * The third parameter of the application is the element to listen.
+     */
+    private static final int ELEMENT_PARAMETER = 2;
+
+    /**
+     * The fourth parameter of the application is the host of the INDI server.
+     */
+    private static final int HOST_PARAMETER = 3;
+
+    /**
+     * The fifth parameter of the application is the port of the INDI server.
+     */
+    private static final int PORT_PARAMETER = 4;
+
+    /**
+     * Creates an AutoBLOBSaver that will connect to a particular INDI Server.
+     * 
+     * @param host
+     *            The host of the server
+     * @param port
+     *            The port of the server
+     */
     public AutoBLOBSaver(String host, int port) {
         connection = new INDIServerConnection(host, port);
     }
 
-    public void listenAndSaveBLOB(String deviceName, String propertyName, String elementName) {
-        this.deviceName = deviceName;
-        this.propertyName = propertyName;
-        this.elementName = elementName;
+    /**
+     * Connects to the INDI Server and listens to a particular device, property
+     * and element. It will save the BLOB data of that element as it changes.
+     * 
+     * @param deviceToListen
+     *            The name of the device
+     * @param propertyToListen
+     *            The name of the property
+     * @param elementToListen
+     *            The name of the element
+     */
+    public void listenAndSaveBLOB(String deviceToListen, String propertyToListen, String elementToListen) {
+        this.deviceName = deviceToListen;
+        this.propertyName = propertyToListen;
+        this.elementName = elementToListen;
 
         try {
             connection.connect();
@@ -76,9 +135,10 @@ public class AutoBLOBSaver implements INDIElementListener {
         while (el == null) { // Wait until the Server has a Device with a
                              // property and element with the required name
             try {
-                el = (INDIBLOBElement) connection.getElement(deviceName, propertyName, elementName);
+                el = (INDIBLOBElement) connection.getElement(deviceToListen, propertyToListen, elementToListen);
                 try {
-                    Thread.sleep(500); // Wait 0.5 seconds.
+                    Thread.sleep(Constants.WAITING_INTERVAL); // Wait 0.5
+                                                              // seconds.
                 } catch (InterruptedException e) {
                 }
             } catch (ClassCastException e) {
@@ -97,6 +157,12 @@ public class AutoBLOBSaver implements INDIElementListener {
                                          // the Element.
     }
 
+    /**
+     * Does the actual saving when the element data changes.
+     * 
+     * @param element
+     *            The element that has changed.
+     */
     @Override
     public void elementChanged(INDIElement element) {
         INDIBLOBElement be = (INDIBLOBElement) element;
@@ -121,21 +187,22 @@ public class AutoBLOBSaver implements INDIElementListener {
      * Parses the arguments and creates the Client if they are correct.
      * 
      * @param args
+     *            The arguments of the application
      */
     public static void main(String[] args) {
-        if ((args.length < 4) || (args.length > 5)) {
+        if ((args.length < PORT_PARAMETER) || (args.length > PORT_PARAMETER + 1)) {
             printErrorMessageAndExit();
         }
 
-        String deviceName = args[0];
-        String propertyName = args[1];
-        String elementName = args[2];
-        String host = args[3];
+        String deviceName = args[DEVICE_PARAMETER];
+        String propertyName = args[PROPERTY_PARAMETER];
+        String elementName = args[ELEMENT_PARAMETER];
+        String host = args[HOST_PARAMETER];
         int port = Constants.INDI_DEFAULT_PORT;
 
-        if (args.length > 4) {
+        if (args.length > PORT_PARAMETER) {
             try {
-                port = Integer.parseInt(args[4]);
+                port = Integer.parseInt(args[PORT_PARAMETER]);
             } catch (NumberFormatException e) {
                 printErrorMessageAndExit();
             }
@@ -146,6 +213,9 @@ public class AutoBLOBSaver implements INDIElementListener {
         abs.listenAndSaveBLOB(deviceName, propertyName, elementName);
     }
 
+    /**
+     * Prints a error message and exits the application.
+     */
     private static void printErrorMessageAndExit() {
         System.out.println("The program must be called in the following way:");
 
