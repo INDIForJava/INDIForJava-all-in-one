@@ -21,7 +21,6 @@ package org.indilib.i4j;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import java.io.File;
 
 /**
@@ -62,5 +61,29 @@ public final class FileUtils {
         }
 
         return i4jDir;
+    }
+
+    /**
+     * Gets the extension of a given file.
+     * 
+     * @param file
+     *            The file from which to get the extension.
+     * @return The extension of the file. If the file has no extension it
+     *         returns a empty String: ""
+     */
+    public static String getExtensionOfFile(File file) {
+        String ext = null;
+        String s = file.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 && i < s.length() - 1) {
+            ext = s.substring(i + 1);
+        }
+
+        if (ext == null) {
+            return "";
+        }
+
+        return ext;
     }
 }
