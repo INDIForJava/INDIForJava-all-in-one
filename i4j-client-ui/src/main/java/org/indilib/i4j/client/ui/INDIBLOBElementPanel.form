@@ -48,7 +48,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="save">
+            <Component class="javax.swing.JButton" name="saveBLOBButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/laazotea/indi/client/ui/images/disk.png"/>
@@ -57,7 +57,7 @@
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveBLOBButtonActionPerformed"/>
               </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="jPanel2">
@@ -75,7 +75,7 @@
                     <Property name="text" type="java.lang.String" value="Format:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="format">
+                <Component class="javax.swing.JTextField" name="formatText">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
@@ -86,10 +86,10 @@
                     <Property name="text" type="java.lang.String" value="Length:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="length">
+                <Component class="javax.swing.JTextField" name="lengthText">
                   <Properties>
-                    <Property name="columns" type="int" value="6"/>
                     <Property name="editable" type="boolean" value="false"/>
+                    <Property name="columns" type="int" value="6"/>
                     <Property name="toolTipText" type="java.lang.String" value="bytes"/>
                   </Properties>
                 </Component>
@@ -101,7 +101,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="loadBLOB">
+            <Component class="javax.swing.JButton" name="loadBLOBButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/laazotea/indi/client/ui/images/attach.png"/>
@@ -109,7 +109,7 @@
                 <Property name="text" type="java.lang.String" value="Load..."/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadBLOBActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadBLOBButtonActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -118,10 +118,10 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTextField" name="message">
+            <Component class="javax.swing.JTextField" name="messageText">
               <Properties>
-                <Property name="columns" type="int" value="6"/>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="columns" type="int" value="6"/>
               </Properties>
             </Component>
           </SubComponents>

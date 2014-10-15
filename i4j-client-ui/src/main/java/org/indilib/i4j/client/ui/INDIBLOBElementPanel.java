@@ -6,7 +6,7 @@
  *  as published by the Free Software Foundation, either version 3 of 
  *  the License, or (at your option) any later version.
  * 
- *  INDI for Java Client UI is distributed in the hope that it will be
+ *  INDI for Java Client UI is distributed in the hope that it will blobElement
  *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
  *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -50,6 +50,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.client.INDIBLOBElement;
 import org.indilib.i4j.client.INDIElement;
@@ -63,12 +64,23 @@ import org.indilib.i4j.client.INDIElement;
  */
 public class INDIBLOBElementPanel extends INDIElementPanel {
 
-    private INDIBLOBElement be;
+    /**
+     * The BLOB Element for which this panel is a UI of.
+     */
+    private INDIBLOBElement blobElement;
 
+    /**
+     * The desired value for the BLOB element.
+     */
     private INDIBLOBValue desiredValue;
 
     /**
-     * Creates new form INDITextElementPanel
+     * Creates new form INDITextElementPanel.
+     * 
+     * @param be
+     *            The BLOB element for which this panel is a UI of.
+     * @param perm
+     *            The permissions of the property for the element.
      */
     public INDIBLOBElementPanel(INDIBLOBElement be, PropertyPermissions perm) {
         super(perm);
@@ -80,32 +92,19 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
             mainPanel.remove(sendPanel);
         }
 
-        this.be = be;
+        this.blobElement = be;
 
         desiredValue = null;
 
         updateElementData();
     }
 
+    /**
+     * Updates the visual data for the element.
+     */
     private void updateElementData() {
-        name.setText(be.getLabel());
-        name.setToolTipText(be.getName());
-    }
-
-    private String getExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-
-        if (i > 0 && i < s.length() - 1) {
-            ext = s.substring(i + 1);
-        }
-
-        if (ext == null) {
-            return "";
-        }
-
-        return ext;
+        name.setText(blobElement.getLabel());
+        name.setToolTipText(blobElement.getName());
     }
 
     /**
@@ -115,6 +114,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed"
+    // <editor-fold defaultstate="collapsed"
     // desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -122,16 +122,16 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
         mainPanel = new javax.swing.JPanel();
         name = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        save = new javax.swing.JButton();
+        saveBLOBButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        format = new javax.swing.JTextField();
+        formatText = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        length = new javax.swing.JTextField();
+        lengthText = new javax.swing.JTextField();
         sendPanel = new javax.swing.JPanel();
-        loadBLOB = new javax.swing.JButton();
+        loadBLOBButton = new javax.swing.JButton();
         messagePanel = new javax.swing.JPanel();
-        message = new javax.swing.JTextField();
+        messageText = new javax.swing.JTextField();
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
         setLayout(new java.awt.BorderLayout());
@@ -140,16 +140,16 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
         name.setMinimumSize(new java.awt.Dimension(100, 0));
         mainPanel.add(name);
 
-        save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/disk.png"))); // NOI18N
-        save.setText("Save");
-        save.setEnabled(false);
-        save.addActionListener(new java.awt.event.ActionListener() {
+        saveBLOBButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/disk.png"))); // NOI18N
+        saveBLOBButton.setText("Save");
+        saveBLOBButton.setEnabled(false);
+        saveBLOBButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveActionPerformed(evt);
+                saveBLOBButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(save);
+        jPanel1.add(saveBLOBButton);
 
         jPanel2.setLayout(new java.awt.GridLayout(2, 2, 5, 5));
 
@@ -157,47 +157,54 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
         jLabel1.setText("Format:");
         jPanel2.add(jLabel1);
 
-        format.setEditable(false);
-        jPanel2.add(format);
+        formatText.setEditable(false);
+        jPanel2.add(formatText);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("Length:");
         jPanel2.add(jLabel2);
 
-        length.setColumns(6);
-        length.setEditable(false);
-        length.setToolTipText("bytes");
-        jPanel2.add(length);
+        lengthText.setEditable(false);
+        lengthText.setColumns(6);
+        lengthText.setToolTipText("bytes");
+        jPanel2.add(lengthText);
 
         jPanel1.add(jPanel2);
 
         mainPanel.add(jPanel1);
 
-        loadBLOB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/attach.png"))); // NOI18N
-        loadBLOB.setText("Load...");
-        loadBLOB.addActionListener(new java.awt.event.ActionListener() {
+        loadBLOBButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/attach.png"))); // NOI18N
+        loadBLOBButton.setText("Load...");
+        loadBLOBButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadBLOBActionPerformed(evt);
+                loadBLOBButtonActionPerformed(evt);
             }
         });
-        sendPanel.add(loadBLOB);
+        sendPanel.add(loadBLOBButton);
 
         mainPanel.add(sendPanel);
 
-        message.setColumns(6);
-        message.setEditable(false);
-        messagePanel.add(message);
+        messageText.setEditable(false);
+        messageText.setColumns(6);
+        messagePanel.add(messageText);
 
         mainPanel.add(messagePanel);
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void saveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_saveActionPerformed
-        ExampleFileFilter filter = new ExampleFileFilter();
+    /**
+     * Saves the BLOB data to a file.
+     * 
+     * @param evt
+     *            The event that lauches the saving process (click on the
+     *            appropriate button)
+     */
+    private void saveBLOBButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        FileFilterByExtension filter = new FileFilterByExtension();
 
-        String format = be.getValue().getFormat();
+        String format = blobElement.getValue().getFormat();
 
         if (format.startsWith(".")) {
             format = format.substring(1);
@@ -216,17 +223,24 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
             File f = fileChooser.getSelectedFile();
 
             try {
-                be.getValue().saveBLOBData(f);
+                blobElement.getValue().saveBLOBData(f);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Problem saving BLOB data in " + f.getAbsolutePath(), "Saving problem",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
 
-        message.setText("Saved");
-    }// GEN-LAST:event_saveActionPerformed
+        messageText.setText("Saved");
+    }
 
-    private void loadBLOBActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_loadBLOBActionPerformed
+    /**
+     * Loads the BLOB data from a file.
+     * 
+     * @param evt
+     *            The event that lauches the loading process (click on the
+     *            appropriate button)
+     */
+    private void loadBLOBButtonActionPerformed(java.awt.event.ActionEvent evt) {
         byte[] bytes = null;
 
         int res = fileChooser.showSaveDialog(this);
@@ -255,11 +269,11 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
 
                 fis.close();
 
-                desiredValue = new INDIBLOBValue(bytes, getExtension(f));
+                desiredValue = new INDIBLOBValue(bytes, FileUtils.getExtensionOfFile(f));
 
                 setChanged(true);
 
-                message.setText("Loaded");
+                messageText.setText("Loaded");
             } catch (IOException e) {
                 JOptionPane.showMessageDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Problem loading BLOB data from " + f.getAbsolutePath(), "Loading problem",
                         JOptionPane.ERROR_MESSAGE);
@@ -267,12 +281,12 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
         }
 
         checkSetButton();
-    }// GEN-LAST:event_loadBLOBActionPerformed
-     // Variables declaration - do not modify//GEN-BEGIN:variables
+    }
 
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
 
-    private javax.swing.JTextField format;
+    private javax.swing.JTextField formatText;
 
     private javax.swing.JLabel jLabel1;
 
@@ -282,19 +296,19 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
 
     private javax.swing.JPanel jPanel2;
 
-    private javax.swing.JTextField length;
+    private javax.swing.JTextField lengthText;
 
-    private javax.swing.JButton loadBLOB;
+    private javax.swing.JButton loadBLOBButton;
 
     private javax.swing.JPanel mainPanel;
 
-    private javax.swing.JTextField message;
-
     private javax.swing.JPanel messagePanel;
+
+    private javax.swing.JTextField messageText;
 
     private javax.swing.JLabel name;
 
-    private javax.swing.JButton save;
+    private javax.swing.JButton saveBLOBButton;
 
     private javax.swing.JPanel sendPanel;
 
@@ -307,7 +321,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
 
     @Override
     protected INDIBLOBElement getElement() {
-        return be;
+        return blobElement;
     }
 
     @Override
@@ -322,16 +336,16 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
     @Override
     protected void cleanDesiredValue() {
         desiredValue = null;
-        message.setText("");
+        messageText.setText("");
     }
 
     @Override
     public void elementChanged(INDIElement element) {
-        if (element == be) {
-            save.setEnabled(true);
+        if (element == blobElement) {
+            saveBLOBButton.setEnabled(true);
 
-            format.setText(be.getValue().getFormat());
-            length.setText(be.getValue().getSize() + "");
+            formatText.setText(blobElement.getValue().getFormat());
+            lengthText.setText(blobElement.getValue().getSize() + "");
         }
     }
 

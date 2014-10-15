@@ -87,7 +87,7 @@
         <Component class="javax.swing.JButton" name="information">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/laazotea/indi/client/ui/images/information.png"/>
+              <Image iconType="3" name="/org/indilib/i4j/client/ui/images/information.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Info"/>
             <Property name="toolTipText" type="java.lang.String" value="Information about the property"/>
