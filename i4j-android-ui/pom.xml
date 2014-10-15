@@ -59,6 +59,7 @@
 							<includes>*.apk</includes>
 							<url>sftp://frs.sourceforge.net/</url>
 							<toDir>/home/frs/project/indiforjava</toDir>
+							<extractDuplicates>true</extractDuplicates>
 						</configuration>
 					</execution>
 				</executions>
