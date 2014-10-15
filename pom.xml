@@ -332,13 +332,13 @@
 							<report>javadoc</report>
 						</reports>
 					</reportSet>
-					<reportSet><!-- aggregate reportSet, to define in poms having modules -->
-						<id>aggregate</id>
-						<inherited>false</inherited><!-- don't run aggregate in child modules -->
-						<reports>
-							<report>aggregate</report>
-						</reports>
-					</reportSet>
+					<!-- <reportSet> deacivated because of bug in the site report during release -->
+					<!-- <id>aggregate</id> -->
+					<!-- <inherited>false</inherited> -->
+					<!-- <reports> -->
+					<!-- <report>aggregate</report> -->
+					<!-- </reports> -->
+					<!-- </reportSet> -->
 				</reportSets>
 			</plugin>
 			<plugin>

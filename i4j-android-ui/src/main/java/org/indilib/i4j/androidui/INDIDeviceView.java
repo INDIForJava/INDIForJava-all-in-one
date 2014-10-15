@@ -217,7 +217,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
     private void setBLOBNever() {
         try {
             setMessage("Setting BLOBs Never");
-            device.BLOBsEnableNever();
+            device.blobsEnableNever();
         } catch (IOException e) {
             setMessage("Problem setting BLOBs Never");
         }
@@ -226,7 +226,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
     private void setBLOBAlso() {
         try {
             setMessage("Setting BLOBs Also");
-            device.BLOBsEnableAlso();
+            device.blobsEnableAlso();
         } catch (IOException e) {
             setMessage("Problem setting BLOBs Also");
         }
@@ -235,7 +235,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
     private void setBLOBOnly() {
         try {
             setMessage("Setting BLOBs Only");
-            device.BLOBsEnableOnly();
+            device.blobsEnableOnly();
         } catch (IOException e) {
             setMessage("Problem setting BLOBs Only");
         }
