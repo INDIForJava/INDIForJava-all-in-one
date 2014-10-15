@@ -84,6 +84,7 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
             // Enable receiving BLOBs from this Device
             device.blobsEnable(Constants.BLOBEnables.ALSO);
         } catch (IOException e) {
+            LOG.error("Problem asking for BLOBs", e);
         }
         device.addINDIDeviceListener(this);
     }

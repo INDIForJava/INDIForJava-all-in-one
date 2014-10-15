@@ -151,6 +151,7 @@ public class AutoBLOBSaver implements INDIElementListener {
             /* Enable receiving BLOBs from this Device */
             el.getProperty().getDevice().blobsEnable(BLOBEnables.ALSO);
         } catch (IOException e) {
+            LOG.error("Problem asking for BLOBs", e);
         }
 
         el.addINDIElementListener(this); // We add ourselves as the listener for
