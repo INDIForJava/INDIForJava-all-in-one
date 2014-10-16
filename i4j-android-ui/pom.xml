@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.indilib.i4j</groupId>
@@ -24,15 +25,27 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+					<verbose>false</verbose>
+					<organizationName>indiforjava</organizationName>
+					<skipUpdateProjectLicense>true</skipUpdateProjectLicense>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
-				<version>3.9.0-rc.2</version>
+				<version>4.0.0-rc.1</version>
 				<configuration>
 					<sdk>
 						<platform>8</platform>
 					</sdk>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
+					<extractDuplicates>true</extractDuplicates>
 				</configuration>
 				<extensions>true</extensions>
 			</plugin>
@@ -59,7 +72,6 @@
 							<includes>*.apk</includes>
 							<url>sftp://frs.sourceforge.net/</url>
 							<toDir>/home/frs/project/indiforjava</toDir>
-							<extractDuplicates>true</extractDuplicates>
 						</configuration>
 					</execution>
 				</executions>

@@ -36,6 +36,7 @@
 			<!-- <url>sftp://web.sourceforge.net/home/groups/i/in/indiforjava/htdocs</url> -->
 		</site>
 	</distributionManagement>
+	<inceptionYear>2012</inceptionYear>
 	<developers>
 		<developer>
 			<id>Zerjillo</id>
@@ -208,7 +209,6 @@
 				<configuration>
 					<verbose>false</verbose>
 					<organizationName>indiforjava</organizationName>
-					<inceptionYear>2013</inceptionYear>
 				</configuration>
 				<executions>
 					<execution>
