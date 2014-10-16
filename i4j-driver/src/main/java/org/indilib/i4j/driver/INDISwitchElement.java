@@ -53,9 +53,8 @@ public class INDISwitchElement extends INDIElement {
      *            The label of the Element.
      * @param status
      *            The initial status of the Element
-     * @throws IllegalArgumentException
      */
-    public INDISwitchElement(INDISwitchProperty property, String name, String label, SwitchStatus status) throws IllegalArgumentException {
+    public INDISwitchElement(INDISwitchProperty property, String name, String label, SwitchStatus status) {
         super(property, name, label);
 
         this.status = status;
@@ -73,9 +72,8 @@ public class INDISwitchElement extends INDIElement {
      *            The name of the Element.
      * @param status
      *            The initial state of the Element.
-     * @throws IllegalArgumentException
      */
-    public INDISwitchElement(INDISwitchProperty property, String name, SwitchStatus status) throws IllegalArgumentException {
+    public INDISwitchElement(INDISwitchProperty property, String name, SwitchStatus status) {
         super(property, name);
 
         this.status = status;
@@ -98,13 +96,11 @@ public class INDISwitchElement extends INDIElement {
      * Switch Elements of the property are turn to <code>OFF</code>.
      * 
      * @param newValue
-     *            The new value.
-     * @throws IllegalArgumentException
-     *             If the <code>newValue</code> is not a valid
-     *             <code>SwitchStatus</code>.
+     *            The new value. If the <code>newValue</code> is not a valid
+     *            <code>SwitchStatus</code>.
      */
     @Override
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         SwitchStatus ss = null;
         try {
             ss = (SwitchStatus) newValue;

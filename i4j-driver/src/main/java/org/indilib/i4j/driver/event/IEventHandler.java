@@ -33,6 +33,12 @@ import org.indilib.i4j.driver.INDIProperty;
  * are set so the method can be as specific as possible. The method will be
  * called when a new value for the property was set.
  * 
+ * @param <Prop>
+ *            the property type for this event.
+ * @param <Elem>
+ *            the element type that property uses.
+ * @param <Type>
+ *            the value type the property uses.
  * @author Richard van Nieuwenhoven
  */
 public interface IEventHandler<Prop extends INDIProperty<Elem>, Elem extends INDIElement, Type> {

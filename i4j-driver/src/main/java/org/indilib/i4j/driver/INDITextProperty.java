@@ -37,6 +37,11 @@ import org.indilib.i4j.INDIException;
 public class INDITextProperty extends INDIProperty<INDITextElement> {
 
     /**
+     * servial version id.
+     */
+    private static final long serialVersionUID = -1568675891716860995L;
+
+    /**
      * Constructs an instance of <code>INDITextProperty</code> with a particular
      * <code>driver</code>, <code>name</code>, <code>label</code>,
      * <code>group</code>, <code>state</code>, <code>permission</code> and
@@ -56,11 +61,9 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The permission of the Property
      * @param timeout
      *            The timeout of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDITextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout)
-            throws IllegalArgumentException {
+    public INDITextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
         super(driver, name, label, group, state, permission, timeout);
     }
 
@@ -85,13 +88,12 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The permission of the Property
      * @param timeout
      *            The timeout of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
     public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout) {
         INDITextProperty tp = loadTextProperty(driver, name);
 
         if (tp == null) {
@@ -113,7 +115,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *         loaded.
      */
     private static INDITextProperty loadTextProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
+        INDIProperty<?> prop;
 
         try {
             prop = INDIProperty.loadFromFile(driver, name);
@@ -148,10 +150,9 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDITextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+    public INDITextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, label, group, state, permission, 0);
     }
 
@@ -174,13 +175,11 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if canot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
         INDITextProperty tp = loadTextProperty(driver, name);
 
         if (tp == null) {
@@ -207,10 +206,9 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDITextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+    public INDITextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, label, null, state, permission, 0);
     }
 
@@ -231,13 +229,11 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if canot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) {
         INDITextProperty tp = loadTextProperty(driver, name);
 
         if (tp == null) {
@@ -252,7 +248,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      * Constructs an instance of <code>INDITextProperty</code> with a particular
      * <code>driver</code>, <code>name</code>, <code>state</code>,
      * <code>permission</code> and a 0 timeout, a default group and a label
-     * equal to its <code>name</code>
+     * equal to its <code>name</code>.
      * 
      * @param driver
      *            The Driver to which this property is associated.
@@ -262,10 +258,9 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDITextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+    public INDITextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, null, null, state, permission, 0);
     }
 
@@ -283,13 +278,11 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if canot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
         INDITextProperty tp = loadTextProperty(driver, name);
 
         if (tp == null) {

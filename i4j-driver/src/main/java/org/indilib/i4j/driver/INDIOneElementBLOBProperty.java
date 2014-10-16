@@ -37,7 +37,12 @@ import org.indilib.i4j.INDIException;
 public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
 
     /**
-     * The BLOB Element
+     * Serialization id.
+     */
+    private static final long serialVersionUID = 2274089274345591530L;
+
+    /**
+     * The BLOB Element.
      */
     private INDIBLOBElement element;
 
@@ -61,11 +66,9 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The permission of the Property
      * @param timeout
      *            The timeout of the Property
-     * @throws IllegalArgumentException
      * @see INDIBLOBProperty
      */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout)
-            throws IllegalArgumentException {
+    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
         super(driver, name, label, group, state, permission, timeout);
 
         element = new INDIBLOBElement(this, name, label);
@@ -92,13 +95,12 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The permission of the Property
      * @param timeout
      *            The timeout of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDIBLOBProperty
      */
     public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout) {
         INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
 
         if (bp == null) {
@@ -154,11 +156,9 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIBLOBProperty
      */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, label, group, state, permission);
 
         element = new INDIBLOBElement(this, name, label);
@@ -183,13 +183,12 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDIBLOBProperty
      */
     public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission) throws IllegalArgumentException {
+            PropertyPermissions permission) {
         INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
 
         if (bp == null) {
@@ -215,10 +214,9 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIBLOBProperty
      */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, label, state, permission);
 
         element = new INDIBLOBElement(this, name, label);
@@ -241,13 +239,12 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDIBLOBProperty
      */
     public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state,
-            PropertyPermissions permission) throws IllegalArgumentException {
+            PropertyPermissions permission) {
         INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
 
         if (bp == null) {
@@ -271,10 +268,9 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIBLOBProperty
      */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+    public INDIOneElementBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, state, permission);
 
         element = new INDIBLOBElement(this, name);
@@ -294,13 +290,11 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDIBLOBProperty
      */
-    public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
         INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
 
         if (bp == null) {
@@ -326,10 +320,9 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      * 
      * @param newValue
      *            The new value for the Element
-     * @throws IllegalArgumentException
      * @see INDIBLOBElement#setValue(Object newValue)
      */
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         element.setValue(newValue);
     }
 }

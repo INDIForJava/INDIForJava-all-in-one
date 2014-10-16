@@ -36,7 +36,12 @@ import org.indilib.i4j.INDIException;
 public class INDIOneElementTextProperty extends INDITextProperty {
 
     /**
-     * The Text Element
+     * Serialization id.
+     */
+    private static final long serialVersionUID = 8306207724773408216L;
+
+    /**
+     * The Text Element.
      */
     private INDITextElement element;
 
@@ -62,11 +67,10 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The timeout of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDITextProperty
      */
     public INDIOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout,
-            String value) throws IllegalArgumentException {
+            String value) {
         super(driver, name, label, group, state, permission, timeout);
 
         element = new INDITextElement(this, name, label, value);
@@ -96,13 +100,12 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The timeout of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDITextProperty
      */
     public static INDIOneElementTextProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout, String value) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout, String value) {
         INDIOneElementTextProperty tp = loadOneElementTextProperty(driver, name);
 
         if (tp == null) {
@@ -124,7 +127,7 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *         loaded.
      */
     private static INDIOneElementTextProperty loadOneElementTextProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
+        INDIProperty<?> prop;
 
         try {
             prop = INDIProperty.loadFromFile(driver, name);
@@ -161,11 +164,9 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The permission of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDITextProperty
      */
-    public INDIOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String value)
-            throws IllegalArgumentException {
+    public INDIOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String value) {
         super(driver, name, label, group, state, permission);
 
         element = new INDITextElement(this, name, label, value);
@@ -193,13 +194,12 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The permission of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDITextProperty
      */
     public static INDIOneElementTextProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, String value) throws IllegalArgumentException {
+            PropertyPermissions permission, String value) {
         INDIOneElementTextProperty tp = loadOneElementTextProperty(driver, name);
 
         if (tp == null) {
@@ -228,11 +228,9 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The permission of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDITextProperty
      */
-    public INDIOneElementTextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, String value)
-            throws IllegalArgumentException {
+    public INDIOneElementTextProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, String value) {
         super(driver, name, label, state, permission);
 
         element = new INDITextElement(this, name, label, value);
@@ -257,13 +255,12 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The permission of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDITextProperty
      */
     public static INDIOneElementTextProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, String label, PropertyStates state,
-            PropertyPermissions permission, String value) throws IllegalArgumentException {
+            PropertyPermissions permission, String value) {
         INDIOneElementTextProperty tp = loadOneElementTextProperty(driver, name);
 
         if (tp == null) {
@@ -289,10 +286,9 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The permission of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDITextProperty
      */
-    public INDIOneElementTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, String value) throws IllegalArgumentException {
+    public INDIOneElementTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, String value) {
         super(driver, name, state, permission);
 
         element = new INDITextElement(this, name, value);
@@ -315,13 +311,12 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      *            The permission of the Property
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDITextProperty
      */
     public static INDIOneElementTextProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission,
-            String value) throws IllegalArgumentException {
+            String value) {
         INDIOneElementTextProperty tp = loadOneElementTextProperty(driver, name);
 
         if (tp == null) {
@@ -347,10 +342,9 @@ public class INDIOneElementTextProperty extends INDITextProperty {
      * 
      * @param newValue
      *            The new value for the Element
-     * @throws IllegalArgumentException
      * @see INDITextElement#setValue(Object newValue)
      */
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         element.setValue(newValue);
     }
 }

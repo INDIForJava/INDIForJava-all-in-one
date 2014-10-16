@@ -1,25 +1,16 @@
 package org.indilib.i4j.driver.util;
 
 /*
- * #%L
- * INDI for Java Driver Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Driver Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.lang.reflect.Constructor;
@@ -61,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class INDIPropertyInjector {
+public final class INDIPropertyInjector {
 
     /**
      * Logger to log errors to.
@@ -148,14 +139,24 @@ public class INDIPropertyInjector {
         this.driver = driver;
     }
 
-    private INDIProperty<?> findNamedProperty(String name, INDIProperty<?> lastProperty) {
+    /**
+     * find an indi property in the collected properties till now with a
+     * specified name. is the name is empty take the last scanned property.
+     * 
+     * @param name
+     *            the name of the property to find.
+     * @param lastScannedProperty
+     *            the last scanned property.
+     * @return the found property.
+     */
+    private INDIProperty<?> findNamedProperty(String name, INDIProperty<?> lastScannedProperty) {
         if (!name.isEmpty()) {
             INDIProperty<?> property = properties.get(name);
             if (property != null) {
                 return property;
             }
         }
-        return lastProperty;
+        return lastScannedProperty;
     }
 
     /**
@@ -209,22 +210,21 @@ public class INDIPropertyInjector {
     private void initializeAnnotatedElement(Object instance, Field field) {
         InjectElement elem = field.getAnnotation(InjectElement.class);
         if (elem != null) {
-            INDIProperty<?> lastProperty = this.lastProperty;
-            lastProperty = findNamedProperty(elem.property(), lastProperty);
-            if (lastProperty != null) {
+            INDIProperty<?> propertyToConnect = findNamedProperty(elem.property(), this.lastProperty);
+            if (propertyToConnect != null) {
                 INDIElement lastElement = null;
                 if (INDINumberElement.class.isAssignableFrom(field.getType())) {
                     lastElement =
-                            new INDINumberElement((INDINumberProperty) lastProperty, elem.name(), elem.label(), elem.numberValue(), elem.minimum(), elem.maximum(),
+                            new INDINumberElement((INDINumberProperty) propertyToConnect, elem.name(), elem.label(), elem.numberValue(), elem.minimum(), elem.maximum(),
                                     elem.step(), elem.numberFormat());
                 } else if (INDITextElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDITextElement((INDITextProperty) lastProperty, elem.name(), elem.label(), elem.textValue());
+                    lastElement = new INDITextElement((INDITextProperty) propertyToConnect, elem.name(), elem.label(), elem.textValue());
                 } else if (INDISwitchElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDISwitchElement((INDISwitchProperty) lastProperty, elem.name(), elem.label(), elem.switchValue());
+                    lastElement = new INDISwitchElement((INDISwitchProperty) propertyToConnect, elem.name(), elem.label(), elem.switchValue());
                 } else if (INDIBLOBElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDIBLOBElement((INDIBLOBProperty) lastProperty, elem.name(), elem.label());
+                    lastElement = new INDIBLOBElement((INDIBLOBProperty) propertyToConnect, elem.name(), elem.label());
                 } else if (INDILightElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDILightElement((INDILightProperty) lastProperty, elem.name(), elem.label(), elem.state());
+                    lastElement = new INDILightElement((INDILightProperty) propertyToConnect, elem.name(), elem.label(), elem.state());
                 } else {
                     LOG.error("Unknown property type" + elem.property() + " for element " + field);
                 }

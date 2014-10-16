@@ -1,25 +1,16 @@
 package org.indilib.i4j.driver;
 
 /*
- * #%L
- * INDI for Java Driver Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Driver Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.util.List;
@@ -38,6 +29,11 @@ import org.indilib.i4j.INDIException;
  * @version 1.34, November 8, 2013
  */
 public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
+
+    /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -7669211544834222712L;
 
     /**
      * Constructs an instance of <code>INDISwitchOneOfManyProperty</code> with a
@@ -127,7 +123,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      *         could not be loaded.
      */
     private static INDISwitchOneOfManyProperty loadSwitchOneOfManyProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
+        INDIProperty<?> prop;
 
         try {
             prop = INDIProperty.loadFromFile(driver, name);
@@ -612,15 +608,13 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
         if (defaultOption >= options.length) {
             defaultOption = 0;
         }
-
         for (int i = 0; i < options.length; i++) {
             SwitchStatus ss = SwitchStatus.OFF;
 
             if (i == defaultOption) {
                 ss = SwitchStatus.ON;
             }
-
-            INDISwitchElement element = new INDISwitchElement(this, options[i], ss);
+            new INDISwitchElement(this, options[i], ss);
         }
     }
 

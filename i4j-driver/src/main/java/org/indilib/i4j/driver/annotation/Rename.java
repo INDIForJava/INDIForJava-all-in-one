@@ -31,13 +31,13 @@ package org.indilib.i4j.driver.annotation;
 public @interface Rename {
 
     /**
-     * @return the original name of the property or element
+     * the original name of the property or element.
      */
     String name();
 
     /**
-     * @return the new name in case of the current injection, (The prefix will
-     *         not be applied)
+     * the new name in case of the current injection, (The prefix will not be
+     * applied).
      */
     String to();
 

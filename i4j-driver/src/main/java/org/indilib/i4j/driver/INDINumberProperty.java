@@ -37,6 +37,11 @@ import org.indilib.i4j.INDIException;
 public class INDINumberProperty extends INDIProperty<INDINumberElement> {
 
     /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = 8341274865983266472L;
+
+    /**
      * Constructs an instance of <code>INDINumberProperty</code> with a
      * particular <code>driver</code>, <code>name</code>, <code>label</code>,
      * <code>group</code>, <code>state</code>, <code>permission</code> and
@@ -56,11 +61,9 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The permission of the Property
      * @param timeout
      *            The timeout of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDINumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout)
-            throws IllegalArgumentException {
+    public INDINumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
         super(driver, name, label, group, state, permission, timeout);
     }
 
@@ -86,13 +89,12 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The permission of the Property
      * @param timeout
      *            The timeout of the Property
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
     public static INDINumberProperty createSaveableNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout) {
         INDINumberProperty np = loadNumberProperty(driver, name);
 
         if (np == null) {
@@ -114,7 +116,7 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *         be loaded.
      */
     private static INDINumberProperty loadNumberProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
+        INDIProperty<?> prop;
 
         try {
             prop = INDIProperty.loadFromFile(driver, name);
@@ -149,11 +151,9 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDINumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public INDINumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, label, group, state, permission, 0);
     }
 
@@ -176,13 +176,12 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
     public static INDINumberProperty createSaveableNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission) throws IllegalArgumentException {
+            PropertyPermissions permission) {
         INDINumberProperty np = loadNumberProperty(driver, name);
 
         if (np == null) {
@@ -209,10 +208,9 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDINumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+    public INDINumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, label, null, state, permission, 0);
     }
 
@@ -233,13 +231,11 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDINumberProperty createSaveableNumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public static INDINumberProperty createSaveableNumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) {
         INDINumberProperty np = loadNumberProperty(driver, name);
 
         if (np == null) {
@@ -254,7 +250,7 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      * Constructs an instance of <code>INDINumberProperty</code> with a
      * particular <code>driver</code>, <code>name</code>, <code>state</code>,
      * <code>permission</code> and a 0 timeout, a default group and a label
-     * equal to its <code>name</code>
+     * equal to its <code>name</code>.
      * 
      * @param driver
      *            The Driver to which this property is associated.
@@ -264,10 +260,9 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDINumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) throws IllegalArgumentException {
+    public INDINumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, null, null, state, permission, 0);
     }
 
@@ -286,13 +281,11 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      *            The initial state of the Property
      * @param permission
      *            The permission of the Property
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDINumberProperty createSaveableNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission)
-            throws IllegalArgumentException {
+    public static INDINumberProperty createSaveableNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
         INDINumberProperty np = loadNumberProperty(driver, name);
 
         if (np == null) {

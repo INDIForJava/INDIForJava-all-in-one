@@ -48,9 +48,8 @@ public class INDIBLOBElement extends INDIElement {
      *            The name of the Element.
      * @param label
      *            The label of the Element.
-     * @throws IllegalArgumentException
      */
-    public INDIBLOBElement(INDIBLOBProperty property, String name, String label) throws IllegalArgumentException {
+    public INDIBLOBElement(INDIBLOBProperty property, String name, String label) {
         super(property, name, label);
 
         value = new INDIBLOBValue(new byte[0], "");
@@ -64,9 +63,8 @@ public class INDIBLOBElement extends INDIElement {
      *            The Property to which this Element belongs.
      * @param name
      *            The name of the Element.
-     * @throws IllegalArgumentException
      */
-    public INDIBLOBElement(INDIBLOBProperty property, String name) throws IllegalArgumentException {
+    public INDIBLOBElement(INDIBLOBProperty property, String name) {
         super(property, name);
 
         value = new INDIBLOBValue(new byte[0], "");
@@ -83,7 +81,7 @@ public class INDIBLOBElement extends INDIElement {
     }
 
     @Override
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         INDIBLOBValue b = null;
         try {
             b = (INDIBLOBValue) newValue;

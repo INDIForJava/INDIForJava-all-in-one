@@ -43,67 +43,66 @@ import org.indilib.i4j.Constants.SwitchStatus;
 public @interface InjectElement {
 
     /**
-     * @return the name of the element (mandatory)
+     * the name of the element (mandatory).
      */
     String name();
 
     /**
-     * @return the label of the element (mandatory)
+     * the label of the element (mandatory).
      */
     String label();
 
     /**
-     * @return the default value of the element when it is a number field,
-     *         defaults to 0
+     * the default value of the element when it is a number field, defaults to
+     * 0.
      */
     double numberValue() default 0d;
 
     /**
-     * @return the default value of the element when it is a text field,
-     *         defaults to an empty string
+     * the default value of the element when it is a text field, defaults to an
+     * empty string.
      */
     String textValue() default "";
 
     /**
-     * @return the minimal value of the element when it is a number field,
-     *         defaults to 0
+     * the minimal value of the element when it is a number field, defaults to
+     * 0.
      */
     double minimum() default 0d;
 
     /**
-     * @return the maximal value of the element when it is a number field,
-     *         defaults to 0
+     * the maximal value of the element when it is a number field, defaults to
+     * 0.
      */
     double maximum() default 0d;
 
     /**
-     * @return the step value of the element when it is a number field, defaults
-     *         to 0
+     * the step value of the element when it is a number field, defaults to 0.
      */
     double step() default 0d;
 
     /**
-     * @return the number format value of the element when it is a number field,
-     *         defaults to %g
+     * the number format value of the element when it is a number field,
+     * defaults to %g.
      */
     String numberFormat() default "%g";
 
     /**
-     * @return the default value of the element when it is a switch field,
-     *         defaults to an empty string
+     * the default value of the element when it is a switch field, defaults to
+     * an empty string.
      */
     SwitchStatus switchValue() default SwitchStatus.OFF;
 
     /**
-     * @return the property this element should be created in (defaults to the
-     *         last defined property field in the current class. Only specify
-     *         this field if the field is somewhere else.
+     * the property this element should be created in (defaults to the last
+     * defined property field in the current class. Only specify this field if
+     * the field is somewhere else.
      */
     String property() default "";
 
     /**
-     * @return the default value of the element when it is a light field,
-     *         defaults to an empty string
+     * the default value of the element when it is a light field, defaults to an
+     * empty string.
      */
     LightStates state() default LightStates.IDLE;
 }

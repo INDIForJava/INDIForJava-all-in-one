@@ -1,3 +1,14 @@
+/**
+ * Provides the classes necessary to create INDI Drivers, their Properties and
+ * Elements to which the INDI Clients may connect. Usually a INDI Driver will
+ * extend the class <code>INDIDriver</code> and will add as many
+ * <code>INDIProperty</code> as needed. Please check
+ * <code>laazotea.indi.driver.examples.INDIElTiempoDriver</code>, for a simple
+ * example on the use of the library. If you want to use it with the standard
+ * not I4J <code>indiserver</code> application you will have tu use a shell
+ * wrapper. A example one may be a <code>launch.sh</code> file with the
+ * following contents:
+ */
 package org.indilib.i4j.driver;
 
 /*
@@ -21,29 +32,3 @@ package org.indilib.i4j.driver;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import org.indilib.i4j.INDIBLOBValue;
-
-/**
- * A class representing a pair of a <code>INDIBLOBElement</code> and a
- * <code>INDIBLOBValue</code>.
- * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
- */
-public class INDIBLOBElementAndValue extends INDIElementAndValue<INDIBLOBElement, INDIBLOBValue> {
-
-    /**
-     * Constructs an instance of a <code>INDIBLOBElementAndValue</code>. This
-     * class should not usually be instantiated by specific Drivers.
-     * 
-     * @param element
-     *            The Number Element
-     * @param value
-     *            The number
-     */
-    public INDIBLOBElementAndValue(INDIBLOBElement element, INDIBLOBValue value) {
-        super(element, value);
-    }
-
-}

@@ -1,4 +1,7 @@
-package org.indilib.i4j.driver;
+/**
+ * event handling helper classes.
+ */
+package org.indilib.i4j.driver.event;
 
 /*
  * #%L
@@ -22,28 +25,3 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import org.indilib.i4j.INDIBLOBValue;
-
-/**
- * A class representing a pair of a <code>INDIBLOBElement</code> and a
- * <code>INDIBLOBValue</code>.
- * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
- */
-public class INDIBLOBElementAndValue extends INDIElementAndValue<INDIBLOBElement, INDIBLOBValue> {
-
-    /**
-     * Constructs an instance of a <code>INDIBLOBElementAndValue</code>. This
-     * class should not usually be instantiated by specific Drivers.
-     * 
-     * @param element
-     *            The Number Element
-     * @param value
-     *            The number
-     */
-    public INDIBLOBElementAndValue(INDIBLOBElement element, INDIBLOBValue value) {
-        super(element, value);
-    }
-
-}

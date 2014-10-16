@@ -1,25 +1,16 @@
 package org.indilib.i4j.driver;
 
 /*
- * #%L
- * INDI for Java Driver Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Driver Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.util.List;
@@ -39,6 +30,11 @@ import org.indilib.i4j.INDIException;
  * @version 1.34, November 7, 2013
  */
 public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
+
+    /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -6801320230512062046L;
 
     /**
      * The current Rule for this Switch Property.
@@ -66,12 +62,9 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param timeout
      *            The timeout of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @see INDIProperty
+     *            The rule of the Switch Property @ * @see INDIProperty
      */
-    public INDISwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, SwitchRules rule)
-            throws IllegalArgumentException {
+    public INDISwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, SwitchRules rule) {
         super(driver, name, label, group, state, permission, timeout);
 
         if (permission == PropertyPermissions.WO) {
@@ -104,14 +97,12 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param timeout
      *            The timeout of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @return The loaded switch property or a new constructed one if cannot be
-     *         loaded.
+     *            The rule of the Switch Property @ * @return The loaded switch
+     *            property or a new constructed one if cannot be loaded.
      * @see INDIProperty
      */
     public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout, SwitchRules rule) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout, SwitchRules rule) {
         INDISwitchProperty sp = loadSwitchProperty(driver, name);
 
         if (sp == null) {
@@ -133,7 +124,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      *         be loaded.
      */
     private static INDISwitchProperty loadSwitchProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
+        INDIProperty<?> prop;
 
         try {
             prop = INDIProperty.loadFromFile(driver, name);
@@ -169,12 +160,9 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param permission
      *            The permission of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @see INDIProperty
+     *            The rule of the Switch Property @ * @see INDIProperty
      */
-    public INDISwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, SwitchRules rule)
-            throws IllegalArgumentException {
+    public INDISwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, SwitchRules rule) {
         super(driver, name, label, group, state, permission, 0);
 
         if (permission == PropertyPermissions.WO) {
@@ -205,14 +193,12 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param permission
      *            The permission of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @return The loaded switch property or a new constructed one if cannot be
-     *         loaded.
+     *            The rule of the Switch Property @ * @return The loaded switch
+     *            property or a new constructed one if cannot be loaded.
      * @see INDIProperty
      */
     public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, SwitchRules rule) throws IllegalArgumentException {
+            PropertyPermissions permission, SwitchRules rule) {
         INDISwitchProperty sp = loadSwitchProperty(driver, name);
 
         if (sp == null) {
@@ -240,12 +226,9 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param permission
      *            The permission of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @see INDIProperty
+     *            The rule of the Switch Property @ * @see INDIProperty
      */
-    public INDISwitchProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, SwitchRules rule)
-            throws IllegalArgumentException {
+    public INDISwitchProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, SwitchRules rule) {
         super(driver, name, label, null, state, permission, 0);
 
         if (permission == PropertyPermissions.WO) {
@@ -273,14 +256,12 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param permission
      *            The permission of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @return The loaded switch property or a new constructed one if cannot be
-     *         loaded.
+     *            The rule of the Switch Property @ * @return The loaded switch
+     *            property or a new constructed one if cannot be loaded.
      * @see INDIProperty
      */
     public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission,
-            SwitchRules rule) throws IllegalArgumentException {
+            SwitchRules rule) {
         INDISwitchProperty sp = loadSwitchProperty(driver, name);
 
         if (sp == null) {
@@ -295,7 +276,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * Constructs an instance of <code>INDISwitchProperty</code> with a
      * particular <code>driver</code>, <code>name</code>, <code>state</code>,
      * <code>permission</code>, <code>rule</code>, and a 0 timeout, a default
-     * group and a label equal to its <code>name</code>
+     * group and a label equal to its <code>name</code>.
      * 
      * @param driver
      *            The Driver to which this property is associated.
@@ -306,11 +287,9 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param permission
      *            The permission of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @see INDIProperty
+     *            The rule of the Switch Property @ * @see INDIProperty
      */
-    public INDISwitchProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, SwitchRules rule) throws IllegalArgumentException {
+    public INDISwitchProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, SwitchRules rule) {
         super(driver, name, null, null, state, permission, 0);
 
         if (permission == PropertyPermissions.WO) {
@@ -336,14 +315,11 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * @param permission
      *            The permission of the Property
      * @param rule
-     *            The rule of the Switch Property
-     * @throws IllegalArgumentException
-     * @return The loaded switch property or a new constructed one if cannot be
-     *         loaded.
+     *            The rule of the Switch Property @return The loaded switch
+     *            property or a new constructed one if cannot be loaded.
      * @see INDIProperty
      */
-    public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, SwitchRules rule)
-            throws IllegalArgumentException {
+    public static INDISwitchProperty createSaveableSwitchProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, SwitchRules rule) {
         INDISwitchProperty sp = loadSwitchProperty(driver, name);
 
         if (sp == null) {
@@ -392,7 +368,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     }
 
     /**
-     * Gets the current Rule for this Switch Property
+     * Gets the current Rule for this Switch Property.
      * 
      * @return the current Rule for this Switch Property
      */
@@ -502,9 +478,9 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     }
 
     /**
-     * get the selected Element when the rule is ONE_OF_MANY
+     * get the selected Element when the rule is ONE_OF_MANY.
      * 
-     * @return
+     * @return the switch element that is turned on.
      */
     public INDISwitchElement getOnElement() {
         if (rule == SwitchRules.ONE_OF_MANY) {

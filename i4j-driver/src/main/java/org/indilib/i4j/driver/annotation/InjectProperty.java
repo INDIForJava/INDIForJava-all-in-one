@@ -44,45 +44,50 @@ import org.indilib.i4j.Constants.SwitchRules;
 public @interface InjectProperty {
 
     /**
-     * @return the permissions for the property, defaults to RW
+     * One minute in seconds.
+     */
+    int ONE_MINUTE_SECONDS = 60;
+
+    /**
+     * the permissions for the property, defaults to RW.
      */
     PropertyPermissions permission() default PropertyPermissions.RW;
 
     /**
-     * @return the timeout for the property defaults to 60
+     * the timeout for the property defaults to 60.
      */
-    int timeout() default 60;
+    int timeout() default ONE_MINUTE_SECONDS;
 
     /**
-     * @return name of the property (mandatory)
+     * name of the property (mandatory).
      */
     String name();
 
     /**
-     * @return label of the property (mandatory)
+     * label of the property (mandatory).
      */
     String label();
 
     /**
-     * @return the initial state of the property
+     * the initial state of the property.
      */
     PropertyStates state() default PropertyStates.IDLE;
 
     /**
-     * @return the tab group to use for this property (mandatory if it is not in
-     *         a group)
+     * the tab group to use for this property (mandatory if it is not in a
+     * group).
      */
     String group() default "";
 
     /**
-     * @return should the value of this property be saved in a property file?
-     *         defaults to false.
+     * should the value of this property be saved in a property file? defaults
+     * to false.
      */
     boolean saveable() default false;
 
     /**
-     * @return if this property is a switch property what rule should apply?
-     *         defaults to ONE_OF_MANY.
+     * if this property is a switch property what rule should apply? defaults to
+     * ONE_OF_MANY.
      */
     SwitchRules switchRule() default SwitchRules.ONE_OF_MANY;
 

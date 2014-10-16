@@ -51,10 +51,9 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
      *            The group of the Property
      * @param state
      *            The initial state of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDILightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state) throws IllegalArgumentException {
+    public INDILightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state) {
         super(driver, name, label, group, state, PropertyPermissions.RO, 0);
     }
 
@@ -75,13 +74,11 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
      *            The group of the Property
      * @param state
      *            The initial state of the Property
-     * @throws IllegalArgumentException
      * @return The loaded light property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDILightProperty createSaveableLightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state)
-            throws IllegalArgumentException {
+    public static INDILightProperty createSaveableLightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state) {
         INDILightProperty lp = loadLightProperty(driver, name);
 
         if (lp == null) {
@@ -133,10 +130,9 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
      *            The label of the Property
      * @param state
      *            The initial state of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDILightProperty(INDIDriver driver, String name, String label, PropertyStates state) throws IllegalArgumentException {
+    public INDILightProperty(INDIDriver driver, String name, String label, PropertyStates state) {
         super(driver, name, label, null, state, PropertyPermissions.RO, 0);
     }
 
@@ -155,12 +151,11 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
      *            The label of the Property
      * @param state
      *            The initial state of the Property
-     * @throws IllegalArgumentException
      * @return The loaded light property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDILightProperty createSaveableLightProperty(INDIDriver driver, String name, String label, PropertyStates state) throws IllegalArgumentException {
+    public static INDILightProperty createSaveableLightProperty(INDIDriver driver, String name, String label, PropertyStates state) {
         INDILightProperty lp = loadLightProperty(driver, name);
 
         if (lp == null) {
@@ -183,10 +178,9 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
      *            The name of the Property
      * @param state
      *            The initial state of the Property
-     * @throws IllegalArgumentException
      * @see INDIProperty
      */
-    public INDILightProperty(INDIDriver driver, String name, PropertyStates state) throws IllegalArgumentException {
+    public INDILightProperty(INDIDriver driver, String name, PropertyStates state) {
         super(driver, name, null, null, state, PropertyPermissions.RO, 0);
     }
 
@@ -202,12 +196,11 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
      *            The name of the Property
      * @param state
      *            The initial state of the Property
-     * @throws IllegalArgumentException
      * @return The loaded light property or a new constructed one if cannot be
      *         loaded.
      * @see INDIProperty
      */
-    public static INDILightProperty createSaveableLightProperty(INDIDriver driver, String name, PropertyStates state) throws IllegalArgumentException {
+    public static INDILightProperty createSaveableLightProperty(INDIDriver driver, String name, PropertyStates state) {
         INDILightProperty lp = loadLightProperty(driver, name);
 
         if (lp == null) {

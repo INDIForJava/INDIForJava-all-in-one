@@ -70,7 +70,6 @@ public class INDILightElement extends INDIElement {
      *            The name of the Element.
      * @param state
      *            The initial state of the Element.
-     * @throws IllegalArgumentException
      */
     public INDILightElement(INDILightProperty property, String name, LightStates state) {
         super(property, name);
@@ -89,7 +88,7 @@ public class INDILightElement extends INDIElement {
     }
 
     @Override
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         LightStates ns = null;
         try {
             ns = (LightStates) newValue;

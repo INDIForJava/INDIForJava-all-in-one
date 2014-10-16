@@ -38,7 +38,12 @@ import org.indilib.i4j.INDIException;
 public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
 
     /**
-     * The only Switch Element of the Property
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -7203487459293368286L;
+
+    /**
+     * The only Switch Element of the Property.
      */
     private INDISwitchElement option;
 
@@ -102,13 +107,12 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      *            The name of the option
      * @param initialStatus
      *            The initial status of the option
-     * @throws IllegalArgumentException
      * @return The loaded switch one or none property or a new constructed one
      *         if cannot be loaded.
      * @see INDISwitchProperty
      */
     public static INDISwitchOneOrNoneProperty createSaveableSwitchOneOrNoneProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout, String option, SwitchStatus initialStatus) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout, String option, SwitchStatus initialStatus) {
         INDISwitchOneOrNoneProperty sp = loadSwitchOneOrNoneProperty(driver, name);
 
         if (sp == null) {
@@ -202,13 +206,12 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      *            The name of the option
      * @param initialStatus
      *            The initial status of the option
-     * @throws IllegalArgumentException
      * @return The loaded switch one or none property or a new constructed one
      *         if cannot be loaded.
      * @see INDISwitchProperty
      */
     public static INDISwitchOneOrNoneProperty createSaveableSwitchOneOrNoneProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, String option, SwitchStatus initialStatus) throws IllegalArgumentException {
+            PropertyPermissions permission, String option, SwitchStatus initialStatus) {
         INDISwitchOneOrNoneProperty sp = loadSwitchOneOrNoneProperty(driver, name);
 
         if (sp == null) {
@@ -270,13 +273,12 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      *            The name of the option
      * @param initialStatus
      *            The initial status of the option
-     * @throws IllegalArgumentException
      * @return The loaded switch one or none property or a new constructed one
      *         if cannot be loaded.
      * @see INDISwitchProperty
      */
     public static INDISwitchOneOrNoneProperty createSaveableSwitchOneOrNoneProperty(INDIDriver driver, String name, String label, PropertyStates state,
-            PropertyPermissions permission, String option, SwitchStatus initialStatus) throws IllegalArgumentException {
+            PropertyPermissions permission, String option, SwitchStatus initialStatus) {
         INDISwitchOneOrNoneProperty sp = loadSwitchOneOrNoneProperty(driver, name);
 
         if (sp == null) {
@@ -333,13 +335,12 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      *            The name of the option
      * @param initialStatus
      *            The initial status of the option
-     * @throws IllegalArgumentException
      * @return The loaded switch one or none property or a new constructed one
      *         if cannot be loaded.
      * @see INDISwitchProperty
      */
     public static INDISwitchOneOrNoneProperty createSaveableSwitchOneOrNoneProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission,
-            String option, SwitchStatus initialStatus) throws IllegalArgumentException {
+            String option, SwitchStatus initialStatus) {
         INDISwitchOneOrNoneProperty sp = loadSwitchOneOrNoneProperty(driver, name);
 
         if (sp == null) {

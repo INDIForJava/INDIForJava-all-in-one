@@ -63,11 +63,10 @@ public abstract class INDIElement implements Serializable {
      * @param name
      *            The name of the Element
      * @param label
-     *            The label of the Element
-     * @throws IllegalArgumentException
-     *             if the <code>name</code> * is <code>null</code>.
+     *            The label of the Element if the <code>name</code> * is
+     *            <code>null</code>.
      */
-    protected INDIElement(INDIProperty property, String name, String label) throws IllegalArgumentException {
+    protected INDIElement(INDIProperty property, String name, String label) {
         this.property = property;
 
         if (name == null) {
@@ -104,11 +103,10 @@ public abstract class INDIElement implements Serializable {
      * @param property
      *            The Property to which this Element belongs.
      * @param name
-     *            The name of the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>name</code> * is <code>null</code>.
+     *            The name of the Element. if the <code>name</code> * is
+     *            <code>null</code>.
      */
-    protected INDIElement(INDIProperty property, String name) throws IllegalArgumentException {
+    protected INDIElement(INDIProperty property, String name) {
         this.property = property;
 
         if (name == null) {
@@ -176,12 +174,10 @@ public abstract class INDIElement implements Serializable {
      * Sets the value of the Element to <code>newValue</code>.
      * 
      * @param newValue
-     *            The new value for the Element.
-     * @throws IllegalArgumentException
-     *             if the <code>newValue</code> is not a valid one for the type
-     *             of the Element.
+     *            The new value for the Element. if the <code>newValue</code> is
+     *            not a valid one for the type of the Element.
      */
-    public abstract void setValue(Object newValue) throws IllegalArgumentException;
+    public abstract void setValue(Object newValue);
 
     /**
      * Gets a &lt;oneXXX&gt; XML string describing the current value of the

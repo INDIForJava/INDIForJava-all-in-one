@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 
 /**
  * Inject an extension class in the current field and change the names of them
- * in a generic way
+ * in a generic way.
  * 
  * @author Richard van Nieuwenhoven
  */
@@ -40,22 +40,24 @@ import java.lang.annotation.Target;
 public @interface InjectExtension {
 
     /**
-     * @return a prefix that will be inserted before all fields in this
-     *         extension (except the renamed ones). default is that the names
-     *         stay as they are. This can be necessary if the extension in
-     *         included multiple times in one driver.
+     * a prefix that will be inserted before all fields in this extension
+     * (except the renamed ones). default is that the names stay as they are.
+     * This can be necessary if the extension in included multiple times in one
+     * driver.
      */
     String prefix() default "";
 
     /**
-     * @return if in an extension any property has no group the here specified
-     *         group will be used.
+     * if in an extension any property has no group the here specified group
+     * will be used.
      */
     String group() default "";
 
     /**
-     * @return is specific fields in the extension has to have specific names it
-     *         can be done with these renamings
+     * is specific fields in the extension has to have specific names it can be
+     * done with these renamings.
      */
-    Rename[] rename() default {};
+    Rename[] rename() default {
+    // default no renaming
+    };
 }

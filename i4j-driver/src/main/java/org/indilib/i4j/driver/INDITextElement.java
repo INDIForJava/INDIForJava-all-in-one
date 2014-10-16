@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 public class INDITextElement extends INDIElement {
 
     /**
-     * The current value of the Text Element
+     * The current value of the Text Element.
      */
     private String value;
 
@@ -67,10 +67,9 @@ public class INDITextElement extends INDIElement {
      * @param name
      *            The name of the Element.
      * @param value
-     *            The initial value of the Element
-     * @throws IllegalArgumentException
+     *            The initial value of the Element @
      */
-    public INDITextElement(INDITextProperty property, String name, String value) throws IllegalArgumentException {
+    public INDITextElement(INDITextProperty property, String name, String value) {
         super(property, name);
 
         this.value = value.trim();
@@ -87,7 +86,7 @@ public class INDITextElement extends INDIElement {
     }
 
     @Override
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         String v = null;
 
         try {

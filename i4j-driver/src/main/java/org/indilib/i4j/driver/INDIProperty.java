@@ -38,6 +38,8 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.event.IEventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class representing a INDI Property. The subclasses
@@ -46,48 +48,60 @@ import org.indilib.i4j.driver.event.IEventHandler;
  * <code>INDITextProperty</code> define the basic Properties that a INDI Drivers
  * may contain according to the INDI protocol.
  * 
+ * @param <Element>
+ *            der element type in this property.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.35, November 11, 2013
  */
 public abstract class INDIProperty<Element extends INDIElement> implements Serializable {
 
     /**
-     * The Driver to which this property belongs
+     * Serialization id.
+     */
+    private static final long serialVersionUID = 7974207228775777212L;
+
+    /**
+     * the log to write messages to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIProperty.class);
+
+    /**
+     * The Driver to which this property belongs.
      */
     private transient INDIDriver driver;
 
     /**
-     * This Property name
+     * This Property name.
      */
     private String name;
 
     /**
-     * This Property label
+     * This Property label.
      */
     private String label;
 
     /**
-     * The group to which this Property might be assigned
+     * The group to which this Property might be assigned.
      */
     private String group;
 
     /**
-     * The current state of this Property
+     * The current state of this Property.
      */
     private PropertyStates state;
 
     /**
-     * The permission of this Property
+     * The permission of this Property.
      */
     private PropertyPermissions permission;
 
     /**
-     * The timeout of this Property
+     * The timeout of this Property.
      */
     private int timeout;
 
     /**
-     * A list of Elements for this Property
+     * A list of Elements for this Property.
      */
     private LinkedHashMap<String, Element> elements;
 
@@ -108,7 +122,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     private boolean saveable;
 
     /**
-     * Event handlere for simpler event definitions
+     * Event handlere for simpler event definitions.
      */
     private IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler;
 
@@ -131,13 +145,10 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * @param permission
      *            The permission of the Property
      * @param timeout
-     *            The timeout of the Property
-     * @throws IllegalArgumentException
-     *             if <code>name<code> is
-     * <code>null</code> or empty.
+     *            The timeout of the Property if <code>name</code> is
+     *            <code>null</code> or empty.
      */
-    protected INDIProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout)
-            throws IllegalArgumentException {
+    protected INDIProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
         this.driver = driver;
 
         // Name
@@ -200,6 +211,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * factories.
      * 
      * @param saveable
+     *            new value.
      */
     public void setSaveable(boolean saveable) {
         this.saveable = saveable;
@@ -207,6 +219,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
 
     /**
      * Sets the Driver of the Property.
+     * 
+     * @param driver
+     *            new value.
      */
     private void setDriver(INDIDriver driver) {
         this.driver = driver;
@@ -235,11 +250,10 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * Sets the timeout of the property.
      * 
      * @param newTimeout
-     *            The new timeout of the Property.
-     * @throws IllegalArgumentException
-     *             if <code>timeout</code> is less than 0.
+     *            The new timeout of the Property. if <code>timeout</code> is
+     *            less than 0.
      */
-    public void setTimeout(int newTimeout) throws IllegalArgumentException {
+    public void setTimeout(int newTimeout) {
         if (timeout < 0) {
             throw new IllegalArgumentException("Illegal timeout for the Property");
         }
@@ -275,7 +289,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     }
 
     /**
-     * Gets the name of this Property
+     * Gets the name of this Property.
      * 
      * @return the name of this Property
      */
@@ -284,7 +298,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     }
 
     /**
-     * Gets the number of Elements in this Property
+     * Gets the number of Elements in this Property.
      * 
      * @return the number of Elements in this Property.
      */
@@ -301,6 +315,12 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         return permission;
     }
 
+    /**
+     * Set the permission of a property.
+     * 
+     * @param permission
+     *            the new value.
+     */
     public void setPermission(PropertyPermissions permission) {
         this.permission = permission;
     }
@@ -322,9 +342,8 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @param element
      *            the Element to be added.
-     * @throws IllegalArgumentException
      */
-    protected void addElement(Element element) throws IllegalArgumentException {
+    protected void addElement(Element element) {
         if ((this instanceof INDITextProperty) && (!(element instanceof INDITextElement))) {
             throw new IllegalArgumentException("Text Element cannot be added to Text Property");
         }
@@ -355,14 +374,14 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     /**
      * Gets a particular Element of this Property by its name.
      * 
-     * @param name
+     * @param elementName
      *            The name of the Element to be returned
      * @return The Element of this Property with the given <code>name</code>.
      *         <code>null</code> if there is no Element with that
      *         <code>name</code>.
      */
-    public Element getElement(String name) {
-        return elements.get(name);
+    public Element getElement(String elementName) {
+        return elements.get(elementName);
     }
 
     /**
@@ -473,6 +492,8 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * Gets the XML code to set the values of the property with a
      * <code>message</code>. Should not usually be called by the Drivers.
      * 
+     * @param includeMinMax
+     *            include the min and max value in the xml.
      * @param message
      *            An message to be sent to the client when setting the values of
      *            the property.
@@ -483,6 +504,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
             try {
                 saveToFile();
             } catch (IOException e) {
+                LOG.error("could not save the property to a file", e);
             }
         }
 
@@ -558,6 +580,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * on subsecuent executions of the driver.
      * 
      * @throws IOException
+     *             if the property could not be saved.
      */
     private void saveToFile() throws IOException {
         File i4jDir = FileUtils.getI4JBaseDirectory();
@@ -586,8 +609,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * Convenience method to get the name of the file for a particular property
      * to be saved / retrieved.
      * 
-     * @param property
-     *            The property
      * @return A name for a file in which a property will be saved / restored
      */
     private String getPropertyNameForFile() {
@@ -631,21 +652,17 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      *             If there is some problem loading it (for example if the file
      *             does not exist)
      */
-    public static INDIProperty loadFromFile(INDIDriver driver, String propertyName) throws INDIException {
+    public static INDIProperty<?> loadFromFile(INDIDriver driver, String propertyName) throws INDIException {
         File i4jDir = FileUtils.getI4JBaseDirectory();
-
         File propertiesDir = new File(i4jDir, PROPERTIES_DIR_NAME);
-
         File file = new File(propertiesDir, getPropertyNameForFile(driver, propertyName));
 
-        INDIProperty prop = null;
-
+        INDIProperty<?> prop;
         try {
             FileInputStream fis = new FileInputStream(file);
-
             ObjectInputStream ois = new ObjectInputStream(fis);
 
-            prop = (INDIProperty) ois.readObject();
+            prop = (INDIProperty<?>) ois.readObject();
 
             ois.close();
         } catch (ClassNotFoundException ex) {
@@ -653,7 +670,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         } catch (IOException ex) {
             throw new INDIException("Problem when loading a property from file " + file.getName() + " - IOException");
         }
-
         prop.setDriver(driver);
         return prop;
     }

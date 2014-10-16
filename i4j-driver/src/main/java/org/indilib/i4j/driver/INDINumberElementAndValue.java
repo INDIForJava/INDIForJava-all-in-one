@@ -31,6 +31,15 @@ package org.indilib.i4j.driver;
  */
 public class INDINumberElementAndValue extends INDIElementAndValue<INDINumberElement, Double> {
 
+    /**
+     * Constructs an instance of a <code>INDINumberElementAndValue</code>. This
+     * class should not usually be instantiated by specific Drivers.
+     * 
+     * @param element
+     *            The Number Element
+     * @param value
+     *            The number
+     */
     public INDINumberElementAndValue(INDINumberElement element, Double value) {
         super(element, value);
     }

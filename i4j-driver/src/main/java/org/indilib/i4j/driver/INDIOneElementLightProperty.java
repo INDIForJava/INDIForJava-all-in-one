@@ -36,7 +36,12 @@ import org.indilib.i4j.INDIException;
 public class INDIOneElementLightProperty extends INDILightProperty {
 
     /**
-     * The Light Element
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -243526454167834810L;
+
+    /**
+     * The Light Element.
      */
     private INDILightElement element;
 
@@ -58,11 +63,9 @@ public class INDIOneElementLightProperty extends INDILightProperty {
      *            The initial state of the Property
      * @param lightState
      *            Initial state for the Element
-     * @throws IllegalArgumentException
      * @see INDILightProperty
      */
-    public INDIOneElementLightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, LightStates lightState)
-            throws IllegalArgumentException {
+    public INDIOneElementLightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, LightStates lightState) {
         super(driver, name, label, group, state);
 
         element = new INDILightElement(this, name, label, lightState);
@@ -87,13 +90,12 @@ public class INDIOneElementLightProperty extends INDILightProperty {
      *            The initial state of the Property
      * @param lightState
      *            Initial state for the Element
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDILightProperty
      */
     public static INDIOneElementLightProperty createSaveableOneElementLightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            LightStates lightState) throws IllegalArgumentException {
+            LightStates lightState) {
         INDIOneElementLightProperty lp = loadOneElementLightProperty(driver, name);
 
         if (lp == null) {
@@ -147,10 +149,9 @@ public class INDIOneElementLightProperty extends INDILightProperty {
      *            The initial state of the Property
      * @param lightState
      *            Initial state for the Element
-     * @throws IllegalArgumentException
      * @see INDILightProperty
      */
-    public INDIOneElementLightProperty(INDIDriver driver, String name, String label, PropertyStates state, LightStates lightState) throws IllegalArgumentException {
+    public INDIOneElementLightProperty(INDIDriver driver, String name, String label, PropertyStates state, LightStates lightState) {
         super(driver, name, label, state);
 
         element = new INDILightElement(this, name, label, lightState);
@@ -173,13 +174,11 @@ public class INDIOneElementLightProperty extends INDILightProperty {
      *            The initial state of the Property
      * @param lightState
      *            Initial state for the Element
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDILightProperty
      */
-    public static INDIOneElementLightProperty createSaveableOneElementLightProperty(INDIDriver driver, String name, String label, PropertyStates state, LightStates lightState)
-            throws IllegalArgumentException {
+    public static INDIOneElementLightProperty createSaveableOneElementLightProperty(INDIDriver driver, String name, String label, PropertyStates state, LightStates lightState) {
         INDIOneElementLightProperty lp = loadOneElementLightProperty(driver, name);
 
         if (lp == null) {
@@ -203,10 +202,9 @@ public class INDIOneElementLightProperty extends INDILightProperty {
      *            The initial state of the Property
      * @param lightState
      *            Initial state for the Element
-     * @throws IllegalArgumentException
      * @see INDILightProperty
      */
-    public INDIOneElementLightProperty(INDIDriver driver, String name, PropertyStates state, LightStates lightState) throws IllegalArgumentException {
+    public INDIOneElementLightProperty(INDIDriver driver, String name, PropertyStates state, LightStates lightState) {
         super(driver, name, state);
 
         element = new INDILightElement(this, name, lightState);
@@ -227,13 +225,11 @@ public class INDIOneElementLightProperty extends INDILightProperty {
      *            The initial state of the Property
      * @param lightState
      *            Initial state for the Element
-     * @throws IllegalArgumentException
      * @return The loaded text property or a new constructed one if cannot be
      *         loaded.
      * @see INDILightProperty
      */
-    public static INDIOneElementLightProperty createSaveableOneElementLightProperty(INDIDriver driver, String name, PropertyStates state, LightStates lightState)
-            throws IllegalArgumentException {
+    public static INDIOneElementLightProperty createSaveableOneElementLightProperty(INDIDriver driver, String name, PropertyStates state, LightStates lightState) {
         INDIOneElementLightProperty lp = loadOneElementLightProperty(driver, name);
 
         if (lp == null) {
@@ -259,10 +255,9 @@ public class INDIOneElementLightProperty extends INDILightProperty {
      * 
      * @param newValue
      *            The new value for the Element
-     * @throws IllegalArgumentException
      * @see INDILightElement#setValue(Object newValue)
      */
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         element.setValue(newValue);
     }
 }

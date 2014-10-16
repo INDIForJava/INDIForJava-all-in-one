@@ -33,6 +33,15 @@ import org.indilib.i4j.Constants.SwitchStatus;
  */
 public class INDISwitchElementAndValue extends INDIElementAndValue<INDISwitchElement, SwitchStatus> {
 
+    /**
+     * Constructs an instance of a <code>INDISwitchElementAndValue</code>. This
+     * class should not usually be instantiated by specific Drivers.
+     * 
+     * @param element
+     *            The Number Element
+     * @param value
+     *            The number
+     */
     public INDISwitchElementAndValue(INDISwitchElement element, SwitchStatus value) {
         super(element, value);
     }

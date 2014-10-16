@@ -35,6 +35,14 @@ import org.indilib.i4j.INDIException;
  */
 public class INDIOneElementNumberProperty extends INDINumberProperty {
 
+    /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -4210491722297116674L;
+
+    /**
+     * the single element of this propery.
+     */
     private INDINumberElement element;
 
     /**
@@ -69,11 +77,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout,
-            String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+            String minimum, String maximum, String step, String format, String value) {
         super(driver, name, label, group, state, permission, timeout);
 
         element = new INDINumberElement(this, name, label, value, minimum, maximum, step, format);
@@ -111,11 +118,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout,
-            double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+            double minimum, double maximum, double step, String format, double value) {
         super(driver, name, label, group, state, permission, timeout);
 
         element = new INDINumberElement(this, name, label, value, minimum, maximum, step, format);
@@ -154,13 +160,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout, String minimum, String maximum, String step, String format, String value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -204,13 +209,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+            PropertyPermissions permission, int timeout, double minimum, double maximum, double step, String format, double value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -232,7 +236,7 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *         be loaded.
      */
     private static INDIOneElementNumberProperty loadOneElementNumberProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
+        INDIProperty<?> prop;
 
         try {
             prop = INDIProperty.loadFromFile(driver, name);
@@ -278,11 +282,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String minimum,
-            String maximum, String step, String format, String value) throws IllegalArgumentException {
+            String maximum, String step, String format, String value) {
         super(driver, name, label, group, state, permission);
 
         element = new INDINumberElement(this, name, label, value, minimum, maximum, step, format);
@@ -317,11 +320,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, double minimum,
-            double maximum, double step, String format, double value) throws IllegalArgumentException {
+            double maximum, double step, String format, double value) {
         super(driver, name, label, group, state, permission);
 
         element = new INDINumberElement(this, name, label, value, minimum, maximum, step, format);
@@ -358,13 +360,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+            PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -406,13 +407,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+            PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -450,11 +450,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, String minimum, String maximum,
-            String step, String format, String value) throws IllegalArgumentException {
+            String step, String format, String value) {
         super(driver, name, label, state, permission);
 
         element = new INDINumberElement(this, name, label, value, minimum, maximum, step, format);
@@ -487,11 +486,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission, double minimum, double maximum,
-            double step, String format, double value) throws IllegalArgumentException {
+            double step, String format, double value) {
         super(driver, name, label, state, permission);
 
         element = new INDINumberElement(this, name, label, value, minimum, maximum, step, format);
@@ -526,13 +524,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, PropertyStates state,
-            PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+            PropertyPermissions permission, String minimum, String maximum, String step, String format, String value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -572,13 +569,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, String label, PropertyStates state,
-            PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+            PropertyPermissions permission, double minimum, double maximum, double step, String format, double value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -614,11 +610,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, String minimum, String maximum, String step,
-            String format, String value) throws IllegalArgumentException {
+            String format, String value) {
         super(driver, name, state, permission);
 
         element = new INDINumberElement(this, name, value, minimum, maximum, step, format);
@@ -649,11 +644,10 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberProperty
      */
     public INDIOneElementNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, double minimum, double maximum, double step,
-            String format, double value) throws IllegalArgumentException {
+            String format, double value) {
         super(driver, name, state, permission);
 
         element = new INDINumberElement(this, name, value, minimum, maximum, step, format);
@@ -685,13 +679,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission,
-            String minimum, String maximum, String step, String format, String value) throws IllegalArgumentException {
+            String minimum, String maximum, String step, String format, String value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -728,13 +721,12 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      *            the number format for the Element
      * @param value
      *            Initial value for the Element
-     * @throws IllegalArgumentException
      * @return The loaded number property or a new constructed one if cannot be
      *         loaded.
      * @see INDINumberProperty
      */
     public static INDIOneElementNumberProperty createSaveableOneElementNumberProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission,
-            double minimum, double maximum, double step, String format, double value) throws IllegalArgumentException {
+            double minimum, double maximum, double step, String format, double value) {
         INDIOneElementNumberProperty np = loadOneElementNumberProperty(driver, name);
 
         if (np == null) {
@@ -760,10 +752,9 @@ public class INDIOneElementNumberProperty extends INDINumberProperty {
      * 
      * @param newValue
      *            The new value for the Element
-     * @throws IllegalArgumentException
      * @see INDINumberElement#setValue(Object newValue)
      */
-    public void setValue(Object newValue) throws IllegalArgumentException {
+    public void setValue(Object newValue) {
         element.setValue(newValue);
     }
 }
