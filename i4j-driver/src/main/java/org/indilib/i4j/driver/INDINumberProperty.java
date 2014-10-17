@@ -27,6 +27,7 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIDateFormat;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI Number Property.
@@ -65,6 +66,17 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      */
     public INDINumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
         super(driver, name, label, group, state, permission, timeout);
+    }
+
+    /**
+     * Constructs an instance of <code>INDINumberProperty</code> with the
+     * partikular setting in the builder.
+     * 
+     * @param builder
+     *            the builder with all the properties.
+     */
+    public INDINumberProperty(INDIPropertyBuilder builder) {
+        super(builder);
     }
 
     /**
@@ -351,5 +363,10 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
         String xml = "</setNumberVector>";
 
         return xml;
+    }
+
+    @Override
+    protected Class<INDINumberElement> elementClass() {
+        return INDINumberElement.class;
     }
 }

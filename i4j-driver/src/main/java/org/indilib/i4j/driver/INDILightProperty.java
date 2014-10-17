@@ -265,4 +265,9 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
 
         return xml;
     }
+
+    @Override
+    protected Class<INDILightElement> elementClass() {
+        return INDILightElement.class;
+    }
 }

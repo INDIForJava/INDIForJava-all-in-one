@@ -26,6 +26,7 @@ import java.util.Formatter;
 import java.util.Locale;
 
 import org.indilib.i4j.INDISexagesimalFormatter;
+import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -70,6 +71,19 @@ public class INDINumberElement extends INDIElement {
      * A formatter used to parse and format the values.
      */
     private INDISexagesimalFormatter sFormatter;
+
+    /**
+     * Constructs an instance of a <code>INDINumberElement</code> with the
+     * settings from the <code>builder</code>.
+     */
+    public INDINumberElement(INDIElementBuilder<INDINumberElement> builder) {
+        super(builder);
+        setNumberFormat(builder.numberFormat());
+        this.min = builder.minimum();
+        this.max = builder.maximum();
+        this.step = builder.step();
+        setValueAsdouble(builder.numberValue());
+    }
 
     /**
      * Constructs an instance of a <code>INDINumberElement</code> with a
@@ -137,82 +151,6 @@ public class INDINumberElement extends INDIElement {
      */
     public INDINumberElement(INDINumberProperty property, String name, String label, double value, double minimum, double maximum, double step, String numberFormat) {
         super(property, name, label);
-
-        setNumberFormat(numberFormat);
-
-        this.min = minimum;
-
-        this.max = maximum;
-
-        this.step = step;
-
-        setValueAsdouble(value);
-    }
-
-    /**
-     * Constructs an instance of a <code>INDINumberElement</code> with a
-     * <code>name</code>, a initial <code>value</code>, a <code>minimum</code>,
-     * a <code>maximum</code>, a <code>step</code> and a
-     * <code>numberFormat</code>. The label of the Element will be a copy of the
-     * <code>name</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param value
-     *            The initial value of the Element.
-     * @param minimum
-     *            The minimum of the Element.
-     * @param maximum
-     *            The maximum of the Element.
-     * @param step
-     *            The step of the Element.
-     * @param numberFormat
-     *            The number format of the element. if any of the
-     *            <code>value</code>, <code>minimum</code>, <code>maximum</code>
-     *            or <code>step</code> are not well formatted or if the initial
-     *            Value is not in [minimum, maximum].
-     */
-    public INDINumberElement(INDINumberProperty property, String name, String value, String minimum, String maximum, String step, String numberFormat) {
-        super(property, name);
-
-        setNumberFormat(numberFormat);
-
-        setMin(minimum);
-
-        setMax(maximum);
-
-        setStep(step);
-
-        setValueAsString(value);
-    }
-
-    /**
-     * Constructs an instance of a <code>INDINumberElement</code> with a
-     * <code>name</code>, a initial <code>value</code>, a <code>minimum</code>,
-     * a <code>maximum</code>, a <code>step</code> and a
-     * <code>numberFormat</code>. The label of the Element will be a copy of the
-     * <code>name</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param value
-     *            The initial value of the Element.
-     * @param minimum
-     *            The minimum of the Element.
-     * @param maximum
-     *            The maximum of the Element.
-     * @param step
-     *            The step of the Element.
-     * @param numberFormat
-     *            The number format of the element. if the initial Value is not
-     *            in [minimum, maximum].
-     */
-    public INDINumberElement(INDINumberProperty property, String name, double value, double minimum, double maximum, double step, String numberFormat) {
-        super(property, name);
 
         setNumberFormat(numberFormat);
 

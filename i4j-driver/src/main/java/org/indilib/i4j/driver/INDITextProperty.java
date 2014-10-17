@@ -349,4 +349,9 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
 
         return xml;
     }
+
+    @Override
+    protected Class<INDITextElement> elementClass() {
+        return INDITextElement.class;
+    }
 }

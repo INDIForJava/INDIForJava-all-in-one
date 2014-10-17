@@ -39,6 +39,7 @@ import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
 import org.indilib.i4j.driver.event.IEventHandler;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 import org.indilib.i4j.driver.util.INDIPropertyInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1083,5 +1084,16 @@ public abstract class INDIDriver implements INDIProtocolParser {
     public void isBeingDestroyed() {
         finishReader();
         removeDevice("Removing " + getName());
+    }
+
+    /**
+     * @param clazz
+     *            the property class.
+     * @param <PropertyClass>
+     *            the property class.
+     * @return a new property builder.
+     */
+    public <PropertyClass extends INDIProperty<?>> INDIPropertyBuilder<PropertyClass> newProperty(Class<PropertyClass> clazz) {
+        return new INDIPropertyBuilder<PropertyClass>(clazz).driver(this);
     }
 }

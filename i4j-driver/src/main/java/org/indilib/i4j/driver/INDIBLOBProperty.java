@@ -27,6 +27,7 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIDateFormat;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI BLOB Property.
@@ -35,6 +36,17 @@ import org.indilib.i4j.INDIException;
  * @version 1.34, November 7, 2013
  */
 public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
+
+    /**
+     * Constructs an instance of <code>INDIBLOBProperty</code> with the
+     * properties collected by the builder.
+     * 
+     * @param builder
+     *            the builder containing the properties.
+     */
+    public INDIBLOBProperty(INDIPropertyBuilder<INDIBLOBProperty> builder) {
+        super(builder);
+    }
 
     /**
      * Constructs an instance of <code>INDIBLOBProperty</code> with a particular
@@ -345,5 +357,10 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
         String xml = "</setBLOBVector>";
 
         return xml;
+    }
+
+    @Override
+    protected Class<INDIBLOBElement> elementClass() {
+        return INDIBLOBElement.class;
     }
 }

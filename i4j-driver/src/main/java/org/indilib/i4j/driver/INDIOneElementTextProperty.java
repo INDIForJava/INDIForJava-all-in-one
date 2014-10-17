@@ -272,62 +272,6 @@ public class INDIOneElementTextProperty extends INDITextProperty {
     }
 
     /**
-     * Constructs an instance of <code>INDIOneElementTextProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>state</code>,
-     * <code>permission</code> and a initial <code>value</code> for the Element.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param value
-     *            Initial value for the Element
-     * @see INDITextProperty
-     */
-    public INDIOneElementTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission, String value) {
-        super(driver, name, state, permission);
-
-        element = new INDITextElement(this, name, value);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>state</code>, <code>permission</code> and a initial
-     * <code>value</code> for the Element. The property will autosave its status
-     * to a file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param value
-     *            Initial value for the Element
-     * @return The loaded text property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDITextProperty
-     */
-    public static INDIOneElementTextProperty createSaveableOneElementTextProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission,
-            String value) {
-        INDIOneElementTextProperty tp = loadOneElementTextProperty(driver, name);
-
-        if (tp == null) {
-            tp = new INDIOneElementTextProperty(driver, name, state, permission, value);
-            tp.setSaveable(true);
-        }
-
-        return tp;
-    }
-
-    /**
      * Gets the value of the Element.
      * 
      * @return The Value of the Element.

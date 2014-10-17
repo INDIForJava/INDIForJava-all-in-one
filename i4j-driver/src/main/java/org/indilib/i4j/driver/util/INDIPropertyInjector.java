@@ -212,6 +212,7 @@ public final class INDIPropertyInjector {
         if (elem != null) {
             INDIProperty<?> propertyToConnect = findNamedProperty(elem.property(), this.lastProperty);
             if (propertyToConnect != null) {
+                propertyToConnect.newElement().set(elem);
                 INDIElement lastElement = null;
                 if (INDINumberElement.class.isAssignableFrom(field.getType())) {
                     lastElement =

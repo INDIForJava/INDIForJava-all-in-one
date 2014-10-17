@@ -23,6 +23,7 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.INDIBLOBValue;
+import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -34,9 +35,23 @@ import org.w3c.dom.Element;
 public class INDIBLOBElement extends INDIElement {
 
     /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -2684237095700108321L;
+
+    /**
      * The current value of the BLOB Element
      */
     private INDIBLOBValue value;
+
+    /**
+     * Constructs an instance of a <code>INDIBLOBElement</code> with the
+     * settings from the <code>builder</code>.
+     */
+    public INDIBLOBElement(INDIElementBuilder<INDIBLOBElement> builder) {
+        super(builder);
+        value = new INDIBLOBValue(new byte[0], "");
+    }
 
     /**
      * Constructs an instance of a <code>INDIBLOBElement</code> with a
@@ -51,21 +66,6 @@ public class INDIBLOBElement extends INDIElement {
      */
     public INDIBLOBElement(INDIBLOBProperty property, String name, String label) {
         super(property, name, label);
-
-        value = new INDIBLOBValue(new byte[0], "");
-    }
-
-    /**
-     * Constructs an instance of a <code>INDIBLOBElement</code> with a
-     * <code>name</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     */
-    public INDIBLOBElement(INDIBLOBProperty property, String name) {
-        super(property, name);
 
         value = new INDIBLOBValue(new byte[0], "");
     }

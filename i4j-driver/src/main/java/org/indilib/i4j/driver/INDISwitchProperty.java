@@ -495,4 +495,8 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         }
     }
 
+    @Override
+    protected Class<INDISwitchElement> elementClass() {
+        return INDISwitchElement.class;
+    }
 }

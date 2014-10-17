@@ -190,57 +190,6 @@ public class INDIOneElementLightProperty extends INDILightProperty {
     }
 
     /**
-     * Constructs an instance of <code>INDIOneElementLightProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>state</code> and
-     * a initial <code>lightState</code> for the Element.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param lightState
-     *            Initial state for the Element
-     * @see INDILightProperty
-     */
-    public INDIOneElementLightProperty(INDIDriver driver, String name, PropertyStates state, LightStates lightState) {
-        super(driver, name, state);
-
-        element = new INDILightElement(this, name, lightState);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>state</code> and a initial <code>lightState</code> for the Element.
-     * The property will autosave its status to a file every time that it is
-     * changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param lightState
-     *            Initial state for the Element
-     * @return The loaded text property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDILightProperty
-     */
-    public static INDIOneElementLightProperty createSaveableOneElementLightProperty(INDIDriver driver, String name, PropertyStates state, LightStates lightState) {
-        INDIOneElementLightProperty lp = loadOneElementLightProperty(driver, name);
-
-        if (lp == null) {
-            lp = new INDIOneElementLightProperty(driver, name, state, lightState);
-            lp.setSaveable(true);
-        }
-
-        return lp;
-    }
-
-    /**
      * Gets the value of the Element.
      * 
      * @return The Value of the Element.

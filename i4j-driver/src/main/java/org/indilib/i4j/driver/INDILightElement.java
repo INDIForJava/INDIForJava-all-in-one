@@ -24,6 +24,7 @@ package org.indilib.i4j.driver;
 
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.LightStates;
+import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -35,9 +36,23 @@ import org.w3c.dom.Element;
 public class INDILightElement extends INDIElement {
 
     /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -4038203228454293238L;
+
+    /**
      * Current State value for this Light Element.
      */
     private LightStates state;
+
+    /**
+     * Constructs an instance of a <code>INDILightElement</code> with the
+     * settings from the <code>builder</code>.
+     */
+    public INDILightElement(INDIElementBuilder<INDILightElement> builder) {
+        super(builder);
+        this.state = builder.state();
+    }
 
     /**
      * Constructs an instance of a <code>INDILightElement</code> with a
@@ -55,24 +70,6 @@ public class INDILightElement extends INDIElement {
      */
     public INDILightElement(INDILightProperty property, String name, String label, LightStates state) {
         super(property, name, label);
-
-        this.state = state;
-    }
-
-    /**
-     * Constructs an instance of a <code>INDILightElement</code> with a
-     * <code>name</code> and its initial <code>state</code>. The label of the
-     * Element will be a copy of the <code>name</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param state
-     *            The initial state of the Element.
-     */
-    public INDILightElement(INDILightProperty property, String name, LightStates state) {
-        super(property, name);
 
         this.state = state;
     }

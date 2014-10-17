@@ -24,6 +24,7 @@ package org.indilib.i4j.driver;
 
 import java.io.Serializable;
 
+import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -94,6 +95,21 @@ public abstract class INDIElement implements Serializable {
         }
 
         property.addElement(this);
+    }
+
+    /**
+     * Constructs an instance of <code>INDIElement</code> with properties from
+     * the builder. Called by its sub-classes.
+     */
+    @SuppressWarnings("unchecked")
+    protected INDIElement(INDIElementBuilder<? extends INDIElement> builder) {
+        this.property = builder.indiProperty();
+        name = builder.name();
+        if (name.length() == 0) {
+            throw new IllegalArgumentException("No name for Element");
+        }
+        this.label = builder.label();
+        this.property.addElement(this);
     }
 
     /**

@@ -22,6 +22,7 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
+import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -33,9 +34,23 @@ import org.w3c.dom.Element;
 public class INDITextElement extends INDIElement {
 
     /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -4149843767292854200L;
+
+    /**
      * The current value of the Text Element.
      */
     private String value;
+
+    /**
+     * Constructs an instance of a <code>INDITextElement</code> with the
+     * settings from the <code>builder</code>.
+     */
+    public INDITextElement(INDIElementBuilder<INDITextElement> builder) {
+        super(builder);
+        this.value = builder.textValue();
+    }
 
     /**
      * Constructs an instance of a <code>INDITextElement</code> with a
@@ -53,24 +68,6 @@ public class INDITextElement extends INDIElement {
      */
     public INDITextElement(INDITextProperty property, String name, String label, String value) {
         super(property, name, label);
-
-        this.value = value.trim();
-    }
-
-    /**
-     * Constructs an instance of a <code>INDITextElement</code> with a
-     * <code>name</code> and its initial <code>value</code>. The label of the
-     * Element will be a copy of the <code>name</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param value
-     *            The initial value of the Element @
-     */
-    public INDITextElement(INDITextProperty property, String name, String value) {
-        super(property, name);
 
         this.value = value.trim();
     }

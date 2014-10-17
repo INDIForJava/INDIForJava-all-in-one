@@ -38,6 +38,8 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.event.IEventHandler;
+import org.indilib.i4j.driver.util.INDIElementBuilder;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,6 +127,32 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * Event handlere for simpler event definitions.
      */
     private IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler;
+
+    /**
+     * Constructs an instance of a <code>INDIProperty</code>. Called by its
+     * sub-classes. useing the settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
+     */
+    protected INDIProperty(INDIPropertyBuilder builder) {
+        this.driver = builder.driver();
+        this.name = builder.name();
+        if (this.name.length() == 0) {
+            throw new IllegalArgumentException("No name for the Property");
+        }
+        this.label = builder.label();
+        if (this.label.length() == 0) {
+            this.label = this.name;
+        }
+        this.group = builder.group();
+        this.state = builder.state();
+        this.permission = builder.permission();
+        this.timeout = builder.timeout();
+        this.elements = new LinkedHashMap<String, Element>();
+        this.saveable = builder.saveable();
+        isInit = false;
+    }
 
     /**
      * Constructs an instance of a <code>INDIProperty</code>. Called by its
@@ -707,5 +735,17 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     public final IEventHandler<? extends INDIProperty<Element>, Element, ?> getEventHandler() {
         return eventHandler;
     }
+
+    /**
+     * @return a new Element builder.
+     */
+    public INDIElementBuilder<Element> newElement() {
+        return new INDIElementBuilder<Element>(elementClass(), this);
+    }
+
+    /**
+     * @return the class of the Element.
+     */
+    protected abstract Class<Element> elementClass();
 
 }

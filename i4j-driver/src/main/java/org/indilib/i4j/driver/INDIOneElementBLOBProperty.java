@@ -22,10 +22,9 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI BLOB Property with only one BLOB Element (with
@@ -46,69 +45,8 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      */
     private INDIBLOBElement element;
 
-    /**
-     * Constructs an instance of <code>INDIOneElementBLOBProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code>,
-     * <code>timeout</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param timeout
-     *            The timeout of the Property
-     * @see INDIBLOBProperty
-     */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
-        super(driver, name, label, group, state, permission, timeout);
-
-        element = new INDIBLOBElement(this, name, label);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>label</code>, <code>group</code>, <code>state</code>,
-     * <code>permission</code> and <code>timeout</code>. The property will
-     * autosave its status to a file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param timeout
-     *            The timeout of the Property
-     * @return The loaded text property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDIBLOBProperty
-     */
-    public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout) {
-        INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
-
-        if (bp == null) {
-            bp = new INDIOneElementBLOBProperty(driver, name, label, group, state, permission, timeout);
-            bp.setSaveable(true);
-        }
-
-        return bp;
+    public INDIOneElementBLOBProperty(INDIPropertyBuilder<INDIBLOBProperty> builder) {
+        super(builder);
     }
 
     /**
@@ -122,7 +60,7 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
      *         loaded.
      */
     private static INDIOneElementBLOBProperty loadOneElementBLOBProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
+        INDIProperty<?> prop;
 
         try {
             prop = INDIProperty.loadFromFile(driver, name);
@@ -137,172 +75,6 @@ public class INDIOneElementBLOBProperty extends INDIBLOBProperty {
         INDIOneElementBLOBProperty tp = (INDIOneElementBLOBProperty) prop;
         tp.setSaveable(true);
         return tp;
-    }
-
-    /**
-     * Constructs an instance of <code>INDIOneElementBLOBProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @see INDIBLOBProperty
-     */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
-        super(driver, name, label, group, state, permission);
-
-        element = new INDIBLOBElement(this, name, label);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>label</code>, <code>group</code>, <code>state</code>,
-     * <code>permission</code>. The property will autosave its status to a file
-     * every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @return The loaded text property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDIBLOBProperty
-     */
-    public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission) {
-        INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
-
-        if (bp == null) {
-            bp = new INDIOneElementBLOBProperty(driver, name, label, group, state, permission);
-            bp.setSaveable(true);
-        }
-
-        return bp;
-    }
-
-    /**
-     * Constructs an instance of <code>INDIOneElementBLOBProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>state</code>, <code>permission</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @see INDIBLOBProperty
-     */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state, PropertyPermissions permission) {
-        super(driver, name, label, state, permission);
-
-        element = new INDIBLOBElement(this, name, label);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>label</code>, <code>state</code>, <code>permission</code>. The
-     * property will autosave its status to a file every time that it is
-     * changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @return The loaded text property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDIBLOBProperty
-     */
-    public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, String label, PropertyStates state,
-            PropertyPermissions permission) {
-        INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
-
-        if (bp == null) {
-            bp = new INDIOneElementBLOBProperty(driver, name, label, state, permission);
-            bp.setSaveable(true);
-        }
-
-        return bp;
-    }
-
-    /**
-     * Constructs an instance of <code>INDIOneElementBLOBProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>state</code>,
-     * <code>permission</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @see INDIBLOBProperty
-     */
-    public INDIOneElementBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
-        super(driver, name, state, permission);
-
-        element = new INDIBLOBElement(this, name);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>state</code>, <code>permission</code>. The property will autosave
-     * its status to a file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @return The loaded text property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDIBLOBProperty
-     */
-    public static INDIOneElementBLOBProperty createSaveableOneElementBLOBProperty(INDIDriver driver, String name, PropertyStates state, PropertyPermissions permission) {
-        INDIOneElementBLOBProperty bp = loadOneElementBLOBProperty(driver, name);
-
-        if (bp == null) {
-            bp = new INDIOneElementBLOBProperty(driver, name, state, permission);
-            bp.setSaveable(true);
-        }
-
-        return bp;
     }
 
     /**

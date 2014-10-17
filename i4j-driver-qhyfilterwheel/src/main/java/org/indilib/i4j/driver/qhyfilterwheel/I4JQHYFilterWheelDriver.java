@@ -30,10 +30,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
-import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
@@ -212,20 +210,33 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
         portP = INDIPortProperty.createSaveablePortProperty(this, "/dev/ttyUSB0");
 
-        filterPositionsP = new INDINumberProperty(this, "filter_positions", "Filter Positions", "Expert Configuration", PropertyStates.IDLE, PropertyPermissions.RW, 0);
+        filterPositionsP = newProperty(INDINumberProperty.class) //
+                .name("filter_positions").label("Filter Positions").group("Expert Configuration")//
+                .timeout(0).create();
 
         filterPositionsE = new INDINumberElement[NUMBER_OF_FILTER_POSITIONS];
 
-        filterPositionsE[FILTER_POSITIONS_1] = new INDINumberElement(filterPositionsP, "filter_1_position", "Filter 1 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
-        filterPositionsE[FILTER_POSITIONS_2] = new INDINumberElement(filterPositionsP, "filter_2_position", "Filter 2 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
-        filterPositionsE[FILTER_POSITIONS_3] = new INDINumberElement(filterPositionsP, "filter_3_position", "Filter 3 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
-        filterPositionsE[FILTER_POSITIONS_4] = new INDINumberElement(filterPositionsP, "filter_4_position", "Filter 4 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
-        filterPositionsE[FILTER_POSITIONS_5] = new INDINumberElement(filterPositionsP, "filter_5_position", "Filter 5 Position", 0, 0, MAXIMUM_FILTER_POSITION, 1, "%1.0f");
+        filterPositionsE[FILTER_POSITIONS_1] = filterPositionsP.newElement()//
+                .name("filter_1_position").label("Filter 1 Position")//
+                .maximum(MAXIMUM_FILTER_POSITION).step(1).numberFormat("%1.0f").create();
+        filterPositionsE[FILTER_POSITIONS_2] = filterPositionsP.newElement()//
+                .name("filter_2_position").label("Filter 2 Position")//
+                .maximum(MAXIMUM_FILTER_POSITION).step(1).numberFormat("%1.0f").create();
+        filterPositionsE[FILTER_POSITIONS_3] = filterPositionsP.newElement()//
+                .name("filter_3_position").label("Filter 3 Position")//
+                .maximum(MAXIMUM_FILTER_POSITION).step(1).numberFormat("%1.0f").create();
+        filterPositionsE[FILTER_POSITIONS_4] = filterPositionsP.newElement()//
+                .name("filter_4_position").label("Filter 4 Position")//
+                .maximum(MAXIMUM_FILTER_POSITION).step(1).numberFormat("%1.0f").create();
+        filterPositionsE[FILTER_POSITIONS_5] = filterPositionsP.newElement()//
+                .name("filter_5_position").label("Filter 5 Position")//
+                .maximum(MAXIMUM_FILTER_POSITION).step(1).numberFormat("%1.0f").create();
 
-        factorySettingsP =
-                new INDISwitchProperty(this, "factory_settings", "Factory Settings", "Expert Configuration", PropertyStates.IDLE, PropertyPermissions.RW, 0,
-                        SwitchRules.AT_MOST_ONE);
-        factorySettingsE = new INDISwitchElement(factorySettingsP, "factory_setting", "Factory Settings", SwitchStatus.OFF);
+        factorySettingsP = newProperty(INDISwitchProperty.class) //
+                .name("factory_settings").label("Factory Settings").group("Expert Configuration")//
+                .timeout(0).switchRule(SwitchRules.AT_MOST_ONE).create();
+
+        factorySettingsE = factorySettingsP.newElement().name("factory_setting").label("Factory Settings").create();
 
         addProperty(portP);
     }

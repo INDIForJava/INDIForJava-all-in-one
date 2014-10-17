@@ -25,6 +25,7 @@ package org.indilib.i4j.driver;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -36,9 +37,23 @@ import org.w3c.dom.Element;
 public class INDISwitchElement extends INDIElement {
 
     /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -8604396976296138696L;
+
+    /**
      * Current Status value for this Switch Element.
      */
     private SwitchStatus status;
+
+    /**
+     * Constructs an instance of a <code>INDISwitchElement</code> with the
+     * settings from the <code>builder</code>.
+     */
+    public INDISwitchElement(INDIElementBuilder<INDISwitchElement> builder) {
+        super(builder);
+        this.status = builder.switchValue();
+    }
 
     /**
      * Constructs an instance of a <code>INDISwitchElement</code> with a

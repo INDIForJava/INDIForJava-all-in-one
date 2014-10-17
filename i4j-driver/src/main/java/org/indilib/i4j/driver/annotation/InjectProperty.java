@@ -44,6 +44,11 @@ import org.indilib.i4j.Constants.SwitchRules;
 public @interface InjectProperty {
 
     /**
+     * the group for all the properties, that do not specify a group.
+     */
+    String UNSORTED_GROUP = "Unsorted";
+
+    /**
      * One minute in seconds.
      */
     int ONE_MINUTE_SECONDS = 60;
@@ -77,7 +82,7 @@ public @interface InjectProperty {
      * the tab group to use for this property (mandatory if it is not in a
      * group).
      */
-    String group() default "";
+    String group() default UNSORTED_GROUP;
 
     /**
      * should the value of this property be saved in a property file? defaults
