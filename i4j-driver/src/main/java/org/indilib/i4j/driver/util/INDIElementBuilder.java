@@ -57,12 +57,12 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     /**
      * the name of the element (mandatory).
      */
-    private String name;
+    private String name = "";
 
     /**
      * the label of the element (mandatory).
      */
-    private String label;
+    private String label = "";
 
     /**
      * the default value of the element when it is a number field, defaults to
@@ -128,6 +128,9 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
      * @return the name of the element (mandatory).
      */
     public String name() {
+        if (name.length() == 0) {
+            return indiProperty.getName();
+        }
         return name;
     }
 
@@ -135,6 +138,13 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
      * @return the label of the element (mandatory).
      */
     public String label() {
+        if (label.length() == 0) {
+            if (name.length() == 0) {
+                return indiProperty.getLabel();
+            } else {
+                return name;
+            }
+        }
         return label;
     }
 
@@ -233,9 +243,6 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     public INDIElementBuilder<ElementClass> label(String labelValue) {
         if (labelValue != null) {
             label = labelValue.trim();
-        }
-        if (this.label().length() == 0) {
-            label = name;
         }
         return this;
     }
@@ -369,8 +376,9 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
      * 
      * @param elem
      *            intection to copy the settings.
+     * @return the builder itself.
      */
-    public void set(InjectElement elem) {
+    public INDIElementBuilder<ElementClass> set(InjectElement elem) {
         this.maximum(elem.maximum());
         this.minimum(elem.minimum());
         this.name(elem.name());
@@ -381,7 +389,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
         this.step(elem.step());
         this.switchValue(elem.switchValue());
         this.textValue(elem.textValue());
-
+        return this;
     }
 
 }

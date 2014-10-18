@@ -140,7 +140,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
         name.setMinimumSize(new java.awt.Dimension(100, 0));
         mainPanel.add(name);
 
-        saveBLOBButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/disk.png"))); // NOI18N
+        saveBLOBButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/disk.png"))); // NOI18N
         saveBLOBButton.setText("Save");
         saveBLOBButton.setEnabled(false);
         saveBLOBButton.addActionListener(new java.awt.event.ActionListener() {
@@ -173,7 +173,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
 
         mainPanel.add(jPanel1);
 
-        loadBLOBButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/attach.png"))); // NOI18N
+        loadBLOBButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/attach.png"))); // NOI18N
         loadBLOBButton.setText("Load...");
         loadBLOBButton.addActionListener(new java.awt.event.ActionListener() {
 

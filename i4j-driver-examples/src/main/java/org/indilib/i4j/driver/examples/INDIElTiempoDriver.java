@@ -187,35 +187,37 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         super(inputStream, outputStream);
 
         // We create the Switch Property with only one Switch Element
-
-        send = new INDISwitchProperty(this, "SEND", "Send Image", "Main Control", PropertyStates.IDLE, PropertyPermissions.RW, TIMEOUT_IN_SECONDS, SwitchRules.AT_MOST_ONE);
-        sendImage = new INDISwitchElement(send, "SEND", "Send Image", SwitchStatus.OFF);
+        send = newProperty(INDISwitchProperty.class).name("SEND").label("Send Image").group("Main Control")//
+                .timeout(TIMEOUT_IN_SECONDS).switchRule(SwitchRules.AT_MOST_ONE).create();
+        sendImage = send.newElement().create();
 
         addProperty(send);
 
         // We create the BLOB Property for the Spain satellite image
-        spainImageProp = new INDIBLOBProperty(this, "SPAIN_SATELLITE_IMAGE", "Spain Image", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, 0);
-        spainImageElem = new INDIBLOBElement(spainImageProp, "SPAIN_SATELLITE_IMAGE", "Spain Image");
+        spainImageProp = newProperty(INDIBLOBProperty.class).name("SPAIN_SATELLITE_IMAGE").label("Spain Image").group("Main Control")//
+                .permission(PropertyPermissions.RO).timeout(0).create();
+        spainImageElem = spainImageProp.newElement().create();
 
         addProperty(spainImageProp);
 
         // We create the Text Property for the Spain image name
-        spainImageNameProp =
-                new INDITextProperty(this, "SPAIN_IMAGE_NAME", "Spain Image Name", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, TIMEOUT_IN_SECONDS);
-        spainImageNameElem = new INDITextElement(spainImageNameProp, "SPAIN_IMAGE_NAME", "Spain Image Name", "");
+        spainImageNameProp = newProperty(INDITextProperty.class).name("SPAIN_IMAGE_NAME").label("Spain Image Name").group("Main Control")//
+                .timeout(TIMEOUT_IN_SECONDS).create();
+        spainImageNameElem = spainImageNameProp.newElement().create();
 
         addProperty(spainImageNameProp);
 
         // We create the BLOB Property for the Europe satellite image
-        europeImageProp = new INDIBLOBProperty(this, "EUROPE_SATELLITE_IMAGE", "Europe Image", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, 0);
-        europeImageElem = new INDIBLOBElement(europeImageProp, "EUROPE_SATELLITE_IMAGE", "Europe Image");
+        europeImageProp = newProperty(INDIBLOBProperty.class).name("EUROPE_SATELLITE_IMAGE").label("Europe Image").group("Main Control")//
+                .permission(PropertyPermissions.RO).timeout(0).create();
+        europeImageElem = europeImageProp.newElement().create();
 
         addProperty(europeImageProp);
 
         // We create the Text Property for the Europe image name
-        europeImageNameProp =
-                new INDITextProperty(this, "EUROPE_IMAGE_NAME", "Europe Image Name", "Main Control", PropertyStates.IDLE, PropertyPermissions.RO, TIMEOUT_IN_SECONDS);
-        europeImageNameElem = new INDITextElement(europeImageNameProp, "EUROPE_IMAGE_NAME", "Europe Image Name", "");
+        europeImageNameProp = newProperty(INDITextProperty.class).name("EUROPE_IMAGE_NAME").label("Europe Image Name").group("Main Control")//
+                .timeout(TIMEOUT_IN_SECONDS).create();
+        europeImageNameElem = europeImageNameProp.newElement().create();
 
         addProperty(europeImageNameProp);
 
@@ -512,7 +514,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
             }
         }
 
-        printMessage("Thread Stopped");
+        LOG.info("Thread Stopped");
     }
 
     /**
@@ -524,7 +526,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     @Override
     public void driverConnect(Date timestamp) {
         if (stop) {
-            printMessage("Starting El Tiempo Driver");
+            LOG.info("Starting El Tiempo Driver");
             stop = false;
             runningThread = new Thread(this);
             runningThread.start();
@@ -539,7 +541,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
      */
     @Override
     public void driverDisconnect(Date timestamp) {
-        printMessage("Stopping El Tiempo Driver");
+        LOG.info("Stopping El Tiempo Driver");
 
         stop = true;
     }

@@ -22,6 +22,7 @@ package org.indilib.i4j.driver.examples;
  * #L%
  */
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,19 +34,16 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.driver.INDIBLOBElement;
-import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.event.SwitchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +59,11 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
      * logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIDriverExample.class);
+
+    /**
+     * file read buffer size.
+     */
+    private static final int BUFFER_SIZE = 4096;
 
     // START SNIPPET: fields
     // The Properties and Elements of this Driver
@@ -103,18 +106,26 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         // Define the BLOB Property with this Driver as its owner, name "image",
         // label "Image", group "Image Properties", initial state IDLE and Read
         // Only.
-        imageP = new INDIBLOBProperty(this, "image", "Image", "Image Properties", PropertyStates.IDLE, PropertyPermissions.RO);
+        imageP = newProperty(INDIBLOBProperty.class).name("image").label("Image").group("Image Properties").permission(PropertyPermissions.RO).create();
         // Define the BLOB Element with name "image" and label "Image". Its
         // initial value is empty.
-        imageE = new INDIBLOBElement(imageP, "image", "Image");
+        imageE = imageP.newElement().create();
 
         // Define the Switch Property with this driver as its owner, name
         // "sendImage", label "Send Image", group "Image Properties", initial
         // state IDLE, Read/Write permission and AtMostOne rule for the switch.
-        sendP = new INDISwitchProperty(this, "sendImage", "Send Image", "Image Properties", PropertyStates.IDLE, PropertyPermissions.RW, SwitchRules.AT_MOST_ONE);
+        sendP = newProperty(INDISwitchProperty.class).name("sendImage").label("Send Image").group("Image Properties").switchRule(SwitchRules.AT_MOST_ONE).create();
         // Define the Switch Element with name "sendImage", label "Send Image"
         // and initial status OFF
-        sendE = new INDISwitchElement(sendP, "sendImage", "Send Image", SwitchStatus.OFF);
+        sendE = sendP.newElement().create();
+
+        sendP.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                newSendValue(elementsAndValues);
+            }
+        });
     }
 
     // Returns the name of the Driver
@@ -123,55 +134,45 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         return "INDI Driver Example";
     }
 
-    // No Number Properties can be set by clients. Empty method
-    @Override
-    public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
-    }
+    /**
+     * Processes the changes sent by the client to the Switch Property. If the
+     * Switch property is the CONNECTION one it adds or removes the image and
+     * send Properties. If the Property is the "sendImage", it loads an image
+     * from disk, sets it to the image property and sends it back to the client.
+     * 
+     * @param elementsAndValues
+     *            the new values for the property.
+     */
+    private void newSendValue(INDISwitchElementAndValue[] elementsAndValues) {
+        if (elementsAndValues.length > 0) {
+            // If any element has been updated
+            INDISwitchElement el = elementsAndValues[0].getElement();
+            SwitchStatus s = elementsAndValues[0].getValue();
 
-    // No BLOB Properties can be set by clients. Empty method
-    @Override
-    public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
-    }
+            if ((el == sendE) && (s == SwitchStatus.ON)) { // If the
+                // sendImage
+                // element has
+                // been switched
+                // one we send
+                // the image
+                boolean imageLoaded = loadImageFromFile();
 
-    // No Text Properties can be set by clients. Empty method
-    @Override
-    public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
-    }
+                if (imageLoaded) {
+                    sendP.setState(PropertyStates.OK); // Set the state
+                                                       // of
+                    // the sendImage
+                    // property as OK
 
-    // Processes the changes sent by the client to the Switch Properties. If the
-    // Switch property is the CONNECTION one it adds or removes the image and
-    // send Properties. If the Property is the "sendImage", it loads an image
-    // from disk, sets it to the image property and sends it back to the client.
-    @Override
-    public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
-
-        if (property == sendP) { // If the property is the sendImage one
-            if (elementsAndValues.length > 0) { // If any element has been
-                                                // updated
-                INDISwitchElement el = elementsAndValues[0].getElement();
-                SwitchStatus s = elementsAndValues[0].getValue();
-
-                if ((el == sendE) && (s == SwitchStatus.ON)) { // If the
-                                                               // sendImage
-                                                               // element has
-                                                               // been switched
-                                                               // one we send
-                                                               // the image
-                    boolean imageLoaded = loadImageFromFile();
-
-                    if (imageLoaded) {
-                        sendP.setState(PropertyStates.OK); // Set the state of
-                                                           // the sendImage
-                                                           // property as OK
-
-                        imageP.setState(PropertyStates.OK); // Set the state of
-                                                            // the image
-                                                            // property as OK
-                        updateProperty(sendP); // Send the sendImage property to
-                                               // the client.
-                        updateProperty(imageP); // Send the image property to
-                                                // the client.
-                    }
+                    imageP.setState(PropertyStates.OK); // Set the state
+                                                        // of
+                    // the image
+                    // property as OK
+                    updateProperty(sendP); // Send the sendImage
+                                           // property to
+                    // the client.
+                    updateProperty(imageP); // Send the image property
+                                            // to
+                    // the client.
                 }
             }
         }
@@ -180,7 +181,7 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
     // Add the image and send properties changes
     @Override
     public void driverConnect(Date timestamp) {
-        printMessage("Driver connect");
+        LOG.info("Driver connect");
         this.addProperty(imageP);
         this.addProperty(sendP);
     }
@@ -188,7 +189,7 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
     // Remove the image and send properties changes
     @Override
     public void driverDisconnect(Date timestamp) {
-        printMessage("Driver disconnect");
+        LOG.info("Driver disconnect");
         this.removeProperty(imageP);
         this.removeProperty(sendP);
     }
@@ -206,18 +207,26 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
             byte[] fileContents;
 
             try {
-                File file = new File("image.jpg");
-
-                // Create a buffer big enough to hold the file
-                int size = (int) file.length();
-                fileContents = new byte[size];
-                // Create an input stream from the file object and read it all
-                FileInputStream in = new FileInputStream(file);
-                in.read(fileContents);
+                InputStream in;
+                File file = new File(FileUtils.getI4JBaseDirectory(), "image.jpg");
+                // Create an input stream from the file object and read it
+                // all
+                if (file.exists()) {
+                    in = new FileInputStream(file);
+                } else {
+                    in = INDIDriverExample.class.getResourceAsStream(file.getName());
+                }
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int count;
+                while ((count = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, count);
+                }
                 in.close();
+                out.close();
+                fileContents = out.toByteArray();
             } catch (IOException e) {
                 LOG.error("Could not write file", e);
-
                 return false;
             }
 

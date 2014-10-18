@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
@@ -787,7 +788,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Sends all the properties to the clients.
      */
     public void sendAllProperties() {
-        ArrayList<INDIProperty> props = getPropertiesAsList();
+        List<INDIProperty> props = getPropertiesAsList();
 
         for (int i = 0; i < props.size(); i++) {
             sendDefXXXVectorMessage(props.get(i), null);
@@ -1045,19 +1046,20 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * 
      * @return A List of all the Properties in the Driver.
      */
-    public ArrayList<INDIProperty> getPropertiesAsList() {
+    public List<INDIProperty> getPropertiesAsList() {
         return new ArrayList<INDIProperty>(properties.values());
     }
 
     /**
-     * Write message to the INDI console (System.err)
+     * Write message to the INDI console. This is deprecated please use the
+     * slf4j logger.
      * 
      * @param message
      *            The message to be printed.
      */
+    @Deprecated
     public void printMessage(String message) {
-        System.err.println(message);
-        System.err.flush();
+        LOG.info(message);
     }
 
     @Override

@@ -145,7 +145,7 @@ public class INDISwitchOneOfManyPropertyPanel extends INDIPropertyPanel implemen
 
         jPanel1.setLayout(new java.awt.BorderLayout(5, 0));
 
-        state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/laazotea/indi/client/ui/images/light_idle.png"))); // NOI18N
+        state.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/indilib/i4j/client/ui/images/light_idle.png"))); // NOI18N
         jPanel1.add(state, java.awt.BorderLayout.WEST);
 
         jPanel5.setLayout(new java.awt.BorderLayout());

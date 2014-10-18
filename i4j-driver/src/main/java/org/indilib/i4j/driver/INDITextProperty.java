@@ -27,6 +27,7 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIDateFormat;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI Text Property.
@@ -40,6 +41,10 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      * servial version id.
      */
     private static final long serialVersionUID = -1568675891716860995L;
+
+    public INDITextProperty(INDIPropertyBuilder<INDITextProperty> builder) {
+        super(builder);
+    }
 
     /**
      * Constructs an instance of <code>INDITextProperty</code> with a particular

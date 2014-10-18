@@ -43,14 +43,15 @@ import org.indilib.i4j.Constants.SwitchStatus;
 public @interface InjectElement {
 
     /**
-     * the name of the element (mandatory).
+     * the name of the element,defaults to the name of the property.
      */
-    String name();
+    String name() default "";
 
     /**
-     * the label of the element (mandatory).
+     * the label of the element ,defaults to the name or the label of the
+     * property.
      */
-    String label();
+    String label() default "";
 
     /**
      * the default value of the element when it is a number field, defaults to

@@ -212,23 +212,9 @@ public final class INDIPropertyInjector {
         if (elem != null) {
             INDIProperty<?> propertyToConnect = findNamedProperty(elem.property(), this.lastProperty);
             if (propertyToConnect != null) {
-                propertyToConnect.newElement().set(elem);
-                INDIElement lastElement = null;
-                if (INDINumberElement.class.isAssignableFrom(field.getType())) {
-                    lastElement =
-                            new INDINumberElement((INDINumberProperty) propertyToConnect, elem.name(), elem.label(), elem.numberValue(), elem.minimum(), elem.maximum(),
-                                    elem.step(), elem.numberFormat());
-                } else if (INDITextElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDITextElement((INDITextProperty) propertyToConnect, elem.name(), elem.label(), elem.textValue());
-                } else if (INDISwitchElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDISwitchElement((INDISwitchProperty) propertyToConnect, elem.name(), elem.label(), elem.switchValue());
-                } else if (INDIBLOBElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDIBLOBElement((INDIBLOBProperty) propertyToConnect, elem.name(), elem.label());
-                } else if (INDILightElement.class.isAssignableFrom(field.getType())) {
-                    lastElement = new INDILightElement((INDILightProperty) propertyToConnect, elem.name(), elem.label(), elem.state());
-                } else {
-                    LOG.error("Unknown property type" + elem.property() + " for element " + field);
-                }
+                INDIElementBuilder<?> builder = propertyToConnect.newElement().set(elem);
+                builder.name(rename(builder.name()));
+                INDIElement lastElement = builder.create();
                 setFieldValue(instance, field, lastElement);
             } else {
                 LOG.error("could not find property " + elem.property() + " for element " + field);
@@ -259,24 +245,13 @@ public final class INDIPropertyInjector {
     private void initializeAnnotatedProperty(Object instance, Field field) {
         InjectProperty prop = field.getAnnotation(InjectProperty.class);
         if (prop != null) {
-            String group = prop.group();
-            if (group.isEmpty() && currentGroup != null) {
-                group = currentGroup;
+            INDIPropertyBuilder<INDIProperty<?>> builder = driver.newProperty((Class<INDIProperty<?>>) field.getType()).set(prop);
+            if (builder.isDefaultGroup()) {
+                builder.group(currentGroup);
             }
-            String name = rename(prop.name());
-            if (INDINumberProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDINumberProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout());
-            } else if (INDITextProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDITextProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout());
-            } else if (INDISwitchProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDISwitchProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout(), prop.switchRule());
-            } else if (INDIBLOBProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDIBLOBProperty(driver, name, prop.label(), group, prop.state(), prop.permission(), prop.timeout());
-            } else if (INDILightProperty.class.isAssignableFrom(field.getType())) {
-                lastProperty = new INDILightProperty(driver, name, prop.label(), group, prop.state());
-            } else {
-                LOG.error("Unknown property type for element " + field);
-            }
+            builder.name(rename(builder.name()));
+            lastProperty = (INDIProperty<?>) builder.create();
+
             if (prop.saveable()) {
                 lastProperty.setSaveable(true);
             }

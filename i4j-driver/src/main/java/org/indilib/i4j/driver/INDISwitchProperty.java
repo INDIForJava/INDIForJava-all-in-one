@@ -22,6 +22,7 @@ import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIDateFormat;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI Switch Property.
@@ -40,6 +41,14 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * The current Rule for this Switch Property.
      */
     private SwitchRules rule;
+
+    public INDISwitchProperty(INDIPropertyBuilder<INDISwitchProperty> builder) {
+        super(builder);
+        if (builder.permission() == PropertyPermissions.WO) {
+            throw new IllegalArgumentException("Switch Properties cannot be Write Only");
+        }
+        this.rule = builder.switchRule();
+    }
 
     /**
      * Constructs an instance of <code>INDISwitchProperty</code> with a

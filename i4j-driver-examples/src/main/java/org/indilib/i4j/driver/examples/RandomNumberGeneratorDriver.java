@@ -30,6 +30,8 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberProperty;
+import org.indilib.i4j.driver.annotation.InjectElement;
+import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,11 +58,13 @@ public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable 
     /**
      * The random number Property.
      */
+    @InjectProperty(name = "random", label = "Random Number", permission = PropertyPermissions.RO)
     private INDINumberProperty randomP;
 
     /**
      * The random number Element.
      */
+    @InjectElement(maximum = 1.0, numberFormat = "%f")
     private INDINumberElement randomE;
 
     /**
@@ -73,10 +77,6 @@ public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable 
      */
     public RandomNumberGeneratorDriver(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
-
-        // Define the Property REMEMBER TO SET IT TO RO
-        randomP = new INDINumberProperty(this, "random", "Random Number", PropertyStates.IDLE, PropertyPermissions.RO);
-        randomE = new INDINumberElement(randomP, "random", "Random Number", 0, 0, 1.0, 0, "%f");
 
         this.addProperty(randomP);
 

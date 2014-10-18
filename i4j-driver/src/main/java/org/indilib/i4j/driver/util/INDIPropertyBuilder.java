@@ -79,7 +79,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
      * the tab group to use for this property (mandatory if it is not in a
      * group).
      */
-    private String group = "";
+    private String group = InjectProperty.UNSORTED_GROUP;
 
     /**
      * the initial state of the property.
@@ -106,26 +106,6 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
      */
     public INDIPropertyBuilder(Class<PropertyClass> propertyClazz) {
         this.propertyClazz = propertyClazz;
-    }
-
-    /**
-     * injection constructor of the property builder.
-     * 
-     * @param propertyClazz
-     *            the property class to build.
-     * @param injectProperty
-     *            the injection property to copy the settings from.
-     */
-    public INDIPropertyBuilder(Class<PropertyClass> propertyClazz, InjectProperty injectProperty) {
-        this(propertyClazz);
-        this.group(injectProperty.group());
-        this.label(injectProperty.label());
-        this.name(injectProperty.name());
-        this.permission(injectProperty.permission());
-        this.saveable(injectProperty.saveable());
-        this.state(injectProperty.state());
-        this.switchRule(injectProperty.switchRule());
-        this.timeout(injectProperty.timeout());
     }
 
     /**
@@ -327,6 +307,32 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
             LOG.error("could not instanciate property", e);
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * set the injection values into the builder.
+     * 
+     * @param injectProperty
+     *            the annotation to take the settings from.
+     * @return the builder itself
+     */
+    public INDIPropertyBuilder<PropertyClass> set(InjectProperty injectProperty) {
+        this.group(injectProperty.group());
+        this.label(injectProperty.label());
+        this.name(injectProperty.name());
+        this.permission(injectProperty.permission());
+        this.saveable(injectProperty.saveable());
+        this.state(injectProperty.state());
+        this.switchRule(injectProperty.switchRule());
+        this.timeout(injectProperty.timeout());
+        return this;
+    }
+
+    public boolean isDefaultGroup() {
+        if (group.isEmpty() || group.equals(InjectProperty.UNSORTED_GROUP)) {
+            return true;
+        }
+        return false;
     }
 
 }

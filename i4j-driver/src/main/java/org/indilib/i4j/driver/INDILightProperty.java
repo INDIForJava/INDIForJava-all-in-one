@@ -37,6 +37,11 @@ import org.indilib.i4j.INDIException;
 public class INDILightProperty extends INDIProperty<INDILightElement> {
 
     /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = -3655076563473257286L;
+
+    /**
      * Constructs an instance of <code>INDILightProperty</code> with a
      * particular <code>driver</code>, <code>name</code>, <code>label</code>,
      * <code>group</code> and <code>state</code>.
