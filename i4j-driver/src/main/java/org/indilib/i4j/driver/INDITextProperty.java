@@ -47,69 +47,6 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
     }
 
     /**
-     * Constructs an instance of <code>INDITextProperty</code> with a particular
-     * <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code> and
-     * <code>timeout</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param timeout
-     *            The timeout of the Property
-     * @see INDIProperty
-     */
-    public INDITextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
-        super(driver, name, label, group, state, permission, timeout);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>label</code>, <code>group</code>, <code>state</code>,
-     * <code>permission</code> and <code>timeout</code>. The property will
-     * autosave its status to a file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param timeout
-     *            The timeout of the Property
-     * @return The loaded text property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDIProperty
-     */
-    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, int timeout) {
-        INDITextProperty tp = loadTextProperty(driver, name);
-
-        if (tp == null) {
-            tp = new INDITextProperty(driver, name, label, group, state, permission, timeout);
-            tp.setSaveable(true);
-        }
-
-        return tp;
-    }
-
-    /**
      * Loads a Text Property from a file.
      * 
      * @param driver
@@ -159,40 +96,6 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      */
     public INDITextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
         super(driver, name, label, group, state, permission, 0);
-    }
-
-    /**
-     * Loads an instance of from a file or, if it cannot be loaded, constructs
-     * it with a particular <code>driver</code>, <code>name</code>,
-     * <code>label</code>, <code>group</code>, <code>state</code>,
-     * <code>permission</code>. The property will autosave its status to a file
-     * every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @return The loaded text property or a new constructed one if canot be
-     *         loaded.
-     * @see INDIProperty
-     */
-    public static INDITextProperty createSaveableTextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
-        INDITextProperty tp = loadTextProperty(driver, name);
-
-        if (tp == null) {
-            tp = new INDITextProperty(driver, name, label, group, state, permission);
-            tp.setSaveable(true);
-        }
-
-        return tp;
     }
 
     @Override

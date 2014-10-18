@@ -95,46 +95,6 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
     }
 
     /**
-     * Loads an instance of <code>INDISwitchOneOfManyProperty</code> from a file
-     * or, if it cannot be loaded, constructs it with a particular
-     * <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code>,
-     * <code>elements</code> and <code>selectedElement</code>. The property will
-     * autosave its status to a file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param elements
-     *            The name of the option
-     * @param selectedElement
-     *            The initial status of the option
-     * @return The loaded switch one of many property or a new constructed one
-     *         if cannot be loaded.
-     * @see INDISwitchProperty
-     */
-    public static INDISwitchOneOfManyProperty createSaveableSwitchOneOfManyProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, String[] elements, int selectedElement) {
-        INDISwitchOneOfManyProperty sp = loadSwitchOneOfManyProperty(driver, name);
-
-        if (sp == null) {
-            sp = new INDISwitchOneOfManyProperty(driver, name, label, group, state, permission, elements, selectedElement);
-            sp.setSaveable(true);
-        }
-
-        return sp;
-    }
-
-    /**
      * Constructs an instance of <code>INDISwitchOneOfManyProperty</code> with a
      * particular <code>driver</code>, <code>name</code>, <code>label</code>,
      * <code>group</code>, <code>state</code>, <code>permission</code> and

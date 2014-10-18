@@ -43,39 +43,13 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
     private static final long serialVersionUID = 8341274865983266472L;
 
     /**
-     * Constructs an instance of <code>INDINumberProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code> and
-     * <code>timeout</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param timeout
-     *            The timeout of the Property
-     * @see INDIProperty
-     */
-    public INDINumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
-        super(driver, name, label, group, state, permission, timeout);
-    }
-
-    /**
      * Constructs an instance of <code>INDINumberProperty</code> with the
      * partikular setting in the builder.
      * 
      * @param builder
      *            the builder with all the properties.
      */
-    public INDINumberProperty(INDIPropertyBuilder builder) {
+    public INDINumberProperty(INDIPropertyBuilder<?> builder) {
         super(builder);
     }
 

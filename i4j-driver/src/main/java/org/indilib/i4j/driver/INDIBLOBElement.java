@@ -53,23 +53,6 @@ public class INDIBLOBElement extends INDIElement {
         value = new INDIBLOBValue(new byte[0], "");
     }
 
-    /**
-     * Constructs an instance of a <code>INDIBLOBElement</code> with a
-     * <code>name</code> and a <code>label</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param label
-     *            The label of the Element.
-     */
-    public INDIBLOBElement(INDIBLOBProperty property, String name, String label) {
-        super(property, name, label);
-
-        value = new INDIBLOBValue(new byte[0], "");
-    }
-
     @Override
     public INDIBLOBProperty getProperty() {
         return (INDIBLOBProperty) super.getProperty();

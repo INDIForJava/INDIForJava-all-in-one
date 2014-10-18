@@ -28,13 +28,11 @@ import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchOneOrNoneProperty;
 import org.indilib.i4j.driver.INDISwitchProperty;
 
 /**
@@ -88,7 +86,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     /**
      * The <code>stop_focusing</code> property (not standard, but very useful).
      */
-    private INDISwitchOneOrNoneProperty stopFocusingP;
+    private INDISwitchProperty stopFocusingP;
 
     /**
      * Constructs a INDIFocuserDriver with a particular <code>inputStream</code>
@@ -108,10 +106,10 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * Initializes the standard properties. MUST BE CALLED BY SUBDRIVERS.
      */
     protected void initializeStandardProperties() {
-        absFocusPositionP = new INDINumberProperty(this, "ABS_FOCUS_POSITION", "Absolute", "Control", PropertyStates.IDLE, PropertyPermissions.RW);
-        focusAbsolutePositionE =
-                new INDINumberElement(absFocusPositionP, "FOCUS_ABSOLUTE_POSITION", "Focus Position", getInitialAbsPos() + "", getMinimumAbsPos() + "", getMaximumAbsPos()
-                        + "", "1", "%.0f");
+        absFocusPositionP = newProperty(INDINumberProperty.class).name("ABS_FOCUS_POSITION").label("Absolute").group("Control").create();
+        focusAbsolutePositionE = absFocusPositionP.newElement().name("FOCUS_ABSOLUTE_POSITION").label("Focus Position").step(1d).numberFormat("%.0f")//
+                .numberValue(getInitialAbsPos()).minimum(getMinimumAbsPos()).maximum(getMaximumAbsPos()).create();
+
         desiredAbsPosition = getInitialAbsPos();
 
         addProperty(absFocusPositionP);
@@ -179,10 +177,10 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showSpeedProperty() {
         if (focusSpeedP == null) {
-            focusSpeedP = INDINumberProperty.createSaveableNumberProperty(this, "FOCUS_SPEED", "Focus Speed", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW);
+            focusSpeedP = newProperty(INDINumberProperty.class).saveable(true).name("FOCUS_SPEED").label("Focus Speed").group("Configuration").create();
             focusSpeedValueE = focusSpeedP.getElement("FOCUS_SPEED_VALUE");
             if (focusSpeedValueE == null) {
-                focusSpeedValueE = new INDINumberElement(focusSpeedP, "FOCUS_SPEED_VALUE", "Focus Speed", getMaximumSpeed() + "", "0", "" + getMaximumSpeed(), "1", "%.0f");
+                focusSpeedValueE = focusSpeedP.newElement().name("").label("").numberValue(getMaximumSpeed()).maximum(getMaximumSpeed()).step(1).numberFormat("%.0f").create();
             }
         }
 
@@ -195,10 +193,9 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showStopFocusingProperty() {
         if (stopFocusingP == null) {
-            stopFocusingP =
-                    new INDISwitchOneOrNoneProperty(this, "stop_focusing", "Stop", "Control", PropertyStates.IDLE, PropertyPermissions.RW, "Stop Focusing", SwitchStatus.OFF);
+            stopFocusingP = newProperty(INDISwitchProperty.class).name("stop_focusing").label("Stop").group("Control").create();
+            stopFocusingP.newElement().name("Stop Focusing").create();
         }
-
         addProperty(stopFocusingP);
     }
 
@@ -305,7 +302,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
         if (property == stopFocusingP) {
             stopFocusingP.setState(PropertyStates.BUSY);
-            stopFocusingP.setStatus(SwitchStatus.OFF);
+            stopFocusingP.firstElement().setOff();
 
             updateProperty(stopFocusingP);
 

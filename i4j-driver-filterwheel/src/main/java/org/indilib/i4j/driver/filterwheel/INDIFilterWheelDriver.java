@@ -27,12 +27,12 @@ import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.Constants.PropertyPermissions;
+import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDIProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
@@ -117,28 +117,21 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
      * Initializes the standard properties. MUST BE CALLED BY SUBDRIVERS.
      */
     protected void initializeStandardProperties() {
-        try {
-            filterNamesP = (INDITextProperty) INDIProperty.loadFromFile(this, "filter_names");
-        } catch (INDIException ex) {
-            LOG.error("INDIException", ex);
+
+        filterNamesP = newProperty(INDITextProperty.class).name("filter_names").label("Filter Names").group("Configuration")//
+                .state(PropertyStates.OK).permission(PropertyPermissions.RW).create();
+        for (int i = 0; i < getNumberOfFilters(); i++) {
+            filterNamesP.newElement().name("filter_name_" + (i + 1)).label("Filter " + (i + 1)).textValue("Filter " + (i + 1)).create();
         }
 
-        if (filterNamesP == null) {
-            filterNamesP =
-                    INDITextProperty.createSaveableTextProperty(this, "filter_names", "Filter Names", "Configuration", Constants.PropertyStates.OK,
-                            Constants.PropertyPermissions.RW, 0);
+        filterSlotP = newProperty(INDINumberProperty.class).name("FILTER_SLOT").label("Filter Slot").group("Control").create();
+        filterSlotValueE = filterSlotP.newElement().name("FILTER_SLOT_VALUE").label("Filter Slot Value")//
+                .numberValue(1).minimum(1).maximum(getNumberOfFilters()).step(1).numberFormat("%1.0f").create();
 
-            for (int i = 0; i < getNumberOfFilters(); i++) {
-                new INDITextElement(filterNamesP, "filter_name_" + (i + 1), "Filter " + (i + 1), "Filter " + (i + 1));
-            }
-        }
+        filterNameP = newProperty(INDITextProperty.class).name("FILTER_NAME").label("Filter Name").group("Control").permission(PropertyPermissions.RO).create();
 
-        filterSlotP = new INDINumberProperty(this, "FILTER_SLOT", "Filter Slot", "Control", Constants.PropertyStates.IDLE, Constants.PropertyPermissions.RW, 0);
-        filterSlotValueE = new INDINumberElement(filterSlotP, "FILTER_SLOT_VALUE", "Filter Slot Value", 1, 1, getNumberOfFilters(), 1, "%1.0f");
-
-        filterNameP = new INDITextProperty(this, "FILTER_NAME", "Filter Name", "Control", Constants.PropertyStates.IDLE, Constants.PropertyPermissions.RO, 0);
         String firstFilterName = filterNamesP.getElement("filter_name_1").getValue();
-        filterNameValueE = new INDITextElement(filterNameP, "FILTER_NAME_VALUE", "Filter Name Value", firstFilterName);
+        filterNameValueE = filterNameP.newElement().name("FILTER_NAME_VALUE").label("Filter Name Value").textValue(firstFilterName).create();
 
         addProperty(filterNamesP);
     }

@@ -364,6 +364,14 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
      */
     public ElementClass create() {
         try {
+            INDIElement existing = this.indiProperty.getElement(name());
+            if (existing != null) {
+                return clazz.cast(existing);
+            }
+        } catch (Exception e) {
+            LOG.error("existing property problem", e);
+        }
+        try {
             return clazz.getConstructor(INDIElementBuilder.class).newInstance(this);
         } catch (Exception e) {
             LOG.error("could not instanciate element", e);

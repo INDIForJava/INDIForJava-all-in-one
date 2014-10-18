@@ -22,6 +22,10 @@ package org.indilib.i4j.driver.raspberrypi;
  * #L%
  */
 
+import static org.indilib.i4j.Constants.PropertyPermissions.RO;
+import static org.indilib.i4j.Constants.PropertyStates.OK;
+import static org.indilib.i4j.Constants.SwitchStatus.ON;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,12 +45,10 @@ import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
 import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDILightElement;
 import org.indilib.i4j.driver.INDILightProperty;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDIOneElementTextProperty;
 import org.indilib.i4j.driver.INDIProperty;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchOneOfManyProperty;
@@ -79,6 +81,21 @@ import com.pi4j.system.SystemInfo;
  * @version 1.36, November 23, 2013
  */
 public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnectionHandler, GpioPinListenerDigital {
+
+    /**
+     * maximum uptime in seconds.
+     */
+    private static final double MAX_UPTIME_IN_SECONDS = 10000000000d;
+
+    /**
+     * maximum temperature in celcius.
+     */
+    private static final int MAX_CPU_TEMPERATURE = 200;
+
+    /**
+     * max voltage.
+     */
+    private static final int MAX_VOLTAGE = 100;
 
     /**
      * Number of seconds per minute.
@@ -151,9 +168,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     private static final Logger LOG = LoggerFactory.getLogger(I4JRaspberryPiGPIODriver.class);
 
     /**
-     * max property value 10000 as String.
+     * max property value 10000.
      */
-    private static final String MAX_VALUE_10000_STRING = "10000";
+    private static final double MAX_VALUE_10000 = 10000;
 
     /**
      * the number of bytes in one megabyte.
@@ -321,140 +338,147 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
         pinsProperties = new INDIProperty[NUMBER_OF_PINS];
 
-        pinsNamesP = INDITextProperty.createSaveableTextProperty(this, "pin_names", "Pin Names", "Pin Names", PropertyStates.IDLE, PropertyPermissions.RW);
+        pinsNamesP = newProperty(INDITextProperty.class).saveable(true).name("pin_names").label("Pin Names").group("Pin Names").create();
         pinsNamesE = new INDITextElement[NUMBER_OF_PINS];
         for (int i = 0; i < NUMBER_OF_PINS; i++) {
             pinsNamesE[i] = pinsNamesP.getElement("pin_" + i + "name");
 
             if (pinsNamesE[i] == null) {
-                pinsNamesE[i] = new INDITextElement(pinsNamesP, "pin_" + i + "_name", "Pin " + i + " Name", "" + i);
+                pinsNamesE[i] = pinsNamesP.newElement().name("pin_" + i + "_name").label("Pin " + i + " Name").textValue(Integer.toString(i)).create();
             }
         }
 
         pinsConfigP = new INDISwitchOneOfManyProperty[NUMBER_OF_PINS];
 
         for (int i = 0; i < pinsConfigP.length; i++) {
+            pinsConfigP[i] = newProperty(INDISwitchOneOfManyProperty.class).saveable(true).name("pin_" + i + "_config").label("GPIO " + i).group("Configuration").create();
+            pinsConfigP[i].newElement().name("Not Used").switchValue(ON).create();
+            pinsConfigP[i].newElement().name("Output").create();
+            pinsConfigP[i].newElement().name("Input").create();
+            pinsConfigP[i].newElement().name("Input - Pull Down").create();
+            pinsConfigP[i].newElement().name("Input - Pull Up").create();
             if (i == 1) {
-                pinsConfigP[i] =
-                        INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "pin_" + i + "_config", "GPIO " + i, "Configuration", PropertyStates.IDLE,
-                                PropertyPermissions.RW, new String[]{
-                                    "Not Used",
-                                    "Output",
-                                    "Input",
-                                    "Input - Pull Down",
-                                    "Input - Pull Up",
-                                    "Output - PWM"
-                                }, 0);
-            } else {
-                pinsConfigP[i] =
-                        INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "pin_" + i + "_config", "GPIO " + i, "Configuration", PropertyStates.IDLE,
-                                PropertyPermissions.RW, new String[]{
-                                    "Not Used",
-                                    "Output",
-                                    "Input",
-                                    "Input - Pull Down",
-                                    "Input - Pull Up"
-                                }, 0);
+                pinsConfigP[i].newElement().name("Output - PWM").create();
             }
         }
 
         try {
-            INDITextProperty board = new INDITextProperty(this, "board", "Board", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-            new INDITextElement(board, "type", "Type", SystemInfo.getBoardType() + "");
-            new INDITextElement(board, "revision", "Revision", SystemInfo.getRevision());
-            new INDITextElement(board, "serial", "Serial Number", SystemInfo.getSerial());
+            INDITextProperty board = newProperty(INDITextProperty.class).name("board").label("Board").group("System Info").state(OK).permission(RO).create();
+            board.newElement().name("type").label("Type").textValue("" + SystemInfo.getBoardType()).create();
+            board.newElement().name("revision").label("Revision").textValue(SystemInfo.getRevision()).create();
+            board.newElement().name("serial").label("Serial Number").textValue(SystemInfo.getSerial()).create();
+
             addProperty(board);
 
-            INDIOneElementTextProperty bogoMIPS =
-                    new INDIOneElementTextProperty(this, "bogo_mips", "Bogo MIPS", "System Info", PropertyStates.OK, PropertyPermissions.RO, getBogoMIPS());
+            INDITextProperty bogoMIPS = newProperty(INDITextProperty.class).name("bogo_mips").label("Bogo MIPS").group("System Info").state(OK).permission(RO).create();
+            bogoMIPS.newElement().textValue(getBogoMIPS()).create();
             addProperty(bogoMIPS);
 
             INDINumberProperty clockFrequencies =
-                    new INDINumberProperty(this, "clock_frequencies", "Clock Frequencies (MHz)", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-            new INDINumberElement(clockFrequencies, "arm", "Arm", (SystemInfo.getClockFrequencyArm() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            new INDINumberElement(clockFrequencies, "core", "Core", (SystemInfo.getClockFrequencyCore() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
-                    "%1.2f");
-            new INDINumberElement(clockFrequencies, "dpi", "DPI", (SystemInfo.getClockFrequencyDPI() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            new INDINumberElement(clockFrequencies, "emmc", "EMMC", (SystemInfo.getClockFrequencyEMMC() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
-                    "%1.2f");
-            new INDINumberElement(clockFrequencies, "h264", "H264", (SystemInfo.getClockFrequencyH264() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
-                    "%1.2f");
-            new INDINumberElement(clockFrequencies, "hdmi", "HDMI", (SystemInfo.getClockFrequencyHDMI() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
-                    "%1.2f");
-            new INDINumberElement(clockFrequencies, "isp", "ISP", (SystemInfo.getClockFrequencyISP() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            new INDINumberElement(clockFrequencies, "pixel", "Pixel", (SystemInfo.getClockFrequencyPixel() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
-                    "%1.2f");
-            new INDINumberElement(clockFrequencies, "pwm", "PWM", (SystemInfo.getClockFrequencyPWM() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            new INDINumberElement(clockFrequencies, "arm", "Arm", (SystemInfo.getClockFrequencyArm() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            new INDINumberElement(clockFrequencies, "uart", "UART", (SystemInfo.getClockFrequencyUART() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1",
-                    "%1.2f");
-            new INDINumberElement(clockFrequencies, "v3d", "V3D", (SystemInfo.getClockFrequencyV3D() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            new INDINumberElement(clockFrequencies, "vec", "VEC", (SystemInfo.getClockFrequencyVEC() / HZ_TO_MEGAHERZ_DIVIDER) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+                    newProperty(INDINumberProperty.class).name("clock_frequencies").label("Clock Frequencies (MHz)").group("System Info").state(OK).permission(RO).create();
+            clockFrequencies.newElement().name("arm").label("Arm").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyArm() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("core").label("Core").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyCore() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("dpi").label("DPI").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyDPI() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("emmc").label("EMMC").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyEMMC() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("h264").label("H264").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyH264() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("hdmi").label("HDMI").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyHDMI() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("isp").label("ISP").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyISP() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("pixel").label("Pixel").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyPixel() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("pwm").label("PWM").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyPWM() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("arm").label("Arm").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyArm() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("uart").label("UART").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyUART() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("v3d").label("V3D").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyV3D() / HZ_TO_MEGAHERZ_DIVIDER).create();
+            clockFrequencies.newElement().name("vec").label("VEC").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
+                    .numberValue(SystemInfo.getClockFrequencyVEC() / HZ_TO_MEGAHERZ_DIVIDER).create();
+
             addProperty(clockFrequencies);
 
-            INDILightProperty codecs = new INDILightProperty(this, "codecs", "Codecs", "System Info", PropertyStates.OK);
-            new INDILightElement(codecs, "h264", "H264", SystemInfo.getCodecH264Enabled() ? LightStates.OK : LightStates.IDLE);
-            new INDILightElement(codecs, "mpg2", "MPG2", SystemInfo.getCodecMPG2Enabled() ? LightStates.OK : LightStates.IDLE);
-            new INDILightElement(codecs, "wvc1", "WVC1", SystemInfo.getCodecWVC1Enabled() ? LightStates.OK : LightStates.IDLE);
+            INDILightProperty codecs = newProperty(INDILightProperty.class).name("codecs").label("Codecs").group("System Info").state(OK).create();
+            codecs.newElement().name("h264").label("H264").state(SystemInfo.getCodecH264Enabled() ? LightStates.OK : LightStates.IDLE).create();
+            codecs.newElement().name("mpg2").label("MPG2").state(SystemInfo.getCodecMPG2Enabled() ? LightStates.OK : LightStates.IDLE).create();
+            codecs.newElement().name("wvc1").label("WVC1").state(SystemInfo.getCodecWVC1Enabled() ? LightStates.OK : LightStates.IDLE).create();
             addProperty(codecs);
 
-            INDITextProperty cpu = new INDITextProperty(this, "cpu", "CPU", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-            new INDITextElement(cpu, "processor", "Processor", getProcessor());
-            new INDITextElement(cpu, "features", "Features", Arrays.toString(SystemInfo.getCpuFeatures()));
-            new INDITextElement(cpu, "hardware", "Hardware", SystemInfo.getHardware());
-            new INDITextElement(cpu, "architecture", "Architecture", SystemInfo.getCpuArchitecture());
-            new INDITextElement(cpu, "implementer", "Implementer", SystemInfo.getCpuImplementer());
-            new INDITextElement(cpu, "part", "Part", SystemInfo.getCpuPart());
-            new INDITextElement(cpu, "revision", "Revision", SystemInfo.getCpuRevision());
-            new INDITextElement(cpu, "variant", "Variant", SystemInfo.getCpuVariant());
-            new INDITextElement(cpu, "voltage", "Voltage", SystemInfo.getCpuVoltage() + "");
+            INDITextProperty cpu = newProperty(INDITextProperty.class).name("cpu").label("CPU").group("System Info").state(OK).permission(RO).create();
+            cpu.newElement().name("processor").label("Processor").textValue(getProcessor()).create();
+            cpu.newElement().name("features").label("Features").textValue(Arrays.toString(SystemInfo.getCpuFeatures())).create();
+            cpu.newElement().name("hardware").label("Hardware").textValue(SystemInfo.getHardware()).create();
+            cpu.newElement().name("architecture").label("Architecture").textValue(SystemInfo.getCpuArchitecture()).create();
+            cpu.newElement().name("implementer").label("Implementer").textValue(SystemInfo.getCpuImplementer()).create();
+            cpu.newElement().name("part").label("Part").textValue(SystemInfo.getCpuPart()).create();
+            cpu.newElement().name("revision").label("Revision").textValue(SystemInfo.getCpuRevision()).create();
+            cpu.newElement().name("variant").label("Variant").textValue(SystemInfo.getCpuVariant()).create();
+            cpu.newElement().name("voltage").label("Voltage").textValue(SystemInfo.getCpuVoltage() + "").create();
             addProperty(cpu);
 
-            INDINumberProperty memoryVoltage = new INDINumberProperty(this, "memory_voltages", "Memory Voltages", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-            new INDINumberElement(memoryVoltage, "voltage_sdram_c", "Voltage SDRAM C", SystemInfo.getMemoryVoltageSDRam_C() + "", "0", "100", "1", "%1.2f");
-            new INDINumberElement(memoryVoltage, "voltage_sdram_i", "Voltage SDRAM I", SystemInfo.getMemoryVoltageSDRam_I() + "", "0", "100", "1", "%1.2f");
-            new INDINumberElement(memoryVoltage, "voltage_sdram_p", "Voltage SDRAM P", SystemInfo.getMemoryVoltageSDRam_P() + "", "0", "100", "1", "%1.2f");
+            INDINumberProperty memoryVoltage =
+                    newProperty(INDINumberProperty.class).name("memory_voltages").label("Memory Voltages").group("System Info").state(OK).permission(RO).create();
+            memoryVoltage.newElement().name("voltage_sdram_c").label("Voltage SDRAM C").numberValue(SystemInfo.getMemoryVoltageSDRam_C()).maximum(MAX_VOLTAGE).step(1)
+                    .numberFormat("%1.2f").create();
+            memoryVoltage.newElement().name("voltage_sdram_i").label("Voltage SDRAM I").numberValue(SystemInfo.getMemoryVoltageSDRam_I()).maximum(MAX_VOLTAGE).step(1)
+                    .numberFormat("%1.2f").create();
+            memoryVoltage.newElement().name("voltage_sdram_p").label("Voltage SDRAM P").numberValue(SystemInfo.getMemoryVoltageSDRam_P()).maximum(MAX_VOLTAGE).step(1)
+                    .numberFormat("%1.2f").create();
             addProperty(memoryVoltage);
 
-            INDITextProperty os = new INDITextProperty(this, "os", "Operating System", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-            new INDITextElement(os, "name", "Name", SystemInfo.getOsName());
-            new INDITextElement(os, "version", "Version", SystemInfo.getOsVersion());
-            new INDITextElement(os, "architecture", "Architecture", SystemInfo.getOsArch());
-            new INDITextElement(os, "firmware_build", "Firmware Build", SystemInfo.getOsFirmwareBuild());
-            new INDITextElement(os, "firmware_date", "Firmware Date", SystemInfo.getOsFirmwareDate());
-            new INDITextElement(os, "float_abi", "Float Abi", SystemInfo.isHardFloatAbi() ? "Hard" : "Soft");
+            INDITextProperty os = newProperty(INDITextProperty.class).name("os").label("Operating System").group("System Info").state(OK).permission(RO).create();
+            os.newElement().name("name").label("Name").textValue(SystemInfo.getOsName()).create();
+            os.newElement().name("version").label("Version").textValue(SystemInfo.getOsVersion()).create();
+            os.newElement().name("architecture").label("Architecture").textValue(SystemInfo.getOsArch()).create();
+            os.newElement().name("firmware_build").label("Firmware Build").textValue(SystemInfo.getOsFirmwareBuild()).create();
+            os.newElement().name("firmware_date").label("Firmware Date").textValue(SystemInfo.getOsFirmwareDate()).create();
+            os.newElement().name("float_abi").label("Float Abi").textValue(SystemInfo.isHardFloatAbi() ? "Hard" : "Soft").create();
             addProperty(os);
 
-            INDITextProperty java = new INDITextProperty(this, "java", "Java", "System Info", PropertyStates.OK, PropertyPermissions.RO);
-            new INDITextElement(java, "runtime", "Runtime", SystemInfo.getJavaRuntime());
-            new INDITextElement(java, "version", "Version", SystemInfo.getJavaVersion());
-            new INDITextElement(java, "virtual_machine", "Virtual Machine", SystemInfo.getJavaVirtualMachine());
-            new INDITextElement(java, "vendor", "Vendor", SystemInfo.getJavaVendor());
-            new INDITextElement(java, "vendor_url", "Vendor URL", SystemInfo.getJavaVendorUrl());
+            INDITextProperty java = newProperty(INDITextProperty.class).name("java").label("Java").group("System Info").state(OK).permission(RO).create();
+            java.newElement().name("runtime").label("Runtime").textValue(SystemInfo.getJavaRuntime()).create();
+            java.newElement().name("version").label("Version").textValue(SystemInfo.getJavaVersion()).create();
+            java.newElement().name("virtual_machine").label("Virtual Machine").textValue(SystemInfo.getJavaVirtualMachine()).create();
+            java.newElement().name("vendor").label("Vendor").textValue(SystemInfo.getJavaVendor()).create();
+            java.newElement().name("vendor_url").label("Vendor URL").textValue(SystemInfo.getJavaVendorUrl()).create();
             addProperty(java);
 
-            memoryP = new INDINumberProperty(this, "memory", "Memory (MB)", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-            new INDINumberElement(memoryP, "total", "Total", (SystemInfo.getMemoryTotal() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            memoryUsedE = new INDINumberElement(memoryP, "used", "Used", (SystemInfo.getMemoryUsed() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            memoryFreeE = new INDINumberElement(memoryP, "free", "Free", (SystemInfo.getMemoryFree() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            memoryBuffersE =
-                    new INDINumberElement(memoryP, "buffers", "Buffers", (SystemInfo.getMemoryBuffers() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            memoryCachedE = new INDINumberElement(memoryP, "cached", "Cached", (SystemInfo.getMemoryCached() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
-            memorySharedE = new INDINumberElement(memoryP, "shared", "Shared", (SystemInfo.getMemoryShared() / ONE_MEGABYTE) + "", "0", MAX_VALUE_10000_STRING, "1", "%1.2f");
+            memoryP = newProperty(INDINumberProperty.class).name("memory").label("Memory (MB)").group("Sensors").state(OK).permission(RO).create();
+            memoryP.newElement().name("total").label("Total").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
+                    .numberValue(SystemInfo.getMemoryTotal() / ONE_MEGABYTE).create();
 
-            cpuTemperatureP = new INDINumberProperty(this, "cpu_temperature", "CPU Temperature", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-            cpuTemperatureE = new INDINumberElement(cpuTemperatureP, "cpu_temperature", "Temperature (°C)", SystemInfo.getCpuTemperature() + "", "0", "200", "1", "%1.2f");
+            memoryUsedE = memoryP.newElement().name("used").label("Used").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
+                    .numberValue(SystemInfo.getMemoryUsed() / ONE_MEGABYTE).create();
+            memoryFreeE = memoryP.newElement().name("free").label("Free").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
+                    .numberValue(SystemInfo.getMemoryFree() / ONE_MEGABYTE).create();
+            memoryBuffersE = memoryP.newElement().name("buffers").label("Buffers").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
+                    .numberValue(SystemInfo.getMemoryBuffers() / ONE_MEGABYTE).create();
+            memoryCachedE = memoryP.newElement().name("cached").label("Cached").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
+                    .numberValue(SystemInfo.getMemoryCached() / ONE_MEGABYTE).create();
+            memorySharedE = memoryP.newElement().name("shared").label("Shared").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
+                    .numberValue(SystemInfo.getMemoryShared() / ONE_MEGABYTE).create();
+
+            cpuTemperatureP = newProperty(INDINumberProperty.class).name("cpu_temperature").label("CPU Temperature").group("Sensors").state(OK).permission(RO).create();
+            cpuTemperatureE = cpuTemperatureP.newElement().name("cpu_temperature").label("Temperature (°C)").step(1).numberFormat("%1.2f").maximum(MAX_CPU_TEMPERATURE)//
+                    .numberValue(SystemInfo.getCpuTemperature()).create();
         } catch (IOException | InterruptedException | ParseException e) {
             LOG.error("exception during property creation", e);
         }
 
-        uptimeP = new INDINumberProperty(this, "uptime", "System Uptime", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-        uptimeE = new INDINumberElement(uptimeP, "uptime", "Uptime (secs)", "0", "0", "10000000000", "1", "%1.0f");
-        uptimeIdleE = new INDINumberElement(uptimeP, "uptime_idle", "Idle Uptime (secs)", "0", "0", "10000000000", "1", "%1.0f");
+        uptimeP = newProperty(INDINumberProperty.class).name("uptime").label("System Uptime").group("Sensors").state(OK).permission(RO).create();
+        uptimeE = uptimeP.newElement().name("uptime").label("Uptime (secs)").step(1).numberFormat("%1.0f").maximum(MAX_UPTIME_IN_SECONDS).create();
+        uptimeIdleE = uptimeP.newElement().name("uptime_idle").label("Idle Uptime (secs)").step(1).numberFormat("%1.0f").maximum(MAX_UPTIME_IN_SECONDS).create();
 
-        uptimeTextP = new INDITextProperty(this, "uptimet", "System Uptime (Text)", "Sensors", PropertyStates.OK, PropertyPermissions.RO);
-        uptimeTextE = new INDITextElement(uptimeTextP, "uptimet", "Uptime", "0");
-        uptimeIdleTextE = new INDITextElement(uptimeTextP, "uptime_idlet", "Idle Uptime", "0");
+        uptimeTextP = newProperty(INDITextProperty.class).name("uptimet").label("System Uptime (Text)").group("Sensors").state(OK).permission(RO).create();
+        uptimeTextE = uptimeTextP.newElement().name("uptimet").label("Uptime").textValue("0").create();
+        uptimeIdleTextE = uptimeTextP.newElement().name("uptime_idlet").label("Idle Uptime").textValue("0").create();
     }
 
     /**
@@ -637,9 +661,11 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
         pins[pin] = gpio.provisionDigitalInputPin(PINS_ARRAY[pin], pull);
         ((GpioPinDigitalInput) pins[pin]).addListener(this);
 
-        INDILightProperty lp = new INDILightProperty(this, "gpiopin_" + pin, "Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")", "Main Control", PropertyStates.IDLE);
+        INDILightProperty lp = newProperty(INDILightProperty.class)//
+                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group("Main Control").create();
+
         pinsProperties[pin] = lp;
-        new INDILightElement(lp, "state", "State", LightStates.IDLE);
+        lp.newElement().name("state").label("State").create();
         addProperty(pinsProperties[pin]);
         updateInputPin(pin);
     }

@@ -135,7 +135,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * @param builder
      *            the builder with all the settings.
      */
-    protected INDIProperty(INDIPropertyBuilder builder) {
+    protected INDIProperty(INDIPropertyBuilder<?> builder) {
         this.driver = builder.driver();
         this.name = builder.name();
         if (this.name.length() == 0) {
@@ -370,6 +370,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @param element
      *            the Element to be added.
+     * @return
      */
     protected void addElement(Element element) {
         if ((this instanceof INDITextProperty) && (!(element instanceof INDITextElement))) {
@@ -392,10 +393,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
             throw new IllegalArgumentException("BLOB Element cannot be added to BLOB Property");
         }
 
-        if (!isInit) { // We still can add new properties
-            if (!elements.containsValue(element)) {
-                elements.put(element.getName(), element);
-            }
+        // We still can add new properties and it dous not jet exist.
+        if (!isInit && !elements.containsKey(element.getName())) {
+            elements.put(element.getName(), element);
         }
     }
 

@@ -302,6 +302,16 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
      */
     public PropertyClass create() {
         try {
+            if (saveable) {
+                INDIProperty<?> loadedProperty = INDIProperty.loadFromFile(driver, name());
+                if (loadedProperty != null) {
+                    try {
+                        return propertyClazz.cast(loadedProperty);
+                    } catch (Exception e) {
+                        LOG.error("strange the class of the property changed, sorry but we will forget the saved one", e);
+                    }
+                }
+            }
             return propertyClazz.getConstructor(INDIPropertyBuilder.class).newInstance(this);
         } catch (Exception e) {
             LOG.error("could not instanciate property", e);

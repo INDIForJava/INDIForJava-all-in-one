@@ -190,4 +190,18 @@ public class INDISwitchElement extends INDIElement {
     public final boolean isOn() {
         return getValue() == SwitchStatus.ON;
     }
+
+    /**
+     * set the value to off.
+     */
+    public final void setOff() {
+        setValue(SwitchStatus.OFF);
+    }
+
+    /**
+     * set the value to on.
+     */
+    public final void setOn() {
+        setValue(SwitchStatus.OFF);
+    }
 }
