@@ -30,5 +30,6 @@
 	<properties>
 		<pi4j.version>0.0.5</pi4j.version>
 		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
 	</properties>
 </project>

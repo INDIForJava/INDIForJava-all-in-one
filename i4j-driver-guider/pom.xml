@@ -47,5 +47,6 @@
 		<pmd.skip>true</pmd.skip>
 		<checkstyle.skip>true</checkstyle.skip>
 		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
 	</properties>
 </project>

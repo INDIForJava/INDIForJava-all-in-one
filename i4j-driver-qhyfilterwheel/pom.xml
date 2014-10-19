@@ -19,5 +19,6 @@
 	</dependencies>
 	<properties>
 		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
 	</properties>
 </project>
