@@ -167,42 +167,38 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
         stopPositionReaderThread = false;
         updatePosition = false;
 
-        wireModeP =
-                INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "wireMode", "Wire Mode", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW,
-                        new String[]{
-                            "Lunático",
-                            "Lunático Inverted",
-                            "RF/Moonlite",
-                            "RF/Moonlite Inverted"
-                        });
+        wireModeP = newProperty(INDISwitchOneOfManyProperty.class).saveable(true).name("wireMode").label("Wire Mode").group("Configuration").create();
+        wireModeP.newElement().name("Lunático").create();
+        wireModeP.newElement().name("Lunático Inverted").create();
+        wireModeP.newElement().name("RF/Moonlite").create();
+        wireModeP.newElement().name("RF/Moonlite Inverted").create();
         addProperty(wireModeP);
+
         int mode = wireModeP.getSelectedIndex();
         driver.setStepperWireMode(seletekPort, mode);
 
-        modelP =
-                INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "model", "Model", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW,
-                        new String[]{
-                            "Unipolar",
-                            "Bipolar",
-                            "DC",
-                            "Step and Dir"
-                        });
+        modelP = newProperty(INDISwitchOneOfManyProperty.class).saveable(true).name("model").label("Model").group("Configuration").create();
+        modelP.newElement().name("Unipolar").create();
+        modelP.newElement().name("Bipolar").create();
+        modelP.newElement().name("DC").create();
+        modelP.newElement().name("Step and Dir").create();
         addProperty(modelP);
+
         int model = modelP.getSelectedIndex();
         driver.setStepperModel(seletekPort, model);
 
-        halfStepP =
-                INDISwitchOneOrNoneProperty.createSaveableSwitchOneOrNoneProperty(this, "halfStep", "Half Step", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW,
-                        "Half Step", SwitchStatus.OFF);
+        halfStepP = newProperty(INDISwitchOneOrNoneProperty.class).saveable(true).name("halfStep").label("Half Step").group("Configuration").create();
+        halfStepP.newElement().name("Half Step").create();
+
         addProperty(halfStepP);
         boolean half = (halfStepP.getStatus() == SwitchStatus.ON);
         driver.setStepperHalfStep(seletekPort, half);
 
-        powerSettingsP = INDINumberProperty.createSaveableNumberProperty(this, "stepper_pow", "Power Settings", "Configuration", PropertyStates.IDLE, PropertyPermissions.RW);
-        movePowerE = new INDINumberElement(powerSettingsP, "move_power", "Moving Power", I4JSeletekDriver.MAX_POWER_VALUE, 0, I4JSeletekDriver.MAX_POWER_VALUE, 1, "%1.0f");
-        stopPowerE = new INDINumberElement(powerSettingsP, "stop_power", "Stopped Power", 0, 0, I4JSeletekDriver.MAX_POWER_VALUE, 1, "%1.0f");
-        movePowerE = powerSettingsP.getElement("move_power");
-        stopPowerE = powerSettingsP.getElement("stop_power");
+        powerSettingsP = newNumberProperty().saveable(true).name("stepper_pow").label("Power Settings").group("Configuration").create();
+        movePowerE = powerSettingsP.newElement().name("move_power").label("Moving Power")//
+                .maximum(I4JSeletekDriver.MAX_POWER_VALUE).numberValue(I4JSeletekDriver.MAX_POWER_VALUE).step(1).numberFormat("%1.0f").create();
+        stopPowerE = powerSettingsP.newElement().name("stop_power").label("Stopped Power")//
+                .maximum(I4JSeletekDriver.MAX_POWER_VALUE).step(1).numberFormat("%1.0f").create();
         addProperty(powerSettingsP);
 
         driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());

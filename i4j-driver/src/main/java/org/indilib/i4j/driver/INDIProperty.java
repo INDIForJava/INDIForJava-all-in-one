@@ -149,88 +149,8 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         this.state = builder.state();
         this.permission = builder.permission();
         this.timeout = builder.timeout();
-        this.elements = new LinkedHashMap<String, Element>();
         this.saveable = builder.saveable();
-        isInit = false;
-    }
-
-    /**
-     * Constructs an instance of a <code>INDIProperty</code>. Called by its
-     * sub-classes. If <code>label</code> is <code>null</code> the label will be
-     * copied from the <code>name</code>. if <code>group</code> is
-     * <code>null</code> the group will be <code>"Unsorted"</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param timeout
-     *            The timeout of the Property if <code>name</code> is
-     *            <code>null</code> or empty.
-     */
-    protected INDIProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout) {
-        this.driver = driver;
-
-        // Name
-        if (name == null) {
-            throw new IllegalArgumentException("No name for the Property");
-        }
-
-        name = name.trim();
-
-        if (name.length() == 0) {
-            throw new IllegalArgumentException("No name for the Property");
-        }
-
-        this.name = name;
-
-        // Label
-        if (label == null) {
-            this.label = name;
-        } else {
-            label = label.trim();
-
-            if (label.length() == 0) {
-                this.label = name;
-            } else {
-                this.label = label;
-            }
-        }
-
-        if (group == null) {
-            group = "Unsorted";
-        }
-
-        group = group.trim();
-
-        if (group.length() == 0) {
-            group = "Unsorted";
-        }
-
-        this.group = group;
-
-        this.state = state;
-
-        this.permission = permission;
-
-        if (timeout < 0) {
-            this.timeout = 0;
-        } else {
-            this.timeout = timeout;
-        }
-
         this.elements = new LinkedHashMap<String, Element>();
-
-        this.saveable = false;
-
         isInit = false;
     }
 

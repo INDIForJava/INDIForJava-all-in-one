@@ -15,11 +15,9 @@ package org.indilib.i4j.driver;
 
 import java.util.List;
 
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI One Of Many Switch Property. It simplifies
@@ -36,152 +34,14 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
     private static final long serialVersionUID = -7669211544834222712L;
 
     /**
-     * Loads a Switch One of Many Property from a file.
+     * Constructs an instance of a <code>INDISwitchOneOfManyProperty</code>.
+     * Called by its sub-classes. useing the settings from the builder.
      * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded switch one of many property or <code>null</code> if it
-     *         could not be loaded.
+     * @param builder
+     *            the builder with all the settings.
      */
-    private static INDISwitchOneOfManyProperty loadSwitchOneOfManyProperty(INDIDriver driver, String name) {
-        INDIProperty<?> prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDISwitchOneOfManyProperty)) {
-            return null;
-        }
-
-        INDISwitchOneOfManyProperty sp = (INDISwitchOneOfManyProperty) prop;
-        sp.setSaveable(true);
-        return sp;
-    }
-
-    /**
-     * Constructs an instance of <code>INDISwitchOneOfManyProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code>,
-     * <code>elements</code> and <code>selectedElement</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param elements
-     *            The name of the option
-     * @param selectedElement
-     *            The initial status of the option
-     * @see INDISwitchProperty
-     */
-    public INDISwitchOneOfManyProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String[] elements,
-            int selectedElement) {
-        super(driver, name, label, group, state, permission, 0, SwitchRules.ONE_OF_MANY);
-
-        createElements(elements, selectedElement);
-    }
-
-    /**
-     * Constructs an instance of <code>INDISwitchOneOfManyProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code> and
-     * <code>elements</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param elements
-     *            The name of the option
-     * @see INDISwitchProperty
-     */
-    public INDISwitchOneOfManyProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String[] elements) {
-        super(driver, name, label, group, state, permission, 0, SwitchRules.ONE_OF_MANY);
-
-        createElements(elements, 0);
-    }
-
-    /**
-     * Loads an instance of <code>INDISwitchOneOfManyProperty</code> from a file
-     * or, if it cannot be loaded, constructs it with a particular
-     * <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code> and
-     * <code>elements</code>. The property will autosave its status to a file
-     * every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param elements
-     *            The name of the option
-     * @return The loaded switch one of many property or a new constructed one
-     *         if cannot be loaded.
-     * @see INDISwitchProperty
-     */
-    public static INDISwitchOneOfManyProperty createSaveableSwitchOneOfManyProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, String[] elements) {
-        INDISwitchOneOfManyProperty sp = loadSwitchOneOfManyProperty(driver, name);
-
-        if (sp == null) {
-            sp = new INDISwitchOneOfManyProperty(driver, name, label, group, state, permission, elements);
-            sp.setSaveable(true);
-        }
-
-        return sp;
-    }
-
-    /**
-     * Creates de Switch Elements of the property. Each Element name and label
-     * will be the same. The <code>defaultOption</code> element will be
-     * selected.
-     * 
-     * @param options
-     *            The names of the Switch Elements
-     * @param defaultOption
-     *            The number of the selected element
-     */
-    private void createElements(String[] options, int defaultOption) {
-        if (defaultOption >= options.length) {
-            defaultOption = 0;
-        }
-        for (int i = 0; i < options.length; i++) {
-            SwitchStatus ss = SwitchStatus.OFF;
-
-            if (i == defaultOption) {
-                ss = SwitchStatus.ON;
-            }
-            new INDISwitchElement(this, options[i], ss);
-        }
+    public INDISwitchOneOfManyProperty(INDIPropertyBuilder<INDISwitchProperty> builder) {
+        super(builder.switchRule(SwitchRules.ONE_OF_MANY));
     }
 
     /**

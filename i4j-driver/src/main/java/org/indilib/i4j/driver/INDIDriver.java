@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
@@ -223,9 +222,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * "one of many" rule (thus, one option is always selected).
      */
     private void addConnectionProperty() {
-        connectionP = new INDISwitchProperty(this, "CONNECTION", "Connection", "Main Control", PropertyStates.IDLE, PropertyPermissions.RW, 100, SwitchRules.ONE_OF_MANY);
-        connectedE = new INDISwitchElement(connectionP, "CONNECT", "Connect", SwitchStatus.OFF);
-        disconnectedE = new INDISwitchElement(connectionP, "DISCONNECT", "Disconnect", SwitchStatus.ON);
+        connectionP = newSwitchProperty()//
+                .name("CONNECTION").label("Connection").group("Main Control").timeout(100).switchRule(SwitchRules.ONE_OF_MANY).create();
+        connectedE = connectionP.newElement().name("CONNECT").label("Connect").create();
+        disconnectedE = connectionP.newElement().name("DISCONNECT").label("Disconnect").switchValue(SwitchStatus.ON).create();
 
         addProperty(connectionP);
     }
@@ -1098,4 +1098,40 @@ public abstract class INDIDriver implements INDIProtocolParser {
     public <PropertyClass extends INDIProperty<?>> INDIPropertyBuilder<PropertyClass> newProperty(Class<PropertyClass> clazz) {
         return new INDIPropertyBuilder<PropertyClass>(clazz).driver(this);
     }
+
+    /**
+     * @return a property builder for a text property.
+     */
+    public INDIPropertyBuilder<INDITextProperty> newTextProperty() {
+        return newProperty(INDITextProperty.class);
+    }
+
+    /**
+     * @return a property builder for a number property.
+     */
+    public INDIPropertyBuilder<INDINumberProperty> newNumberProperty() {
+        return newProperty(INDINumberProperty.class);
+    }
+
+    /**
+     * @return a property builder for a switch property.
+     */
+    public INDIPropertyBuilder<INDISwitchProperty> newSwitchProperty() {
+        return newProperty(INDISwitchProperty.class);
+    }
+
+    /**
+     * @return a property builder for a light property.
+     */
+    public INDIPropertyBuilder<INDILightProperty> newLightProperty() {
+        return newProperty(INDILightProperty.class);
+    }
+
+    /**
+     * @return a property builder for a blob property.
+     */
+    public INDIPropertyBuilder<INDIBLOBProperty> newBlobProperty() {
+        return newProperty(INDIBLOBProperty.class);
+    }
+
 }

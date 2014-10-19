@@ -106,7 +106,7 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         // Define the BLOB Property with this Driver as its owner, name "image",
         // label "Image", group "Image Properties", initial state IDLE and Read
         // Only.
-        imageP = newProperty(INDIBLOBProperty.class).name("image").label("Image").group("Image Properties").permission(PropertyPermissions.RO).create();
+        imageP = newBlobProperty().name("image").label("Image").group("Image Properties").permission(PropertyPermissions.RO).create();
         // Define the BLOB Element with name "image" and label "Image". Its
         // initial value is empty.
         imageE = imageP.newElement().create();
@@ -114,7 +114,7 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         // Define the Switch Property with this driver as its owner, name
         // "sendImage", label "Send Image", group "Image Properties", initial
         // state IDLE, Read/Write permission and AtMostOne rule for the switch.
-        sendP = newProperty(INDISwitchProperty.class).name("sendImage").label("Send Image").group("Image Properties").switchRule(SwitchRules.AT_MOST_ONE).create();
+        sendP = newSwitchProperty().name("sendImage").label("Send Image").group("Image Properties").switchRule(SwitchRules.AT_MOST_ONE).create();
         // Define the Switch Element with name "sendImage", label "Send Image"
         // and initial status OFF
         sendE = sendP.newElement().create();

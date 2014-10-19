@@ -38,7 +38,6 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import org.indilib.i4j.Constants.LightStates;
-import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
@@ -338,7 +337,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
         pinsProperties = new INDIProperty[NUMBER_OF_PINS];
 
-        pinsNamesP = newProperty(INDITextProperty.class).saveable(true).name("pin_names").label("Pin Names").group("Pin Names").create();
+        pinsNamesP = newTextProperty().saveable(true).name("pin_names").label("Pin Names").group("Pin Names").create();
         pinsNamesE = new INDITextElement[NUMBER_OF_PINS];
         for (int i = 0; i < NUMBER_OF_PINS; i++) {
             pinsNamesE[i] = pinsNamesP.getElement("pin_" + i + "name");
@@ -363,19 +362,19 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
         }
 
         try {
-            INDITextProperty board = newProperty(INDITextProperty.class).name("board").label("Board").group("System Info").state(OK).permission(RO).create();
+            INDITextProperty board = newTextProperty().name("board").label("Board").group("System Info").state(OK).permission(RO).create();
             board.newElement().name("type").label("Type").textValue("" + SystemInfo.getBoardType()).create();
             board.newElement().name("revision").label("Revision").textValue(SystemInfo.getRevision()).create();
             board.newElement().name("serial").label("Serial Number").textValue(SystemInfo.getSerial()).create();
 
             addProperty(board);
 
-            INDITextProperty bogoMIPS = newProperty(INDITextProperty.class).name("bogo_mips").label("Bogo MIPS").group("System Info").state(OK).permission(RO).create();
+            INDITextProperty bogoMIPS = newTextProperty().name("bogo_mips").label("Bogo MIPS").group("System Info").state(OK).permission(RO).create();
             bogoMIPS.newElement().textValue(getBogoMIPS()).create();
             addProperty(bogoMIPS);
 
             INDINumberProperty clockFrequencies =
-                    newProperty(INDINumberProperty.class).name("clock_frequencies").label("Clock Frequencies (MHz)").group("System Info").state(OK).permission(RO).create();
+                    newNumberProperty().name("clock_frequencies").label("Clock Frequencies (MHz)").group("System Info").state(OK).permission(RO).create();
             clockFrequencies.newElement().name("arm").label("Arm").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
                     .numberValue(SystemInfo.getClockFrequencyArm() / HZ_TO_MEGAHERZ_DIVIDER).create();
             clockFrequencies.newElement().name("core").label("Core").maximum(MAX_VALUE_10000).step(1d).numberFormat("%1.2f")
@@ -405,13 +404,13 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
             addProperty(clockFrequencies);
 
-            INDILightProperty codecs = newProperty(INDILightProperty.class).name("codecs").label("Codecs").group("System Info").state(OK).create();
+            INDILightProperty codecs = newLightProperty().name("codecs").label("Codecs").group("System Info").state(OK).create();
             codecs.newElement().name("h264").label("H264").state(SystemInfo.getCodecH264Enabled() ? LightStates.OK : LightStates.IDLE).create();
             codecs.newElement().name("mpg2").label("MPG2").state(SystemInfo.getCodecMPG2Enabled() ? LightStates.OK : LightStates.IDLE).create();
             codecs.newElement().name("wvc1").label("WVC1").state(SystemInfo.getCodecWVC1Enabled() ? LightStates.OK : LightStates.IDLE).create();
             addProperty(codecs);
 
-            INDITextProperty cpu = newProperty(INDITextProperty.class).name("cpu").label("CPU").group("System Info").state(OK).permission(RO).create();
+            INDITextProperty cpu = newTextProperty().name("cpu").label("CPU").group("System Info").state(OK).permission(RO).create();
             cpu.newElement().name("processor").label("Processor").textValue(getProcessor()).create();
             cpu.newElement().name("features").label("Features").textValue(Arrays.toString(SystemInfo.getCpuFeatures())).create();
             cpu.newElement().name("hardware").label("Hardware").textValue(SystemInfo.getHardware()).create();
@@ -424,7 +423,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
             addProperty(cpu);
 
             INDINumberProperty memoryVoltage =
-                    newProperty(INDINumberProperty.class).name("memory_voltages").label("Memory Voltages").group("System Info").state(OK).permission(RO).create();
+                    newNumberProperty().name("memory_voltages").label("Memory Voltages").group("System Info").state(OK).permission(RO).create();
             memoryVoltage.newElement().name("voltage_sdram_c").label("Voltage SDRAM C").numberValue(SystemInfo.getMemoryVoltageSDRam_C()).maximum(MAX_VOLTAGE).step(1)
                     .numberFormat("%1.2f").create();
             memoryVoltage.newElement().name("voltage_sdram_i").label("Voltage SDRAM I").numberValue(SystemInfo.getMemoryVoltageSDRam_I()).maximum(MAX_VOLTAGE).step(1)
@@ -433,7 +432,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
                     .numberFormat("%1.2f").create();
             addProperty(memoryVoltage);
 
-            INDITextProperty os = newProperty(INDITextProperty.class).name("os").label("Operating System").group("System Info").state(OK).permission(RO).create();
+            INDITextProperty os = newTextProperty().name("os").label("Operating System").group("System Info").state(OK).permission(RO).create();
             os.newElement().name("name").label("Name").textValue(SystemInfo.getOsName()).create();
             os.newElement().name("version").label("Version").textValue(SystemInfo.getOsVersion()).create();
             os.newElement().name("architecture").label("Architecture").textValue(SystemInfo.getOsArch()).create();
@@ -442,7 +441,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
             os.newElement().name("float_abi").label("Float Abi").textValue(SystemInfo.isHardFloatAbi() ? "Hard" : "Soft").create();
             addProperty(os);
 
-            INDITextProperty java = newProperty(INDITextProperty.class).name("java").label("Java").group("System Info").state(OK).permission(RO).create();
+            INDITextProperty java = newTextProperty().name("java").label("Java").group("System Info").state(OK).permission(RO).create();
             java.newElement().name("runtime").label("Runtime").textValue(SystemInfo.getJavaRuntime()).create();
             java.newElement().name("version").label("Version").textValue(SystemInfo.getJavaVersion()).create();
             java.newElement().name("virtual_machine").label("Virtual Machine").textValue(SystemInfo.getJavaVirtualMachine()).create();
@@ -450,7 +449,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
             java.newElement().name("vendor_url").label("Vendor URL").textValue(SystemInfo.getJavaVendorUrl()).create();
             addProperty(java);
 
-            memoryP = newProperty(INDINumberProperty.class).name("memory").label("Memory (MB)").group("Sensors").state(OK).permission(RO).create();
+            memoryP = newNumberProperty().name("memory").label("Memory (MB)").group("Sensors").state(OK).permission(RO).create();
             memoryP.newElement().name("total").label("Total").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
                     .numberValue(SystemInfo.getMemoryTotal() / ONE_MEGABYTE).create();
 
@@ -465,18 +464,18 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
             memorySharedE = memoryP.newElement().name("shared").label("Shared").step(1d).maximum(MAX_VALUE_10000).numberFormat("%1.2f")//
                     .numberValue(SystemInfo.getMemoryShared() / ONE_MEGABYTE).create();
 
-            cpuTemperatureP = newProperty(INDINumberProperty.class).name("cpu_temperature").label("CPU Temperature").group("Sensors").state(OK).permission(RO).create();
+            cpuTemperatureP = newNumberProperty().name("cpu_temperature").label("CPU Temperature").group("Sensors").state(OK).permission(RO).create();
             cpuTemperatureE = cpuTemperatureP.newElement().name("cpu_temperature").label("Temperature (°C)").step(1).numberFormat("%1.2f").maximum(MAX_CPU_TEMPERATURE)//
                     .numberValue(SystemInfo.getCpuTemperature()).create();
         } catch (IOException | InterruptedException | ParseException e) {
             LOG.error("exception during property creation", e);
         }
 
-        uptimeP = newProperty(INDINumberProperty.class).name("uptime").label("System Uptime").group("Sensors").state(OK).permission(RO).create();
+        uptimeP = newNumberProperty().name("uptime").label("System Uptime").group("Sensors").state(OK).permission(RO).create();
         uptimeE = uptimeP.newElement().name("uptime").label("Uptime (secs)").step(1).numberFormat("%1.0f").maximum(MAX_UPTIME_IN_SECONDS).create();
         uptimeIdleE = uptimeP.newElement().name("uptime_idle").label("Idle Uptime (secs)").step(1).numberFormat("%1.0f").maximum(MAX_UPTIME_IN_SECONDS).create();
 
-        uptimeTextP = newProperty(INDITextProperty.class).name("uptimet").label("System Uptime (Text)").group("Sensors").state(OK).permission(RO).create();
+        uptimeTextP = newTextProperty().name("uptimet").label("System Uptime (Text)").group("Sensors").state(OK).permission(RO).create();
         uptimeTextE = uptimeTextP.newElement().name("uptimet").label("Uptime").textValue("0").create();
         uptimeIdleTextE = uptimeTextP.newElement().name("uptime_idlet").label("Idle Uptime").textValue("0").create();
     }
@@ -623,12 +622,10 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      */
     private void createOutputPin(int pin) {
         pins[pin] = gpio.provisionDigitalOutputPin(PINS_ARRAY[pin], PinState.LOW);
-        pinsProperties[pin] =
-                new INDISwitchOneOfManyProperty(this, "gpiopin_" + pin, "Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")", "Main Control", PropertyStates.IDLE,
-                        PropertyPermissions.RW, new String[]{
-                            "On",
-                            "Off"
-                        }, 1);
+        pinsProperties[pin] = newProperty(INDISwitchOneOfManyProperty.class)//
+                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group("Main Control").create();
+        pinsProperties[pin].newElement().name("On").switchValue(ON).create();
+        pinsProperties[pin].newElement().name("Off").create();
         addProperty(pinsProperties[pin]);
     }
 
@@ -641,11 +638,10 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     private void createPWMOutputPin(int pin) {
         pins[pin] = gpio.provisionPwmOutputPin(PINS_ARRAY[pin]);
 
-        INDINumberProperty np =
-                new INDINumberProperty(this, "gpiopin_" + pin, "Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")", "Main Control", PropertyStates.IDLE,
-                        PropertyPermissions.RW);
+        INDINumberProperty np = newNumberProperty()//
+                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group("Main Control").create();
+        np.newElement().name("value").label("PWM Value").maximum(MAXIMUM_PWM_VALUE).step(1).numberFormat("%1.0f").create();
         pinsProperties[pin] = np;
-        new INDINumberElement(np, "value", "PWM Value", 0.0, 0.0, MAXIMUM_PWM_VALUE, 1.0, "%1.0f");
         addProperty(pinsProperties[pin]);
     }
 
@@ -661,7 +657,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
         pins[pin] = gpio.provisionDigitalInputPin(PINS_ARRAY[pin], pull);
         ((GpioPinDigitalInput) pins[pin]).addListener(this);
 
-        INDILightProperty lp = newProperty(INDILightProperty.class)//
+        INDILightProperty lp = newLightProperty()//
                 .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group("Main Control").create();
 
         pinsProperties[pin] = lp;

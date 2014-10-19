@@ -23,10 +23,7 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIDateFormat;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
@@ -42,60 +39,15 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      */
     private static final long serialVersionUID = -1568675891716860995L;
 
-    public INDITextProperty(INDIPropertyBuilder<INDITextProperty> builder) {
+    /**
+     * Constructs an instance of a <code>INDITextProperty</code>. Called by its
+     * sub-classes. useing the settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
+     */
+    public INDITextProperty(INDIPropertyBuilder<? extends INDITextProperty> builder) {
         super(builder);
-    }
-
-    /**
-     * Loads a Text Property from a file.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded text property or <code>null</code> if it could not be
-     *         loaded.
-     */
-    private static INDITextProperty loadTextProperty(INDIDriver driver, String name) {
-        INDIProperty<?> prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDITextProperty)) {
-            return null;
-        }
-
-        INDITextProperty tp = (INDITextProperty) prop;
-        tp.setSaveable(true);
-        return tp;
-    }
-
-    /**
-     * Constructs an instance of <code>INDITextProperty</code> with a particular
-     * <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code> and a 0
-     * timeout.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @see INDIProperty
-     */
-    public INDITextProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
-        super(driver, name, label, group, state, permission, 0);
     }
 
     @Override

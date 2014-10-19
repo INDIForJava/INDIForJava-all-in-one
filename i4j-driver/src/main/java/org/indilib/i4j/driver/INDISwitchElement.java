@@ -55,45 +55,6 @@ public class INDISwitchElement extends INDIElement {
         this.status = builder.switchValue();
     }
 
-    /**
-     * Constructs an instance of a <code>INDISwitchElement</code> with a
-     * <code>name</code>, a <code>label</code> and its initial
-     * <code>status</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param label
-     *            The label of the Element.
-     * @param status
-     *            The initial status of the Element
-     */
-    public INDISwitchElement(INDISwitchProperty property, String name, String label, SwitchStatus status) {
-        super(property, name, label);
-
-        this.status = status;
-    }
-
-    /**
-     * Constructs an instance of a <code>INDISwitchElement</code> with a
-     * <code>name</code>, a <code>label</code> and its initial
-     * <code>status</code>. The label of the Element will be a copy of the
-     * <code>name</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param status
-     *            The initial state of the Element.
-     */
-    public INDISwitchElement(INDISwitchProperty property, String name, SwitchStatus status) {
-        super(property, name);
-
-        this.status = status;
-    }
-
     @Override
     public INDISwitchProperty getProperty() {
         return (INDISwitchProperty) super.getProperty();

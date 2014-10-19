@@ -187,35 +187,35 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         super(inputStream, outputStream);
 
         // We create the Switch Property with only one Switch Element
-        send = newProperty(INDISwitchProperty.class).name("SEND").label("Send Image").group("Main Control")//
+        send = newSwitchProperty().name("SEND").label("Send Image").group("Main Control")//
                 .timeout(TIMEOUT_IN_SECONDS).switchRule(SwitchRules.AT_MOST_ONE).create();
         sendImage = send.newElement().create();
 
         addProperty(send);
 
         // We create the BLOB Property for the Spain satellite image
-        spainImageProp = newProperty(INDIBLOBProperty.class).name("SPAIN_SATELLITE_IMAGE").label("Spain Image").group("Main Control")//
+        spainImageProp = newBlobProperty().name("SPAIN_SATELLITE_IMAGE").label("Spain Image").group("Main Control")//
                 .permission(PropertyPermissions.RO).timeout(0).create();
         spainImageElem = spainImageProp.newElement().create();
 
         addProperty(spainImageProp);
 
         // We create the Text Property for the Spain image name
-        spainImageNameProp = newProperty(INDITextProperty.class).name("SPAIN_IMAGE_NAME").label("Spain Image Name").group("Main Control")//
+        spainImageNameProp = newTextProperty().name("SPAIN_IMAGE_NAME").label("Spain Image Name").group("Main Control")//
                 .timeout(TIMEOUT_IN_SECONDS).create();
         spainImageNameElem = spainImageNameProp.newElement().create();
 
         addProperty(spainImageNameProp);
 
         // We create the BLOB Property for the Europe satellite image
-        europeImageProp = newProperty(INDIBLOBProperty.class).name("EUROPE_SATELLITE_IMAGE").label("Europe Image").group("Main Control")//
+        europeImageProp = newBlobProperty().name("EUROPE_SATELLITE_IMAGE").label("Europe Image").group("Main Control")//
                 .permission(PropertyPermissions.RO).timeout(0).create();
         europeImageElem = europeImageProp.newElement().create();
 
         addProperty(europeImageProp);
 
         // We create the Text Property for the Europe image name
-        europeImageNameProp = newProperty(INDITextProperty.class).name("EUROPE_IMAGE_NAME").label("Europe Image Name").group("Main Control")//
+        europeImageNameProp = newTextProperty().name("EUROPE_IMAGE_NAME").label("Europe Image Name").group("Main Control")//
                 .timeout(TIMEOUT_IN_SECONDS).create();
         europeImageNameElem = europeImageNameProp.newElement().create();
 

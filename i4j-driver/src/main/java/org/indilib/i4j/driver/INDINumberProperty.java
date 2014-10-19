@@ -23,8 +23,6 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIDateFormat;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
@@ -78,65 +76,6 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
 
         INDINumberProperty np = (INDINumberProperty) prop;
         np.setSaveable(true);
-        return np;
-    }
-
-    /**
-     * Constructs an instance of <code>INDINumberProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code> and a 0
-     * timeout.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @see INDIProperty
-     */
-    public INDINumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission) {
-        super(driver, name, label, group, state, permission, 0);
-    }
-
-    /**
-     * Loads an instance of <code>INDINumberProperty</code> from a file or, if
-     * it cannot be loaded, constructs it with a particular <code>driver</code>,
-     * <code>name</code>, <code>label</code>, <code>group</code>,
-     * <code>state</code> and <code>permission</code>. The property will
-     * autosave its status to a file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @return The loaded number property or a new constructed one if cannot be
-     *         loaded.
-     * @see INDIProperty
-     */
-    public static INDINumberProperty createSaveableNumberProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission) {
-        INDINumberProperty np = loadNumberProperty(driver, name);
-
-        if (np == null) {
-            np = new INDINumberProperty(driver, name, label, group, state, permission);
-            np.setSaveable(true);
-        }
-
         return np;
     }
 

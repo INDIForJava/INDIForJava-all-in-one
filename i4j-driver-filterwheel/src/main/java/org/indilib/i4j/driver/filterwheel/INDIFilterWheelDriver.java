@@ -118,17 +118,17 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
      */
     protected void initializeStandardProperties() {
 
-        filterNamesP = newProperty(INDITextProperty.class).name("filter_names").label("Filter Names").group("Configuration")//
+        filterNamesP = newTextProperty().name("filter_names").label("Filter Names").group("Configuration")//
                 .state(PropertyStates.OK).permission(PropertyPermissions.RW).create();
         for (int i = 0; i < getNumberOfFilters(); i++) {
             filterNamesP.newElement().name("filter_name_" + (i + 1)).label("Filter " + (i + 1)).textValue("Filter " + (i + 1)).create();
         }
 
-        filterSlotP = newProperty(INDINumberProperty.class).name("FILTER_SLOT").label("Filter Slot").group("Control").create();
+        filterSlotP = newNumberProperty().name("FILTER_SLOT").label("Filter Slot").group("Control").create();
         filterSlotValueE = filterSlotP.newElement().name("FILTER_SLOT_VALUE").label("Filter Slot Value")//
                 .numberValue(1).minimum(1).maximum(getNumberOfFilters()).step(1).numberFormat("%1.0f").create();
 
-        filterNameP = newProperty(INDITextProperty.class).name("FILTER_NAME").label("Filter Name").group("Control").permission(PropertyPermissions.RO).create();
+        filterNameP = newTextProperty().name("FILTER_NAME").label("Filter Name").group("Control").permission(PropertyPermissions.RO).create();
 
         String firstFilterName = filterNamesP.getElement("filter_name_1").getValue();
         filterNameValueE = filterNameP.newElement().name("FILTER_NAME_VALUE").label("Filter Name Value").textValue(firstFilterName).create();

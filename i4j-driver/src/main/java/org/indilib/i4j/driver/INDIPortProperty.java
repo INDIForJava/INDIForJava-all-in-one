@@ -23,7 +23,7 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a the standard INDI PORT Property.
@@ -34,79 +34,34 @@ import org.indilib.i4j.INDIException;
 public class INDIPortProperty extends INDITextProperty {
 
     /**
+     * servial version id.
+     */
+    private static final long serialVersionUID = -7091582464434917050L;
+
+    /**
      * The PORT element.
      */
     private INDITextElement portE;
 
     /**
+     * Constructs an instance of a <code>INDIPortProperty</code>. Called by its
+     * sub-classes. useing the settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
+     */
+    public INDIPortProperty(INDIPropertyBuilder<INDIPortProperty> builder) {
+        super(builder);
+    }
+
+    /**
      * Constructs an instance of a PORTS property, with its PORT element. If the
      * default value is null, "/dev/ttyUSB0" is assumed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param defaultValue
-     *            The default value for the port
      */
-    public INDIPortProperty(INDIDriver driver, String defaultValue) {
-        super(driver, "DEVICE_PORT", "Ports", "Main Control", Constants.PropertyStates.IDLE, Constants.PropertyPermissions.RW);
-
-        if (defaultValue == null) {
-            defaultValue = "/dev/ttyUSB0";
-        }
-
-        portE = new INDITextElement(this, "PORT", "Port", defaultValue);
-    }
-
-    /**
-     * Loads an instance of <code>INDIPortProperty</code> from a file or, if it
-     * cannot be loaded, constructs it with a particular <code>driver</code> and
-     * <code>default value</code>. The property will autosave its status to a
-     * file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param defaultValue
-     *            The default value for the port
-     * @return The loaded port property or a new constructed one if cannot be
-     *         loaded.
-     */
-    public static INDIPortProperty createSaveablePortProperty(INDIDriver driver, String defaultValue) {
-        INDIPortProperty pp = loadPortProperty(driver, "DEVICE_PORT");
-
-        if (pp == null) {
-            pp = new INDIPortProperty(driver, defaultValue);
-            pp.setSaveable(true);
-        }
-
-        return pp;
-    }
-
-    /**
-     * Loads a Port Property from a file.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded port property or <code>null</code> if it could not be
-     *         loaded.
-     */
-    private static INDIPortProperty loadPortProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDIPortProperty)) {
-            return null;
-        }
-
-        INDIPortProperty sp = (INDIPortProperty) prop;
-        sp.setSaveable(true);
-        return sp;
+    public static INDIPortProperty create(INDIDriver driver, String defaultValue) {
+        INDIPortProperty result = driver.newProperty(INDIPortProperty.class).saveable(true).name("DEVICE_PORT").label("Ports").group("Main Control").create();
+        result.portE = result.newElement().name("PORT").label("Port").textValue(defaultValue == null ? "/dev/ttyUSB0" : defaultValue).create();
+        return result;
     }
 
     /**

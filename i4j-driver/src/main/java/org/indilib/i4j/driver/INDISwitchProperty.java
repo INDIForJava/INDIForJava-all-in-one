@@ -21,7 +21,6 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIDateFormat;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
@@ -42,73 +41,19 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      */
     private SwitchRules rule;
 
+    /**
+     * Constructs an instance of a <code>INDISwitchProperty</code>. Called by
+     * its sub-classes. useing the settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
+     */
     public INDISwitchProperty(INDIPropertyBuilder<INDISwitchProperty> builder) {
         super(builder);
         if (builder.permission() == PropertyPermissions.WO) {
             throw new IllegalArgumentException("Switch Properties cannot be Write Only");
         }
         this.rule = builder.switchRule();
-    }
-
-    /**
-     * Constructs an instance of <code>INDISwitchProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code>,
-     * <code>timeout</code> and <code>rule</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param timeout
-     *            The timeout of the Property
-     * @param rule
-     *            The rule of the Switch Property @ * @see INDIProperty
-     */
-    public INDISwitchProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, int timeout, SwitchRules rule) {
-        super(driver, name, label, group, state, permission, timeout);
-
-        if (permission == PropertyPermissions.WO) {
-            throw new IllegalArgumentException("Switch Properties cannot be Write Only");
-        }
-
-        this.rule = rule;
-    }
-
-    /**
-     * Loads a Switch Property from a file.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded switch property or <code>null</code> if it could not
-     *         be loaded.
-     */
-    private static INDISwitchProperty loadSwitchProperty(INDIDriver driver, String name) {
-        INDIProperty<?> prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDISwitchProperty)) {
-            return null;
-        }
-
-        INDISwitchProperty sp = (INDISwitchProperty) prop;
-        sp.setSaveable(true);
-        return sp;
     }
 
     /**

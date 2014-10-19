@@ -23,8 +23,6 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIDateFormat;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;

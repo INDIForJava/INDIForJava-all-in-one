@@ -23,10 +23,8 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIDateFormat;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI Light Property.
@@ -42,52 +40,14 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
     private static final long serialVersionUID = -3655076563473257286L;
 
     /**
-     * Constructs an instance of <code>INDILightProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code> and <code>state</code>.
+     * Constructs an instance of a <code>INDILightProperty</code>. Called by its
+     * sub-classes. useing the settings from the builder.
      * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @see INDIProperty
+     * @param builder
+     *            the builder with all the settings.
      */
-    public INDILightProperty(INDIDriver driver, String name, String label, String group, PropertyStates state) {
-        super(driver, name, label, group, state, PropertyPermissions.RO, 0);
-    }
-
-    /**
-     * Loads a Light Property from a file.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded light property or <code>null</code> if it could not be
-     *         loaded.
-     */
-    private static INDILightProperty loadLightProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDILightProperty)) {
-            return null;
-        }
-
-        INDILightProperty lp = (INDILightProperty) prop;
-        lp.setSaveable(true);
-        return lp;
+    public INDILightProperty(INDIPropertyBuilder<?> builder) {
+        super(builder);
     }
 
     @Override

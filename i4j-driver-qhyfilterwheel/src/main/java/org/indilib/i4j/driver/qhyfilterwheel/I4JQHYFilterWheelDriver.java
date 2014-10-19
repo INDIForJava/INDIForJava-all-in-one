@@ -208,9 +208,9 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
 
         initializeStandardProperties();
 
-        portP = INDIPortProperty.createSaveablePortProperty(this, "/dev/ttyUSB0");
+        portP = INDIPortProperty.create(this, "/dev/ttyUSB0");
 
-        filterPositionsP = newProperty(INDINumberProperty.class) //
+        filterPositionsP = newNumberProperty() //
                 .name("filter_positions").label("Filter Positions").group("Expert Configuration")//
                 .timeout(0).create();
 
@@ -232,7 +232,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
                 .name("filter_5_position").label("Filter 5 Position")//
                 .maximum(MAXIMUM_FILTER_POSITION).step(1).numberFormat("%1.0f").create();
 
-        factorySettingsP = newProperty(INDISwitchProperty.class) //
+        factorySettingsP = newSwitchProperty() //
                 .name("factory_settings").label("Factory Settings").group("Expert Configuration")//
                 .timeout(0).switchRule(SwitchRules.AT_MOST_ONE).create();
 

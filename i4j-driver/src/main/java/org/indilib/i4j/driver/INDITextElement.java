@@ -52,26 +52,6 @@ public class INDITextElement extends INDIElement {
         this.value = builder.textValue();
     }
 
-    /**
-     * Constructs an instance of a <code>INDITextElement</code> with a
-     * <code>name</code>, a <code>label</code> and its initial
-     * <code>value</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param label
-     *            The label of the Element.
-     * @param value
-     *            The initial value of the Element
-     */
-    public INDITextElement(INDITextProperty property, String name, String label, String value) {
-        super(property, name, label);
-
-        this.value = value.trim();
-    }
-
     @Override
     public INDITextProperty getProperty() {
         return (INDITextProperty) super.getProperty();

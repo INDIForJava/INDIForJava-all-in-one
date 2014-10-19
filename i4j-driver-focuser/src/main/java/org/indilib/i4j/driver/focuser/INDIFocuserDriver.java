@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
@@ -106,7 +105,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * Initializes the standard properties. MUST BE CALLED BY SUBDRIVERS.
      */
     protected void initializeStandardProperties() {
-        absFocusPositionP = newProperty(INDINumberProperty.class).name("ABS_FOCUS_POSITION").label("Absolute").group("Control").create();
+        absFocusPositionP = newNumberProperty().name("ABS_FOCUS_POSITION").label("Absolute").group("Control").create();
         focusAbsolutePositionE = absFocusPositionP.newElement().name("FOCUS_ABSOLUTE_POSITION").label("Focus Position").step(1d).numberFormat("%.0f")//
                 .numberValue(getInitialAbsPos()).minimum(getMinimumAbsPos()).maximum(getMaximumAbsPos()).create();
 
@@ -177,7 +176,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showSpeedProperty() {
         if (focusSpeedP == null) {
-            focusSpeedP = newProperty(INDINumberProperty.class).saveable(true).name("FOCUS_SPEED").label("Focus Speed").group("Configuration").create();
+            focusSpeedP = newNumberProperty().saveable(true).name("FOCUS_SPEED").label("Focus Speed").group("Configuration").create();
             focusSpeedValueE = focusSpeedP.getElement("FOCUS_SPEED_VALUE");
             if (focusSpeedValueE == null) {
                 focusSpeedValueE = focusSpeedP.newElement().name("").label("").numberValue(getMaximumSpeed()).maximum(getMaximumSpeed()).step(1).numberFormat("%.0f").create();
@@ -193,7 +192,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showStopFocusingProperty() {
         if (stopFocusingP == null) {
-            stopFocusingP = newProperty(INDISwitchProperty.class).name("stop_focusing").label("Stop").group("Control").create();
+            stopFocusingP = newSwitchProperty().name("stop_focusing").label("Stop").group("Control").create();
             stopFocusingP.newElement().name("Stop Focusing").create();
         }
         addProperty(stopFocusingP);

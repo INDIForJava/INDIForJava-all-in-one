@@ -87,7 +87,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         super(driver);
         enumeratePlugins();
         for (IMathPlugin mathPlugin : plugins.values()) {
-            new INDISwitchElement(this.alignmentSubsystemMathPlugins, mathPlugin.id(), mathPlugin.name(), SwitchStatus.OFF);
+            this.alignmentSubsystemMathPlugins.newElement().name(mathPlugin.id()).label(mathPlugin.name()).create();
         }
         alignmentSubsystemMathPlugins.setEventHandler(new SwitchEvent() {
 

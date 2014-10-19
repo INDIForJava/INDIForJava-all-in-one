@@ -22,11 +22,9 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import org.indilib.i4j.Constants.PropertyPermissions;
-import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
  * A class representing a INDI One or None Switch Property (aka a simple
@@ -43,121 +41,14 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
     private static final long serialVersionUID = -7203487459293368286L;
 
     /**
-     * The only Switch Element of the Property.
-     */
-    private INDISwitchElement option;
-
-    /**
-     * Loads a Switch One or None Property from a file.
+     * Constructs an instance of a <code>INDISwitchOneOrNoneProperty</code>.
+     * Called by its sub-classes. useing the settings from the builder.
      * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded switch one or none property or <code>null</code> if it
-     *         could not be loaded.
+     * @param builder
+     *            the builder with all the settings.
      */
-    private static INDISwitchOneOrNoneProperty loadSwitchOneOrNoneProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDISwitchOneOrNoneProperty)) {
-            return null;
-        }
-
-        INDISwitchOneOrNoneProperty sp = (INDISwitchOneOrNoneProperty) prop;
-        sp.setSaveable(true);
-        return sp;
-    }
-
-    /**
-     * Constructs an instance of <code>INDISwitchOneOrNoneProperty</code> with a
-     * particular <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code>,
-     * <code>option</code> and <code>initialStatus</code>.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param option
-     *            The name of the option
-     * @param initialStatus
-     *            The initial status of the option
-     * @see INDISwitchProperty
-     */
-    public INDISwitchOneOrNoneProperty(INDIDriver driver, String name, String label, String group, PropertyStates state, PropertyPermissions permission, String option,
-            SwitchStatus initialStatus) {
-        super(driver, name, label, group, state, permission, 0, SwitchRules.AT_MOST_ONE);
-
-        createElement(name, option, initialStatus);
-    }
-
-    /**
-     * Loads an instance of <code>INDISwitchOneOrNoneProperty</code> from a file
-     * or, if it cannot be loaded, constructs it with a particular
-     * <code>driver</code>, <code>name</code>, <code>label</code>,
-     * <code>group</code>, <code>state</code>, <code>permission</code>,
-     * <code>option</code> and <code>initialStatus</code>. The property will
-     * autosave its status to a file every time that it is changed.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated.
-     * @param name
-     *            The name of the Property
-     * @param label
-     *            The label of the Property
-     * @param group
-     *            The group of the Property
-     * @param state
-     *            The initial state of the Property
-     * @param permission
-     *            The permission of the Property
-     * @param option
-     *            The name of the option
-     * @param initialStatus
-     *            The initial status of the option
-     * @return The loaded switch one or none property or a new constructed one
-     *         if cannot be loaded.
-     * @see INDISwitchProperty
-     */
-    public static INDISwitchOneOrNoneProperty createSaveableSwitchOneOrNoneProperty(INDIDriver driver, String name, String label, String group, PropertyStates state,
-            PropertyPermissions permission, String option, SwitchStatus initialStatus) {
-        INDISwitchOneOrNoneProperty sp = loadSwitchOneOrNoneProperty(driver, name);
-
-        if (sp == null) {
-            sp = new INDISwitchOneOrNoneProperty(driver, name, label, group, state, permission, option, initialStatus);
-            sp.setSaveable(true);
-        }
-
-        return sp;
-    }
-
-    /**
-     * Creates the Element of the Property.
-     * 
-     * @param name
-     *            The name of the Element
-     * @param option
-     *            The label of the Element
-     * @param initialStatus
-     *            The initial status of the Element
-     */
-    private void createElement(String name, String option, SwitchStatus initialStatus) {
-        this.option = new INDISwitchElement(this, name, option, initialStatus);
+    public INDISwitchOneOrNoneProperty(INDIPropertyBuilder<INDISwitchProperty> builder) {
+        super(builder.switchRule(SwitchRules.AT_MOST_ONE));
     }
 
     /**
@@ -167,7 +58,7 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      *            The new status
      */
     public void setStatus(SwitchStatus newStatus) {
-        option.setValue(newStatus);
+        firstElement().setValue(newStatus);
     }
 
     /**
@@ -179,9 +70,10 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      *            strange behaviour).
      */
     public void setStatus(INDISwitchElementAndValue[] ev) {
+        INDISwitchElement firstElement = firstElement();
         for (int i = 0; i < ev.length; i++) {
-            if (ev[i].getElement() == option) {
-                option.setValue(ev[i].getValue());
+            if (ev[i].getElement() == firstElement) {
+                firstElement.setValue(ev[i].getValue());
             }
         }
     }
@@ -192,7 +84,7 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      * @return The status of the Element of the Property
      */
     public SwitchStatus getStatus() {
-        return option.getValue();
+        return firstElement().getValue();
     }
 
     /**
@@ -206,8 +98,9 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      * @return The status of the Element of the Property that would be set
      */
     public SwitchStatus getStatus(INDISwitchElementAndValue[] ev) {
+        INDISwitchElement firstElement = firstElement();
         for (int i = 0; i < ev.length; i++) {
-            if (ev[i].getElement() == option) {
+            if (ev[i].getElement() == firstElement) {
                 return ev[i].getValue();
             }
         }

@@ -55,49 +55,6 @@ public abstract class INDIElement implements Serializable {
     private INDIProperty property;
 
     /**
-     * Constructs an instance of <code>INDIElement</code>. Called by its
-     * sub-classes. If the <code>label</code> is null, the name is assigned to
-     * the label.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element
-     * @param label
-     *            The label of the Element if the <code>name</code> * is
-     *            <code>null</code>.
-     */
-    protected INDIElement(INDIProperty property, String name, String label) {
-        this.property = property;
-
-        if (name == null) {
-            throw new IllegalArgumentException("No name for Element");
-        }
-
-        name = name.trim();
-
-        if (name.length() == 0) {
-            throw new IllegalArgumentException("No name for Element");
-        }
-
-        this.name = name;
-
-        if (label == null) {
-            this.label = name;
-        } else {
-            label = label.trim();
-
-            if (label.length() == 0) {
-                this.label = name;
-            } else {
-                this.label = label;
-            }
-        }
-
-        property.addElement(this);
-    }
-
-    /**
      * Constructs an instance of <code>INDIElement</code> with properties from
      * the builder. Called by its sub-classes.
      */
@@ -113,41 +70,11 @@ public abstract class INDIElement implements Serializable {
     }
 
     /**
-     * Constructs an instance of <code>INDIElement</code> with a label equal to
-     * its name. Called by its sub-classes.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element. if the <code>name</code> * is
-     *            <code>null</code>.
-     */
-    protected INDIElement(INDIProperty property, String name) {
-        this.property = property;
-
-        if (name == null) {
-            throw new IllegalArgumentException("No name for Element");
-        }
-
-        name = name.trim();
-
-        if (name.length() == 0) {
-            throw new IllegalArgumentException("No name for Element");
-        }
-
-        this.name = name;
-
-        this.label = name;
-
-        property.addElement(this);
-    }
-
-    /**
      * Gets the Property to which this Element belongs.
      * 
      * @return The Property to which this Element belongs
      */
-    public INDIProperty getProperty() {
+    public INDIProperty<?> getProperty() {
         return property;
     }
 

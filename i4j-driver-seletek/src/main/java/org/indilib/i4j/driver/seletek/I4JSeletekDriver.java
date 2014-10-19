@@ -1,20 +1,3 @@
-/*
- *  This file is part of INDI for Java Seletek Driver.
- * 
- *  INDI for Java Seletek Driver is free software: you can 
- *  redistribute it and/or modify it under the terms of the GNU General Public 
- *  License as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Seletek Driver is distributed in the hope that it
- *  will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Seletek Driver.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
 package org.indilib.i4j.driver.seletek;
 
 /*
@@ -50,6 +33,7 @@ import java.util.Date;
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
@@ -66,6 +50,9 @@ import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.indilib.i4j.Constants.PropertyStates.OK;
+import static org.indilib.i4j.Constants.PropertyPermissions.RO;
 
 /**
  * A class that acts as a INDI for Java Driver for the Seletek (by Lunatico
@@ -250,39 +237,33 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
         currentInternalTemperature = 0;
         currentExternalTemperature = 0;
 
-        portP = INDIPortProperty.createSaveablePortProperty(this, "/dev/ttyUSB0");
+        portP = INDIPortProperty.create(this, "/dev/ttyUSB0");
 
-        seletekInfoP = new INDITextProperty(this, "seletekinfo", "Seletek Info", "Main Control", PropertyStates.OK, PropertyPermissions.RO);
-        seletekVersionE = new INDITextElement(seletekInfoP, "version", "Version", "?");
-        seletekSerialNumberE = new INDITextElement(seletekInfoP, "serialnumber", "Serial Number", "N/A");
+        seletekInfoP = newTextProperty().name("seletekinfo").label("Seletek Info").group("Main Control").state(OK).permission(RO).create();
 
-        temperatureSensorsP = new INDINumberProperty(this, "temperatures", "Temperatures", "Device Sensors", PropertyStates.IDLE, PropertyPermissions.RO);
-        internalTemperatureE = new INDINumberElement(temperatureSensorsP, "internalTemperature", "Internal", "0.0", "-50.0", "100.0", "0.1", "%1.1f");
-        externalTemperatureE = new INDINumberElement(temperatureSensorsP, "externalTemperature", "External", "0.0", "-50.0", "100.0", "0.1", "%1.1f");
+        seletekVersionE = seletekInfoP.newElement().name("version").label("Version").textValue("?").create();
+        seletekSerialNumberE = seletekInfoP.newElement().name("serialnumber").label("Serial Number").textValue("N/A").create();
 
-        powerOkP = new INDILightProperty(this, "power", "Power", "Device Sensors", PropertyStates.IDLE);
-        powerOkE = new INDILightElement(powerOkP, "power", "Power", LightStates.IDLE);
+        temperatureSensorsP = newNumberProperty().name("temperatures").label("Temperatures").group("Device Sensors").permission(RO).create();
+        internalTemperatureE = temperatureSensorsP.newElement().name("internalTemperature").label("Internal")//
+                .minimum(-50).maximum(100).step(0.1).numberFormat("%1.1f").create();
+        externalTemperatureE = temperatureSensorsP.newElement().name("externalTemperature").label("External")//
+                .minimum(-50).maximum(100).step(0.1).numberFormat("%1.1f").create();
 
-        mainDeviceP =
-                INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "mainDevice", "Main Device", "Main Control", PropertyStates.IDLE,
-                        PropertyPermissions.RW, new String[]{
-                            "None",
-                            "Focuser"
-                        });
+        powerOkP = newLightProperty().name("power").label("Power").group("Device Sensors").create();
+        powerOkE = powerOkP.newElement().name("power").label("Power").create();
 
-        expDeviceP =
-                INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "expDevice", "Exp. Device", "Main Control", PropertyStates.IDLE,
-                        PropertyPermissions.RW, new String[]{
-                            "None",
-                            "Focuser"
-                        });
+        mainDeviceP = newProperty(INDISwitchOneOfManyProperty.class).saveable(true).name("mainDevice").label("Main Device").group("Main Control").create();
+        mainDeviceP.newElement().name("None").switchValue(SwitchStatus.ON).create();
+        mainDeviceP.newElement().name("Focuser").create();
 
-        thirdDeviceP =
-                INDISwitchOneOfManyProperty.createSaveableSwitchOneOfManyProperty(this, "thirdDevice", "Third Device", "Main Control", PropertyStates.IDLE,
-                        PropertyPermissions.RW, new String[]{
-                            "None",
-                            "Focuser"
-                        });
+        expDeviceP = newProperty(INDISwitchOneOfManyProperty.class).saveable(true).name("expDevice").label("Exp. Device").group("Main Control").create();
+        expDeviceP.newElement().name("None").switchValue(SwitchStatus.ON).create();
+        expDeviceP.newElement().name("Focuser").create();
+
+        thirdDeviceP = newProperty(INDISwitchOneOfManyProperty.class).saveable(true).name("thirdDevice").label("Third Device").group("Main Control").create();
+        thirdDeviceP.newElement().name("None").switchValue(SwitchStatus.ON).create();
+        thirdDeviceP.newElement().name("Focuser").create();
 
         this.addProperty(portP);
     }

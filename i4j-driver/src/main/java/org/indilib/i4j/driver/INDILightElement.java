@@ -54,26 +54,6 @@ public class INDILightElement extends INDIElement {
         this.state = builder.state();
     }
 
-    /**
-     * Constructs an instance of a <code>INDILightElement</code> with a
-     * <code>name</code>, a <code>label</code> and its initial
-     * <code>state</code>.
-     * 
-     * @param property
-     *            The Property to which this Element belongs.
-     * @param name
-     *            The name of the Element.
-     * @param label
-     *            The label of the Element.
-     * @param state
-     *            The initial state of the Element.
-     */
-    public INDILightElement(INDILightProperty property, String name, String label, LightStates state) {
-        super(property, name, label);
-
-        this.state = state;
-    }
-
     @Override
     public INDILightProperty getProperty() {
         return (INDILightProperty) super.getProperty();
