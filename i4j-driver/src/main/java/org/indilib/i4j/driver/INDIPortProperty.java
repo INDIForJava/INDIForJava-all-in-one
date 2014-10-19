@@ -26,11 +26,13 @@ import org.indilib.i4j.Constants;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
- * A class representing a the standard INDI PORT Property.
+ * A class representing a the standard INDI PORT Property. Depricated pleas use
+ * the serial extention in furure.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.34, November 7, 2013
  */
+@Deprecated
 public class INDIPortProperty extends INDITextProperty {
 
     /**
@@ -57,9 +59,15 @@ public class INDIPortProperty extends INDITextProperty {
     /**
      * Constructs an instance of a PORTS property, with its PORT element. If the
      * default value is null, "/dev/ttyUSB0" is assumed.
+     * 
+     * @param driver
+     *            the driver to create the property.
+     * @param defaultValue
+     *            the default value for the port.
+     * @return the new port property.
      */
     public static INDIPortProperty create(INDIDriver driver, String defaultValue) {
-        INDIPortProperty result = driver.newProperty(INDIPortProperty.class).saveable(true).name("DEVICE_PORT").label("Ports").group("Main Control").create();
+        INDIPortProperty result = driver.newProperty(INDIPortProperty.class).saveable(true).name("DEVICE_PORT").label("Ports").group(INDIDriver.GROUP_MAIN_CONTROL).create();
         result.portE = result.newElement().name("PORT").label("Port").textValue(defaultValue == null ? "/dev/ttyUSB0" : defaultValue).create();
         return result;
     }

@@ -32,6 +32,7 @@ import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.driver.INDIBLOBElement;
 import org.indilib.i4j.driver.INDIBLOBProperty;
+import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
@@ -132,7 +133,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      * The exposure time of the next image in seconds, a new value will also
      * start the exposure.
      */
-    @InjectProperty(name = "EXPOSURE", label = "Expose", group = INDICCDDriver.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "EXPOSURE", label = "Expose", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDINumberProperty imageExposure;
 
     /**
@@ -145,7 +146,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * abort the current exposure.
      */
-    @InjectProperty(name = "ABORT_EXPOSURE", label = "Expose Abort", group = INDICCDDriver.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "ABORT_EXPOSURE", label = "Expose Abort", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDISwitchProperty abort;
 
     /**

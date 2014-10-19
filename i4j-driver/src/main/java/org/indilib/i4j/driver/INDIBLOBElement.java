@@ -40,13 +40,16 @@ public class INDIBLOBElement extends INDIElement {
     private static final long serialVersionUID = -2684237095700108321L;
 
     /**
-     * The current value of the BLOB Element
+     * The current value of the BLOB Element.
      */
     private INDIBLOBValue value;
 
     /**
      * Constructs an instance of a <code>INDIBLOBElement</code> with the
      * settings from the <code>builder</code>.
+     * 
+     * @param builder
+     *            the builder to get the setting from.
      */
     public INDIBLOBElement(INDIElementBuilder<INDIBLOBElement> builder) {
         super(builder);

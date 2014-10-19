@@ -44,8 +44,11 @@ public class INDITextElement extends INDIElement {
     private String value;
 
     /**
-     * Constructs an instance of a <code>INDITextElement</code> with the
-     * settings from the <code>builder</code>.
+     * Constructs an instance of a <code>INDITextElement</code>. Using the
+     * settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
      */
     public INDITextElement(INDIElementBuilder<INDITextElement> builder) {
         super(builder);

@@ -127,11 +127,11 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     /**
      * Event handlere for simpler event definitions.
      */
-    private IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler;
+    private transient IEventHandler<? extends INDIProperty<Element>, Element, ?> eventHandler;
 
     /**
      * Constructs an instance of a <code>INDIProperty</code>. Called by its
-     * sub-classes. useing the settings from the builder.
+     * sub-classes. Using the settings from the builder.
      * 
      * @param builder
      *            the builder with all the settings.
@@ -314,7 +314,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
             throw new IllegalArgumentException("BLOB Element cannot be added to BLOB Property");
         }
 
-        // We still can add new properties and it dous not jet exist.
+        // We still can add new properties and it does not jet exist.
         if (!isInit && !elements.containsKey(element.getName())) {
             elements.put(element.getName(), element);
         }

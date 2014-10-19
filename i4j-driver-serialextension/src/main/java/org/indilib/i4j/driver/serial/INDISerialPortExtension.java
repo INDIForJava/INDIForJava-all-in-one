@@ -28,7 +28,6 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDITextElement;
@@ -43,35 +42,71 @@ import org.slf4j.LoggerFactory;
 /**
  * Most astronomical devices are controlled by a serial connection, this
  * extension handles the connection for the driver so the driver does only have
- * to know the connection specification and tehn work with the input- and
- * output-streams.
+ * to know the connection specification and then work with the input- and
+ * output-streams.<br/>
+ * TODO: reading and writing to the serial port should also be encapulated. This
+ * will be done as soon as there are more drivers using this extension.
  */
 public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
+    /**
+     * The logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDISerialPortExtension.class);
 
-    protected static final String OPTIONS_TAB = "Options";
-
-    @InjectProperty(name = "PORTS", label = "Ports", group = OPTIONS_TAB, saveable = true)
+    /**
+     * the property representing the serial connection port.
+     */
+    @InjectProperty(name = "PORTS", label = "Ports", group = INDIDriver.GROUP_OPTIONS, saveable = true)
     protected INDITextProperty port;
 
+    /**
+     * The element representing the serial connection port.
+     */
     @InjectElement(name = "PORT", label = "Port", textValue = "/dev/ttyUSB0")
     protected INDITextElement portElement;
 
-    private INDISerialPortInterface servialPortInterface;
+    /**
+     * The indicator interface if the extension is active for the driver.
+     */
+    private INDISerialPortInterface serialPortInterface;
 
+    /**
+     * the real serial port.
+     */
     private SerialPort serialPort;
 
+    /**
+     * the connection baut rate.
+     */
     private int baudrate = SerialPort.BAUDRATE_4800;
 
+    /**
+     * the number of data bits.
+     */
     private int databits = SerialPort.DATABITS_8;
 
+    /**
+     * the number os stop bits.
+     */
     private int stopbits = SerialPort.STOPBITS_1;
 
+    /**
+     * the parity type to use.
+     */
     private int parity = SerialPort.PARITY_NONE;
 
+    /**
+     * The shutdown hook to clear the connection on jvm shutdown.
+     */
     private Thread shutdownHook;
 
+    /**
+     * Extension constructor. do not call this yourself.
+     * 
+     * @param driver
+     *            the driver to connect the extension to.
+     */
     public INDISerialPortExtension(INDIDriver driver) {
         super(driver);
         if (!isActive()) {
@@ -86,7 +121,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
                 updateProperty(property);
             }
         });
-        servialPortInterface = (INDISerialPortInterface) driver;
+        serialPortInterface = (INDISerialPortInterface) driver;
         this.shutdownHook = new Thread(new Runnable() {
 
             @Override
@@ -103,15 +138,28 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);
     }
 
+    /**
+     * Handle any servial exception, by logging it and sendig a message to the
+     * client.
+     * 
+     * @param e
+     *            the exception that occured.
+     */
     private void handleSerialException(SerialPortException e) {
         updateProperty(port, "Serial port error " + e.getMessage());
         LOG.error("Serial port error", e);
     }
 
+    /**
+     * Close the serial port if it was opend.
+     * 
+     * @return true if successful.
+     */
     public synchronized boolean close() {
         try {
             if (this.serialPort != null) {
-                this.serialPort.closePort();// Close serial port
+                // Close serial port
+                this.serialPort.closePort();
             }
             this.serialPort = null;
             return true;
@@ -138,6 +186,10 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
         removeProperty(port);
     }
 
+    /**
+     * @return an open serial port to send or receive bytes. If the port was not
+     *         yet opened it will be.
+     */
     public SerialPort getOpenSerialPort() {
         if (serialPort == null || !serialPort.isOpened()) {
             open();
@@ -150,13 +202,20 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
         return driver instanceof INDISerialPortInterface;
     }
 
+    /**
+     * open the serial port with the specified properties. If it was already
+     * open, close it first.
+     * 
+     * @return true if successful.
+     */
     public synchronized boolean open() {
         if (this.serialPort != null) {
             close();
         }
         try {
             this.serialPort = new SerialPort(portElement.getValue());
-            this.serialPort.openPort();// Open serial port
+            // Open serial port
+            this.serialPort.openPort();
             this.serialPort.setParams(baudrate, databits, stopbits, parity);
             return true;
         } catch (SerialPortException e) {
@@ -165,23 +224,51 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
         }
     }
 
-    public INDISerialPortExtension setBaudrate(int baudrate) {
-        this.baudrate = baudrate;
+    /**
+     * set the baut rate.
+     * 
+     * @param newBaudrate
+     *            the baut rate to set.
+     * @return this extension itself (builder pattern).
+     */
+    public INDISerialPortExtension setBaudrate(int newBaudrate) {
+        this.baudrate = newBaudrate;
         return this;
     }
 
-    public INDISerialPortExtension setDatabits(int databits) {
-        this.databits = databits;
+    /**
+     * set the number of databits.
+     * 
+     * @param newDatabits
+     *            the number of databits to set.
+     * @return this extension itself (builder pattern).
+     */
+    public INDISerialPortExtension setDatabits(int newDatabits) {
+        this.databits = newDatabits;
         return this;
     }
 
-    public INDISerialPortExtension setParity(int parity) {
-        this.parity = parity;
+    /**
+     * set the parity.
+     * 
+     * @param newParity
+     *            the parity to set.
+     * @return this extension itself (builder pattern).
+     */
+    public INDISerialPortExtension setParity(int newParity) {
+        this.parity = newParity;
         return this;
     }
 
-    public INDISerialPortExtension setStopbits(int stopbits) {
-        this.stopbits = stopbits;
+    /**
+     * set the number of stopbits.
+     * 
+     * @param newStopbits
+     *            the number of stopbits to set.
+     * @return this extension itself (builder pattern).
+     */
+    public INDISerialPortExtension setStopbits(int newStopbits) {
+        this.stopbits = newStopbits;
         return this;
     }
 }

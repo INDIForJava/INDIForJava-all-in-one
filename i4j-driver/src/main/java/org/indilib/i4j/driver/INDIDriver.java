@@ -30,14 +30,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIDateFormat;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
+import org.indilib.i4j.driver.annotation.InjectExtension;
+import org.indilib.i4j.driver.connection.INDIConnectionExtension;
 import org.indilib.i4j.driver.event.IEventHandler;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 import org.indilib.i4j.driver.util.INDIPropertyInjector;
@@ -58,40 +57,58 @@ import org.w3c.dom.NodeList;
  */
 public abstract class INDIDriver implements INDIProtocolParser {
 
+    /**
+     * The logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIDriver.class);
 
+    /**
+     * The property tab for the main controls of the driver.
+     */
+    public static final String GROUP_MAIN_CONTROL = "Main Control";
+
+    /**
+     * The property tab for the options of the driver.
+     */
+    public static final String GROUP_OPTIONS = "Options";
+
+    /**
+     * the driver inputStream (xml stream of messages).
+     */
     private InputStream inputStream;
 
+    /**
+     * the driver outputStrean (xml stream of messages).
+     */
     private OutputStream outputStream;
 
+    /**
+     * printwriter over the outputstream. only write legal xml here!.
+     */
     private PrintWriter out;
 
+    /**
+     * The protokol reader thread that reads asynchron from the input stream,
+     * and reacts on the comming indi protokol messages.
+     */
     private INDIProtocolReader reader;
 
     /**
-     * A list of subdrivers
+     * A list of subdrivers.
      */
     private ArrayList<INDIDriver> subdrivers;
 
     /**
-     * A Switch Element for the CONNECTION property
-     */
-    private INDISwitchElement connectedE;
-
-    /**
-     * A Switch Element for the CONNECTION property
-     */
-    private INDISwitchElement disconnectedE;
-
-    /**
-     * The standard CONNECTION property (optional)
-     */
-    private INDISwitchProperty connectionP;
-
-    /**
-     * A list of Properties for this Driver
+     * A list of Properties for this Driver.
      */
     private LinkedHashMap<String, INDIProperty> properties;
+
+    /**
+     * the connection extension that controls the connect and disconnect
+     * property.
+     */
+    @InjectExtension
+    protected INDIConnectionExtension connectionExtension;
 
     /**
      * To know if the driver has already been started or not.
@@ -99,8 +116,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
     private boolean started;
 
     /**
-     * Constructs a INDIDriver with a particular
-     * <code>inputStream<code> from which to read the incoming messages (from clients) and a
+     * Constructs a INDIDriver with a particular <code>inputStream</code> from
+     * which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
      * 
      * @param inputStream
@@ -113,14 +130,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.subdrivers = new ArrayList<INDIDriver>();
-
         started = false;
-
         properties = new LinkedHashMap<String, INDIProperty>();
-
-        if (this instanceof INDIConnectionHandler) {
-            addConnectionProperty();
-        }
         INDIPropertyInjector.initialize(this, this);
     }
 
@@ -213,80 +224,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     protected PrintWriter getOut() {
         return out;
-    }
-
-    /**
-     * Adds a <code>INDISwitchProperty</code> called "CONNECTION" with two
-     * Elements called "CONNECT" and "DISCONNECT". The DISCONNECT Element is ON,
-     * while the CONNECT Element is OFF. It is a Read / write property with
-     * "one of many" rule (thus, one option is always selected).
-     */
-    private void addConnectionProperty() {
-        connectionP = newSwitchProperty()//
-                .name("CONNECTION").label("Connection").group("Main Control").timeout(100).switchRule(SwitchRules.ONE_OF_MANY).create();
-        connectedE = connectionP.newElement().name("CONNECT").label("Connect").create();
-        disconnectedE = connectionP.newElement().name("DISCONNECT").label("Disconnect").switchValue(SwitchStatus.ON).create();
-
-        addProperty(connectionP);
-    }
-
-    /**
-     * Sets the CONNECTION Property to connected or disconnected and sends the
-     * changes to the clients. If the property does not exist nothing happens.
-     * 
-     * @param connected
-     *            <code>true</code> if the CONNECT Element must be selected.
-     *            <code>false</code> if the DISCONNECT Element must be selected.
-     */
-    private void setConnectionProperty(boolean connected) {
-        setConnectionProperty(connected, null);
-    }
-
-    /**
-     * Sets the CONNECTION Property to connected or disconnected and sends the
-     * changes to the clients. If the property does not exist nothing happens.
-     * If the connection is already stablished ignore petition.
-     * 
-     * @param connected
-     * @param message
-     *            An optional message (can be <code>null</code>)
-     *            <code>true</code> if the CONNECT Element must be selected.
-     *            <code>false</code> if the DISCONNECT Element must be selected.
-     */
-    private void setConnectionProperty(boolean connected, String message) {
-        if (connectionP == null) {
-            return;
-        }
-
-        connectionP.setState(PropertyStates.OK);
-
-        if (connected) {
-            connectedE.setValue(SwitchStatus.ON);
-        } else {
-            disconnectedE.setValue(SwitchStatus.ON);
-        }
-
-        if (message == null) {
-
-            updateProperty(connectionP);
-        } else {
-            connectionP.setState(PropertyStates.ALERT);
-            updateProperty(connectionP, message);
-        }
-    }
-
-    /**
-     * Checks if the CONNECTION Property is set to <code>SwitchStatus.ON</code>.
-     * 
-     * @return <code>true</code> if the CONNECTION Property is set to
-     *         <code>SwitchStatus.ON</code>. <code>false</code> otherwise.
-     */
-    protected boolean isConnected() {
-        if (connectedE.getValue() == SwitchStatus.ON) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -399,12 +336,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * Parses a &lt;newSwitchVector&gt; XML message. If the switch is the
      * standard CONNECTION property it will analyze the message and call the
-     * <code>driverConnect</code> and <code>driverDisconnect</code> methods from
-     * <code>INDIConnectionHandler</code>.
+     * apropriate methods.
      * 
      * @param xml
      *            The &lt;newSwitchVector&gt; XML message to be parsed.
-     * @see INDIConnectionHandler
      */
     private void processNewSwitchVector(Element xml) {
         INDIProperty prop = processNewXXXVector(xml);
@@ -427,66 +362,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
             newEvs[i] = (INDISwitchElementAndValue) evs[i];
         }
 
-        if ((this instanceof INDIConnectionHandler) && (prop == connectionP)) { // If
-                                                                                // it
-                                                                                // is
-                                                                                // the
-                                                                                // CONNECTION
-                                                                                // property
-            handleConnectionProperty(newEvs, timestamp);
-        } else { // if it is any other property
-            IEventHandler handler = prop.getEventHandler();
-            if (handler != null) {
-                handler.processNewValue(prop, timestamp, newEvs);
-            }
-            processNewSwitchValue((INDISwitchProperty) prop, timestamp, newEvs);
+        IEventHandler handler = prop.getEventHandler();
+        if (handler != null) {
+            handler.processNewValue(prop, timestamp, newEvs);
         }
-    }
+        processNewSwitchValue((INDISwitchProperty) prop, timestamp, newEvs);
 
-    /**
-     * Handles the connection property. Called from
-     * <code>processNewSwitchVector</code>.
-     * 
-     * @param newEvs
-     *            The new Elements and Values
-     * @param timestamp
-     *            The timestamp of the received CONNECTION message.
-     */
-    private synchronized void handleConnectionProperty(INDISwitchElementAndValue[] newEvs, Date timestamp) {
-        for (int i = 0; i < newEvs.length; i++) {
-            INDISwitchElement el = newEvs[i].getElement();
-            SwitchStatus s = newEvs[i].getValue();
-
-            if (el == connectedE) {
-                if (s == SwitchStatus.ON) {
-                    if (connectedE.getValue() != SwitchStatus.ON) {
-                        try {
-                            ((INDIConnectionHandler) this).driverConnect(timestamp);
-
-                            setConnectionProperty(true);
-                        } catch (INDIException e) {
-                            setConnectionProperty(false, e.getMessage());
-                        }
-                    } else {
-                        setConnectionProperty(true);
-                    }
-                }
-            } else if (el == disconnectedE) {
-                if (s == SwitchStatus.ON) {
-                    if (disconnectedE.getValue() != SwitchStatus.ON) {
-                        try {
-                            ((INDIConnectionHandler) this).driverDisconnect(timestamp);
-
-                            setConnectionProperty(false);
-                        } catch (INDIException e) {
-                            setConnectionProperty(true, e.getMessage());
-                        }
-                    } else {
-                        setConnectionProperty(false);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -844,6 +725,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param property
      *            The Property whose values have change and about which the
      *            clients must be notified.
+     * @return true if the update was successful.
      */
     public boolean updateProperty(INDIProperty<?> property) {
         return updateProperty(property, null);
@@ -860,6 +742,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param message
      *            The message to be sended to the clients with the udpate
      *            message.
+     * @return true if the update was successful.
      */
     public boolean updateProperty(INDIProperty<?> property, String message) {
         return updateProperty(property, false, message);
@@ -878,6 +761,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param message
      *            The message to be sended to the clients with the udpate
      *            message.
+     * @return true if the update was successful.
      */
     public boolean updateProperty(INDIProperty<?> property, boolean includeMinMax, String message) {
         if (properties.containsValue(property)) {
@@ -908,6 +792,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param property
      *            The property that will be notified.
      * @param message
+     *            The extra message text for the client.
      */
     private void sendDefXXXVectorMessage(INDIProperty property, String message) {
         String msg = property.getXMLPropertyDefinition(message);
@@ -918,14 +803,14 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * Sends a XML message to the clients.
      * 
-     * @param XML
+     * @param xml
      *            The message to be sended.
      */
-    private void sendXML(String XML) {
+    private void sendXML(String xml) {
         /*
          * if (XML.length() < 500) { printMessage(XML); }
          */
-        out.print(XML);
+        out.print(xml);
         out.flush();
     }
 
@@ -1024,21 +909,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     protected INDIProperty getProperty(String propertyName) {
         return properties.get(propertyName);
-    }
-
-    /**
-     * Gets the default Connection property (if the driver implements
-     * INDIConnectionHandler)
-     * 
-     * @return The standard Connection property if this driver implements
-     *         INDIConnectionHandler. <code>null</code> otherwise.
-     */
-    protected INDISwitchProperty getConnectionProperty() {
-        if (this instanceof INDIConnectionHandler) {
-            return connectionP;
-        }
-
-        return null;
     }
 
     /**

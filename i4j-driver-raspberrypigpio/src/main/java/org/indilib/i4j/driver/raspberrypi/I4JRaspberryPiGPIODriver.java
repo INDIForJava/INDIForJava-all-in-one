@@ -42,7 +42,6 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
-import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDILightProperty;
 import org.indilib.i4j.driver.INDINumberElement;
@@ -55,6 +54,7 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -623,7 +623,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     private void createOutputPin(int pin) {
         pins[pin] = gpio.provisionDigitalOutputPin(PINS_ARRAY[pin], PinState.LOW);
         pinsProperties[pin] = newProperty(INDISwitchOneOfManyProperty.class)//
-                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group("Main Control").create();
+                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group(INDIDriver.GROUP_MAIN_CONTROL).create();
         pinsProperties[pin].newElement().name("On").switchValue(ON).create();
         pinsProperties[pin].newElement().name("Off").create();
         addProperty(pinsProperties[pin]);
@@ -639,7 +639,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
         pins[pin] = gpio.provisionPwmOutputPin(PINS_ARRAY[pin]);
 
         INDINumberProperty np = newNumberProperty()//
-                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group("Main Control").create();
+                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group(INDIDriver.GROUP_MAIN_CONTROL).create();
         np.newElement().name("value").label("PWM Value").maximum(MAXIMUM_PWM_VALUE).step(1).numberFormat("%1.0f").create();
         pinsProperties[pin] = np;
         addProperty(pinsProperties[pin]);
@@ -658,7 +658,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
         ((GpioPinDigitalInput) pins[pin]).addListener(this);
 
         INDILightProperty lp = newLightProperty()//
-                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group("Main Control").create();
+                .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group(INDIDriver.GROUP_MAIN_CONTROL).create();
 
         pinsProperties[pin] = lp;
         lp.newElement().name("state").label("State").create();

@@ -21,6 +21,7 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIDateFormat;
+import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
@@ -224,5 +225,11 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     @Override
     protected Class<INDISwitchElement> elementClass() {
         return INDISwitchElement.class;
+    }
+
+    @Override
+    public INDIElementBuilder<INDISwitchElement> newElement() {
+        // TODO Auto-generated method stub
+        return super.newElement();
     }
 }

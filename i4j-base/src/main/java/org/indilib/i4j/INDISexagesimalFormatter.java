@@ -22,6 +22,7 @@ package org.indilib.i4j;
  * #L%
  */
 
+import java.io.Serializable;
 import java.util.Formatter;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -33,7 +34,12 @@ import java.util.StringTokenizer;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.39, October 11, 2014
  */
-public class INDISexagesimalFormatter {
+public class INDISexagesimalFormatter implements Serializable {
+
+    /**
+     * the serial version id.
+     */
+    private static final long serialVersionUID = -3904216502728630808L;
 
     /**
      * The format to be used. It must begin with %, end with m and specifies a

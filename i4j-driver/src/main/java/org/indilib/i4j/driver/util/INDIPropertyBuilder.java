@@ -338,6 +338,9 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
         return this;
     }
 
+    /**
+     * @return true if the group is the default group.
+     */
     public boolean isDefaultGroup() {
         if (group.isEmpty() || group.equals(InjectProperty.UNSORTED_GROUP)) {
             return true;

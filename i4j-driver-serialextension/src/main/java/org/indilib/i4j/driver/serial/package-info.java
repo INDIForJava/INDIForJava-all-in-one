@@ -1,10 +1,14 @@
+/**
+ * This package contains the default serial connection extension for all 
+ * indi drivers that use a serial connection to communicate with the device.
+ */
 package org.indilib.i4j.driver.serial;
 
 /*
  * #%L
- * INDI for Java Serial Port Extension
+ * INDI for Java Driver Library
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2012 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +26,3 @@ package org.indilib.i4j.driver.serial;
  * #L%
  */
 
-/**
- * Nothing done here, in this case just a marker interface. But if the serial
- * port if furder encapsulated the interface will expand.
- * 
- * @author Richard van Nieuwenhoven
- */
-public interface INDISerialPortInterface {
-}

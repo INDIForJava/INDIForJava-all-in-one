@@ -42,13 +42,13 @@ import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.driver.INDIBLOBElement;
 import org.indilib.i4j.driver.INDIBLOBProperty;
-import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,35 +187,35 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         super(inputStream, outputStream);
 
         // We create the Switch Property with only one Switch Element
-        send = newSwitchProperty().name("SEND").label("Send Image").group("Main Control")//
+        send = newSwitchProperty().name("SEND").label("Send Image").group(INDIDriver.GROUP_MAIN_CONTROL)//
                 .timeout(TIMEOUT_IN_SECONDS).switchRule(SwitchRules.AT_MOST_ONE).create();
         sendImage = send.newElement().create();
 
         addProperty(send);
 
         // We create the BLOB Property for the Spain satellite image
-        spainImageProp = newBlobProperty().name("SPAIN_SATELLITE_IMAGE").label("Spain Image").group("Main Control")//
+        spainImageProp = newBlobProperty().name("SPAIN_SATELLITE_IMAGE").label("Spain Image").group(INDIDriver.GROUP_MAIN_CONTROL)//
                 .permission(PropertyPermissions.RO).timeout(0).create();
         spainImageElem = spainImageProp.newElement().create();
 
         addProperty(spainImageProp);
 
         // We create the Text Property for the Spain image name
-        spainImageNameProp = newTextProperty().name("SPAIN_IMAGE_NAME").label("Spain Image Name").group("Main Control")//
+        spainImageNameProp = newTextProperty().name("SPAIN_IMAGE_NAME").label("Spain Image Name").group(INDIDriver.GROUP_MAIN_CONTROL)//
                 .timeout(TIMEOUT_IN_SECONDS).create();
         spainImageNameElem = spainImageNameProp.newElement().create();
 
         addProperty(spainImageNameProp);
 
         // We create the BLOB Property for the Europe satellite image
-        europeImageProp = newBlobProperty().name("EUROPE_SATELLITE_IMAGE").label("Europe Image").group("Main Control")//
+        europeImageProp = newBlobProperty().name("EUROPE_SATELLITE_IMAGE").label("Europe Image").group(INDIDriver.GROUP_MAIN_CONTROL)//
                 .permission(PropertyPermissions.RO).timeout(0).create();
         europeImageElem = europeImageProp.newElement().create();
 
         addProperty(europeImageProp);
 
         // We create the Text Property for the Europe image name
-        europeImageNameProp = newTextProperty().name("EUROPE_IMAGE_NAME").label("Europe Image Name").group("Main Control")//
+        europeImageNameProp = newTextProperty().name("EUROPE_IMAGE_NAME").label("Europe Image Name").group(INDIDriver.GROUP_MAIN_CONTROL)//
                 .timeout(TIMEOUT_IN_SECONDS).create();
         europeImageNameElem = europeImageNameProp.newElement().create();
 

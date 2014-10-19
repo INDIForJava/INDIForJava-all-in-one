@@ -25,7 +25,6 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
@@ -40,6 +39,7 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.annotation.Rename;
+import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
@@ -70,11 +70,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     private static final Logger LOG = LoggerFactory.getLogger(INDICCDDriver.class);
 
     /**
-     * The property tab for the main controls of the ccd.
-     */
-    protected static final String MAIN_CONTROL_TAB = "Main Control";
-
-    /**
      * The property tab for the image settings..
      */
     protected static final String IMAGE_SETTINGS_TAB = "Image Settings";
@@ -85,14 +80,9 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     protected static final String IMAGE_INFO_TAB = "Image Info";
 
     /**
-     * The property tab for the options of the ccd.
-     */
-    protected static final String OPTIONS_TAB = "Options";
-
-    /**
      * The temperature of the ccd chip.
      */
-    @InjectProperty(name = "CCD_TEMPERATURE", label = "Temperature", group = INDICCDDriver.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "CCD_TEMPERATURE", label = "Temperature", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDINumberProperty temperature;
 
     /**
@@ -105,7 +95,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * The upload mode for the images, if they should be saved on the server or
      * send to the client.
      */
-    @InjectProperty(name = "UPLOAD_MODE", label = "Upload", group = INDICCDDriver.OPTIONS_TAB, timeout = 0, saveable = true)
+    @InjectProperty(name = "UPLOAD_MODE", label = "Upload", group = INDIDriver.GROUP_OPTIONS, timeout = 0, saveable = true)
     private INDISwitchProperty upload;
 
     /**
@@ -130,7 +120,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     /**
      * Upload directory and filenames for local storage.
      */
-    @InjectProperty(name = "UPLOAD_SETTINGS", label = "Upload Settings", group = INDICCDDriver.OPTIONS_TAB, saveable = true)
+    @InjectProperty(name = "UPLOAD_SETTINGS", label = "Upload Settings", group = INDIDriver.GROUP_OPTIONS, saveable = true)
     private INDITextProperty uploadSettings;
 
     /**

@@ -41,7 +41,6 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIBLOBElementAndValue;
 import org.indilib.i4j.driver.INDIBLOBProperty;
-import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
@@ -50,6 +49,7 @@ import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -246,7 +246,7 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
         sensorTempP = newNumberProperty().name("sensorTemperature").label("Sensor Temperature (C)").group("Readings").permission(RO).create();
         sensorTempP.newElement().maximum(BIG_MAXIMUM_VALUE).step(SENSOR_TEMPERATURE_STEPPING).numberFormat("%4.1f").create();
 
-        doReadingP = newSwitchProperty().name("doReading").label("Do Reading").group("Main Control").create();
+        doReadingP = newSwitchProperty().name("doReading").label("Do Reading").group(INDIDriver.GROUP_MAIN_CONTROL).create();
         doReadingP.newElement().create();
 
         this.addProperty(portP);

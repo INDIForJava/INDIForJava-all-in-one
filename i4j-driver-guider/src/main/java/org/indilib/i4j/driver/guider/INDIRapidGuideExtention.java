@@ -42,7 +42,7 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
 
     protected static final String RAPIDGUIDE_TAB = "Rapid Guide";
 
-    @InjectProperty(name = "RAPID_GUIDE", label = "Rapid Guide", group = "Options", timeout = 0)
+    @InjectProperty(name = "RAPID_GUIDE", label = "Rapid Guide", group = INDIDriver.GROUP_OPTIONS, timeout = 0)
     protected INDISwitchProperty rapidGuide;
 
     @InjectElement(name = "ENABLE", label = "Enable")

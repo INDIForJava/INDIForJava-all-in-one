@@ -46,8 +46,11 @@ public class INDILightElement extends INDIElement {
     private LightStates state;
 
     /**
-     * Constructs an instance of a <code>INDILightElement</code> with the
-     * settings from the <code>builder</code>.
+     * Constructs an instance of a <code>INDILightElement</code>.Using the
+     * settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
      */
     public INDILightElement(INDIElementBuilder<INDILightElement> builder) {
         super(builder);

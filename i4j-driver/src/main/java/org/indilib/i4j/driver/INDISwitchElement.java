@@ -47,8 +47,11 @@ public class INDISwitchElement extends INDIElement {
     private SwitchStatus status;
 
     /**
-     * Constructs an instance of a <code>INDISwitchElement</code> with the
-     * settings from the <code>builder</code>.
+     * Constructs an instance of a <code>INDISwitchElement</code>. Using the
+     * settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
      */
     public INDISwitchElement(INDIElementBuilder<INDISwitchElement> builder) {
         super(builder);
@@ -165,4 +168,5 @@ public class INDISwitchElement extends INDIElement {
     public final void setOn() {
         setValue(SwitchStatus.OFF);
     }
+
 }

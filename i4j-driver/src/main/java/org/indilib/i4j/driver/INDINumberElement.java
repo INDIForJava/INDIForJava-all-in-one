@@ -73,8 +73,11 @@ public class INDINumberElement extends INDIElement {
     private INDISexagesimalFormatter sFormatter;
 
     /**
-     * Constructs an instance of a <code>INDINumberElement</code> with the
-     * settings from the <code>builder</code>.
+     * Constructs an instance of a <code>INDINumberElement</code>. Using the
+     * settings from the builder.
+     * 
+     * @param builder
+     *            the builder with all the settings.
      */
     public INDINumberElement(INDIElementBuilder<INDINumberElement> builder) {
         super(builder);

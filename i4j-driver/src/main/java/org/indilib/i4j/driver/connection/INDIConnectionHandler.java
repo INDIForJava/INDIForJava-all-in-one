@@ -1,4 +1,4 @@
-package org.indilib.i4j.driver;
+package org.indilib.i4j.driver.connection;
 
 /*
  * #%L
@@ -42,14 +42,18 @@ public interface INDIConnectionHandler {
      * 
      * @param timestamp
      *            when the connection message has been received.
+     * @throws INDIException
+     *             if the connection failed.
      */
-    public void driverConnect(Date timestamp) throws INDIException;
+    void driverConnect(Date timestamp) throws INDIException;
 
     /**
      * The method that will handle the disconnection.
      * 
      * @param timestamp
      *            when the disconnection message has been received.
+     * @throws INDIException
+     *             if the connection failed.
      */
-    public void driverDisconnect(Date timestamp) throws INDIException;
+    void driverDisconnect(Date timestamp) throws INDIException;
 }

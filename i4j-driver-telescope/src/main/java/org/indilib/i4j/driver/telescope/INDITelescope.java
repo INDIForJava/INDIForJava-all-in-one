@@ -53,7 +53,6 @@ import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIConnectionHandler;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDIElementAndValue;
 import org.indilib.i4j.driver.INDINumberElement;
@@ -68,6 +67,7 @@ import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
+import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
@@ -126,19 +126,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     private static final Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
 
     /**
-     * The property tab for the main controls of the telescope.
-     */
-    protected static final String MAIN_CONTROL_TAB = "Main Control";
-
-    /**
      * The property tab for the site defintion properties.
      */
     protected static final String SITE_TAB = "Site";
-
-    /**
-     * The property tab for the scope options.
-     */
-    protected static final String OPTIONS_TAB = "Options";
 
     /**
      * The property tab for the motion controls.
@@ -254,7 +244,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * Standard property for the pointing direction of the scope.
      */
-    @InjectProperty(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDITelescope.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDINumberProperty eqn;
 
     /**
@@ -315,7 +305,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * What should be the next thing to do when the telescope reaches the goto
      * coordinates.
      */
-    @InjectProperty(name = "ON_COORD_SET", label = "On Set", group = INDITelescope.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "ON_COORD_SET", label = "On Set", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDISwitchProperty coord;
 
     /**
@@ -333,7 +323,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * Acccess to the storage of the configuration of the telescope.
      */
-    @InjectProperty(name = "CONFIG_PROCESS", label = "Configuration", group = INDITelescope.OPTIONS_TAB)
+    @InjectProperty(name = "CONFIG_PROCESS", label = "Configuration", group = INDIDriver.GROUP_OPTIONS)
     protected INDISwitchProperty config;
 
     /**
@@ -363,7 +353,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * Abrubt abort control property.
      */
-    @InjectProperty(name = "TELESCOPE_ABORT_MOTION", label = "Abort Motion", group = INDITelescope.MAIN_CONTROL_TAB)
+    @InjectProperty(name = "TELESCOPE_ABORT_MOTION", label = "Abort Motion", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDISwitchProperty abort;
 
     /**
@@ -377,7 +367,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * handles the connection for the driver so the driver dous only have to
      * work with the input and output stream.
      */
-    @InjectExtension(group = OPTIONS_TAB)
+    @InjectExtension(group = GROUP_OPTIONS)
     protected INDISerialPortExtension serialPortExtension;
 
     /**
@@ -422,7 +412,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * All elements describing the current telescope are presented in this
      * property.
      */
-    @InjectProperty(name = "TELESCOPE_INFO", label = "Scope Properties", group = OPTIONS_TAB, state = OK, saveable = true)
+    @InjectProperty(name = "TELESCOPE_INFO", label = "Scope Properties", group = GROUP_OPTIONS, state = OK, saveable = true)
     protected INDINumberProperty scopeParameters;
 
     /**

@@ -40,12 +40,12 @@ import org.w3c.dom.Element;
 public abstract class INDIElement implements Serializable {
 
     /**
-     * The name of the Element
+     * The name of the Element.
      */
     private String name;
 
     /**
-     * The label of the Element
+     * The label of the Element.
      */
     private String label;
 
@@ -57,6 +57,9 @@ public abstract class INDIElement implements Serializable {
     /**
      * Constructs an instance of <code>INDIElement</code> with properties from
      * the builder. Called by its sub-classes.
+     * 
+     * @param builder
+     *            the builder to get the setting from.
      */
     @SuppressWarnings("unchecked")
     protected INDIElement(INDIElementBuilder<? extends INDIElement> builder) {
@@ -126,6 +129,8 @@ public abstract class INDIElement implements Serializable {
      * Gets a &lt;oneXXX&gt; XML string describing the current value of the
      * Element.
      * 
+     * @param includeMinMaxStep
+     *            include the new min max value in the xml
      * @return the &lt;oneXXX&gt; XML string describing the current value of the
      *         Element.
      */
@@ -141,7 +146,7 @@ public abstract class INDIElement implements Serializable {
     protected abstract String getXMLDefElement();
 
     /**
-     * Gets the name of the element and its current value
+     * Gets the name of the element and its current value.
      * 
      * @return a String with the name of the Element and Its Value
      */
