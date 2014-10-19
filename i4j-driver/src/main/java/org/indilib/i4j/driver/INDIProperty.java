@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -604,21 +605,25 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         File i4jDir = FileUtils.getI4JBaseDirectory();
         File propertiesDir = new File(i4jDir, PROPERTIES_DIR_NAME);
         File file = new File(propertiesDir, getPropertyNameForFile(driver, propertyName));
+        INDIProperty<?> prop = null;
+        if (file.exists()) {
+            try {
+                FileInputStream fis = new FileInputStream(file);
+                ObjectInputStream ois = new ObjectInputStream(fis);
 
-        INDIProperty<?> prop;
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+                prop = (INDIProperty<?>) ois.readObject();
 
-            prop = (INDIProperty<?>) ois.readObject();
-
-            ois.close();
-        } catch (ClassNotFoundException ex) {
-            throw new INDIException("Problem when loading a property from file " + file.getName() + " - ClassNotFoundException");
-        } catch (IOException ex) {
-            throw new INDIException("Problem when loading a property from file " + file.getName() + " - IOException");
+                ois.close();
+            } catch (InvalidClassException ex) {
+                LOG.warn("property could not be loaded from file, because it is not compatible to the current version (reverting to default values) : " + file.getName());
+                return null;
+            } catch (ClassNotFoundException ex) {
+                throw new INDIException("Problem when loading a property from file " + file.getName() + " - ClassNotFoundException");
+            } catch (IOException ex) {
+                throw new INDIException("Problem when loading a property from file " + file.getName() + " - IOException");
+            }
+            prop.setDriver(driver);
         }
-        prop.setDriver(driver);
         return prop;
     }
 
