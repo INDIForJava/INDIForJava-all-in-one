@@ -1,25 +1,16 @@
 package org.indilib.i4j.server;
 
 /*
- * #%L
- * INDI for Java Server Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Server Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.io.IOException;
@@ -28,8 +19,11 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.indilib.i4j.INDIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class that represent a Network Device (another INDI server).
@@ -40,22 +34,32 @@ import org.indilib.i4j.INDIException;
 public class INDINetworkDevice extends INDIDevice {
 
     /**
-     * The socket to connect for the INDI Server
+     * The logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDINetworkDevice.class);
+
+    /**
+     * timeout to use with tcp connections.
+     */
+    private static final int CONNECT_TIMEOUT = 20000;
+
+    /**
+     * The socket to connect for the INDI Server.
      */
     private Socket socket;
 
     /**
-     * The host to connect for the INDI Server
+     * The host to connect for the INDI Server.
      */
     private String host;
 
     /**
-     * The port to connect for the INDI Server
+     * The port to connect for the INDI Server.
      */
     private int port;
 
     /**
-     * A list of names of the Device (it may be more than one)
+     * A list of names of the Device (it may be more than one).
      */
     private ArrayList<String> names;
 
@@ -82,7 +86,7 @@ public class INDINetworkDevice extends INDIDevice {
         try {
             socket = new Socket();
 
-            socket.connect(new InetSocketAddress(host, port), 20000);
+            socket.connect(new InetSocketAddress(host, port), CONNECT_TIMEOUT);
         } catch (IOException e) {
             throw new INDIException("Problem connecting to " + host + ":" + port);
         }
@@ -132,6 +136,7 @@ public class INDINetworkDevice extends INDIDevice {
         try {
             socket.close();
         } catch (IOException e) {
+            LOG.warn("close connection error", e);
         }
     }
 
@@ -140,8 +145,8 @@ public class INDINetworkDevice extends INDIDevice {
         try {
             return socket.getInputStream();
         } catch (IOException e) {
+            LOG.warn("could not open input stream", e);
         }
-
         return null;
     }
 
@@ -150,8 +155,8 @@ public class INDINetworkDevice extends INDIDevice {
         try {
             return socket.getOutputStream();
         } catch (IOException e) {
+            LOG.warn("could not open output stream", e);
         }
-
         return null;
     }
 
@@ -183,22 +188,7 @@ public class INDINetworkDevice extends INDIDevice {
      */
     @Override
     public String toString() {
-        return "Network Device: " + this.getNetworkName() + " - " + printArray(getNames());
-    }
-
-    private String printArray(String[] arr) {
-        String res = "[";
-
-        for (int i = 0; i < arr.length; i++) {
-            if (i != arr.length - 1) {
-                res += ", ";
-            }
-            res += arr[i];
-        }
-
-        res += "]";
-
-        return res;
+        return "Network Device: " + this.getNetworkName() + " - " + Arrays.toString(getNames());
     }
 
     @Override

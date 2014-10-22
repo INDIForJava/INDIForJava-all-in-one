@@ -647,6 +647,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (xml.hasAttribute("device")) {
             String deviceName = xml.getAttribute("device").trim();
 
+            // TODO: this is wrong ;-)
             if (deviceName.compareTo(deviceName) != 0) { // not asking for this
                                                          // driver
                 return;

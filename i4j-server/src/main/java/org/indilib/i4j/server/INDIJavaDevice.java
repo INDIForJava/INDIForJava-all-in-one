@@ -1,25 +1,16 @@
 package org.indilib.i4j.server;
 
 /*
- * #%L
- * INDI for Java Server Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Server Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.io.IOException;
@@ -28,6 +19,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
@@ -45,10 +37,13 @@ import com.Ostermiller.util.CircularByteBuffer;
  */
 public class INDIJavaDevice extends INDIDevice {
 
+    /**
+     * The logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIJavaDevice.class);
 
     /**
-     * The Driver
+     * The Driver.
      */
     private INDIDriver driver;
 
@@ -71,17 +66,12 @@ public class INDIJavaDevice extends INDIDevice {
     /**
      * The class of the Driver.
      */
-    private Class driverClass;
+    private Class<?> driverClass;
 
     /**
-     * The name of the device. May be null if it has not been discovered through
-     * a <code>defXXXVector</code> message.
+     * A list of names of the Device (it may be more than one).
      */
-    // private String name;
-    /**
-     * A list of names of the Device (it may be more than one)
-     */
-    private ArrayList<String> names;
+    private List<String> names;
 
     /**
      * Constructs a new Java Device and starts listening to its messages.
@@ -198,18 +188,22 @@ public class INDIJavaDevice extends INDIDevice {
         try {
             toDriver.getInputStream().close();
         } catch (IOException e) {
+            LOG.warn("close connection error", e);
         }
         try {
             toDriver.getOutputStream().close();
         } catch (IOException e) {
+            LOG.warn("close connection error", e);
         }
         try {
             fromDriver.getInputStream().close();
         } catch (IOException e) {
+            LOG.warn("close connection error", e);
         }
         try {
             fromDriver.getOutputStream().close();
         } catch (IOException e) {
+            LOG.warn("close connection error", e);
         }
     }
 

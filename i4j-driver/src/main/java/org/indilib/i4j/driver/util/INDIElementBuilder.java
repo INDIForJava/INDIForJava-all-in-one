@@ -128,7 +128,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
      * @return the name of the element (mandatory).
      */
     public String name() {
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             return indiProperty.getName();
         }
         return name;
@@ -138,8 +138,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
      * @return the label of the element (mandatory).
      */
     public String label() {
-        if (label.length() == 0) {
-            if (name.length() == 0) {
+        if (label.isEmpty()) {
+            if (name.isEmpty()) {
                 return indiProperty.getLabel();
             } else {
                 return name;

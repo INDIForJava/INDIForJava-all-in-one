@@ -1,25 +1,16 @@
 package org.indilib.i4j.server;
 
 /*
- * #%L
- * INDI for Java Server Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Server Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.io.File;
@@ -31,10 +22,11 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import org.indilib.i4j.Constants;
 
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINotLoadableDriver;
@@ -57,18 +49,21 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractINDIServer implements Runnable {
 
+    /**
+     * Logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(AbstractINDIServer.class);
 
     /**
      * A list of Devices loaded by the server.
      */
-    private ArrayList<INDIDevice> devices;
+    private List<INDIDevice> devices;
 
     /**
      * A list of clients (and devices if they are snooping) connected to the
      * server.
      */
-    private ArrayList<INDIDeviceListener> clients;
+    private List<INDIDeviceListener> clients;
 
     /**
      * The port to which the Server listens.
@@ -180,10 +175,9 @@ public abstract class AbstractINDIServer implements Runnable {
                     try {
                         clientSocket.close();
                     } catch (IOException e) {
+                        LOG.warn("client close exception", e);
                     }
-
-                    // System.err.println("Client " +
-                    // clientSocket.getInetAddress() + " rejected");
+                    LOG.info("Client " + clientSocket.getInetAddress() + " rejected");
                 }
             }
         }
@@ -209,6 +203,7 @@ public abstract class AbstractINDIServer implements Runnable {
             socket.close(); // Close the socket in order to avoid accepting new
                             // connections
         } catch (IOException e) {
+            LOG.warn("client close exception", e);
         }
 
         for (int i = 0; i < clients.size(); i++) {
@@ -249,7 +244,7 @@ public abstract class AbstractINDIServer implements Runnable {
 
         for (int i = 0; i < list.size(); i++) {
             String className = list.get(i);
-            Class cls;
+            Class<?> cls;
 
             try {
                 cls = cl.loadClass(className);
@@ -270,7 +265,7 @@ public abstract class AbstractINDIServer implements Runnable {
      * 
      * @return The list of loaded Devices.
      */
-    protected ArrayList<INDIDevice> getDevices() {
+    protected List<INDIDevice> getDevices() {
         return devices;
     }
 
@@ -286,7 +281,7 @@ public abstract class AbstractINDIServer implements Runnable {
      * @throws INDIException
      *             If there is any problem instantiating the Driver.
      */
-    private synchronized void loadJavaDriver(Class cls, String identifier) throws INDIException {
+    private synchronized void loadJavaDriver(Class<?> cls, String identifier) throws INDIException {
         INDIJavaDevice newDevice = new INDIJavaDevice(this, cls, identifier);
 
         addDevice(newDevice);
@@ -300,7 +295,7 @@ public abstract class AbstractINDIServer implements Runnable {
      * @throws INDIException
      *             If there is any problem instantiating the Driver.
      */
-    public synchronized void loadJavaDriver(Class cls) throws INDIException {
+    public synchronized void loadJavaDriver(Class<?> cls) throws INDIException {
         loadJavaDriver(cls, "class+-+" + cls.getName());
     }
 
@@ -439,7 +434,7 @@ public abstract class AbstractINDIServer implements Runnable {
      * @param cls
      *            The class of the Java Driver to remove.
      */
-    public synchronized void destroyJavaDriver(Class cls) {
+    public synchronized void destroyJavaDriver(Class<?> cls) {
         print("Removing driver " + cls.getName());
 
         destroyIdentifiedDrivers("class+-+" + cls.getName());
@@ -561,11 +556,11 @@ public abstract class AbstractINDIServer implements Runnable {
      * @return <code>true</code> if the Class inherits from INDIDriver.
      *         <code>false</code> otherwise.
      */
-    private boolean isINDIDriver(Class c) {
+    private boolean isINDIDriver(Class<?> c) {
         if (INDINotLoadableDriver.class.isAssignableFrom(c)) {
             return false;
         }
-        Class s = c.getSuperclass();
+        Class<?> s = c.getSuperclass();
 
         while (s != null) {
             if (s == INDIDriver.class) {
@@ -598,7 +593,7 @@ public abstract class AbstractINDIServer implements Runnable {
                 if (jarEntry.getName().endsWith(".class")) {
                     String n = jarEntry.getName().replace("/", ".");
 
-                    n = n.substring(0, n.length() - 6);
+                    n = n.substring(0, n.length() - ".class".length());
 
                     list.add(n);
                 }
@@ -774,12 +769,12 @@ public abstract class AbstractINDIServer implements Runnable {
      * connection must be allowed in the Server. Otherwise the connection will
      * be closed.
      * 
-     * @param socket
+     * @param clientSocket
      *            The socket created with a possible client.
      * @return <code>true</code> if the Client is allowed to connect to the
      *         server. <code>false</code> otherwise.
      */
-    protected abstract boolean acceptClient(Socket socket);
+    protected abstract boolean acceptClient(Socket clientSocket);
 
     /**
      * Notifies Clients of a <code>defXXXVector</code> message.

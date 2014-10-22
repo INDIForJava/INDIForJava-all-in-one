@@ -103,18 +103,18 @@ public class INDINativeDevice extends INDIDevice {
     /**
      * Checks if the Device has a particular name.
      * 
-     * @param name
+     * @param nameToCheck
      *            The name to check.
      * @return <code>true</code> if the Device respond to <code>name</code>.
      *         <code>false</code> otherwise.
      */
     @Override
-    protected boolean hasName(String name) {
+    protected boolean hasName(String nameToCheck) {
         if (this.name == null) {
             return false;
         }
 
-        if (this.name.equals(name)) {
+        if (this.name.equals(nameToCheck)) {
             return true;
         }
 

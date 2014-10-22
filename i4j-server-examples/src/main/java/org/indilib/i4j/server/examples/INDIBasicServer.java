@@ -1,33 +1,25 @@
 package org.indilib.i4j.server.examples;
 
 /*
- * #%L
- * INDI for Java Server examples
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Server examples %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import org.indilib.i4j.Constants;
+import java.util.List;
 
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.server.DefaultINDIServer;
@@ -47,6 +39,14 @@ import org.slf4j.LoggerFactory;
  */
 public class INDIBasicServer extends DefaultINDIServer {
 
+    /**
+     * poll interfall.
+     */
+    private static final int LOAD_POLL_INTERFALL = 500;
+
+    /**
+     * Logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIBasicServer.class);
 
     /**
@@ -57,15 +57,13 @@ public class INDIBasicServer extends DefaultINDIServer {
     /**
      * Loaded jar files.
      */
-    private static ArrayList<String> jarFiles;
+    private final List<String> jarFiles = new ArrayList<String>();
 
     /**
      * Constructs the server.
      */
     public INDIBasicServer() {
         super();
-
-        jarFiles = new ArrayList<String>();
     }
 
     /**
@@ -76,12 +74,10 @@ public class INDIBasicServer extends DefaultINDIServer {
      */
     public INDIBasicServer(int port) {
         super(port);
-
-        jarFiles = new ArrayList<String>();
     }
 
     /**
-     * Loads the Java Drivers in a JAR file
+     * Loads the Java Drivers in a JAR file.
      * 
      * @param jar
      *            The JAR file
@@ -98,9 +94,10 @@ public class INDIBasicServer extends DefaultINDIServer {
     }
 
     /**
-     * Loads the Java Drivers in Form the current classpath
+     * Loads the Java Drivers in Form the current classpath.
      * 
-     * @param class name of the driver
+     * @param className
+     *            class name of the driver
      */
     public void loadJavaClass(String className) {
         try {
@@ -126,19 +123,27 @@ public class INDIBasicServer extends DefaultINDIServer {
         jarFiles.remove(jar);
     }
 
+    /**
+     * reload the drivers in the jar.
+     * 
+     * @param jar
+     *            the jar to reload.
+     */
     private void reloadJava(String jar) {
         server.unloadJava(jar);
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(LOAD_POLL_INTERFALL);
         } catch (InterruptedException e) {
+            LOG.warn("sleep interupted", e);
         }
 
         while (server.isAlreadyLoaded(jar)) {
             System.err.println("Waiting for " + jar + " to unload");
             try {
-                Thread.sleep(500);
+                Thread.sleep(LOAD_POLL_INTERFALL);
             } catch (InterruptedException e) {
+                LOG.warn("sleep interupted", e);
             }
         }
 
@@ -204,7 +209,7 @@ public class INDIBasicServer extends DefaultINDIServer {
      * Prints a list of the loaded devices to the Rrror stream.
      */
     public void listDevices() {
-        ArrayList<INDIDevice> devs = getDevices();
+        List<INDIDevice> devs = getDevices();
 
         System.err.println("Number of loaded Drivers: " + devs.size());
 
@@ -428,7 +433,7 @@ public class INDIBasicServer extends DefaultINDIServer {
 
             return;
         } else if (args[0].equals("r")) {
-            ArrayList<String> copy = (ArrayList<String>) jarFiles.clone();
+            List<String> copy = new ArrayList<>(server.jarFiles);
 
             for (int i = 0; i < copy.size(); i++) {
                 String jar = copy.get(i);
@@ -473,7 +478,6 @@ public class INDIBasicServer extends DefaultINDIServer {
             String className = args[1];
 
             server.loadJavaClass(className);
-            ;
 
             return;
         } else if ((args[0].equals("removeN")) || (args[0].equals("removen"))) {
@@ -488,15 +492,17 @@ public class INDIBasicServer extends DefaultINDIServer {
             server.unloadNative(f);
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(LOAD_POLL_INTERFALL);
             } catch (InterruptedException e) {
+                LOG.warn("sleep interupted", e);
             }
 
             while (server.isAlreadyLoaded(f)) {
                 System.err.println("Waiting for " + f + " to unload");
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(LOAD_POLL_INTERFALL);
                 } catch (InterruptedException e) {
+                    LOG.warn("sleep interupted", e);
                 }
             }
 
@@ -553,10 +559,12 @@ public class INDIBasicServer extends DefaultINDIServer {
     }
 
     /**
-     * Prints a message about the driver which has been disconnected
+     * Prints a message about the driver which has been disconnected.
      * 
      * @param driverIdentifier
+     *            driver identifier.
      * @param deviceNames
+     *            the names of the devices.
      */
     @Override
     protected void driverDisconnected(String driverIdentifier, String[] deviceNames) {

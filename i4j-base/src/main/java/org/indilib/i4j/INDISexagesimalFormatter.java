@@ -250,7 +250,7 @@ public class INDISexagesimalFormatter implements Serializable {
     public final double parseSexagesimal(final String number) {
         String newNumber = number.trim();
 
-        if (newNumber.length() == 0) {
+        if (newNumber.isEmpty()) {
             throw new IllegalArgumentException("Empty number");
         }
 

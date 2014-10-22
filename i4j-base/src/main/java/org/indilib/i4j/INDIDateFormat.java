@@ -64,7 +64,7 @@ public final class INDIDateFormat {
 
         String newTime = time.trim();
 
-        if (!(newTime.length() == 0)) {
+        if (!(newTime.isEmpty())) {
             try {
                 timestamp = dateFormat.parse(newTime);
             } catch (ParseException e) {

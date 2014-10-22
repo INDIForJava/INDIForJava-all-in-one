@@ -65,7 +65,7 @@ public abstract class INDIElement implements Serializable {
     protected INDIElement(INDIElementBuilder<? extends INDIElement> builder) {
         this.property = builder.indiProperty();
         name = builder.name();
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             throw new IllegalArgumentException("No name for Element");
         }
         this.label = builder.label();

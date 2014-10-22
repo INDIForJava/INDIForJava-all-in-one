@@ -1,25 +1,16 @@
 package org.indilib.i4j.server;
 
 /*
- * #%L
- * INDI for Java Server Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Server Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.net.Socket;
@@ -120,7 +111,7 @@ public class DefaultINDIServer extends AbstractINDIServer {
     protected void notifyDeviceListenersMessage(INDIDevice device, Element xml) {
         String deviceName = xml.getAttribute("device").trim();
 
-        if (deviceName.length() == 0) {
+        if (deviceName.isEmpty()) {
             sendXMLMessageToAllClients(xml);
         } else {
             ArrayList<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
@@ -217,6 +208,7 @@ public class DefaultINDIServer extends AbstractINDIServer {
      * Accepts all Clients.
      * 
      * @param socket
+     *            The socket to the client.
      * @return <code>true</code>
      */
     @Override
@@ -228,6 +220,7 @@ public class DefaultINDIServer extends AbstractINDIServer {
      * Does nothing.
      * 
      * @param client
+     *            the client.
      */
     @Override
     protected void connectionWithClientBroken(INDIClient client) {
@@ -237,16 +230,19 @@ public class DefaultINDIServer extends AbstractINDIServer {
      * Does nothing.
      * 
      * @param client
+     *            the client.
      */
     @Override
     protected void connectionWithClientEstablished(INDIClient client) {
     }
 
     /**
-     * Does nothing
+     * Does nothing.
      * 
      * @param driverIdentifier
+     *            the driver identifier.
      * @param deviceNames
+     *            the device names
      */
     @Override
     protected void driverDisconnected(String driverIdentifier, String[] deviceNames) {

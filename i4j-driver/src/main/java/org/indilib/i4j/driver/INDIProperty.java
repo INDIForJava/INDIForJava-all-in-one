@@ -139,11 +139,11 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     protected INDIProperty(INDIPropertyBuilder<?> builder) {
         this.driver = builder.driver();
         this.name = builder.name();
-        if (this.name.length() == 0) {
+        if (this.name.isEmpty()) {
             throw new IllegalArgumentException("No name for the Property");
         }
         this.label = builder.label();
-        if (this.label.length() == 0) {
+        if (this.label.isEmpty()) {
             this.label = this.name;
         }
         this.group = builder.group();

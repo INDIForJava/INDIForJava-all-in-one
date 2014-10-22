@@ -1,28 +1,20 @@
 package org.indilib.i4j.server;
 
 /*
- * #%L
- * INDI for Java Server Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Server Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.XMLToString;
@@ -46,17 +38,17 @@ public abstract class INDIDeviceListener {
     /**
      * A list of devices that are listened.
      */
-    private ArrayList<DevicePropertyBLOBEnableTuple> devicesToListen;
+    private List<DevicePropertyBLOBEnableTuple> devicesToListen;
 
     /**
      * A list of properties that are listened.
      */
-    private ArrayList<DevicePropertyBLOBEnableTuple> propertiesToListen;
+    private List<DevicePropertyBLOBEnableTuple> propertiesToListen;
 
     /**
-     * A list of BLOBEnable rules
+     * A list of BLOBEnable rules.
      */
-    private ArrayList<DevicePropertyBLOBEnableTuple> BLOBEnableRules;
+    private List<DevicePropertyBLOBEnableTuple> bLOBEnableRules;
 
     /**
      * Constructs a new <code>INDIDeviceListener</code>.
@@ -66,7 +58,7 @@ public abstract class INDIDeviceListener {
 
         devicesToListen = new ArrayList<DevicePropertyBLOBEnableTuple>();
         propertiesToListen = new ArrayList<DevicePropertyBLOBEnableTuple>();
-        BLOBEnableRules = new ArrayList<DevicePropertyBLOBEnableTuple>();
+        bLOBEnableRules = new ArrayList<DevicePropertyBLOBEnableTuple>();
     }
 
     /**
@@ -81,10 +73,10 @@ public abstract class INDIDeviceListener {
         DevicePropertyBLOBEnableTuple aux = getBLOBEnableRule(deviceName);
 
         if (aux != null) {
-            BLOBEnableRules.remove(aux);
+            bLOBEnableRules.remove(aux);
         }
 
-        BLOBEnableRules.add(new DevicePropertyBLOBEnableTuple(deviceName, enable));
+        bLOBEnableRules.add(new DevicePropertyBLOBEnableTuple(deviceName, enable));
     }
 
     /**
@@ -101,10 +93,10 @@ public abstract class INDIDeviceListener {
         DevicePropertyBLOBEnableTuple aux = getBLOBEnableRule(deviceName, propertyName);
 
         if (aux != null) {
-            BLOBEnableRules.remove(aux);
+            bLOBEnableRules.remove(aux);
         }
 
-        BLOBEnableRules.add(new DevicePropertyBLOBEnableTuple(deviceName, propertyName, enable));
+        bLOBEnableRules.add(new DevicePropertyBLOBEnableTuple(deviceName, propertyName, enable));
     }
 
     /**
@@ -145,11 +137,7 @@ public abstract class INDIDeviceListener {
         DevicePropertyBLOBEnableTuple aux = getBLOBEnableRule(deviceName, propertyName);
 
         if (aux != null) {
-            if (aux.getBLOBEnable() == BLOBEnables.NEVER) {
-                return false;
-            } else {
-                return true;
-            }
+            return aux.getBLOBEnable() != BLOBEnables.NEVER;
         }
 
         aux = getBLOBEnableRule(deviceName);
@@ -205,8 +193,8 @@ public abstract class INDIDeviceListener {
      * @return The BLOB Enable rule.
      */
     private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName, String propertyName) {
-        for (int i = 0; i < BLOBEnableRules.size(); i++) {
-            DevicePropertyBLOBEnableTuple aux = BLOBEnableRules.get(i);
+        for (int i = 0; i < bLOBEnableRules.size(); i++) {
+            DevicePropertyBLOBEnableTuple aux = bLOBEnableRules.get(i);
 
             if (aux.isProperty(deviceName, propertyName)) {
                 return aux;
@@ -303,6 +291,8 @@ public abstract class INDIDeviceListener {
      * 
      * @param deviceName
      *            The Device name.
+     * @param propertyName
+     *            the property to listen to.
      * @return <code>true</code> if the listener specifically listens to the
      *         Property of a Device. <code>false</code> otherwise.
      */

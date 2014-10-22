@@ -34,12 +34,12 @@ import org.indilib.i4j.Constants.BLOBEnables;
 public class DevicePropertyBLOBEnableTuple {
 
     /**
-     * The Device name
+     * The Device name.
      */
     private String device;
 
     /**
-     * The Property name
+     * The Property name.
      */
     private String property;
 
@@ -136,13 +136,13 @@ public class DevicePropertyBLOBEnableTuple {
     /**
      * Checks if the Device has a particular name.
      * 
-     * @param device
+     * @param deviceName
      *            The name of the Device to check.
      * @return <code>true</code> if the name of the Device coincides.
      *         <code>false</code> otherwise.
      */
-    protected boolean isDevice(String device) {
-        if (this.device.equals(device)) {
+    protected boolean isDevice(String deviceName) {
+        if (this.device.equals(deviceName)) {
             return true;
         }
 
@@ -153,25 +153,25 @@ public class DevicePropertyBLOBEnableTuple {
      * Checks if the Device has a particular name and the Property has a
      * particular name.
      * 
-     * @param device
+     * @param deviceName
      *            The name of the Device to check.
-     * @param property
+     * @param propertyName
      *            The name of the Property to check.
      * @return <code>true</code> if the name of the Device coincides and the
      *         name of the Property coincides. <code>false</code> otherwise.
      */
-    protected boolean isProperty(String device, String property) {
-        if (this.device.equals(device)) {
-            if ((property == null) && (this.property == null)) {
+    protected boolean isProperty(String deviceName, String propertyName) {
+        if (this.device.equals(deviceName)) {
+            if ((propertyName == null) && (this.property == null)) {
                 return true;
             }
-            if ((property == null) && (this.property != null)) {
+            if ((propertyName == null) && (this.property != null)) {
                 return false;
             }
-            if ((property != null) && (this.property == null)) {
+            if ((propertyName != null) && (this.property == null)) {
                 return false;
             }
-            if (this.property.equals(property)) {
+            if (this.property.equals(propertyName)) {
                 return true;
             }
         }

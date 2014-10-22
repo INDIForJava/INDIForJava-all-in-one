@@ -1,25 +1,16 @@
 package org.indilib.i4j.server;
 
 /*
- * #%L
- * INDI for Java Server Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Server Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.io.IOException;
@@ -30,6 +21,8 @@ import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,6 +35,11 @@ import org.w3c.dom.NodeList;
  * @version 1.31, April 12, 2012
  */
 public class INDIClient extends INDIDeviceListener implements INDIProtocolParser {
+
+    /**
+     * Logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIClient.class);
 
     /**
      * The socket to communicate with the Client.
@@ -90,6 +88,7 @@ public class INDIClient extends INDIDeviceListener implements INDIProtocolParser
 
                 socket = null;
             } catch (IOException e) {
+                LOG.error("disconnect exception", e);
             }
         }
     }
@@ -147,10 +146,11 @@ public class INDIClient extends INDIDeviceListener implements INDIProtocolParser
      * Adds the appropriate BLOB Enable rules.
      * 
      * @param xml
+     *            xml message
      */
     private void processEnableBLOB(Element xml) {
         String device = xml.getAttribute("device").trim();
-        if (device.length() == 0) {
+        if (device.isEmpty()) {
             return;
         }
 
@@ -165,7 +165,7 @@ public class INDIClient extends INDIDeviceListener implements INDIProtocolParser
             return;
         }
 
-        if (property.length() == 0) {
+        if (property.isEmpty()) {
             if (this.listensToDevice(device)) {
                 this.addBLOBEnableRule(device, enable);
                 server.notifyClientListenersEnableBLOB(this, xml);
@@ -178,14 +178,20 @@ public class INDIClient extends INDIDeviceListener implements INDIProtocolParser
         }
     }
 
+    /**
+     * notify clients of new XXX Vector if they are listening.
+     * 
+     * @param xml
+     *            the xml messge.
+     */
     private void processNewXXXVector(Element xml) {
         String device = xml.getAttribute("device").trim();
-        if (device.length() == 0) {
+        if (device.isEmpty()) {
             return;
         }
 
         String property = xml.getAttribute("name").trim();
-        if (property.length() == 0) {
+        if (property.isEmpty()) {
             return;
         }
 
@@ -197,20 +203,26 @@ public class INDIClient extends INDIDeviceListener implements INDIProtocolParser
         }
     }
 
+    /**
+     * notify server of get properties if they are listening.
+     * 
+     * @param xml
+     *            the xml message
+     */
     private void processGetProperties(Element xml) {
         String version = xml.getAttribute("version").trim();
 
-        if (version.length() == 0) { // Some conditions to ignore the messages
+        if (version.isEmpty()) { // Some conditions to ignore the messages
             return;
         }
 
         String device = xml.getAttribute("device").trim();
         String property = xml.getAttribute("name").trim();
 
-        if (device.length() == 0) {
+        if (device.isEmpty()) {
             setListenToAllDevices(true);
         } else {
-            if (property.length() == 0) {
+            if (property.isEmpty()) {
                 addDeviceToListen(device);
             } else {
                 addPropertyToListen(device, property);
