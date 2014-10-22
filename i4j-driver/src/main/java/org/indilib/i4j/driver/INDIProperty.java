@@ -611,7 +611,8 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
             } catch (ClassNotFoundException ex) {
                 throw new INDIException("Problem when loading a property from file " + file.getName() + " - ClassNotFoundException");
             } catch (IOException ex) {
-                throw new INDIException("Problem when loading a property from file " + file.getName() + " - IOException");
+                LOG.warn("property could not be loaded from file, because it is not compatible to the current version (reverting to default values) : " + file.getName());
+                return null;
             }
             prop.setDriver(driver);
         }
