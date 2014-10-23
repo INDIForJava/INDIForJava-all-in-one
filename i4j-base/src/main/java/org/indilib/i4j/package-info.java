@@ -21,7 +21,9 @@
  */
 
 /**
- * Provides some common classes for the INDI for Java Client, INDI for Java Driver and INDI for Java Server libraries.
+ * Provides some common classes for the INDI for Java Client, INDI for Java
+ * Driver and INDI for Java Server libraries.
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.39, October 11, 2014
  * @see org.indilib.i4j.driver

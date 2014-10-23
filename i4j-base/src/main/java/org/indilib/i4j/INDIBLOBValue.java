@@ -27,6 +27,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
+
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 
 /**
@@ -93,12 +96,7 @@ public class INDIBLOBValue {
 
         base64EncodedData = xml.getTextContent().trim();
 
-        try {
-            val = Base64.decode(base64EncodedData);
-        } catch (IOException e) {
-            base64EncodedData = null;
-            throw new IllegalArgumentException("Not BASE64 coded data");
-        }
+        val = Base64.decodeBase64(base64EncodedData);
 
         if (f.endsWith(".z")) { // gzipped. Decompress
             Inflater decompresser = new Inflater();
@@ -143,9 +141,8 @@ public class INDIBLOBValue {
      */
     public final String getBase64BLOBData() {
         if (base64EncodedData == null) {
-            base64EncodedData = Base64.encodeBytes(getBLOBData());
+            base64EncodedData = new String(Base64.encodeBase64(getBLOBData()), Charsets.UTF_8);
         }
-
         return base64EncodedData;
     }
 
