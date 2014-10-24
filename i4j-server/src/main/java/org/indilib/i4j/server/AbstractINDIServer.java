@@ -249,19 +249,19 @@ public abstract class AbstractINDIServer implements Runnable {
             throw new INDIException("Error reading JAR file for Class Loader.");
         }
 
-        final   URL[]  urls = new URL[]{
+        final URL[] urls = new URL[]{
             url
         };
         ClassLoader cl;
         try {
-            cl = AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<ClassLoader>() {
-                        @Override
-                        public ClassLoader run() throws Exception {
-                            return new URLClassLoader(urls);
-                        }
-                        
-                    });
+            cl = AccessController.doPrivileged(new PrivilegedExceptionAction<ClassLoader>() {
+
+                @Override
+                public ClassLoader run() throws Exception {
+                    return new URLClassLoader(urls);
+                }
+
+            });
         } catch (PrivilegedActionException e1) {
             throw new INDIException("Error reading JAR file for Class Loader.");
         }
