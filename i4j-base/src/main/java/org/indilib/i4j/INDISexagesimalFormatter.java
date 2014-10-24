@@ -21,7 +21,6 @@ package org.indilib.i4j;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import java.io.Serializable;
 import java.util.Formatter;
 import java.util.Locale;
@@ -182,8 +181,8 @@ public class INDISexagesimalFormatter implements Serializable {
         newNumber = newNumber.replace(';', ':');
 
         if (newNumber.indexOf(":") == -1) { // If there are no separators maybe
-                                            // they have sent just a single
-                                            // double
+            // they have sent just a single
+            // double
             try {
                 double n = Double.parseDouble(newNumber);
 
@@ -421,7 +420,11 @@ public class INDISexagesimalFormatter implements Serializable {
             return s;
         }
 
-        String spaces = new String(new char[nSpaces]).replace("\0", s);
+        StringBuilder spacesBuffer = new StringBuilder(nSpaces);
+        for (int i = 0; i < nSpaces; i++) {
+            spacesBuffer.append(" ");
+        }
+        String spaces = spacesBuffer.toString();
 
         return spaces + s;
     }
