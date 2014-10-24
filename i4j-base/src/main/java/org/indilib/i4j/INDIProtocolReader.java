@@ -25,10 +25,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.codec.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -107,7 +109,7 @@ public class INDIProtocolReader extends Thread {
 
         stop = false;
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(parser.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(parser.getInputStream(), Charsets.UTF_8));
 
         try {
             while (!stop) {

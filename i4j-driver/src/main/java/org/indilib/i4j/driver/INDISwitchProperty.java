@@ -29,7 +29,7 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIDateFormat;
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
@@ -165,7 +165,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         String xml =
                 "<defSwitchVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
                         + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" rule=\""
-                        + Constants.getSwitchRuleAsString(getRule()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+                        + Constants.getSwitchRuleAsString(getRule()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }
@@ -175,7 +175,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         String xml =
                 "<defSwitchVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
                         + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" rule=\""
-                        + Constants.getSwitchRuleAsString(getRule()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp()
+                        + Constants.getSwitchRuleAsString(getRule()) + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp()
                         + "\" message=\"" + message + "\">";
 
         return xml;
@@ -192,7 +192,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     protected String getXMLPropertySetInit() {
         String xml =
                 "<setSwitchVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }
@@ -201,7 +201,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     protected String getXMLPropertySetInit(String message) {
         String xml =
                 "<setSwitchVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
 
         return xml;
     }

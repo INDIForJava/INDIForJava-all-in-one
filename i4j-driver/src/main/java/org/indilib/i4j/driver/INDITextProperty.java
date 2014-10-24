@@ -23,7 +23,7 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.INDIDateFormat;
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
@@ -60,7 +60,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
         String xml =
                 "<defTextVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
                         + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
-                        + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+                        + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }
@@ -70,7 +70,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
         String xml =
                 "<defTextVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
                         + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
-                        + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+                        + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
 
         return xml;
     }
@@ -86,7 +86,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
     protected String getXMLPropertySetInit() {
         String xml =
                 "<setTextVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }
@@ -95,7 +95,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
     protected String getXMLPropertySetInit(String message) {
         String xml =
                 "<setTextVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
 
         return xml;
     }

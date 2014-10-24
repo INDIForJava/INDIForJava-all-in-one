@@ -386,7 +386,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         INDIBLOBProperty pim = (INDIBLOBProperty) getProperty(imagePrefix + "_SATELLITE_IMAGE");
         INDIBLOBElement eim = (INDIBLOBElement) pim.getElement(imagePrefix + "_SATELLITE_IMAGE");
 
-        if (Arrays.equals(imageBytes, eim.getValue().getBLOBData())) {
+        if (Arrays.equals(imageBytes, eim.getValue().getBlobData())) {
             return false; // The same image as the one in the property
         }
 

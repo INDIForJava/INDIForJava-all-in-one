@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import org.indilib.i4j.Constants;
 
-import org.indilib.i4j.INDIDateFormat;
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
 import org.indilib.i4j.INDIURI;
@@ -567,7 +567,7 @@ public class INDIServerConnection implements INDIProtocolParser {
             if (xml.hasAttribute("message")) {
                 String time = xml.getAttribute("timestamp").trim();
 
-                Date timestamp = INDIDateFormat.parseTimestamp(time);
+                Date timestamp = dateFormat().parseTimestamp(time);
 
                 String message = xml.getAttribute("message").trim();
 

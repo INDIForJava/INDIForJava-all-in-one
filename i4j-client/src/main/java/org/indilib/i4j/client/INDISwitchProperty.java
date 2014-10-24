@@ -30,7 +30,7 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.INDIDateFormat;
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.INDIException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -194,7 +194,7 @@ public class INDISwitchProperty extends INDIProperty {
      */
     @Override
     protected String getXMLPropertyChangeInit() {
-        String xml = "<newSwitchVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+        String xml = "<newSwitchVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }

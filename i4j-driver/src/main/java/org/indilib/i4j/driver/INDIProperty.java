@@ -4,7 +4,7 @@ package org.indilib.i4j.driver;
  * #%L
  * INDI for Java Driver Library
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2012 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -375,14 +375,16 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * @return a String representation of the property and its values.
      */
     public String getNameStateAndValuesAsString() {
-        String aux = getName() + " - " + getState() + "\n";
-        List<Element> l = getElementsAsList();
-
-        for (int i = 0; i < l.size(); i++) {
-            aux += "  " + l.get(i).getNameAndValueAsString() + "\n";
+        StringBuffer aux = new StringBuffer(getName());
+        aux.append(" - ");
+        aux.append(getState());
+        aux.append("\n");
+        for (Element element : getElementsAsList()) {
+            aux.append("  ");
+            aux.append(element.getNameAndValueAsString());
+            aux.append("\n");
         }
-
-        return aux;
+        return aux.toString();
     }
 
     /**
@@ -405,26 +407,20 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * @return The XML code to define the property.
      */
     protected String getXMLPropertyDefinition(String message) {
-        String xml;
-
+        StringBuffer xml = new StringBuffer();
         if (message == null) {
-            xml = getXMLPropertyDefinitionInit();
+            xml.append(getXMLPropertyDefinitionInit());
         } else {
-            xml = getXMLPropertyDefinitionInit(message);
+            xml.append(getXMLPropertyDefinitionInit(message));
         }
-
-        List<Element> elem = getElementsAsList();
-
-        for (int i = 0; i < elements.size(); i++) {
-            xml += elem.get(i).getXMLDefElement();
+        for (Element element : getElementsAsList()) {
+            xml.append(element.getXMLDefElement());
         }
-
-        xml += getXMLPropertyDefinitionEnd();
+        xml.append(getXMLPropertyDefinitionEnd());
 
         isInit = true; // The property now is initialized. No further changes
                        // allowed
-
-        return xml;
+        return xml.toString();
     }
 
     /**
@@ -456,24 +452,17 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
                 LOG.error("could not save the property to a file", e);
             }
         }
-
-        String xml;
-
+        StringBuffer xml = new StringBuffer();
         if (message == null) {
-            xml = getXMLPropertySetInit();
+            xml.append(getXMLPropertySetInit());
         } else {
-            xml = getXMLPropertySetInit(message);
+            xml.append(getXMLPropertySetInit(message));
         }
-
-        List<Element> elem = getElementsAsList();
-
-        for (int i = 0; i < elem.size(); i++) {
-            xml += elem.get(i).getXMLOneElement(includeMinMax);
+        for (Element element : getElementsAsList()) {
+            xml.append(element.getXMLOneElement(includeMinMax));
         }
-
-        xml += getXMLPropertySetEnd();
-
-        return xml;
+        xml.append(getXMLPropertySetEnd());
+        return xml.toString();
     }
 
     /**
@@ -537,7 +526,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         File propertiesDir = new File(i4jDir, PROPERTIES_DIR_NAME);
 
         if (!propertiesDir.exists()) {
-            propertiesDir.mkdir();
+            if (!propertiesDir.mkdir()) {
+                LOG.error("could not create directory " + propertiesDir.getAbsolutePath());
+            }
         }
 
         if (propertiesDir.exists()) {

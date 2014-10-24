@@ -29,6 +29,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.indilib.i4j.INDIException;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class INDINetworkDevice extends INDIDevice {
     /**
      * A list of names of the Device (it may be more than one).
      */
-    private ArrayList<String> names;
+    private List<String> names;
 
     /**
      * Constructs a new Network Device and connects to it.

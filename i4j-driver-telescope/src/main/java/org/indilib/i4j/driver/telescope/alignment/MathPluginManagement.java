@@ -4,7 +4,7 @@ package org.indilib.i4j.driver.telescope.alignment;
  * #%L
  * INDI for Java Abstract Telescope Driver
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2012 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -81,7 +81,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
 
     private IMathPlugin plugin;
 
-    private InMemoryDatabase inMemoryDatabase;
+    private final InMemoryDatabase inMemoryDatabase = new InMemoryDatabase();
 
     public MathPluginManagement(INDITelescope driver) {
         super(driver);

@@ -4,7 +4,7 @@ package org.indilib.i4j;
  * #%L
  * INDI for Java Base Library
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2012 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,27 +27,42 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A simple class to format and parse INDI timestamps.
+ * A simple class to format and parse INDI timestamps. Attention
+ * SimpleDateFormat is not thread save thats why this is a per thread singleton.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.39, October 11, 2014
  */
 public final class INDIDateFormat {
 
+    private static ThreadLocal<INDIDateFormat> format = new ThreadLocal<>();
+
     /**
      * The first possible format for INDI timestamps.
      */
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     /**
      * The second possible format for INDI timestamps.
      */
-    private static SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     /**
      * A private constructor to avoid instantiating this utility class.
      */
     private INDIDateFormat() {
+    }
+
+    /**
+     * @return the INDIDateformat for the current thread.
+     */
+    public static INDIDateFormat dateFormat() {
+        INDIDateFormat result = format.get();
+        if (result == null) {
+            result = new INDIDateFormat();
+            format.set(result);
+        }
+        return result;
     }
 
     /**
@@ -59,7 +74,7 @@ public final class INDIDateFormat {
      * @return the parsed timestamp or the current timestamp if the format of
      *         the <code>time</code> is not correct.
      */
-    public static Date parseTimestamp(final String time) {
+    public Date parseTimestamp(final String time) {
         Date timestamp = new Date();
 
         String newTime = time.trim();
@@ -87,7 +102,7 @@ public final class INDIDateFormat {
      *            the timestamp to be formmated
      * @return the formatted timestamp
      */
-    public static String formatTimestamp(final Date timestamp) {
+    public String formatTimestamp(final Date timestamp) {
         return dateFormat.format(timestamp);
     }
 
@@ -97,7 +112,7 @@ public final class INDIDateFormat {
      * 
      * @return the current timestamp according to the INDI specification.
      */
-    public static String getCurrentTimestamp() {
+    public String getCurrentTimestamp() {
         return formatTimestamp(new Date());
     }
 }

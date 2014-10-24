@@ -23,7 +23,7 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.INDIDateFormat;
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
@@ -84,7 +84,7 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
         String xml =
                 "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
                         + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
-                        + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+                        + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }
@@ -94,7 +94,7 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
         String xml =
                 "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
                         + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
-                        + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+                        + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
 
         return xml;
     }
@@ -110,7 +110,7 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
     protected String getXMLPropertySetInit() {
         String xml =
                 "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }
@@ -119,7 +119,7 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
     protected String getXMLPropertySetInit(String message) {
         String xml =
                 "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\" message=\"" + message + "\">";
+                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
 
         return xml;
     }

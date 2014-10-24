@@ -33,7 +33,7 @@ import java.util.List;
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
-import org.indilib.i4j.INDIDateFormat;
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.INDIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -354,7 +354,7 @@ public class INDIDevice {
         if (xml.hasAttribute("message")) {
             String time = xml.getAttribute("timestamp").trim();
 
-            timestamp = INDIDateFormat.parseTimestamp(time);
+            timestamp = dateFormat().parseTimestamp(time);
 
             message = xml.getAttribute("message").trim();
 

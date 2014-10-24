@@ -275,6 +275,9 @@
 				</configuration>
 				<reportSets>
 					<reportSet>
+						<configuration>
+							<skip>${i4j.nonjavamodule}</skip>
+						</configuration>
 						<reports>
 							<report>checkstyle</report>
 						</reports>
@@ -323,6 +326,26 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>UTF-8</sourceEncoding>
+					<targetJdk>1.7</targetJdk>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.0</version>
 			</plugin>
 		</plugins>
 	</reporting>

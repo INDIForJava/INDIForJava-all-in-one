@@ -23,7 +23,7 @@ package org.indilib.i4j.client;
  */
 
 import org.indilib.i4j.ClassInstantiator;
-import org.indilib.i4j.INDIDateFormat;
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.INDIException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -86,7 +86,7 @@ public class INDIBLOBProperty extends INDIProperty {
      */
     @Override
     protected String getXMLPropertyChangeInit() {
-        String xml = "<newBLOBVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\">";
+        String xml = "<newBLOBVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
 
         return xml;
     }

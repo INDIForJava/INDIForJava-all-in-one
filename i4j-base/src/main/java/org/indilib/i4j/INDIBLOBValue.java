@@ -25,6 +25,7 @@ package org.indilib.i4j;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -38,17 +39,22 @@ import org.w3c.dom.Element;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.39, October 11, 2014
  */
-public class INDIBLOBValue {
+public class INDIBLOBValue implements Serializable {
+
+    /**
+     * Serialization id.
+     */
+    private static final long serialVersionUID = 2475720079344574791L;
 
     /**
      * The BLOB data.
      */
-    private byte[] blobData;
+    private final byte[] blobData;
 
     /**
      * The format of the data.
      */
-    private String format;
+    private final String format;
 
     /**
      * The encoded data.
@@ -130,7 +136,7 @@ public class INDIBLOBValue {
      * 
      * @return the BLOB data
      */
-    public final byte[] getBLOBData() {
+    public final byte[] getBlobData() {
         return blobData;
     }
 
@@ -141,7 +147,7 @@ public class INDIBLOBValue {
      */
     public final String getBase64BLOBData() {
         if (base64EncodedData == null) {
-            base64EncodedData = new String(Base64.encodeBase64(getBLOBData()), Charsets.UTF_8);
+            base64EncodedData = new String(Base64.encodeBase64(getBlobData()), Charsets.UTF_8);
         }
         return base64EncodedData;
     }

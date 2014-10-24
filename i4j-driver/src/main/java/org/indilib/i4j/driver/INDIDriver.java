@@ -1,27 +1,19 @@
 package org.indilib.i4j.driver;
 
 /*
- * #%L
- * INDI for Java Driver Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Driver Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -29,10 +21,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
-import org.indilib.i4j.INDIDateFormat;
+
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
 import org.indilib.i4j.driver.annotation.InjectExtension;
@@ -83,11 +79,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
     private OutputStream outputStream;
 
     /**
-     * printwriter over the outputstream. only write legal xml here!.
-     */
-    private PrintWriter out;
-
-    /**
      * The protokol reader thread that reads asynchron from the input stream,
      * and reacts on the comming indi protokol messages.
      */
@@ -96,12 +87,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * A list of subdrivers.
      */
-    private ArrayList<INDIDriver> subdrivers;
+    private List<INDIDriver> subdrivers;
 
     /**
      * A list of Properties for this Driver.
      */
-    private LinkedHashMap<String, INDIProperty> properties;
+    private Map<String, INDIProperty<?>> properties;
 
     /**
      * the connection extension that controls the connect and disconnect
@@ -126,14 +117,16 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The stream to which to write the messages.
      */
     protected INDIDriver(InputStream inputStream, OutputStream outputStream) {
-        this.out = new PrintWriter(outputStream);
+        out = new PrintWriter(outputStream);
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.subdrivers = new ArrayList<INDIDriver>();
         started = false;
-        properties = new LinkedHashMap<String, INDIProperty>();
+        properties = new LinkedHashMap<>();
         INDIPropertyInjector.initialize(this, this);
     }
+
+    PrintWriter out;
 
     /**
      * Registers a subdriver that may receive messages.
@@ -218,15 +211,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     /**
-     * Gets the output <code>PrintWriter</code>.
-     * 
-     * @return The output <code>PrintWriter</code>.
-     */
-    protected PrintWriter getOut() {
-        return out;
-    }
-
-    /**
      * Parses the XML messages. Should not be called by particular Drivers.
      * 
      * @param doc
@@ -300,7 +284,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = INDIDateFormat.parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
 
         INDITextElementAndValue[] newEvs = new INDITextElementAndValue[evs.length];
 
@@ -354,7 +338,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = INDIDateFormat.parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
 
         INDISwitchElementAndValue[] newEvs = new INDISwitchElementAndValue[evs.length];
 
@@ -408,7 +392,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = INDIDateFormat.parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
 
         INDINumberElementAndValue[] newEvs = new INDINumberElementAndValue[evs.length];
 
@@ -462,7 +446,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = INDIDateFormat.parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
 
         INDIBLOBElementAndValue[] newEvs = new INDIBLOBElementAndValue[evs.length];
 
@@ -520,7 +504,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
             return new INDIElementAndValue[0];
         }
 
-        ArrayList<INDIElementAndValue> list = new ArrayList<INDIElementAndValue>();
+        List<INDIElementAndValue> list = new ArrayList<INDIElementAndValue>();
 
         NodeList nodes = xml.getChildNodes();
 
@@ -809,10 +793,22 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     private void sendXML(String xml) {
         /*
-         * if (XML.length() < 500) { printMessage(XML); }
+         * TODO:This is very wrong, but it works.... The printwriter uses the
+         * default encoding and should not be used, but wenn writing directly to
+         * the output stream the system hangs.
          */
-        out.print(xml);
-        out.flush();
+        if (1 == 1) {
+            out.print(xml);
+            out.flush();
+        } else {
+            //it should be like this, 
+            try {
+                outputStream.write(xml.getBytes(Charsets.UTF_8));
+                outputStream.flush();
+            } catch (IOException e) {
+                throw new IllegalStateException("could not write to output stream", e);
+            }
+        }
     }
 
     /**
@@ -873,7 +869,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
             mm = " message=\"" + message + "\"";
         }
 
-        String msg = "<delProperty device=\"" + this.getName() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\"" + mm + " />";
+        String msg = "<delProperty device=\"" + this.getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\"" + mm + " />";
 
         sendXML(msg);
     }
@@ -895,7 +891,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         }
 
         String msg =
-                "<delProperty device=\"" + this.getName() + "\" name=\"" + property.getName() + "\" timestamp=\"" + INDIDateFormat.getCurrentTimestamp() + "\"" + mm + " />";
+                "<delProperty device=\"" + this.getName() + "\" name=\"" + property.getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\"" + mm + " />";
 
         sendXML(msg);
     }

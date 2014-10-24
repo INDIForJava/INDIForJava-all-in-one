@@ -23,7 +23,7 @@ package org.indilib.i4j.server;
  */
 
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -70,7 +70,7 @@ public class DefaultINDIServer extends AbstractINDIServer {
         String deviceName = xml.getAttribute("device").trim();
         String propertyName = xml.getAttribute("name").trim();
 
-        ArrayList<INDIDeviceListener> list = getClientsListeningToProperty(deviceName, propertyName);
+        List<INDIDeviceListener> list = getClientsListeningToProperty(deviceName, propertyName);
 
         for (int i = 0; i < list.size(); i++) {
             INDIDeviceListener c = list.get(i);
@@ -99,7 +99,7 @@ public class DefaultINDIServer extends AbstractINDIServer {
             isBLOB = true;
         }
 
-        ArrayList<INDIDeviceListener> list = getClientsListeningToPropertyUpdates(deviceName, propertyName, isBLOB);
+        List<INDIDeviceListener> list = getClientsListeningToPropertyUpdates(deviceName, propertyName, isBLOB);
 
         for (int i = 0; i < list.size(); i++) {
             INDIDeviceListener c = list.get(i);
@@ -123,7 +123,7 @@ public class DefaultINDIServer extends AbstractINDIServer {
         if (deviceName.isEmpty()) {
             sendXMLMessageToAllClients(xml);
         } else {
-            ArrayList<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
+            List<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
 
             for (int i = 0; i < list.size(); i++) {
                 INDIDeviceListener c = list.get(i);
@@ -145,7 +145,7 @@ public class DefaultINDIServer extends AbstractINDIServer {
     protected void notifyDeviceListenersDelProperty(INDIDevice device, Element xml) {
         String deviceName = xml.getAttribute("device").trim();
 
-        ArrayList<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
+        List<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
 
         for (int i = 0; i < list.size(); i++) {
             INDIDeviceListener c = list.get(i);

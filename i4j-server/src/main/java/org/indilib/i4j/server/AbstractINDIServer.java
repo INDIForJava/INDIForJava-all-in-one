@@ -30,6 +30,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -235,7 +238,7 @@ public abstract class AbstractINDIServer implements Runnable {
             throw new INDIException("JAR file already loaded.");
         }
 
-        ArrayList<String> list = getClassesInJAR(jarFileName);
+        List<String> list = getClassesInJAR(jarFileName);
 
         File file = new File(jarFileName);
         URL url;
@@ -246,10 +249,22 @@ public abstract class AbstractINDIServer implements Runnable {
             throw new INDIException("Error reading JAR file for Class Loader.");
         }
 
-        URL[] urls = new URL[]{
+        final   URL[]  urls = new URL[]{
             url
         };
-        ClassLoader cl = new URLClassLoader(urls);
+        ClassLoader cl;
+        try {
+            cl = AccessController.doPrivileged(
+                    new PrivilegedExceptionAction<ClassLoader>() {
+                        @Override
+                        public ClassLoader run() throws Exception {
+                            return new URLClassLoader(urls);
+                        }
+                        
+                    });
+        } catch (PrivilegedActionException e1) {
+            throw new INDIException("Error reading JAR file for Class Loader.");
+        }
 
         for (int i = 0; i < list.size(); i++) {
             String className = list.get(i);
@@ -388,8 +403,8 @@ public abstract class AbstractINDIServer implements Runnable {
      *            The device identifier.
      * @return A list of devices with a particular identifier.
      */
-    private ArrayList<INDIDevice> getDevicesWithIdentifier(String deviceIdentifier) {
-        ArrayList<INDIDevice> found = new ArrayList<INDIDevice>();
+    private List<INDIDevice> getDevicesWithIdentifier(String deviceIdentifier) {
+        List<INDIDevice> found = new ArrayList<INDIDevice>();
 
         for (int i = 0; i < devices.size(); i++) {
             INDIDevice d = devices.get(i);
@@ -458,7 +473,7 @@ public abstract class AbstractINDIServer implements Runnable {
      *            The device identifier.
      */
     private synchronized void destroyIdentifiedDrivers(String deviceIdentifier) {
-        ArrayList<INDIDevice> toRemove = getDevicesWithIdentifier(deviceIdentifier);
+        List<INDIDevice> toRemove = getDevicesWithIdentifier(deviceIdentifier);
 
         for (int i = 0; i < toRemove.size(); i++) {
             INDIDevice d = toRemove.get(i);
@@ -526,7 +541,7 @@ public abstract class AbstractINDIServer implements Runnable {
 
             String message = "<delProperty device=\"" + deviceName + "\" />";
 
-            ArrayList<INDIDeviceListener> list = this.getClientsListeningToDevice(deviceName);
+            List<INDIDeviceListener> list = this.getClientsListeningToDevice(deviceName);
 
             for (int i = 0; i < list.size(); i++) {
                 INDIDeviceListener c = list.get(i);
@@ -534,7 +549,7 @@ public abstract class AbstractINDIServer implements Runnable {
                 c.sendXMLMessage(message);
             }
 
-            ArrayList<INDIDeviceListener> list2 = this.getClientsListeningToSingleProperties(deviceName);
+            List<INDIDeviceListener> list2 = this.getClientsListeningToSingleProperties(deviceName);
 
             for (int i = 0; i < list2.size(); i++) {
                 INDIDeviceListener c = list2.get(i);
@@ -591,9 +606,9 @@ public abstract class AbstractINDIServer implements Runnable {
      * @throws INDIException
      *             if there is any problem accessing to the JAR file.
      */
-    private ArrayList<String> getClassesInJAR(String file) throws INDIException {
+    private List<String> getClassesInJAR(String file) throws INDIException {
 
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
 
         try {
             JarInputStream jarFile = new JarInputStream(new FileInputStream(file));
@@ -682,8 +697,8 @@ public abstract class AbstractINDIServer implements Runnable {
      *            The name of the Property.
      * @return A list of Clients that listen to a Property.
      */
-    protected ArrayList<INDIDeviceListener> getClientsListeningToProperty(String deviceName, String propertyName) {
-        ArrayList<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+    protected List<INDIDeviceListener> getClientsListeningToProperty(String deviceName, String propertyName) {
+        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
 
         for (int i = 0; i < clients.size(); i++) {
             INDIDeviceListener c = clients.get(i);
@@ -707,8 +722,8 @@ public abstract class AbstractINDIServer implements Runnable {
      *            If the Property is a BLOB one.
      * @return A list of Clients that listen to a Property.
      */
-    protected ArrayList<INDIDeviceListener> getClientsListeningToPropertyUpdates(String deviceName, String propertyName, boolean isBLOB) {
-        ArrayList<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+    protected List<INDIDeviceListener> getClientsListeningToPropertyUpdates(String deviceName, String propertyName, boolean isBLOB) {
+        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
 
         for (int i = 0; i < clients.size(); i++) {
             INDIDeviceListener c = clients.get(i);
@@ -738,8 +753,8 @@ public abstract class AbstractINDIServer implements Runnable {
      * @return A list of Clients that specifically listen to a Property of a
      *         Device.
      */
-    protected ArrayList<INDIDeviceListener> getClientsListeningToSingleProperties(String deviceName) {
-        ArrayList<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+    protected List<INDIDeviceListener> getClientsListeningToSingleProperties(String deviceName) {
+        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
 
         for (int i = 0; i < clients.size(); i++) {
             INDIDeviceListener c = clients.get(i);
@@ -759,8 +774,8 @@ public abstract class AbstractINDIServer implements Runnable {
      *            The name of the Device.
      * @return A list of Clients that specifically listen to a Device.
      */
-    protected ArrayList<INDIDeviceListener> getClientsListeningToDevice(String deviceName) {
-        ArrayList<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+    protected List<INDIDeviceListener> getClientsListeningToDevice(String deviceName) {
+        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
 
         for (int i = 0; i < clients.size(); i++) {
             INDIDeviceListener c = clients.get(i);

@@ -25,12 +25,12 @@
 			<item name="Abstract Focuser Driver" href="i4j-driver-focuser/index.html" />
 			<item name="Abstract Telescope Driver" href="i4j-driver-telescope/index.html" />
 			<item name="Abstract CCD Driver" href="i4j-driver-ccd/index.html" />
-			<item name="Serial Port Extension" href="index.html" />
+			<item name="Serial Port Extension" href="i4j-driver-serialextension/index.html" />
 			<item name="Driver for the Raspberry PI" href="i4j-driver-raspberrypigpio/index.html" />
 			<item name="Driver for the QHY Filter Wheel" href="i4j-driver-qhyfilterwheel/index.html" />
 			<item name="Driver for the Seletek" href="i4j-driver-seletek/index.html" />
 			<item name="Driver for the Sky Quality Meter - LU" href="i4j-driver-sqm/index.html" />
-			<item name="GNU Scientific Library port" href="index.html" />
+			<item name="GNU Scientific Library port" href="org.gnu.savannah.gsl/index.html" />
 			<item name="Driver Examples" href="i4j-driver-examples/index.html" />
 			<item name="Server Examples" href="i4j-server-examples/index.html" />
 			<item name="Client Examples" href="i4j-client-examples/index.html" />

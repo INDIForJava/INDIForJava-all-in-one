@@ -48,7 +48,7 @@ public abstract class SwitchEvent implements IEventHandler<INDISwitchProperty, I
     @Override
     public final void processNewValue(INDISwitchProperty valueProperty, Date date, INDIElementAndValue<INDISwitchElement, SwitchStatus>[] elementsAndValues) {
         this.property = valueProperty;
-        processNewValue(date, (INDISwitchElementAndValue[]) elementsAndValues);
+        processNewValue(date, INDISwitchElementAndValue[].class.cast(elementsAndValues));
     }
 
     /**
