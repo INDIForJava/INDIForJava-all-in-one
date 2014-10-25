@@ -160,7 +160,7 @@ public class INDISexagesimalFormatter implements Serializable {
             throw new IllegalArgumentException("Illegal sexagesimal length or fraction length");
         }
 
-        if ((fractionLength != FL3) && (fractionLength != FL5) && (fractionLength != FL6) && (fractionLength != FL8) && (fractionLength != FL9)) {
+        if (fractionLength != FL3 && fractionLength != FL5 && fractionLength != FL6 && fractionLength != FL8 && fractionLength != FL9) {
             throw new IllegalArgumentException("Illegal sexagesimal fraction length");
         }
     }
@@ -227,9 +227,9 @@ public class INDISexagesimalFormatter implements Serializable {
 
         double res = degrees;
         if (degrees > 0) {
-            res += (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
+            res += minutes / MINUTES_PER_HOUR + seconds / SECONDS_PER_HOUR;
         } else {
-            res -= (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
+            res -= minutes / MINUTES_PER_HOUR + seconds / SECONDS_PER_HOUR;
         }
 
         return res;
@@ -306,9 +306,9 @@ public class INDISexagesimalFormatter implements Serializable {
 
         double res = degrees;
         if (Double.valueOf(degrees).compareTo(ZERO_NEG) > 0) {
-            res += (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
+            res += minutes / MINUTES_PER_HOUR + seconds / SECONDS_PER_HOUR;
         } else {
-            res -= (minutes / MINUTES_PER_HOUR) + (seconds / SECONDS_PER_HOUR);
+            res -= minutes / MINUTES_PER_HOUR + seconds / SECONDS_PER_HOUR;
         }
 
         return res;
@@ -358,7 +358,7 @@ public class INDISexagesimalFormatter implements Serializable {
         } else {
             double minutes = Math.floor(fractional * MINUTES_PER_HOUR);
 
-            double rest = fractional - ((double) minutes / SECONDS_PER_MINUTE);
+            double rest = fractional - ((double) minutes) / SECONDS_PER_MINUTE;
 
             double seconds = rest * SECONDS_PER_HOUR;
 

@@ -24,10 +24,10 @@ package org.indilib.i4j.driver.connection;
 
 import java.util.Date;
 
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDIDriverExtension;
 import org.indilib.i4j.driver.INDISwitchElement;
@@ -170,7 +170,7 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
 
             if (el == connectedE) {
                 if (s == SwitchStatus.ON) {
-                    if (connectedE.getValue() != SwitchStatus.ON) {
+                    if (connectedE.isOff()) {
                         try {
                             connectionHandler.driverConnect(timestamp);
 
@@ -182,20 +182,18 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
                         setConnectionProperty(true);
                     }
                 }
-            } else if (el == disconnectedE) {
-                if (s == SwitchStatus.ON) {
-                    if (disconnectedE.getValue() != SwitchStatus.ON) {
-                        try {
-                            connectionHandler.driverDisconnect(timestamp);
-
-                            setConnectionProperty(false);
-                        } catch (INDIException e) {
-                            setConnectionProperty(true, e.getMessage());
-                        }
-                    } else {
+            } else if (el == disconnectedE && s == SwitchStatus.ON) {
+                if (disconnectedE.isOff()) {
+                    try {
+                        connectionHandler.driverDisconnect(timestamp);
                         setConnectionProperty(false);
+                    } catch (INDIException e) {
+                        setConnectionProperty(true, e.getMessage());
                     }
+                } else {
+                    setConnectionProperty(false);
                 }
+
             }
         }
     }

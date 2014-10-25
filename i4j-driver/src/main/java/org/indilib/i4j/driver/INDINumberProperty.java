@@ -22,9 +22,9 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import org.indilib.i4j.Constants;
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
-import org.indilib.i4j.INDIException;
+
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
@@ -49,34 +49,6 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      */
     public INDINumberProperty(INDIPropertyBuilder<?> builder) {
         super(builder);
-    }
-
-    /**
-     * Loads a Number Property from a file.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded number property or <code>null</code> if it could not
-     *         be loaded.
-     */
-    private static INDINumberProperty loadNumberProperty(INDIDriver driver, String name) {
-        INDIProperty<?> prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDINumberProperty)) {
-            return null;
-        }
-
-        INDINumberProperty np = (INDINumberProperty) prop;
-        np.setSaveable(true);
-        return np;
     }
 
     @Override

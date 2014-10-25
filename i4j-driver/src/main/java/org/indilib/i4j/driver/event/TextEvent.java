@@ -28,6 +28,8 @@ import org.indilib.i4j.driver.INDIElementAndValue;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a convince class the reduce the number of genetics that must be
@@ -39,6 +41,11 @@ import org.indilib.i4j.driver.INDITextProperty;
 public abstract class TextEvent implements IEventHandler<INDITextProperty, INDITextElement, String> {
 
     /**
+     * the log to write messages to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(TextEvent.class);
+
+    /**
      * the current property being changed. do not use it if nor really
      * Necessary, it's much better and readable to use direct references.
      */
@@ -47,7 +54,11 @@ public abstract class TextEvent implements IEventHandler<INDITextProperty, INDIT
     @Override
     public final void processNewValue(INDITextProperty valueProperty, Date date, INDIElementAndValue<INDITextElement, String>[] elementsAndValues) {
         this.property = valueProperty;
-        processNewValue(date, INDITextElementAndValue[].class.cast(elementsAndValues));
+        if (elementsAndValues instanceof INDITextElementAndValue[]) {
+            processNewValue(date, INDITextElementAndValue[].class.cast(elementsAndValues));
+        } else {
+            LOG.error("illegal value for process new value");
+        }
     }
 
     /**

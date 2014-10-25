@@ -611,7 +611,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @return The INDI Property to which the <code>xml</code> message refers.
      */
     private INDIProperty processNewXXXVector(Element xml) {
-        if ((!xml.hasAttribute("device")) || (!xml.hasAttribute("name"))) {
+        if (!xml.hasAttribute("device") || !xml.hasAttribute("name")) {
             return null;
         }
 

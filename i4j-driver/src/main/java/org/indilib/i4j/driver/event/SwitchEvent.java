@@ -29,6 +29,8 @@ import org.indilib.i4j.driver.INDIElementAndValue;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a convince class the reduce the number of genetics that must be
@@ -40,6 +42,11 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 public abstract class SwitchEvent implements IEventHandler<INDISwitchProperty, INDISwitchElement, SwitchStatus> {
 
     /**
+     * the log to write messages to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(SwitchEvent.class);
+
+    /**
      * the current property being changed. do not use it if nor really
      * Necessary, it's much better and readable to use direct references.
      */
@@ -48,7 +55,11 @@ public abstract class SwitchEvent implements IEventHandler<INDISwitchProperty, I
     @Override
     public final void processNewValue(INDISwitchProperty valueProperty, Date date, INDIElementAndValue<INDISwitchElement, SwitchStatus>[] elementsAndValues) {
         this.property = valueProperty;
-        processNewValue(date, INDISwitchElementAndValue[].class.cast(elementsAndValues));
+        if (elementsAndValues instanceof INDISwitchElementAndValue[]) {
+            processNewValue(date, INDISwitchElementAndValue[].class.cast(elementsAndValues));
+        } else {
+            LOG.error("illegal value for process new value");
+        }
     }
 
     /**

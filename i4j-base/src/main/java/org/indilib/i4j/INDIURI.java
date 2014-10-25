@@ -33,6 +33,11 @@ package org.indilib.i4j;
 public class INDIURI {
 
     /**
+     * The localhost ipadress.
+     */
+    public static final String LOCAL_HOST = "localhost";
+
+    /**
      * The host in the URI. <code>127.0.0.1</code> as default value.
      */
     private String host;
@@ -91,7 +96,7 @@ public class INDIURI {
      *            The URI to be parsed.
      */
     public INDIURI(final String uri) {
-        host = "127.0.0.1";
+        host = LOCAL_HOST;
         port = Constants.INDI_DEFAULT_PORT;
         device = null;
         property = null;
@@ -142,20 +147,12 @@ public class INDIURI {
             }
         }
 
-        if (parts.length > DEVICE_POSITION) {
-            if (!parts[DEVICE_POSITION].isEmpty()) {
-                device = parts[DEVICE_POSITION];
-
-                if (parts.length > PROPERTY_POSITION) {
-                    if (!parts[PROPERTY_POSITION].isEmpty()) {
-                        property = parts[PROPERTY_POSITION];
-
-                        if (parts.length > ELEMENT_POSITION) {
-                            if (!parts[ELEMENT_POSITION].isEmpty()) {
-                                element = parts[ELEMENT_POSITION];
-                            }
-                        }
-                    }
+        if (parts.length > DEVICE_POSITION && !parts[DEVICE_POSITION].isEmpty()) {
+            device = parts[DEVICE_POSITION];
+            if (parts.length > PROPERTY_POSITION && !parts[PROPERTY_POSITION].isEmpty()) {
+                property = parts[PROPERTY_POSITION];
+                if (parts.length > ELEMENT_POSITION && !parts[ELEMENT_POSITION].isEmpty()) {
+                    element = parts[ELEMENT_POSITION];
                 }
             }
         }

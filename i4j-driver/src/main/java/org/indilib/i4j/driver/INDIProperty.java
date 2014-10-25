@@ -294,23 +294,23 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * @return
      */
     protected void addElement(Element element) {
-        if ((this instanceof INDITextProperty) && (!(element instanceof INDITextElement))) {
+        if (this instanceof INDITextProperty && !(element instanceof INDITextElement)) {
             throw new IllegalArgumentException("Text Element cannot be added to Text Property");
         }
 
-        if ((this instanceof INDISwitchProperty) && (!(element instanceof INDISwitchElement))) {
+        if (this instanceof INDISwitchProperty && !(element instanceof INDISwitchElement)) {
             throw new IllegalArgumentException("Switch Element cannot be added to Switch Property");
         }
 
-        if ((this instanceof INDINumberProperty) && (!(element instanceof INDINumberElement))) {
+        if (this instanceof INDINumberProperty && !(element instanceof INDINumberElement)) {
             throw new IllegalArgumentException("Number Element cannot be added to Number Property");
         }
 
-        if ((this instanceof INDILightProperty) && (!(element instanceof INDILightElement))) {
+        if (this instanceof INDILightProperty && !(element instanceof INDILightElement)) {
             throw new IllegalArgumentException("Light Element cannot be added to Light Property");
         }
 
-        if ((this instanceof INDIBLOBProperty) && (!(element instanceof INDIBLOBElement))) {
+        if (this instanceof INDIBLOBProperty && !(element instanceof INDIBLOBElement)) {
             throw new IllegalArgumentException("BLOB Element cannot be added to BLOB Property");
         }
 
@@ -525,23 +525,19 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
 
         File propertiesDir = new File(i4jDir, PROPERTIES_DIR_NAME);
 
-        if (!propertiesDir.exists()) {
-            if (!propertiesDir.mkdir()) {
-                LOG.error("could not create directory " + propertiesDir.getAbsolutePath());
-            }
+        if (!propertiesDir.exists() && !propertiesDir.mkdir()) {
+            LOG.error("could not create directory " + propertiesDir.getAbsolutePath());
         }
 
-        if (propertiesDir.exists()) {
-            if (propertiesDir.isDirectory()) {
-                File file = new File(propertiesDir, getPropertyNameForFile());
-                FileOutputStream fos = new FileOutputStream(file);
+        if (propertiesDir.exists() && propertiesDir.isDirectory()) {
+            File file = new File(propertiesDir, getPropertyNameForFile());
+            FileOutputStream fos = new FileOutputStream(file);
 
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-                oos.writeObject(this);
+            oos.writeObject(this);
 
-                oos.close();
-            }
+            oos.close();
         }
     }
 

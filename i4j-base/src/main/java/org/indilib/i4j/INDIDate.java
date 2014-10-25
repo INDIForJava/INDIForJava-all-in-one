@@ -270,7 +270,7 @@ public class INDIDate {
      *            (January) - 12 (December).
      */
     public final void setMonths(final int months) {
-        if ((months >= JANUARY) && (months <= DECEMBER)) {
+        if (months >= JANUARY && months <= DECEMBER) {
             this.months = months;
         }
     }
@@ -298,12 +298,12 @@ public class INDIDate {
 
         if (days <= DAYS_FEBRUARY) {
             this.days = days;
-        } else if (((months == JANUARY) || (months == MARCH) || (months == MAY) || (months == JULY) || (months == AUGUST) || (months == OCTOBER) || (months == DECEMBER))
-                && (days <= DAYS_LONG_MONTH)) {
+        } else if ((months == JANUARY || months == MARCH || months == MAY || months == JULY || months == AUGUST || months == OCTOBER || months == DECEMBER)
+                && days <= DAYS_LONG_MONTH) {
             this.days = days;
-        } else if (((months == APRIL) || (months == JUNE) || (months == SEPTEMBER) || (months == NOVEMBER)) && (days <= DAYS_SHORT_MONTH)) {
+        } else if ((months == APRIL || months == JUNE || months == SEPTEMBER || months == NOVEMBER) && days <= DAYS_SHORT_MONTH) {
             this.days = days;
-        } else if ((months == FEBRUARY) && (years % YEARS_FOR_LEAP_YEAR == 0) && (days <= DAYS_FEBRUARY_LEAP_YEAR)) {
+        } else if (months == FEBRUARY && (years % YEARS_FOR_LEAP_YEAR == 0) && days <= DAYS_FEBRUARY_LEAP_YEAR) {
             this.days = days;
         }
     }
@@ -324,7 +324,7 @@ public class INDIDate {
      *            The hours component of the Date. Must be in the 0-23 range.
      */
     public final void setHours(final int hours) {
-        if ((hours >= 0) && (hours < HOURS_PER_DAY)) {
+        if (hours >= 0 && hours < HOURS_PER_DAY) {
             this.hours = hours;
         }
     }
@@ -345,7 +345,7 @@ public class INDIDate {
      *            The minutes component of the Date. Must be in the 0-59 range.
      */
     public final void setMinutes(final int minutes) {
-        if ((minutes >= 0) && (minutes < MINUTES_PER_HOUR)) {
+        if (minutes >= 0 && minutes < MINUTES_PER_HOUR) {
             this.minutes = minutes;
         }
     }
@@ -367,7 +367,7 @@ public class INDIDate {
      *            range.
      */
     public final void setSeconds(final double seconds) {
-        if ((seconds >= 0) && (seconds < SECONDS_PER_MINUTE)) {
+        if (seconds >= 0 && seconds < SECONDS_PER_MINUTE) {
             this.seconds = seconds;
         }
     }

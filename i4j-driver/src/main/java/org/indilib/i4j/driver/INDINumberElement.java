@@ -106,8 +106,8 @@ public class INDINumberElement extends INDIElement {
             throw new IllegalArgumentException("Number format not starting with %\n");
         }
 
-        if ((!newNumberFormat.endsWith("f")) && (!newNumberFormat.endsWith("e")) && (!newNumberFormat.endsWith("E")) && (!newNumberFormat.endsWith("g"))
-                && (!newNumberFormat.endsWith("G")) && (!newNumberFormat.endsWith("m"))) {
+        if (!newNumberFormat.endsWith("f") && !newNumberFormat.endsWith("e") && !newNumberFormat.endsWith("E") && !newNumberFormat.endsWith("g")
+                && !newNumberFormat.endsWith("G") && !newNumberFormat.endsWith("m")) {
             throw new IllegalArgumentException("Number format not recognized%\n");
         }
 
@@ -241,36 +241,6 @@ public class INDINumberElement extends INDIElement {
     }
 
     /**
-     * Sets the maximum of this Number Element.
-     * 
-     * @param maxS
-     *            A String with the maximum value of this Number Element
-     */
-    private void setMax(String maxS) {
-        max = parseNumber(maxS);
-    }
-
-    /**
-     * Sets the minimum of this Number Element.
-     * 
-     * @param minS
-     *            A String with the minimum value of this Number Element.
-     */
-    private void setMin(String minS) {
-        min = parseNumber(minS);
-    }
-
-    /**
-     * Sets the step of this Number Element.
-     * 
-     * @param stepS
-     *            A String with the step value of this Number Element.
-     */
-    private void setStep(String stepS) {
-        step = parseNumber(stepS);
-    }
-
-    /**
      * A convenience method to set the value represented by a String.
      * 
      * @param valueS
@@ -279,7 +249,7 @@ public class INDINumberElement extends INDIElement {
     private void setValueAsString(String valueS) {
         value = parseNumber(valueS);
 
-        if ((value < min) || (value > max)) {
+        if (value < min || value > max) {
             throw new IllegalArgumentException(getName() + " ; " + "Number (" + valueS + ") not in range [" + min + ", " + max + "]");
         }
     }
@@ -293,7 +263,7 @@ public class INDINumberElement extends INDIElement {
     private void setValueAsdouble(double doubleValue) {
         this.value = doubleValue;
 
-        if ((doubleValue < min) || (doubleValue > max)) {
+        if (doubleValue < min || doubleValue > max) {
             throw new IllegalArgumentException(getName() + " ; " + "Number (" + doubleValue + ") not in range [" + min + ", " + max + "]");
         }
     }
@@ -352,7 +322,7 @@ public class INDINumberElement extends INDIElement {
     public Object parseOneValue(Element xml) {
         double v = parseNumber(xml.getTextContent().trim());
 
-        if ((v < min) || (v > max)) {
+        if (v < min || v > max) {
             throw new IllegalArgumentException(getName() + " ; " + "Number (" + v + ") not in range [" + min + ", " + max + "]");
         }
 

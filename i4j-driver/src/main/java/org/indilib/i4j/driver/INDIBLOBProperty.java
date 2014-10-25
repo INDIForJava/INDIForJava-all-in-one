@@ -22,9 +22,9 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import org.indilib.i4j.Constants;
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
-import org.indilib.i4j.INDIException;
+
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
@@ -44,34 +44,6 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
      */
     public INDIBLOBProperty(INDIPropertyBuilder<INDIBLOBProperty> builder) {
         super(builder);
-    }
-
-    /**
-     * Loads a BLOB Property from a file.
-     * 
-     * @param driver
-     *            The Driver to which this property is associated
-     * @param name
-     *            The name of the property
-     * @return The loaded blob property or <code>null</code> if it could not be
-     *         loaded.
-     */
-    private static INDIBLOBProperty loadBLOBProperty(INDIDriver driver, String name) {
-        INDIProperty prop;
-
-        try {
-            prop = INDIProperty.loadFromFile(driver, name);
-        } catch (INDIException e) { // Was not correctly loaded
-            return null;
-        }
-
-        if (!(prop instanceof INDIBLOBProperty)) {
-            return null;
-        }
-
-        INDIBLOBProperty bp = (INDIBLOBProperty) prop;
-        bp.setSaveable(true);
-        return bp;
     }
 
     @Override

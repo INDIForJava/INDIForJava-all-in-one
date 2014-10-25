@@ -22,6 +22,8 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import java.util.List;
 
 import org.indilib.i4j.Constants;
@@ -29,8 +31,6 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
@@ -123,11 +123,11 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
             int selectedCount = getSelectedCount();
 
-            if ((rule == SwitchRules.ONE_OF_MANY) && (selectedCount != 1)) {
+            if (rule == SwitchRules.ONE_OF_MANY && selectedCount != 1) {
                 return false;
             }
 
-            if ((rule == SwitchRules.AT_MOST_ONE) && (selectedCount > 1)) {
+            if (rule == SwitchRules.AT_MOST_ONE && selectedCount > 1) {
                 return false;
             }
         }
@@ -153,11 +153,6 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         }
 
         return selectedCount;
-    }
-
-    @Override
-    public INDISwitchElement getElement(String name) {
-        return (INDISwitchElement) super.getElement(name);
     }
 
     @Override
@@ -236,9 +231,4 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         return INDISwitchElement.class;
     }
 
-    @Override
-    public INDIElementBuilder<INDISwitchElement> newElement() {
-        // TODO Auto-generated method stub
-        return super.newElement();
-    }
 }

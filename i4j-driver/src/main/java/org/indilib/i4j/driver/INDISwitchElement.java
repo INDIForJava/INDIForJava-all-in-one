@@ -90,22 +90,22 @@ public class INDISwitchElement extends INDIElement {
         if (ss == SwitchStatus.ON) {
             INDISwitchProperty p = getProperty();
 
-            if ((p.getRule() == SwitchRules.AT_MOST_ONE) || (p.getRule() == SwitchRules.ONE_OF_MANY)) { // If
-                                                                                                        // only
-                                                                                                        // one
-                                                                                                        // ON
-                                                                                                        // value
-                                                                                                        // is
-                                                                                                        // allowed
-                                                                                                        // in
-                                                                                                        // the
-                                                                                                        // property,
-                                                                                                        // set
-                                                                                                        // all
-                                                                                                        // of
-                                                                                                        // them
-                                                                                                        // to
-                                                                                                        // OFF
+            if (p.getRule() == SwitchRules.AT_MOST_ONE || p.getRule() == SwitchRules.ONE_OF_MANY) { // If
+                                                                                                    // only
+                                                                                                    // one
+                                                                                                    // ON
+                                                                                                    // value
+                                                                                                    // is
+                                                                                                    // allowed
+                                                                                                    // in
+                                                                                                    // the
+                                                                                                    // property,
+                                                                                                    // set
+                                                                                                    // all
+                                                                                                    // of
+                                                                                                    // them
+                                                                                                    // to
+                                                                                                    // OFF
                 p.resetAllSwitches();
             }
         }

@@ -22,8 +22,9 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import org.indilib.i4j.Constants;
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 
 /**
