@@ -162,20 +162,16 @@ public class DevicePropertyBLOBEnableTuple {
      */
     protected boolean isProperty(String deviceName, String propertyName) {
         if (this.device.equals(deviceName)) {
-            if ((propertyName == null) && (this.property == null)) {
+            if (propertyName == null && this.property == null) {
                 return true;
-            }
-            if ((propertyName == null) && (this.property != null)) {
+            } else if (propertyName == null && this.property != null) {
                 return false;
-            }
-            if ((propertyName != null) && (this.property == null)) {
+            } else if (propertyName != null && this.property == null) {
                 return false;
-            }
-            if (this.property.equals(propertyName)) {
+            } else if (this.property.equals(propertyName)) {
                 return true;
             }
         }
-
         return false;
     }
 }

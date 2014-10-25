@@ -26,16 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
+import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
-import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A class to represent a Client that connects to the Server.
@@ -43,7 +40,7 @@ import org.w3c.dom.NodeList;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 12, 2012
  */
-public class INDIClient extends INDIDeviceListener implements INDIProtocolParser {
+public class INDIClient extends INDIDeviceListener {
 
     /**
      * Logger to log to.
@@ -117,37 +114,21 @@ public class INDIClient extends INDIDeviceListener implements INDIProtocolParser
     }
 
     @Override
-    public void parseXML(Document doc) {
-        Element el = doc.getDocumentElement();
+    protected void parseXMLElement(Element child) {
+        String name = child.getNodeName();
 
-        if (el.getNodeName().compareTo("INDI") != 0) {
-            return;
-        }
-
-        NodeList nodes = el.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-
-            if (n instanceof Element) {
-                Element child = (Element) n;
-
-                String name = child.getNodeName();
-
-                if (name.equals("getProperties")) {
-                    processGetProperties(child);
-                } else if (name.equals("newTextVector")) {
-                    processNewXXXVector(child);
-                } else if (name.equals("newNumberVector")) {
-                    processNewXXXVector(child);
-                } else if (name.equals("newSwitchVector")) {
-                    processNewXXXVector(child);
-                } else if (name.equals("newBLOBVector")) {
-                    processNewXXXVector(child);
-                } else if (name.equals("enableBLOB")) {
-                    processEnableBLOB(child);
-                }
-            }
+        if (name.equals("getProperties")) {
+            processGetProperties(child);
+        } else if (name.equals("newTextVector")) {
+            processNewXXXVector(child);
+        } else if (name.equals("newNumberVector")) {
+            processNewXXXVector(child);
+        } else if (name.equals("newSwitchVector")) {
+            processNewXXXVector(child);
+        } else if (name.equals("newBLOBVector")) {
+            processNewXXXVector(child);
+        } else if (name.equals("enableBLOB")) {
+            processEnableBLOB(child);
         }
     }
 
@@ -218,33 +199,19 @@ public class INDIClient extends INDIDeviceListener implements INDIProtocolParser
      * @param xml
      *            the xml message
      */
-    private void processGetProperties(Element xml) {
+    protected void processGetProperties(Element xml) {
         String version = xml.getAttribute("version").trim();
-
         if (version.isEmpty()) { // Some conditions to ignore the messages
             return;
         }
-
-        String device = xml.getAttribute("device").trim();
-        String property = xml.getAttribute("name").trim();
-
-        if (device.isEmpty()) {
-            setListenToAllDevices(true);
-        } else {
-            if (property.isEmpty()) {
-                addDeviceToListen(device);
-            } else {
-                addPropertyToListen(device, property);
-            }
-        }
-
+        super.processGetProperties(xml);
         server.notifyClientListenersGetProperties(this, xml);
     }
 
     @Override
     protected void sendXMLMessage(String xml) {
         try {
-            socket.getOutputStream().write(xml.getBytes());
+            socket.getOutputStream().write(xml.getBytes(Charsets.UTF_8));
             socket.getOutputStream().flush();
         } catch (IOException e) {
             disconnect();

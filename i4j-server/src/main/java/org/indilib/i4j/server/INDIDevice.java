@@ -26,16 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A class that represents a generic INDI Device to which the server connects
@@ -44,7 +41,7 @@ import org.w3c.dom.NodeList;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 13, 2013
  */
-public abstract class INDIDevice extends INDIDeviceListener implements INDIProtocolParser {
+public abstract class INDIDevice extends INDIDeviceListener {
 
     /**
      * The logger to log to.
@@ -83,56 +80,40 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIProto
     }
 
     @Override
-    public void parseXML(Document doc) {
-        Element el = doc.getDocumentElement();
+    protected void parseXMLElement(Element child) {
+        String nodeName = child.getNodeName();
 
-        if (el.getNodeName().compareTo("INDI") != 0) {
-            return;
-        }
-
-        NodeList nodes = el.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-
-            if (n instanceof Element) {
-                Element child = (Element) n;
-
-                String nodeName = child.getNodeName();
-
-                if (nodeName.equals("getProperties")) {
-                    processGetProperties(child);
-                } else if (nodeName.equals("defTextVector")) {
-                    checkName(child);
-                    processDefXXXVector(child);
-                } else if (nodeName.equals("defNumberVector")) {
-                    checkName(child);
-                    processDefXXXVector(child);
-                } else if (nodeName.equals("defSwitchVector")) {
-                    checkName(child);
-                    processDefXXXVector(child);
-                } else if (nodeName.equals("defLightVector")) {
-                    checkName(child);
-                    processDefXXXVector(child);
-                } else if (nodeName.equals("defBLOBVector")) {
-                    checkName(child);
-                    processDefXXXVector(child);
-                } else if (nodeName.equals("setTextVector")) {
-                    processSetXXXVector(child);
-                } else if (nodeName.equals("setNumberVector")) {
-                    processSetXXXVector(child);
-                } else if (nodeName.equals("setSwitchVector")) {
-                    processSetXXXVector(child);
-                } else if (nodeName.equals("setLightVector")) {
-                    processSetXXXVector(child);
-                } else if (nodeName.equals("setBLOBVector")) {
-                    processSetXXXVector(child);
-                } else if (nodeName.equals("message")) {
-                    processMessage(child);
-                } else if (nodeName.equals("delProperty")) {
-                    processDelProperty(child);
-                }
-            }
+        if (nodeName.equals("getProperties")) {
+            processGetProperties(child);
+        } else if (nodeName.equals("defTextVector")) {
+            checkName(child);
+            processDefXXXVector(child);
+        } else if (nodeName.equals("defNumberVector")) {
+            checkName(child);
+            processDefXXXVector(child);
+        } else if (nodeName.equals("defSwitchVector")) {
+            checkName(child);
+            processDefXXXVector(child);
+        } else if (nodeName.equals("defLightVector")) {
+            checkName(child);
+            processDefXXXVector(child);
+        } else if (nodeName.equals("defBLOBVector")) {
+            checkName(child);
+            processDefXXXVector(child);
+        } else if (nodeName.equals("setTextVector")) {
+            processSetXXXVector(child);
+        } else if (nodeName.equals("setNumberVector")) {
+            processSetXXXVector(child);
+        } else if (nodeName.equals("setSwitchVector")) {
+            processSetXXXVector(child);
+        } else if (nodeName.equals("setLightVector")) {
+            processSetXXXVector(child);
+        } else if (nodeName.equals("setBLOBVector")) {
+            processSetXXXVector(child);
+        } else if (nodeName.equals("message")) {
+            processMessage(child);
+        } else if (nodeName.equals("delProperty")) {
+            processDelProperty(child);
         }
     }
 
@@ -180,26 +161,9 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIProto
      */
     protected abstract String[] getNames();
 
-    /**
-     * Processes the <code>getProperties</code> XML message.
-     * 
-     * @param xml
-     *            The <code>getProperties</code> XML message
-     */
-    private void processGetProperties(Element xml) {
-        String device = xml.getAttribute("device").trim();
-        String property = xml.getAttribute("name").trim();
-
-        if (device.isEmpty()) {
-            setListenToAllDevices(true);
-        } else {
-            if (property.isEmpty()) {
-                addDeviceToListen(device);
-            } else {
-                addPropertyToListen(device, property);
-            }
-        }
-
+    @Override
+    protected void processGetProperties(Element xml) {
+        super.processGetProperties(xml);
         server.notifyClientListenersGetProperties(this, xml);
     }
 
@@ -302,9 +266,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIProto
 
     @Override
     protected void sendXMLMessage(String xml) {
-        // System.err.println(xml);
         try {
-            getOutputStream().write(xml.getBytes());
+            getOutputStream().write(xml.getBytes(Charsets.UTF_8));
             getOutputStream().flush();
         } catch (IOException e) {
             destroy();
@@ -314,9 +277,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIProto
     @Override
     public void finishReader() {
         server.removeDevice(this);
-
-        // System.err.println("Finished reading from Driver " +
-        // getDeviceIdentifier());
+        LOG.info("Finished reading from Driver " + getDeviceIdentifier());
     }
 
     @Override

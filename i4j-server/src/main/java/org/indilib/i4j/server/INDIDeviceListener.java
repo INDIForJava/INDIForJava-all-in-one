@@ -26,8 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.indilib.i4j.Constants.BLOBEnables;
+import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.XMLToString;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * A class that represents a listener to devices. It is used to include both
@@ -37,7 +41,7 @@ import org.w3c.dom.Element;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 12, 2012
  */
-public abstract class INDIDeviceListener {
+public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Determines if the object listens to all devices.
@@ -353,4 +357,52 @@ public abstract class INDIDeviceListener {
      *            The string to be sent.
      */
     protected abstract void sendXMLMessage(String xml);
+
+    @Override
+    public final void parseXML(Document doc) {
+        Element el = doc.getDocumentElement();
+
+        if (el.getNodeName().compareTo("INDI") != 0) {
+            return;
+        }
+
+        NodeList nodes = el.getChildNodes();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node n = nodes.item(i);
+
+            if (n instanceof Element) {
+                parseXMLElement((Element) n);
+            }
+        }
+    }
+
+    /**
+     * parse an element of the xml message.
+     * 
+     * @param child
+     *            the element child of the message.
+     */
+    abstract protected void parseXMLElement(Element child);
+
+    /**
+     * Processes the <code>getProperties</code> XML message.
+     * 
+     * @param xml
+     *            The <code>getProperties</code> XML message
+     */
+    protected void processGetProperties(Element xml) {
+        String device = xml.getAttribute("device").trim();
+        String property = xml.getAttribute("name").trim();
+
+        if (device.isEmpty()) {
+            setListenToAllDevices(true);
+        } else {
+            if (property.isEmpty()) {
+                addDeviceToListen(device);
+            } else {
+                addPropertyToListen(device, property);
+            }
+        }
+    }
 }

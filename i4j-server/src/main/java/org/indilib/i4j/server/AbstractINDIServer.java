@@ -624,6 +624,7 @@ public abstract class AbstractINDIServer implements Runnable {
 
                 jarEntry = jarFile.getNextJarEntry();
             }
+            jarFile.close();
         } catch (IOException e) {
             throw new INDIException("Error loading JAR file contents.");
         }
@@ -699,15 +700,11 @@ public abstract class AbstractINDIServer implements Runnable {
      */
     protected List<INDIDeviceListener> getClientsListeningToProperty(String deviceName, String propertyName) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-
-        for (int i = 0; i < clients.size(); i++) {
-            INDIDeviceListener c = clients.get(i);
-
+        for (INDIDeviceListener c : clients) {
             if (c.listensToProperty(deviceName, propertyName)) {
                 list.add(c);
             }
         }
-
         return list;
     }
 
@@ -724,10 +721,7 @@ public abstract class AbstractINDIServer implements Runnable {
      */
     protected List<INDIDeviceListener> getClientsListeningToPropertyUpdates(String deviceName, String propertyName, boolean isBLOB) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-
-        for (int i = 0; i < clients.size(); i++) {
-            INDIDeviceListener c = clients.get(i);
-
+        for (INDIDeviceListener c : clients) {
             if (c.listensToProperty(deviceName, propertyName)) {
                 if (isBLOB) {
                     if (c.isBLOBAccepted(deviceName, propertyName)) {
@@ -740,7 +734,6 @@ public abstract class AbstractINDIServer implements Runnable {
                 }
             }
         }
-
         return list;
     }
 
