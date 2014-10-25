@@ -134,11 +134,7 @@ public class INDINetworkDevice extends INDIDevice {
      */
     @Override
     protected boolean hasName(String name) {
-        if (names.contains(name)) {
-            return true;
-        }
-
-        return false;
+        return names.contains(name);
     }
 
     @Override
@@ -182,13 +178,7 @@ public class INDINetworkDevice extends INDIDevice {
 
     @Override
     protected String[] getNames() {
-        String[] ns = new String[names.size()];
-
-        for (int i = 0; i < ns.length; i++) {
-            ns[i] = names.get(i);
-        }
-
-        return ns;
+        return names.toArray(new String[names.size()]);
     }
 
     /**

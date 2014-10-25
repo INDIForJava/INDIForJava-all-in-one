@@ -139,17 +139,6 @@ public class INDIJavaDevice extends INDIDevice {
     }
 
     /**
-     * Deals with a possible new Device name. If the Device already has a name,
-     * the new name is discarded.
-     * 
-     * @param possibleNewName
-     *            The new possible new name.
-     */
-    /*
-     * @Override protected void dealWithPossibleNewDeviceName(String
-     * possibleNewName) { if (name == null) { name = possibleNewName; } }
-     */
-    /**
      * Deals with a possible new Device name, adding it if it is new.
      * 
      * @param possibleNewName
@@ -170,26 +159,9 @@ public class INDIJavaDevice extends INDIDevice {
      * @return <code>true</code> if the Device respond to <code>name</code>.
      *         <code>false</code> otherwise.
      */
-    /*
-     * @Override protected boolean hasName(String name) { if (this.name == null)
-     * { return false; } if (this.name.equals(name)) { return true; } if
-     * (driver.hasSubDriver(name)) { return true; } return false; }
-     */
-    /**
-     * Checks if the Device has a particular name.
-     * 
-     * @param name
-     *            The name to check.
-     * @return <code>true</code> if the Device respond to <code>name</code>.
-     *         <code>false</code> otherwise.
-     */
     @Override
     protected boolean hasName(String name) {
-        if (names.contains(name)) {
-            return true;
-        }
-
-        return false;
+        return names.contains(name);
     }
 
     @Override
@@ -244,18 +216,9 @@ public class INDIJavaDevice extends INDIDevice {
         return getDeviceIdentifier().startsWith(deviceIdentifier);
     }
 
-    /*
-     * @Override protected String[] getNames() { return new String[]{name}; }
-     */
     @Override
     protected String[] getNames() {
-        String[] ns = new String[names.size()];
-
-        for (int i = 0; i < ns.length; i++) {
-            ns[i] = names.get(i);
-        }
-
-        return ns;
+        return names.toArray(new String[names.size()]);
     }
 
     /**

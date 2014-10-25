@@ -602,7 +602,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             parkExtension.setIdle();
             doGoto(ra, dec);
         } else {
-            this.eqn.setState(PropertyStates.ALERT);
+            this.eqn.setState(ALERT);
             INDITelescope.LOG.error("eqn data missing or corrupted.");
         }
     }
@@ -629,7 +629,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             }
         }
         if (targetLat == null || targetLong == null || targetElev == null) {
-            this.location.setState(PropertyStates.ALERT);
+            this.location.setState(ALERT);
             INDITelescope.LOG.error("Location data missing or corrupted.");
         } else {
             if (updateLocation(targetLat, targetLong, targetElev)) {
@@ -650,7 +650,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      */
     private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementNSS.setValues(elementsAndValues);
-        movementNSS.setState(PropertyStates.BUSY);
+        movementNSS.setState(BUSY);
         if (this.movementNSSNorth.isOn()) {
             moveNS(TelescopeMotionNS.MOTION_NORTH);
         } else {
@@ -666,7 +666,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      */
     private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementWES.setValues(elementsAndValues);
-        movementWES.setState(PropertyStates.BUSY);
+        movementWES.setState(BUSY);
         if (this.movementWESWest.isOn()) {
             moveWE(TelescopeMotionWE.MOTION_WEST);
         } else {

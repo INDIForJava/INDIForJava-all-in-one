@@ -15,6 +15,10 @@
 		<breadcrumbs>
 			<item name="${project.name}" href="index.html" />
 		</breadcrumbs>
+		<menu name="Dokumentation">
+			<item name="About" href="index.html" />
+			<item name="Migration" href="migration.html" />
+		</menu>
 		<menu name="Modules" >
 			<item name="Base Library" href="i4j-base/index.html" />
 			<item name="Client Library" href="i4j-client/index.html" />

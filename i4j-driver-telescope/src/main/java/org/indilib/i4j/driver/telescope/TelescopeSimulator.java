@@ -324,10 +324,10 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         periodicErrorNS.setState(OK);
 
         if (periodicErrorNSNorth.isOn()) {
-            eqPenDec.setValue(eqPenDec.getValue() + (SID_RATE * guideRateNS.getValue()));
+            eqPenDec.setValue(eqPenDec.getValue() + SID_RATE * guideRateNS.getValue());
             LOG.info(String.format("Simulating PE in NORTH direction for value of %g", SID_RATE));
         } else {
-            eqPenDec.setValue(eqPenDec.getValue() - (SID_RATE * guideRateNS.getValue()));
+            eqPenDec.setValue(eqPenDec.getValue() - SID_RATE * guideRateNS.getValue());
             LOG.info(String.format("Simulating PE in SOUTH direction for value of %g", SID_RATE));
         }
         periodicErrorNS.resetAllSwitches();
@@ -346,10 +346,10 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         periodicErrorWE.setState(OK);
 
         if (periodicErrorWEWest.isOn()) {
-            eqPenRa.setValue(eqPenRa.getValue() - (SID_RATE / HOUR_TO_DEGREE * guideRateWE.getValue()));
+            eqPenRa.setValue(eqPenRa.getValue() - SID_RATE / HOUR_TO_DEGREE * guideRateWE.getValue());
             LOG.info(String.format("Simulator PE in WEST direction for value of %g", SID_RATE));
         } else {
-            eqPenRa.setValue(eqPenRa.getValue() + (SID_RATE / HOUR_TO_DEGREE * guideRateWE.getValue()));
+            eqPenRa.setValue(eqPenRa.getValue() + SID_RATE / HOUR_TO_DEGREE * guideRateWE.getValue());
             LOG.info(String.format("Simulator PE in EAST direction for value of %g", SID_RATE));
         }
 
@@ -616,7 +616,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
         INDIDirection pe = new INDIDirection(eqPenRa.getValue(), eqPenDec.getValue());
 
-        if ((!eq(delta.getRa(), lastDelta.getRa()) || !eq(delta.getDec(), lastDelta.getDec()) || !eq(guideDt.getRa(), 0) || !eq(guideDt.getDec(), 0))) {
+        if (!eq(delta.getRa(), lastDelta.getRa()) || !eq(delta.getDec(), lastDelta.getDec()) || !eq(guideDt.getRa(), 0) || !eq(guideDt.getDec(), 0)) {
             lastDelta.set(delta.getRa(), delta.getDec());
             LOG.info(String.format("dt is %g", dt));
             LOG.info(String.format("RA Displacement (%s) %s -- %s of target RA %s", delta.getRaString(), pe.getRaString(), (eqPenRa.getValue() - target.getRa()) > 0 ? "East"

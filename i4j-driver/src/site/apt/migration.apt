@@ -1,0 +1,8 @@
+%{include|source-content=<div id\="apt-box">}
+
+Migrating drivers from the pre 1.50 version
+
+ In the driver development the changes and redesigns went deeper, it is now much easyer to develop a driver, but that ment also a change in the api.
+There is a own page describing the migration of drivers here {{{i4j-driver/migration.html}Migrating drivers}}.
+ 
+%{include|source-content=</div>}

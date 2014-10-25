@@ -35,6 +35,10 @@ import java.util.Date;
  */
 public final class INDIDateFormat {
 
+    /**
+     * Thread local current, to protect the simple date formatters against multi
+     * treading problems.
+     */
     private static ThreadLocal<INDIDateFormat> format = new ThreadLocal<>();
 
     /**

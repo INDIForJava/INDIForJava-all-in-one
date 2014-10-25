@@ -156,7 +156,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
         if (property == filterSlotP) {
             int newFilterNumber = elementsAndValues[0].getValue().intValue();
 
-            if ((newFilterNumber > 0) && (newFilterNumber <= getNumberOfFilters())) {
+            if (newFilterNumber > 0 && newFilterNumber <= getNumberOfFilters()) {
                 filterSlotP.setState(Constants.PropertyStates.BUSY);
                 filterNameP.setState(Constants.PropertyStates.BUSY);
 

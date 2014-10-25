@@ -314,7 +314,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
         if (property == absFocusPositionP) {
             int newVal = elementsAndValues[0].getValue().intValue();
 
-            if ((newVal >= getMinimumAbsPos()) && (newVal <= getMaximumAbsPos())) {
+            if (newVal >= getMinimumAbsPos() && newVal <= getMaximumAbsPos()) {
                 if (focusAbsolutePositionE.getValue().intValue() != newVal) {
                     absFocusPositionP.setState(PropertyStates.BUSY);
 
@@ -335,7 +335,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
         if (property == focusSpeedP) {
             int newVal = elementsAndValues[0].getValue().intValue();
 
-            if ((newVal >= 0) && (newVal <= getMaximumSpeed())) {
+            if (newVal >= 0 && newVal <= getMaximumSpeed()) {
                 if (focusSpeedValueE.getValue().intValue() != newVal) {
                     focusSpeedP.setState(PropertyStates.BUSY);
 

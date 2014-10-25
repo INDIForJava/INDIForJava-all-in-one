@@ -134,6 +134,14 @@ a:visited {
     margin: 8px;
 }
 
+#apt-box a:link {
+    color: rgb(22, 132, 187);
+}
+
+#apt-box a:visited {
+    color: rgb(22, 132, 187);
+}
+
 #navcolumn a:link, #navcolumn a:visited {
     color: #FFF;
 }
