@@ -21,9 +21,22 @@ package org.indilib.i4j.driver.telescope.alignment;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+/**
+ * Describe the alignment of a telescope axis. This is normally used to
+ * differentiate between equatorial mounts in differnet hemispheres and altaz or
+ * dobsonian mounts.
+ */
 public enum MountAlignment {
+    /**
+     * the zenith as base alignment.
+     */
     ZENITH,
+    /**
+     * the north pole as base alignment.
+     */
     NORTH_CELESTIAL_POLE,
+    /**
+     * the south pole as base alignment.
+     */
     SOUTH_CELESTIAL_POLE;
 }

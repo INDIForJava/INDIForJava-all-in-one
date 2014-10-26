@@ -216,7 +216,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
     }
 
     public void setApproximateMountAlignment(MountAlignment approximateAlignment) {
-        plugin().setApproximateMountAlignment(this.inMemoryDatabase);
+        plugin().setApproximateMountAlignment(approximateAlignment);
     }
 
     public boolean transformCelestialToTelescope(double rightAscension, double declination, double julianOffset, TelescopeDirectionVector apparentTelescopeDirectionVector) {

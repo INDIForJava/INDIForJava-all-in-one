@@ -37,11 +37,11 @@ package org.indilib.i4j.driver.telescope.alignment;
  */
 public enum AzimuthAngleDirection {
     /**
-     * Angle is measured clockwise
+     * Angle is measured clockwise.
      */
     CLOCKWISE,
     /**
-     * Angle is measured anti clockwise
+     * Angle is measured anti clockwise.
      */
     ANTI_CLOCKWISE
 }

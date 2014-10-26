@@ -383,7 +383,7 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      * @param child
      *            the element child of the message.
      */
-    abstract protected void parseXMLElement(Element child);
+    protected abstract void parseXMLElement(Element child);
 
     /**
      * Processes the <code>getProperties</code> XML message.

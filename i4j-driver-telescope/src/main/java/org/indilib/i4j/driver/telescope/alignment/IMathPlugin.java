@@ -28,18 +28,40 @@ public interface IMathPlugin {
 
     void destroy();
 
+    // Public methods
+    // / \brief Get the approximate alognment of the mount
+    // / \return the approximate alignment
     MountAlignment getApproximateMountAlignment();
 
     String id();
 
+    // / \brief Initialise or re-initialise the math plugin. Re-reading the in
+    // memory database as necessary.
+    // / \return True if successful
     boolean initialise(InMemoryDatabase inMemoryDatabase);
 
     String name();
 
-    void setApproximateMountAlignment(InMemoryDatabase inMemoryDatabase);
+    void setApproximateMountAlignment(MountAlignment approximateAlignment);
 
-    boolean transformCelestialToTelescope(double d, double e, double julianOffset, TelescopeDirectionVector apparentTelescopeDirectionVector);
+    // / \brief Get the alignment corrected telescope pointing direction for the
+    // supplied celestial coordinates
+    // / \param[in] RightAscension Right Ascension (Decimal Hours).
+    // / \param[in] Declination Declination (Decimal Degrees).
+    // / \param[in] JulianOffset to be applied to the current julian date.
+    // / \param[out] ApparentTelescopeDirectionVector Parameter to receive the
+    // corrected telescope direction
+    // / \return True if successful
+    boolean transformCelestialToTelescope(double rightAscension, double declination, double julianOffset, TelescopeDirectionVector apparentTelescopeDirectionVector);
 
+    // / \brief Get the true celestial coordinates for the supplied telescope
+    // pointing direction
+    // / \param[in] ApparentTelescopeDirectionVector the telescope direction
+    // / \param[out] RightAscension Parameter to receive the Right Ascension
+    // (Decimal Hours).
+    // / \param[out] Declination Parameter to receive the Declination (Decimal
+    // Degrees).
+    // / \return True if successful
     boolean transformTelescopeToCelestial(TelescopeDirectionVector telescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination);
 
 }

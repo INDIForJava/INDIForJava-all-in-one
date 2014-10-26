@@ -24,10 +24,21 @@ package org.indilib.i4j.driver.telescope.alignment;
 
 import java.io.Serializable;
 
+/**
+ * entry to store in the alignment database.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class AlignmentDatabaseEntry implements Cloneable, Serializable {
 
+    /**
+     * serial versionid.
+     */
     private static final long serialVersionUID = 5136616882513466640L;
 
+    /**
+     * obeservation julian date.
+     */
     protected double observationJulianDate;
 
     /**
@@ -36,7 +47,9 @@ public class AlignmentDatabaseEntry implements Cloneable, Serializable {
      */
     protected double rightAscension;
 
-    /** Declination in decimal degrees */
+    /**
+     * Declination in decimal degrees.
+     */
     protected double declination;
 
     /**
@@ -45,7 +58,9 @@ public class AlignmentDatabaseEntry implements Cloneable, Serializable {
      */
     protected TelescopeDirectionVector telescopeDirection;
 
-    /** Private data associated with this sync point */
+    /**
+     * Private data associated with this sync point.
+     */
     private byte[] privateData;
 
     @Override

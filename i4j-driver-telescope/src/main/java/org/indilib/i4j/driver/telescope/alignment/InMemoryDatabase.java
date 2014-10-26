@@ -37,6 +37,11 @@ import org.indilib.i4j.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class provides the driver side API to the in memory alignment database.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class InMemoryDatabase {
 
     public static interface LoadDatabaseCallback {
@@ -78,7 +83,7 @@ public class InMemoryDatabase {
      * 
      * @return A reference to the in memory database.
      */
-    protected List<AlignmentDatabaseEntry> GetAlignmentDatabase() {
+    protected List<AlignmentDatabaseEntry> getAlignmentDatabase() {
         return mySyncPoints;
     }
 
@@ -90,7 +95,7 @@ public class InMemoryDatabase {
      *            position in
      * @return True if successful
      */
-    protected boolean GetDatabaseReferencePosition(LnLnlatPosn Position) {
+    protected boolean getDatabaseReferencePosition(LnLnlatPosn Position) {
         return false;
     }
 
