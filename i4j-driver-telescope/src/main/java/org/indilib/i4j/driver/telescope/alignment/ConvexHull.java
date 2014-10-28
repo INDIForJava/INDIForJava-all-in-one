@@ -1,25 +1,16 @@
 package org.indilib.i4j.driver.telescope.alignment;
 
 /*
- * #%L
- * INDI for Java Abstract Telescope Driver
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Abstract Telescope Driver %% Copyright (C) 2013 - 2014
+ * indiforjava %% This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+ * the GNU General Lesser Public License for more details. You should have
+ * received a copy of the GNU General Lesser Public License along with this
+ * program. If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.util.ArrayList;
@@ -80,47 +71,46 @@ public class ConvexHull {
      */
     private static final Logger LOG = LoggerFactory.getLogger(ConvexHull.class);
 
-    static int X = 0;
+    private static final int X = 0;
 
-    static int Y = 1;
+    private static final int Y = 1;
 
-    static int Z = 2;
+    private static final int Z = 2;
 
-    /* Define flags */
-    static boolean ONHULL = true;
+    /**
+     * Define flags
+     */
+    private static final boolean ONHULL = true;
 
-    static boolean REMOVED = true;
+    private static final boolean REMOVED = true;
 
-    static boolean VISIBLE = true;
+    private static final boolean VISIBLE = true;
 
-    static boolean PROCESSED = true;
+    private static final boolean PROCESSED = true;
 
-    static int SAFE = 1000000; /* Range of safe coord values. */
+    /**
+     * Range of safe coord values.
+     */
+    private static final int SAFE = 1000000;
 
-    boolean check = false;
+    private boolean check = false;
 
-    int ScaleFactor; // Scale factor to be used when converting from floating
-                     // point to integers and vice versa
+    private int scaleFactor = SAFE - 1; // Scale factor to be used when
+                                        // converting from
 
-    CircularArray<Vertex> vertices = new CircularArray<ConvexHull.Vertex>();
+    // floating
 
-    List<Edge> edges = new CircularArray<ConvexHull.Edge>();
+    // point to integers and vice versa
 
-    public static class Link<T> {
+    private CircularArray<Vertex> vertices = new CircularArray<ConvexHull.Vertex>();
 
-    }
+    private List<Edge> edges = new CircularArray<ConvexHull.Edge>();
 
-    public static class Edge extends Link<Edge> {
+    public static class Edge {
 
-        Face[] adjface = {
-            new Face(),
-            new Face()
-        };
+        Face[] adjface = new Face[2];
 
-        Vertex[] endpts = {
-            new Vertex(),
-            new Vertex()
-        };
+        Vertex[] endpts = new Vertex[2];
 
         /**
          * pointer to incident cone face.
@@ -134,12 +124,13 @@ public class ConvexHull {
 
         public void copy(Edge duplicate) {
             for (int index = 0; index < adjface.length; index++) {
-                adjface[index].copy(duplicate.adjface[index]);
+                adjface[index] = duplicate.adjface[index];
             }
             for (int index = 0; index < endpts.length; index++) {
-                endpts[index].copy(duplicate.endpts[index]);
+                endpts[index] = duplicate.endpts[index];
             }
-            newface.copy(duplicate.newface);
+            // TODO do no know if i should copy the object or de ref?
+            newface = duplicate.newface;
 
         }
 
@@ -155,40 +146,22 @@ public class ConvexHull {
 
     }
 
-    public static class Face extends Link<Face> {
+    public static class Face {
 
-        protected Edge[] edge = {
-            new Edge(),
-            new Edge(),
-            new Edge()
-        };
+        protected Edge[] edge = new Edge[3];
 
-        protected Vertex[] vertex = {
-            new Vertex(),
-            new Vertex(),
-            new Vertex()
-        };
+        protected Vertex[] vertex = new Vertex[3];
 
         /**
          * True iff face visible from new point.
          */
         protected boolean visible;
 
-        protected GslMatrix pMatrix = new GslMatrix(3, 3);
+        protected GslMatrix matrix = new GslMatrix(3, 3);
 
-        public void copy(Face face) {
-            for (int index = 0; index < edge.length; index++) {
-                edge[index].copy(face.edge[index]);
-            }
-            for (int index = 0; index < vertex.length; index++) {
-                vertex[index].copy(face.vertex[index]);
-            }
-            visible = face.visible;
-            pMatrix.copy(face.pMatrix);
-        }
     }
 
-    public static class Vertex extends Link<Vertex> {
+    public static class Vertex {
 
         protected int[] v = new int[3];
 
@@ -209,21 +182,11 @@ public class ConvexHull {
          */
         protected boolean mark;
 
-        public void copy(Vertex vertex) {
-            for (int index = 0; index < v.length; index++) {
-                v[index] = vertex.v[index];
-            }
-            vnum = vertex.vnum;
-            duplicate.copy(vertex.duplicate);
-            onhull = vertex.onhull;
-            mark = vertex.mark;
-        }
-
     };
 
     public List<Face> faces = new CircularArray<ConvexHull.Face>();
 
-    int Volumei(Face f, Vertex p) {
+    public int Volumei(Face f, Vertex p) {
         int vol;
         int ax, ay, az, bx, by, bz, cx, cy, cz;
 
@@ -249,7 +212,7 @@ public class ConvexHull {
      * if the ccw normal to f points outside the tetrahedron. The final
      * fewer-multiplications form is due to Bob Williamson.
      */
-    int volumeSign(Face f, Vertex p) {
+    public int volumeSign(Face f, Vertex p) {
         double vol;
         int voli;
         double ax, ay, az, bx, by, bz, cx, cy, cz;
@@ -323,10 +286,10 @@ public class ConvexHull {
         e = edges.get(index++);
         do {
             temp = edges.get(index++);
-            if (e.adjface[0].visible && e.adjface[1].visible)
+            if (e.adjface[0].visible && (e.adjface[1] != null && e.adjface[1].visible))
                 /* e interior: mark for deletion. */
                 e.delete_it = REMOVED;
-            else if (e.adjface[0].visible || e.adjface[1].visible)
+            else if (e.adjface[0].visible || (e.adjface[1] != null && e.adjface[1].visible))
                 /* e border: make a new face. */
                 e.newface = MakeConeFace(e, p);
             e = temp;
@@ -335,29 +298,26 @@ public class ConvexHull {
     }
 
     /**
-     * \brief MakeConeFace makes a new face and two new edges between the edge
-     * and the point that are passed to it. It returns a pointer to the new
-     * face.
+     * MakeConeFace makes a new face and two new edges between the edge and the
+     * point that are passed to it. It returns a pointer to the new face.
      */
-    Face MakeConeFace(Edge e, Vertex p) {
+    public Face MakeConeFace(Edge e, Vertex p) {
 
-        Edge[] new_edge = {
-            new Edge(),
-            new Edge()
-        };
+        Edge[] new_edge = new Edge[2];
         Face new_face;
         int i, j;
 
         /* Make two new edges (if don't already exist). */
-        for (i = 0; i < 2; ++i)
+        for (i = 0; i < 2; ++i) {
             /* If the edge exists, copy it into new_edge. */
             new_edge[i] = copy(e.endpts[i].duplicate);
-        if (new_edge[i] == null) {
-            /* Otherwise (duplicate is NULL), MakeNullEdge. */
-            new_edge[i] = MakeNullEdge();
-            new_edge[i].endpts[0] = e.endpts[i];
-            new_edge[i].endpts[1] = p;
-            e.endpts[i].duplicate = new_edge[i];
+            if (new_edge[i] == null) {
+                /* Otherwise (duplicate is NULL), MakeNullEdge. */
+                new_edge[i] = MakeNullEdge();
+                new_edge[i].endpts[0] = e.endpts[i];
+                new_edge[i].endpts[1] = p;
+                e.endpts[i].duplicate = new_edge[i];
+            }
         }
 
         /* Make the new face. */
@@ -434,11 +394,10 @@ public class ConvexHull {
     }
 
     /**
-     * \brief MakeNullEdge creates a new cell and initializes all pointers to
-     * NULL and sets all flags to off. It returns a pointer to the empty cell.
+     * MakeNullEdge creates a new cell and initializes all pointers to NULL and
+     * sets all flags to off. It returns a pointer to the empty cell.
      */
-
-    Edge MakeNullEdge() {
+    public Edge MakeNullEdge() {
         Edge e;
 
         e = new Edge();
@@ -450,11 +409,11 @@ public class ConvexHull {
     }
 
     /**
-     * \brief MakeNullFace creates a new face structure and initializes all of
-     * its flags to NULL and sets all the flags to off. It returns a pointer to
-     * the empty cell.
+     * MakeNullFace creates a new face structure and initializes all of its
+     * flags to NULL and sets all the flags to off. It returns a pointer to the
+     * empty cell.
      */
-    Face MakeNullFace() {
+    public Face MakeNullFace() {
         Face f;
         int i;
 
@@ -495,10 +454,10 @@ public class ConvexHull {
     }
 
     /**
-     * \brief Checks the consistency of the hull and prints the results to the
-     * standard error output.
+     * Checks the consistency of the hull and prints the results to the standard
+     * error output.
      */
-    void Checks() {
+    public void Checks() {
 
         Consistency();
         Convexity();
@@ -518,11 +477,10 @@ public class ConvexHull {
     }
 
     /**
-     * \brief Checks that, for each face, for each i={0,1,2}, the [i]th vertex
-     * of that face is either the [0]th or [1]st endpoint of the [ith] edge of
-     * the face.
+     * Checks that, for each face, for each i={0,1,2}, the [i]th vertex of that
+     * face is either the [0]th or [1]st endpoint of the [ith] edge of the face.
      */
-    void CheckEndpts() {
+    public void CheckEndpts() {
         boolean error = false;
         for (Face face : faces) {
             for (int i = 0; i < 3; ++i) {
@@ -542,11 +500,11 @@ public class ConvexHull {
     }
 
     /**
-     * \brief CheckEuler checks Euler's relation, as well as its implications
-     * when all faces are known to be triangles. Only prints positive
-     * information when debug is true, but always prints negative information.
+     * CheckEuler checks Euler's relation, as well as its implications when all
+     * faces are known to be triangles. Only prints positive information when
+     * debug is true, but always prints negative information.
      */
-    void CheckEuler(int V, int E, int F) {
+    public void CheckEuler(int V, int E, int F) {
         if (check)
             LOG.info("Checks: V, E, F = " + V + ' ' + E + ' ' + F + ":\t");
 
@@ -567,22 +525,22 @@ public class ConvexHull {
     }
 
     /**
-     * \brief Consistency runs through the edge list and checks that all
-     * adjacent faces have their endpoints in opposite order. This verifies that
-     * the vertices are in counterclockwise order.
+     * Consistency runs through the edge list and checks that all adjacent faces
+     * have their endpoints in opposite order. This verifies that the vertices
+     * are in counterclockwise order.
      */
-    boolean Collinear(Vertex a, Vertex b, Vertex c) {
+    public boolean Collinear(Vertex a, Vertex b, Vertex c) {
         return (c.v[Z] - a.v[Z]) * (b.v[Y] - a.v[Y]) - (b.v[Z] - a.v[Z]) * (c.v[Y] - a.v[Y]) == 0
                 && (b.v[Z] - a.v[Z]) * (c.v[X] - a.v[X]) - (b.v[X] - a.v[X]) * (c.v[Z] - a.v[Z]) == 0
                 && (b.v[X] - a.v[X]) * (c.v[Y] - a.v[Y]) - (b.v[Y] - a.v[Y]) * (c.v[X] - a.v[X]) == 0;
     }
 
     /**
-     * \brief Consistency runs through the edge list and checks that all
-     * adjacent faces have their endpoints in opposite order. This verifies that
-     * the vertices are in counterclockwise order.
+     * Consistency runs through the edge list and checks that all adjacent faces
+     * have their endpoints in opposite order. This verifies that the vertices
+     * are in counterclockwise order.
      */
-    void Consistency() {
+    public void Consistency() {
         int i, j;
         boolean error = false;
         for (Edge e : edges) {
@@ -608,11 +566,11 @@ public class ConvexHull {
     }
 
     /**
-     * \brief Convexity checks that the volume between every face and every
-     * point is negative. This shows that each point is inside every face and
-     * therefore the hull is convex.
+     * Convexity checks that the volume between every face and every point is
+     * negative. This shows that each point is inside every face and therefore
+     * the hull is convex.
      */
-    void Convexity() {
+    public void Convexity() {
 
         int vol;
         boolean error = false;
@@ -722,7 +680,7 @@ public class ConvexHull {
         /* Find a fourth, noncoplanar point to form tetrahedron. */
         v3 = vertices.get(index++);
         vol = VolumeSign(f0, v3);
-        while (vol != 0) {
+        while (vol == 0) {
             v3 = vertices.get(index++);
             if (v3 == v0) {
                 throw new IllegalArgumentException("DoubleTriangle:  All points are coplanar!");
@@ -736,10 +694,10 @@ public class ConvexHull {
     }
 
     /**
-     * \brief MakeFace creates a new face structure from three vertices (in ccw
-     * order). It returns a pointer to the face.
+     * MakeFace creates a new face structure from three vertices (in ccw order).
+     * It returns a pointer to the face.
      */
-    Face MakeFace(Vertex v0, Vertex v1, Vertex v2, Face fold) {
+    public Face MakeFace(Vertex v0, Vertex v1, Vertex v2, Face fold) {
 
         Face f;
         Edge e0, e1, e2;
@@ -815,9 +773,9 @@ public class ConvexHull {
      */
     public void makeNewVertex(double x, double y, double z, int VertexId) {
         Vertex v = MakeNullVertex();
-        v.v[X] = (int) (x * ScaleFactor);
-        v.v[Y] = (int) (y * ScaleFactor);
-        v.v[Z] = (int) (z * ScaleFactor);
+        v.v[X] = (int) (x * scaleFactor);
+        v.v[Y] = (int) (y * scaleFactor);
+        v.v[Z] = (int) (z * scaleFactor);
         v.vnum = VertexId;
         if ((Math.abs(x) > SAFE) || (Math.abs(y) > SAFE) || (Math.abs(z) > SAFE)) {
             LOG.debug("Coordinate of vertex below might be too large: run with -d flag");
@@ -838,20 +796,20 @@ public class ConvexHull {
     }
 
     /**
-     * \brief Set the floating point to integer scaling factor
+     * Set the floating point to integer scaling factor
      */
-    int GetScaleFactor() {
-        return ScaleFactor;
+    public int setScaleFactor() {
+        return scaleFactor;
     }
 
     /**
-     * \brief Set the floating point to integer scaling factor. If you want to
-     * tweak this a good value to start from may well be a little bit more than
-     * the resolution of the mounts encoders. Whatever is used must not exceed
-     * the default value which is set to the constant SAFE.
+     * Set the floating point to integer scaling factor. If you want to tweak
+     * this a good value to start from may well be a little bit more than the
+     * resolution of the mounts encoders. Whatever is used must not exceed the
+     * default value which is set to the constant SAFE.
      */
-    void SetScaleFactor(int NewScaleFactor) {
-        ScaleFactor = NewScaleFactor;
+    public void SetScaleFactor(int newScaleFactor) {
+        scaleFactor = newScaleFactor;
     }
 
     /**
