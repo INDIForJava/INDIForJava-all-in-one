@@ -110,19 +110,19 @@ public class INDIJavaDevice extends INDIDevice {
             this.driver = (INDIDriver) c.newInstance(toDriver.getInputStream(), fromDriver.getOutputStream());
         } catch (InstantiationException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - InstantiationException");
+            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
         } catch (IllegalAccessException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - IllegalAccessException");
+            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
         } catch (NoSuchMethodException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - NoSuchMethodException");
+            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
         } catch (InvocationTargetException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - InvocationTargetException");
+            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
         } catch (ClassCastException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?) - ClassCastException");
+            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
         }
 
         driver.startListening();

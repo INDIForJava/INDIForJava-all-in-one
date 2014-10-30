@@ -3,6 +3,29 @@
 Migrating drivers from the pre 1.50 version
 
  In the driver development the changes and redesigns went deeper, it is now much easyer to develop a driver, but that ment also a change in the api.
-There is a own page describing the migration of drivers here {{{i4j-driver/migration.html}Migrating drivers}}.
+
+*Property creation API
+
+ There are now two new aproaches to include propeties in your driver. The simplest uses injection and the other a builder design pattern.
+Both ways can be intermixed. The constructors available in the previous versions are not available anymore so, you will have to
+rewrite them to one of the new api's. Both are explained in {{{./develop.html}developing a driver}} and it should be no problem 
+to convert the property creation to the new api.
+
+*Eventing
+
+ Because of the new event handling methods, the formally abstract methods are not nessesary anymore:
  
+ * INDIDriver#processNewNumberValue(..) 
+ 
+ * INDIDriver#processNewSwitchValue(..) 
+ 
+ * INDIDriver#processNewBLOBValue(..) 
+ 
+ * INDIDriver#processNewTextValue(..) 
+ 
+ []
+ 
+ The empty default implementation in the super class enables you to delete the local implementation when it is empty. To
+see how you can use the new eventing api see the explination in {{{./develop.html}developing a driver}}.
+
 %{include|source-content=</div>}

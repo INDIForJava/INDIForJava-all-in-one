@@ -1,0 +1,7 @@
+%{include|source-content=<div id\="apt-box">}
+
+Develop an indi for java driver
+
+ To develop an indi for java driver ....
+
+%{include|source-content=</div>}

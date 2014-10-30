@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.indilib.i4j</groupId>
+		<artifactId>i4j</artifactId>
+		<version>1.39-SNAPSHOT</version>
+	</parent>
+	<artifactId>quickhull3d</artifactId>
+	<name>A Robust 3D Convex Hull Algorithm in Java</name>
+	<description>This is a 3D implementation of QuickHull for Java, based on the original paper by Barber, Dobkin, and Huhdanpaa and the C implementation known as qhull. The algorithm has O(n log(n)) complexity, works with double precision numbers, is fairly robust with respect to degenerate situations, and allows the merging of co-planar faces. </description>
+	<packaging>jar</packaging>
+	<inceptionYear>2004</inceptionYear>
+	<organization>
+		<name>John E. Lloyd</name>
+	</organization>
+	<url>https://www.cs.ubc.ca/~lloyd/java/quickhull3d.html</url>
+	<developers>
+		<developer>
+			<id>lloyd</id>
+			<name>John E. Lloyd</name>
+			<url>https://www.cs.ubc.ca/~lloyd/index.html</url>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<properties>
+				<picUrl>https://www.cs.ubc.ca/~lloyd/images/lloyd2.jpg</picUrl>
+			</properties>
+		</developer>
+		<developer>
+			<id>ritchie_gmx_at</id>
+			<name>Richard van Nieuwenhoven</name>
+			<email>ritchie [at] gmx [dot] at</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<properties>
+				<picUrl>images/ritchie.png</picUrl>
+			</properties>
+		</developer>
+	</developers>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<properties>
+		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
+		<pmd.skip>true</pmd.skip>
+		<checkstyle.skip>true</checkstyle.skip>
+	</properties>
+</project>

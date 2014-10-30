@@ -1,10 +1,10 @@
-package org.indilib.i4j;
+package quickhull3d;
 
 /*
  * #%L
- * INDI for Java Base Library
+ * A Robust 3D Convex Hull Algorithm in Java
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2004 - 2014 John E. Lloyd
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,32 +23,42 @@ package org.indilib.i4j;
  */
 
 /**
- * A class representing a generic INDI Exception.
- * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
+ * Maintains a single-linked list of faces for use by QuickHull3D
  */
-public class INDIException extends Exception {
+class FaceList {
+
+    private Face head;
+
+    private Face tail;
 
     /**
-     * Creates a INDI Exception.
-     * 
-     * @param msg
-     *            The message for the exception.
+     * Clears this list.
      */
-    public INDIException(final String msg) {
-        super(msg);
+    public void clear() {
+        head = tail = null;
     }
 
     /**
-     * Creates a INDI Exception.
-     * 
-     * @param msg
-     *            The message for the exception.
-     * @param cause
-     *            The cause for the exception.
+     * Adds a vertex to the end of this list.
      */
-    public INDIException(final String msg, Throwable cause) {
-        super(msg, cause);
+    public void add(Face vtx) {
+        if (head == null) {
+            head = vtx;
+        } else {
+            tail.next = vtx;
+        }
+        vtx.next = null;
+        tail = vtx;
+    }
+
+    public Face first() {
+        return head;
+    }
+
+    /**
+     * Returns true if this list is empty.
+     */
+    public boolean isEmpty() {
+        return head == null;
     }
 }

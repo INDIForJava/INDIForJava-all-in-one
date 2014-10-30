@@ -1,16 +1,25 @@
 package org.indilib.i4j.driver.telescope.alignment;
 
 /*
- * #%L INDI for Java Abstract Telescope Driver %% Copyright (C) 2013 - 2014
- * indiforjava %% This program is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the License,
- * or (at your option) any later version. This program is distributed in the
- * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
- * the GNU General Lesser Public License for more details. You should have
- * received a copy of the GNU General Lesser Public License along with this
- * program. If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
+ * #%L
+ * INDI for Java Abstract Telescope Driver
+ * %%
+ * Copyright (C) 2012 - 2014 indiforjava
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
  */
 
 import java.util.ArrayList;
@@ -29,9 +38,12 @@ import org.gnu.savannah.gsl.GslMatrix;
 import org.gnu.savannah.gsl.GslPermutation;
 import org.gnu.savannah.gsl.GslVector;
 import org.gnu.savannah.gsl.util.IntegerRef;
-import org.indilib.i4j.driver.telescope.alignment.ConvexHull.Face;
+import org.indilib.i4j.driver.telescope.alignment.WrappedQuickHull3D.Face;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import quickhull3d.Point3d;
+import quickhull3d.QuickHull3D;
 
 /**
  * The default math plugin for the sync calculation.
@@ -124,12 +136,12 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Actual Convex hull for 4+ sync points case.
      */
-    private ConvexHull actualConvexHull;
+    private WrappedQuickHull3D actualConvexHull;
 
     /**
      * Apperent Convex hull for 4+ sync points case.
      */
-    private ConvexHull apparentConvexHull;
+    private WrappedQuickHull3D apparentConvexHull;
 
     /**
      * Actual direction cosines for the 4+ case.
@@ -342,15 +354,14 @@ public class BuiltInMathPlugin implements IMathPlugin {
                     return false;
 
                 // Compute Hulls etc.
-                actualConvexHull.reset();
-                apparentConvexHull.reset();
+                actualConvexHull.clear();
+                apparentConvexHull.clear();
                 actualDirectionCosines.clear();
 
                 // Add a dummy point at the nadir
-                actualConvexHull.makeNewVertex(0.0, 0.0, -1.0, 0);
-                apparentConvexHull.makeNewVertex(0.0, 0.0, -1.0, 0);
+                actualConvexHull.add(0.0, 0.0, -1.0);
+                apparentConvexHull.add(0.0, 0.0, -1.0);
 
-                int vertexNumber = 1;
                 // Add the rest of the vertices
                 for (AlignmentDatabaseEntry alignmentDatabaseEntry : syncPoints) {
                     LnEquPosn raDec = new LnEquPosn();
@@ -364,38 +375,46 @@ public class BuiltInMathPlugin implements IMathPlugin {
                     // vectors (a.k.a direction cosines)
                     TelescopeDirectionVector actualDirectionCosine = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint);
                     actualDirectionCosines.add(actualDirectionCosine);
-                    actualConvexHull.makeNewVertex(actualDirectionCosine.x, actualDirectionCosine.y, actualDirectionCosine.z, vertexNumber);
-                    apparentConvexHull.makeNewVertex(alignmentDatabaseEntry.telescopeDirection.x, alignmentDatabaseEntry.telescopeDirection.y,
-                            alignmentDatabaseEntry.telescopeDirection.z, vertexNumber);
-                    vertexNumber++;
+                    actualConvexHull.add(actualDirectionCosine.x, actualDirectionCosine.y, actualDirectionCosine.z);
+                    apparentConvexHull.add(alignmentDatabaseEntry.telescopeDirection.x, alignmentDatabaseEntry.telescopeDirection.y,
+                            alignmentDatabaseEntry.telescopeDirection.z);
                 }
                 // I should only need to do this once but it is easier to do it
                 // twice
-                actualConvexHull.doubleTriangle();
-                actualConvexHull.constructHull();
-                actualConvexHull.edgeOrderOnFaces();
-                apparentConvexHull.doubleTriangle();
-                apparentConvexHull.constructHull();
-                apparentConvexHull.edgeOrderOnFaces();
+                actualConvexHull.build();
+                apparentConvexHull.build();
 
                 // Make the matrices
-                for (Face currentFace : actualConvexHull.faces) {
-                    if ((0 == currentFace.vertex[0].vnum) || (0 == currentFace.vertex[1].vnum) || (0 == currentFace.vertex[2].vnum)) {
-                    } else {
-                        calculateTransformMatrices(actualDirectionCosines.get(currentFace.vertex[0].vnum - 1), actualDirectionCosines.get(currentFace.vertex[1].vnum - 1),
-                                actualDirectionCosines.get(currentFace.vertex[2].vnum - 1), syncPoints.get(currentFace.vertex[0].vnum - 1).telescopeDirection,
-                                syncPoints.get(currentFace.vertex[1].vnum - 1).telescopeDirection, syncPoints.get(currentFace.vertex[2].vnum - 1).telescopeDirection,
+                for (Face currentFace : actualConvexHull.getFaces()) {
+                    int vnum0 = currentFace.vnum(0);
+                    int vnum1 = currentFace.vnum(1);
+                    int vnum2 = currentFace.vnum(2);
+
+                    if (vnum0 != 0 && vnum1 != 0 && vnum2 != 0) {
+                        calculateTransformMatrices(//
+                                actualDirectionCosines.get(vnum0 - 1),//
+                                actualDirectionCosines.get(vnum1 - 1),//
+                                actualDirectionCosines.get(vnum2 - 1), //
+                                syncPoints.get(vnum0 - 1).telescopeDirection,//
+                                syncPoints.get(vnum1 - 1).telescopeDirection,//
+                                syncPoints.get(vnum2 - 1).telescopeDirection,//
                                 currentFace.matrix, null);
                     }
                 }
                 // One of these days I will optimise this
-                for (Face currentFace : actualConvexHull.faces) {
-                    if ((0 == currentFace.vertex[0].vnum) || (0 == currentFace.vertex[1].vnum) || (0 == currentFace.vertex[2].vnum)) {
-                    } else {
-                        calculateTransformMatrices(syncPoints.get(currentFace.vertex[0].vnum - 1).telescopeDirection,
-                                syncPoints.get(currentFace.vertex[1].vnum - 1).telescopeDirection, syncPoints.get(currentFace.vertex[2].vnum - 1).telescopeDirection,
-                                actualDirectionCosines.get(currentFace.vertex[0].vnum - 1), actualDirectionCosines.get(currentFace.vertex[1].vnum - 1),
-                                actualDirectionCosines.get(currentFace.vertex[2].vnum - 1), currentFace.matrix, null);
+                for (Face currentFace : apparentConvexHull.getFaces()) {
+                    int vnum0 = currentFace.vnum(0);
+                    int vnum1 = currentFace.vnum(1);
+                    int vnum2 = currentFace.vnum(2);
+                    if (vnum0 != 0 && vnum1 != 0 && vnum2 != 0) {
+                        calculateTransformMatrices(//
+                                syncPoints.get(vnum0 - 1).telescopeDirection,//
+                                syncPoints.get(vnum1 - 1).telescopeDirection,//
+                                syncPoints.get(vnum2 - 1).telescopeDirection,//
+                                actualDirectionCosines.get(vnum0 - 1), //
+                                actualDirectionCosines.get(vnum1 - 1),//
+                                actualDirectionCosines.get(vnum2 - 1), //
+                                currentFace.matrix, null);
                     }
                 }
                 return true;
@@ -489,23 +508,30 @@ public class BuiltInMathPlugin implements IMathPlugin {
                 // and use the conversuion matrix from the one it intersects
                 int actualFaces = 0;
                 Face currentFace = null;
-                for (Face currentFaceLoop : actualConvexHull.faces) {
+                for (Face currentFaceLoop : actualConvexHull.getFaces()) {
                     currentFace = currentFaceLoop;
                     if (LOG.isDebugEnabled()) {
                         actualFaces++;
                     }
                     // Ignore faces containg vertex 0 (nadir).
-                    if ((0 == currentFace.vertex[0].vnum) || (0 == currentFace.vertex[1].vnum) || (0 == currentFace.vertex[2].vnum)) {
+                    int vnum0 = currentFace.vnum(0);
+                    int vnum1 = currentFace.vnum(1);
+                    int vnum2 = currentFace.vnum(2);
+                    if ((0 == vnum0) || (0 == vnum1) || (0 == vnum2)) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(String.format("Celestial to telescope - Ignoring actual face %d", actualFaces));
                         }
                     } else {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(String.format("Celestial to telescope - Processing actual face %d v1 %d v2 %d v3 %d", actualFaces, currentFace.vertex[0].vnum,
-                                    currentFace.vertex[1].vnum, currentFace.vertex[2].vnum));
+                            LOG.debug(String.format("Celestial to telescope - Processing actual face %d v1 %d v2 %d v3 %d", actualFaces,//
+                                    vnum0,//
+                                    vnum1, //
+                                    vnum2));
                         }
-                        if (rayTriangleIntersection(scaledActualVector, actualDirectionCosines.get(currentFace.vertex[0].vnum - 1),
-                                actualDirectionCosines.get(currentFace.vertex[1].vnum - 1), actualDirectionCosines.get(currentFace.vertex[2].vnum - 1))) {
+                        if (rayTriangleIntersection(scaledActualVector,//
+                                actualDirectionCosines.get(vnum0 - 1),//
+                                actualDirectionCosines.get(vnum1 - 1),//
+                                actualDirectionCosines.get(vnum2 - 1))) {
                             break;
                         }
                     }
@@ -677,7 +703,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
                 // facets
                 // and use the conversuion matrix from the one it intersects
                 Face currentFace = null;
-                for (Face currentFaceLoop : actualConvexHull.faces) {
+                for (Face currentFaceLoop : actualConvexHull.getFaces()) {
                     currentFace = currentFaceLoop;
 
                     int ApparentFaces = 0;
@@ -685,16 +711,21 @@ public class BuiltInMathPlugin implements IMathPlugin {
                     ApparentFaces++;
 
                     // Ignore faces containg vertex 0 (nadir).
-                    if ((0 == currentFace.vertex[0].vnum) || (0 == currentFace.vertex[1].vnum) || (0 == currentFace.vertex[2].vnum)) {
+                    if ((0 == currentFace.vnum(0)) || (0 == currentFace.vnum(1)) || (0 == currentFace.vnum(2))) {
 
                         LOG.debug(String.format("Celestial to telescope - Ignoring apparent face %d", ApparentFaces));
 
                     } else {
-                        LOG.debug(String.format("TelescopeToCelestial - Processing apparent face %d v1 %d v2 %d v3 %d", ApparentFaces, currentFace.vertex[0].vnum,
-                                currentFace.vertex[1].vnum, currentFace.vertex[2].vnum));
+                        LOG.debug(String.format("TelescopeToCelestial - Processing apparent face %d v1 %d v2 %d v3 %d",//
+                                ApparentFaces, //
+                                currentFace.vnum(0),//
+                                currentFace.vnum(1), //
+                                currentFace.vnum(2)));
 
-                        if (rayTriangleIntersection(scaledApparentVector, SyncPoints.get(currentFace.vertex[0].vnum - 1).telescopeDirection,
-                                SyncPoints.get(currentFace.vertex[1].vnum - 1).telescopeDirection, SyncPoints.get(currentFace.vertex[2].vnum - 1).telescopeDirection))
+                        if (rayTriangleIntersection(scaledApparentVector,//
+                                SyncPoints.get(currentFace.vnum(0) - 1).telescopeDirection,//
+                                SyncPoints.get(currentFace.vnum(1) - 1).telescopeDirection,//
+                                SyncPoints.get(currentFace.vnum(2) - 1).telescopeDirection))
                             break;
                     }
 

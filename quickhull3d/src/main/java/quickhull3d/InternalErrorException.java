@@ -1,10 +1,10 @@
-package org.indilib.i4j;
+package quickhull3d;
 
 /*
  * #%L
- * INDI for Java Base Library
+ * A Robust 3D Convex Hull Algorithm in Java
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2004 - 2014 John E. Lloyd
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,32 +23,11 @@ package org.indilib.i4j;
  */
 
 /**
- * A class representing a generic INDI Exception.
- * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
+ * Exception thrown when QuickHull3D encounters an internal error.
  */
-public class INDIException extends Exception {
+public class InternalErrorException extends RuntimeException {
 
-    /**
-     * Creates a INDI Exception.
-     * 
-     * @param msg
-     *            The message for the exception.
-     */
-    public INDIException(final String msg) {
+    public InternalErrorException(String msg) {
         super(msg);
-    }
-
-    /**
-     * Creates a INDI Exception.
-     * 
-     * @param msg
-     *            The message for the exception.
-     * @param cause
-     *            The cause for the exception.
-     */
-    public INDIException(final String msg, Throwable cause) {
-        super(msg, cause);
     }
 }
