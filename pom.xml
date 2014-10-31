@@ -376,7 +376,6 @@
 		<module>i4j-driver-guider</module>
 		<module>i4j-all-in-one</module>
 		<module>gsl</module>
-		<module>quickhull3d</module>
 	</modules>
 	<dependencies>
 	</dependencies>

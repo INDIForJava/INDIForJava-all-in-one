@@ -27,8 +27,8 @@ import java.util.List;
 
 import org.gnu.savannah.gsl.GslMatrix;
 
-import quickhull3d.Point3d;
-import quickhull3d.QuickHull3D;
+import com.github.quickhull3d.Point3d;
+import com.github.quickhull3d.QuickHull3D;
 
 /**
  * Wrapper around the QuickHull3D class with some helper functions to make the

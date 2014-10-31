@@ -31,11 +31,11 @@
 			<artifactId>novaforjava</artifactId>
 			<version>0.15.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>quickhull3d</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+   <dependency>
+                        <groupId>com.github.quickhull3d</groupId>
+                        <artifactId>quickhull3d</artifactId>
+                        <version>1.0.0</version>
+                </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

@@ -42,9 +42,6 @@ import org.indilib.i4j.driver.telescope.alignment.WrappedQuickHull3D.Face;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import quickhull3d.Point3d;
-import quickhull3d.QuickHull3D;
-
 /**
  * The default math plugin for the sync calculation.
  * 
