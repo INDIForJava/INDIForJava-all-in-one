@@ -158,6 +158,19 @@ public class BuiltInMathPlugin implements IMathPlugin {
             return 0;
         }
 
+        @Override
+        public int hashCode() {
+            return Double.valueOf(distance).hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof AlignmentDatabaseEntryDistance) {
+                return compareTo((AlignmentDatabaseEntryDistance) obj) == 0;
+            }
+            return false;
+        }
+
     }
 
     /**
@@ -364,45 +377,20 @@ public class BuiltInMathPlugin implements IMathPlugin {
      */
     protected boolean initialiseThreePoints() {
         List<AlignmentDatabaseEntry> syncPoints = inMemoryDatabase.getAlignmentDatabase();
+        LnLnlatPosn position = new LnLnlatPosn();
+        if (!inMemoryDatabase.getDatabaseReferencePosition(position)) {
+            return false;
+        }
         // First compute local horizontal coordinates for the three sync
         // points
         AlignmentDatabaseEntry entry1 = syncPoints.get(0);
         AlignmentDatabaseEntry entry2 = syncPoints.get(1);
         AlignmentDatabaseEntry entry3 = syncPoints.get(2);
-        LnHrzPosn actualSyncPoint1 = new LnHrzPosn();
-        LnHrzPosn actualSyncPoint2 = new LnHrzPosn();
-        LnHrzPosn actualSyncPoint3 = new LnHrzPosn();
-        LnEquPosn raDec1 = new LnEquPosn();
-        LnEquPosn raDec2 = new LnEquPosn();
-        LnEquPosn raDec3 = new LnEquPosn();
-        raDec1.dec = entry1.declination;
-        // libnova works in decimal degrees so conversion is needed here
-        raDec1.ra = entry1.rightAscension * DEGREES_TO_HOUR;
-        raDec2.dec = entry2.declination;
-        // libnova works in decimal degrees so conversion is needed here
-        raDec2.ra = entry2.rightAscension * DEGREES_TO_HOUR;
-        raDec3.dec = entry3.declination;
-        // libnova works in decimal degrees so conversion is needed here
-        raDec3.ra = entry3.rightAscension * DEGREES_TO_HOUR;
-        LnLnlatPosn position = new LnLnlatPosn();
-        if (!inMemoryDatabase.getDatabaseReferencePosition(position)) {
-            return false;
-        }
-        Transform.ln_get_hrz_from_equ(raDec1, position, entry1.observationJulianDate, actualSyncPoint1);
-        Transform.ln_get_hrz_from_equ(raDec2, position, entry2.observationJulianDate, actualSyncPoint2);
-        Transform.ln_get_hrz_from_equ(raDec3, position, entry3.observationJulianDate, actualSyncPoint3);
-
-        // Now express these coordinates as normalised direction vectors
-        // (a.k.a direction cosines)
-        TelescopeDirectionVector actualDirectionCosine1 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint1);
-        TelescopeDirectionVector actualDirectionCosine2 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint2);
-        TelescopeDirectionVector actualDirectionCosine3 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint3);
-
         calculateTransformMatrices(//
                 createActualToApparentMatrix(//
-                        actualDirectionCosine1, //
-                        actualDirectionCosine2, //
-                        actualDirectionCosine3), //
+                        calculateHorizontalCoordsNormalisedDirectionVector(position, entry1), //
+                        calculateHorizontalCoordsNormalisedDirectionVector(position, entry2), //
+                        calculateHorizontalCoordsNormalisedDirectionVector(position, entry3)), //
                 createActualToApparentMatrix(//
                         entry1.telescopeDirection, //
                         entry2.telescopeDirection, //
@@ -418,36 +406,22 @@ public class BuiltInMathPlugin implements IMathPlugin {
      */
     protected boolean initialiseTwoPoints() {
         List<AlignmentDatabaseEntry> syncPoints = inMemoryDatabase.getAlignmentDatabase();
-        // First compute local horizontal coordinates for the two sync
-        // points
-        AlignmentDatabaseEntry entry1 = syncPoints.get(0);
-        AlignmentDatabaseEntry entry2 = syncPoints.get(1);
-        LnHrzPosn actualSyncPoint1 = new LnHrzPosn();
-        LnHrzPosn actualSyncPoint2 = new LnHrzPosn();
-        LnEquPosn raDec1 = new LnEquPosn();
-        LnEquPosn raDec2 = new LnEquPosn();
-        raDec1.dec = entry1.declination;
-        // libnova works in decimal degrees so conversion is needed here
-        raDec1.ra = entry1.rightAscension * DEGREES_TO_HOUR;
-        raDec2.dec = entry2.declination;
-        // libnova works in decimal degrees so conversion is needed here
-        raDec2.ra = entry2.rightAscension * DEGREES_TO_HOUR;
         LnLnlatPosn position = new LnLnlatPosn();
         if (!inMemoryDatabase.getDatabaseReferencePosition(position)) {
             return false;
         }
-        Transform.ln_get_hrz_from_equ(raDec1, position, entry1.observationJulianDate, actualSyncPoint1);
-        Transform.ln_get_hrz_from_equ(raDec2, position, entry2.observationJulianDate, actualSyncPoint2);
 
-        // Now express these coordinates as normalised direction vectors
-        // (a.k.a direction cosines)
-        TelescopeDirectionVector actualDirectionCosine1 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint1);
-        TelescopeDirectionVector actualDirectionCosine2 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint2);
-        TelescopeDirectionVector dummyActualDirectionCosine3;
-        TelescopeDirectionVector dummyApparentDirectionCosine3;
-        dummyActualDirectionCosine3 = actualDirectionCosine1.multiply(actualDirectionCosine2);
+        // First compute local horizontal coordinates for the two sync
+        // points
+        AlignmentDatabaseEntry entry1 = syncPoints.get(0);
+        TelescopeDirectionVector actualDirectionCosine1 = calculateHorizontalCoordsNormalisedDirectionVector(position, entry1);
+
+        AlignmentDatabaseEntry entry2 = syncPoints.get(1);
+        TelescopeDirectionVector actualDirectionCosine2 = calculateHorizontalCoordsNormalisedDirectionVector(position, entry2);
+
+        TelescopeDirectionVector dummyActualDirectionCosine3 = actualDirectionCosine1.multiply(actualDirectionCosine2);
         dummyActualDirectionCosine3.normalise();
-        dummyApparentDirectionCosine3 = entry1.telescopeDirection.multiply(entry2.telescopeDirection);
+        TelescopeDirectionVector dummyApparentDirectionCosine3 = entry1.telescopeDirection.multiply(entry2.telescopeDirection);
         dummyApparentDirectionCosine3.normalise();
 
         // The third direction vectors is generated by taking the cross
@@ -476,7 +450,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         LnEquPosn raDec = new LnEquPosn();
         LnHrzPosn actualSyncPoint1 = new LnHrzPosn();
         LnLnlatPosn position = new LnLnlatPosn();
-        if (inMemoryDatabase.getDatabaseReferencePosition(position)) {
+        if (!inMemoryDatabase.getDatabaseReferencePosition(position)) {
             return false;
         }
         raDec.dec = entry1.declination;
@@ -488,8 +462,6 @@ public class BuiltInMathPlugin implements IMathPlugin {
         TelescopeDirectionVector actualDirectionCosine1 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint1);
         TelescopeDirectionVector dummyActualDirectionCosine2 = new TelescopeDirectionVector();
         TelescopeDirectionVector dummyApparentDirectionCosine2 = new TelescopeDirectionVector();
-        TelescopeDirectionVector dummyActualDirectionCosine3 = new TelescopeDirectionVector();
-        TelescopeDirectionVector dummyApparentDirectionCosine3 = new TelescopeDirectionVector();
 
         LnEquPosn dummyRaDec = new LnEquPosn();
         LnHrzPosn dummyAltAz = new LnHrzPosn();
@@ -528,9 +500,9 @@ public class BuiltInMathPlugin implements IMathPlugin {
                 throw new IllegalArgumentException("illegal mount allignment");
         }
 
-        dummyActualDirectionCosine3 = actualDirectionCosine1.multiply(dummyActualDirectionCosine2);
+        TelescopeDirectionVector dummyActualDirectionCosine3 = actualDirectionCosine1.multiply(dummyActualDirectionCosine2);
         dummyActualDirectionCosine3.normalise();
-        dummyApparentDirectionCosine3 = entry1.telescopeDirection.multiply(dummyApparentDirectionCosine2);
+        TelescopeDirectionVector dummyApparentDirectionCosine3 = entry1.telescopeDirection.multiply(dummyApparentDirectionCosine2);
         dummyApparentDirectionCosine3.normalise();
         calculateTransformMatrices(//
                 createActualToApparentMatrix(//
@@ -559,25 +531,23 @@ public class BuiltInMathPlugin implements IMathPlugin {
     @Override
     public boolean transformCelestialToTelescope(final double rightAscension, final double declination, final double julianOffset,
             TelescopeDirectionVector apparentTelescopeDirectionVector) {
-
-        LnEquPosn actualRaDec = new LnEquPosn();
-        LnHrzPosn actualAltAz = new LnHrzPosn();
-        // libnova works in decimal degrees so conversion is needed here
-        actualRaDec.ra = rightAscension * DEGREES_TO_HOUR;
-        actualRaDec.dec = declination;
         LnLnlatPosn position = new LnLnlatPosn();
 
         // Should check that this the same as the current observing position
-        if ((null == inMemoryDatabase) || !inMemoryDatabase.getDatabaseReferencePosition(position)) {
+        if (!inMemoryDatabase.getDatabaseReferencePosition(position)) {
             return false;
         }
 
+        LnEquPosn actualRaDec = new LnEquPosn();
+        // libnova works in decimal degrees so conversion is needed here
+        actualRaDec.ra = rightAscension * DEGREES_TO_HOUR;
+        actualRaDec.dec = declination;
+        LnHrzPosn actualAltAz = new LnHrzPosn();
         Transform.ln_get_hrz_from_equ(actualRaDec, position, JulianDay.ln_get_julian_from_sys() + julianOffset, actualAltAz);
 
-        LOG.debug(String.format("Celestial to telescope - Actual Alt %lf Az %lf", actualAltAz.alt, actualAltAz.az));
+        LOG.debug("Celestial to telescope - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
 
         TelescopeDirectionVector actualVector = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualAltAz);
-
         switch (inMemoryDatabase.getAlignmentDatabase().size()) {
             case POINT_DB_EMPTY:
                 transformCelestialToTelescopeWithEmptyDb(apparentTelescopeDirectionVector, position, actualVector);
@@ -597,7 +567,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
         LnHrzPosn apparentAltAz = new LnHrzPosn();
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(apparentAltAz);
-        LOG.info(String.format("Celestial to telescope - Apparent Alt %lf Az %lf", apparentAltAz.alt, apparentAltAz.az));
+        LOG.info("Celestial to telescope - Apparent Alt %f Az %f", apparentAltAz.alt, apparentAltAz.az);
         return true;
     }
 
@@ -614,10 +584,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
      */
     protected void transformCelestialToTelescopeWithBigDb(TelescopeDirectionVector apparentTelescopeDirectionVector, LnLnlatPosn position,
             TelescopeDirectionVector actualVector) {
-        GslVector gslActualVector;
-        GslVector gslApparentVector;
-        GslMatrix transform;
-        GslMatrix computedTransform = null;
+
         List<AlignmentDatabaseEntry> syncPoints = inMemoryDatabase.getAlignmentDatabase();
         // Scale the actual telescope direction vector to make sure it
         // traverses the unit sphere.
@@ -628,24 +595,21 @@ public class BuiltInMathPlugin implements IMathPlugin {
         Face currentFace = null;
         for (Face currentFaceLoop : actualConvexHull.getFaces()) {
             currentFace = currentFaceLoop;
-            if (LOG.isDebugEnabled()) {
-                actualFaces++;
-            }
+
+            actualFaces++;
+
             // Ignore faces containg vertex 0 (nadir).
             int vnum0 = currentFace.vnum(0);
             int vnum1 = currentFace.vnum(1);
             int vnum2 = currentFace.vnum(2);
-            if ((0 == vnum0) || (0 == vnum1) || (0 == vnum2)) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(String.format("Celestial to telescope - Ignoring actual face %d", actualFaces));
-                }
+            if (0 == vnum0 || 0 == vnum1 || 0 == vnum2) {
+                LOG.debug("Celestial to telescope - Ignoring actual face %d", actualFaces);
             } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(String.format("Celestial to telescope - Processing actual face %d v1 %d v2 %d v3 %d", actualFaces, //
-                            vnum0, //
-                            vnum1, //
-                            vnum2));
-                }
+                LOG.debug("Celestial to telescope - Processing actual face %d v1 %d v2 %d v3 %d", //
+                        actualFaces, //
+                        vnum0, //
+                        vnum1, //
+                        vnum2);
                 if (rayTriangleIntersection(scaledActualVector, //
                         actualDirectionCosines.get(vnum0 - 1), //
                         actualDirectionCosines.get(vnum1 - 1), //
@@ -655,6 +619,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
             }
             currentFace = null;
         }
+        GslMatrix transform;
         if (currentFace == null) {
             List<AlignmentDatabaseEntryDistance> nearestMap = new ArrayList<AlignmentDatabaseEntryDistance>();
             for (AlignmentDatabaseEntry entry : syncPoints) {
@@ -673,39 +638,13 @@ public class BuiltInMathPlugin implements IMathPlugin {
             AlignmentDatabaseEntry entry1 = nearestMap.get(0).entry;
             AlignmentDatabaseEntry entry2 = nearestMap.get(1).entry;
             AlignmentDatabaseEntry entry3 = nearestMap.get(2).entry;
-            LnHrzPosn actualSyncPoint1 = new LnHrzPosn();
-            LnHrzPosn actualSyncPoint2 = new LnHrzPosn();
-            LnHrzPosn actualSyncPoint3 = new LnHrzPosn();
-            LnEquPosn raDec1 = new LnEquPosn();
-            LnEquPosn raDec2 = new LnEquPosn();
-            LnEquPosn raDec3 = new LnEquPosn();
-            raDec1.dec = entry1.declination;
-            // libnova works in decimal degrees so conversion is needed
-            // here
-            raDec1.ra = entry1.rightAscension * DEGREES_TO_HOUR;
-            raDec2.dec = entry2.declination;
-            // libnova works in decimal degrees so conversion is needed
-            // here
-            raDec2.ra = entry2.rightAscension * DEGREES_TO_HOUR;
-            raDec3.dec = entry3.declination;
-            // libnova works in decimal degrees so conversion is needed
-            // here
-            raDec3.ra = entry3.rightAscension * DEGREES_TO_HOUR;
-            Transform.ln_get_hrz_from_equ(raDec1, position, entry1.observationJulianDate, actualSyncPoint1);
-            Transform.ln_get_hrz_from_equ(raDec2, position, entry2.observationJulianDate, actualSyncPoint2);
-            Transform.ln_get_hrz_from_equ(raDec3, position, entry3.observationJulianDate, actualSyncPoint3);
 
-            // Now express these coordinates as normalised direction
-            // vectors (a.k.a direction cosines)
-            TelescopeDirectionVector actualDirectionCosine1 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint1);
-            TelescopeDirectionVector actualDirectionCosine2 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint2);
-            TelescopeDirectionVector actualDirectionCosine3 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint3);
-            computedTransform = new GslMatrix(DIM_3D, DIM_3D);
+            GslMatrix computedTransform = new GslMatrix(DIM_3D, DIM_3D);
             calculateTransformMatrices(//
                     createActualToApparentMatrix(//
-                            actualDirectionCosine1, //
-                            actualDirectionCosine2, //
-                            actualDirectionCosine3), //
+                            calculateHorizontalCoordsNormalisedDirectionVector(position, entry1), //
+                            calculateHorizontalCoordsNormalisedDirectionVector(position, entry2), //
+                            calculateHorizontalCoordsNormalisedDirectionVector(position, entry3)), //
                     createActualToApparentMatrix(//
                             entry1.telescopeDirection, //
                             entry2.telescopeDirection, //
@@ -715,18 +654,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         } else {
             transform = currentFace.matrix;
         }
-        // OK - got an intersection - CurrentFace is pointing at the
-        // face
-        gslActualVector = new GslVector(DIM_3D);
-        gslActualVector.set(0, actualVector.x);
-        gslActualVector.set(1, actualVector.y);
-        gslActualVector.set(2, actualVector.z);
-        gslApparentVector = new GslVector(DIM_3D);
-        matrixVectorMultiply(transform, gslActualVector, gslApparentVector);
-        apparentTelescopeDirectionVector.x = gslApparentVector.get(0);
-        apparentTelescopeDirectionVector.y = gslApparentVector.get(1);
-        apparentTelescopeDirectionVector.z = gslApparentVector.get(2);
-        apparentTelescopeDirectionVector.normalise();
+        multiplyVectorWithMatrix(apparentTelescopeDirectionVector, actualVector, transform);
     }
 
     /**
@@ -739,18 +667,58 @@ public class BuiltInMathPlugin implements IMathPlugin {
      *            telescope direction vector
      */
     protected void transformCelestialToTelescopeWithSmallDb(TelescopeDirectionVector apparentTelescopeDirectionVector, TelescopeDirectionVector actualVector) {
-        GslVector gslActualVector;
-        GslVector gslApparentVector;
-        gslActualVector = new GslVector(DIM_3D);
-        gslActualVector.set(0, actualVector.x);
-        gslActualVector.set(1, actualVector.y);
-        gslActualVector.set(2, actualVector.z);
-        gslApparentVector = new GslVector(DIM_3D);
-        matrixVectorMultiply(actualToApparentTransform, gslActualVector, gslApparentVector);
-        apparentTelescopeDirectionVector.x = gslApparentVector.get(0);
-        apparentTelescopeDirectionVector.y = gslApparentVector.get(1);
-        apparentTelescopeDirectionVector.z = gslApparentVector.get(2);
-        apparentTelescopeDirectionVector.normalise();
+        GslMatrix multiplyMatrix = actualToApparentTransform;
+        multiplyVectorWithMatrix(apparentTelescopeDirectionVector, actualVector, multiplyMatrix);
+    }
+
+    /**
+     * Multyply the vector with the matrix and set the normalized result in the
+     * resulting vector.
+     * 
+     * @param resultingVector
+     *            the resulting vector
+     * @param vector
+     *            the vector to multiply
+     * @param multiplyMatrix
+     *            the multiplication matrix
+     */
+    protected void multiplyVectorWithMatrix(TelescopeDirectionVector resultingVector, TelescopeDirectionVector vector, GslMatrix multiplyMatrix) {
+        GslVector gslVector = new GslVector(DIM_3D);
+        gslVector.set(0, vector.x);
+        gslVector.set(1, vector.y);
+        gslVector.set(2, vector.z);
+        GslVector gslResult = new GslVector(DIM_3D);
+        matrixVectorMultiply(multiplyMatrix, gslVector, gslResult);
+        resultingVector.x = gslResult.get(0);
+        resultingVector.y = gslResult.get(1);
+        resultingVector.z = gslResult.get(2);
+        resultingVector.normalise();
+        dump3("ApparentVector", gslResult);
+        dump3("ActualVector", gslVector);
+    }
+
+    /**
+     * calculate the horizontal coordinates and convert it to a direction
+     * vector.
+     * 
+     * @param position
+     *            the current position of the scope.
+     * @param entry
+     *            the syncpoint
+     * @return the telescope direction vector.
+     */
+    protected TelescopeDirectionVector calculateHorizontalCoordsNormalisedDirectionVector(LnLnlatPosn position, AlignmentDatabaseEntry entry) {
+        LnHrzPosn actualSyncPoint = new LnHrzPosn();
+        LnEquPosn raDec = new LnEquPosn();
+        raDec.dec = entry.declination;
+        // libnova works in decimal degrees so conversion is needed
+        // here
+        raDec.ra = entry.rightAscension * DEGREES_TO_HOUR;
+        Transform.ln_get_hrz_from_equ(raDec, position, entry.observationJulianDate, actualSyncPoint);
+        // Now express these coordinates as normalised direction
+        // vectors (a.k.a direction cosines)
+        TelescopeDirectionVector actualDirectionCosine1 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint);
+        return actualDirectionCosine1;
     }
 
     /**
@@ -802,10 +770,10 @@ public class BuiltInMathPlugin implements IMathPlugin {
         LnHrzPosn apparentAltAz = new LnHrzPosn();
 
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(apparentAltAz);
-        LOG.info(String.format("Telescope to celestial - Apparent Alt %lf Az %lf", apparentAltAz.alt, apparentAltAz.az));
+        LOG.info("Telescope to celestial - Apparent Alt %f Az %f", apparentAltAz.alt, apparentAltAz.az);
 
         // Should check that this the same as the current observing position
-        if (inMemoryDatabase == null || !inMemoryDatabase.getDatabaseReferencePosition(position)) {
+        if (!inMemoryDatabase.getDatabaseReferencePosition(position)) {
             return false;
         }
 
@@ -841,50 +809,44 @@ public class BuiltInMathPlugin implements IMathPlugin {
     protected void transformTelescopeToCelestialWithBigDb(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination,
             LnLnlatPosn position) {
 
-        LnHrzPosn actualAltAz = new LnHrzPosn();
-        LnEquPosn actualRaDec = new LnEquPosn();
         List<AlignmentDatabaseEntry> syncPoints = inMemoryDatabase.getAlignmentDatabase();
-        GslVector gslApparentVector;
-        GslVector gslActualVector;
-        TelescopeDirectionVector actualTelescopeDirectionVector;
-        GslMatrix transform;
-        GslMatrix computedTransform = null;
+
         // Scale the apparent telescope direction vector to make sure it
         // traverses the unit sphere.
         TelescopeDirectionVector scaledApparentVector = apparentTelescopeDirectionVector.multiply(2.0);
         // Shoot the scaled vector in the into the list of apparent
         // facets
         // and use the conversuion matrix from the one it intersects
+        int apparentFaces = 0;
         Face currentFace = null;
         for (Face currentFaceLoop : actualConvexHull.getFaces()) {
             currentFace = currentFaceLoop;
 
-            int apparentFaces = 0;
-
             apparentFaces++;
 
             // Ignore faces containg vertex 0 (nadir).
-            if ((0 == currentFace.vnum(0)) || (0 == currentFace.vnum(1)) || (0 == currentFace.vnum(2))) {
-
-                LOG.debug(String.format("Celestial to telescope - Ignoring apparent face %d", apparentFaces));
-
+            int vnum0 = currentFace.vnum(0);
+            int vnum1 = currentFace.vnum(1);
+            int vnum2 = currentFace.vnum(2);
+            if (0 == vnum0 || 0 == vnum1 || 0 == vnum2) {
+                LOG.debug("Telescope to celestial - Ignoring apparent face %d", apparentFaces);
             } else {
-                LOG.debug(String.format("TelescopeToCelestial - Processing apparent face %d v1 %d v2 %d v3 %d", //
+                LOG.debug("Telescope to celestial - Processing apparent face %d v1 %d v2 %d v3 %d", //
                         apparentFaces, //
-                        currentFace.vnum(0), //
-                        currentFace.vnum(1), //
-                        currentFace.vnum(2)));
-
+                        vnum0, //
+                        vnum1, //
+                        vnum2);
                 if (rayTriangleIntersection(scaledApparentVector, //
-                        syncPoints.get(currentFace.vnum(0) - 1).telescopeDirection, //
-                        syncPoints.get(currentFace.vnum(1) - 1).telescopeDirection, //
-                        syncPoints.get(currentFace.vnum(2) - 1).telescopeDirection)) {
+                        syncPoints.get(vnum0 - 1).telescopeDirection, //
+                        syncPoints.get(vnum1 - 1).telescopeDirection, //
+                        syncPoints.get(vnum2 - 1).telescopeDirection)) {
                     break;
                 }
             }
 
             currentFace = null;
         }
+        GslMatrix transform;
         if (currentFace == null) {
 
             // Find the three nearest points and build a transform
@@ -901,70 +863,37 @@ public class BuiltInMathPlugin implements IMathPlugin {
             AlignmentDatabaseEntry entry2 = nearestMap.get(1).entry;
             AlignmentDatabaseEntry entry3 = nearestMap.get(2).entry;
 
-            LnHrzPosn actualSyncPoint1 = new LnHrzPosn();
-            LnHrzPosn actualSyncPoint2 = new LnHrzPosn();
-            LnHrzPosn actualSyncPoint3 = new LnHrzPosn();
-            LnEquPosn raDec1 = new LnEquPosn();
-            LnEquPosn raDec2 = new LnEquPosn();
-            LnEquPosn raDec3 = new LnEquPosn();
-            raDec1.dec = entry1.declination;
-            // libnova works in decimal degrees so conversion is needed
-            // here
-            raDec1.ra = entry1.rightAscension * DEGREES_TO_HOUR;
-            raDec2.dec = entry2.declination;
-            // libnova works in decimal degrees so conversion is needed
-            // here
-            raDec2.ra = entry2.rightAscension * DEGREES_TO_HOUR;
-            raDec3.dec = entry3.declination;
-            // libnova works in decimal degrees so conversion is needed
-            // here
-            raDec3.ra = entry3.rightAscension * DEGREES_TO_HOUR;
-            Transform.ln_get_hrz_from_equ(raDec1, position, entry1.observationJulianDate, actualSyncPoint1);
-            Transform.ln_get_hrz_from_equ(raDec2, position, entry2.observationJulianDate, actualSyncPoint2);
-            Transform.ln_get_hrz_from_equ(raDec3, position, entry3.observationJulianDate, actualSyncPoint3);
-
-            // Now express these coordinates as normalised direction
-            // vectors (a.k.a direction cosines)
-            TelescopeDirectionVector actualDirectionCosine1 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint1);
-            TelescopeDirectionVector actualDirectionCosine2 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint2);
-            TelescopeDirectionVector actualDirectionCosine3 = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualSyncPoint3);
-            computedTransform = new GslMatrix(DIM_3D, DIM_3D);
+            transform = new GslMatrix(DIM_3D, DIM_3D);
             calculateTransformMatrices(//
                     createActualToApparentMatrix(//
                             entry1.telescopeDirection, //
                             entry2.telescopeDirection, //
                             entry3.telescopeDirection), //
                     createActualToApparentMatrix(//
-                            actualDirectionCosine1, //
-                            actualDirectionCosine2, //
-                            actualDirectionCosine3), //
-                    computedTransform, null);
-            transform = computedTransform;
+                            calculateHorizontalCoordsNormalisedDirectionVector(position, entry1), //
+                            calculateHorizontalCoordsNormalisedDirectionVector(position, entry2), //
+                            calculateHorizontalCoordsNormalisedDirectionVector(position, entry3)), //
+                    transform, null);
         } else {
             transform = currentFace.matrix;
         }
         // OK - got an intersection - CurrentFace is pointing at the
         // face
-        gslApparentVector = new GslVector(DIM_3D);
-        gslApparentVector.set(0, apparentTelescopeDirectionVector.x);
-        gslApparentVector.set(1, apparentTelescopeDirectionVector.y);
-        gslApparentVector.set(2, apparentTelescopeDirectionVector.z);
-        gslActualVector = new GslVector(DIM_3D);
-        matrixVectorMultiply(transform, gslApparentVector, gslActualVector);
-        actualTelescopeDirectionVector = new TelescopeDirectionVector();
-        actualTelescopeDirectionVector.x = gslActualVector.get(0);
-        actualTelescopeDirectionVector.y = gslActualVector.get(1);
-        actualTelescopeDirectionVector.z = gslActualVector.get(2);
-        actualTelescopeDirectionVector.normalise();
+        TelescopeDirectionVector actualTelescopeDirectionVector = new TelescopeDirectionVector();
+
+        multiplyVectorWithMatrix(actualTelescopeDirectionVector, apparentTelescopeDirectionVector, transform);
+
+        LnHrzPosn actualAltAz = new LnHrzPosn();
         actualTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
+        LnEquPosn actualRaDec = new LnEquPosn();
         Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys(), actualRaDec);
 
         // libnova works in decimal degrees so conversion is needed here
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
         declination.setValue(actualRaDec.dec);
 
-        LOG.info(String.format("Telescope to Celestial - Actual Alt %lf Az %lf", actualAltAz.alt, actualAltAz.az));
+        LOG.info("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
     }
 
     /**
@@ -983,35 +912,21 @@ public class BuiltInMathPlugin implements IMathPlugin {
     protected void transformTelescopeToCelestialWithSmallDb(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination,
             LnLnlatPosn position) {
 
+        TelescopeDirectionVector actualTelescopeDirectionVector = new TelescopeDirectionVector();
+
+        multiplyVectorWithMatrix(actualTelescopeDirectionVector, apparentTelescopeDirectionVector, apparentToActualTransform);
+
         LnHrzPosn actualAltAz = new LnHrzPosn();
-        LnEquPosn actualRaDec = new LnEquPosn();
-        GslVector gslApparentVector;
-        GslVector gslActualVector;
-        TelescopeDirectionVector actualTelescopeDirectionVector;
-        gslApparentVector = new GslVector(DIM_3D);
-        gslApparentVector.set(0, apparentTelescopeDirectionVector.x);
-        gslApparentVector.set(1, apparentTelescopeDirectionVector.y);
-        gslApparentVector.set(2, apparentTelescopeDirectionVector.z);
-        gslActualVector = new GslVector(DIM_3D);
-        matrixVectorMultiply(apparentToActualTransform, gslApparentVector, gslActualVector);
-
-        dump3("ApparentVector", gslApparentVector);
-        dump3("ActualVector", gslActualVector);
-
-        actualTelescopeDirectionVector = new TelescopeDirectionVector();
-        actualTelescopeDirectionVector.x = gslActualVector.get(0);
-        actualTelescopeDirectionVector.y = gslActualVector.get(1);
-        actualTelescopeDirectionVector.z = gslActualVector.get(2);
-        actualTelescopeDirectionVector.normalise();
         actualTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
+        LnEquPosn actualRaDec = new LnEquPosn();
         Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys(), actualRaDec);
 
         // libnova works in decimal degrees so conversion is needed here
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
         declination.setValue(actualRaDec.dec);
 
-        LOG.info(String.format("Telescope to Celestial - Actual Alt %lf Az %lf", actualAltAz.alt, actualAltAz.az));
+        LOG.info("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
     }
 
     /**
@@ -1066,7 +981,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
         declination.setValue(actualRaDec.dec);
 
-        LOG.info(String.format("Telescope to Celestial - Actual Alt %lf Az %lf", actualAltAz.alt, actualAltAz.az));
+        LOG.info("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
     }
 
     /**
@@ -1078,8 +993,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      *            the vector to print
      */
     protected void dump3(String label, GslVector vector) {
-        LOG.info(String.format("Vector dump - %s", label));
-        LOG.info(String.format("%lf %lf %lf", vector.get(0), vector.get(1), vector.get(2)));
+        LOG.info("Vector dump - %s", label);
+        LOG.info("%f %f %f", vector.get(0), vector.get(1), vector.get(2));
     }
 
     /**
@@ -1091,10 +1006,10 @@ public class BuiltInMathPlugin implements IMathPlugin {
      *            the matrix to print
      */
     protected void dump3x3(String label, GslMatrix matrix) {
-        LOG.info(String.format("Matrix dump - %s", label));
-        LOG.info(String.format("Row 0 %lf %lf %lf", matrix.get(0, 0), matrix.get(0, 1), matrix.get(0, 2)));
-        LOG.info(String.format("Row 1 %lf %lf %lf", matrix.get(1, 0), matrix.get(1, 1), matrix.get(1, 2)));
-        LOG.info(String.format("Row 2 %lf %lf %lf", matrix.get(2, 0), matrix.get(2, 1), matrix.get(2, 2)));
+        LOG.info("Matrix dump - %s", label);
+        LOG.info("Row 0 %f %f %f", matrix.get(0, 0), matrix.get(0, 1), matrix.get(0, 2));
+        LOG.info("Row 1 %f %f %f", matrix.get(1, 0), matrix.get(1, 1), matrix.get(1, 2));
+        LOG.info("Row 2 %f %f %f", matrix.get(2, 0), matrix.get(2, 1), matrix.get(2, 2));
     }
 
     /**
