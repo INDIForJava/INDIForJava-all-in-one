@@ -39,19 +39,24 @@ import com.github.quickhull3d.QuickHull3D;
 public class WrappedQuickHull3D {
 
     /**
+     * 3 dimentions.
+     */
+    private static final int DIM_3D = 3;
+
+    /**
      * a calculated face of the ConvexHull.
      */
-    public class Face {
+    public final class Face {
 
         /**
          * the indexes of the verdex points of the face.
          */
-        final int[] verdexIndexes;
+        private final int[] verdexIndexes;
 
         /**
          * transformation matrix.
          */
-        protected GslMatrix matrix = new GslMatrix(3, 3);
+        protected GslMatrix matrix = new GslMatrix(DIM_3D, DIM_3D);
 
         /**
          * constructor with the verdex indexes.

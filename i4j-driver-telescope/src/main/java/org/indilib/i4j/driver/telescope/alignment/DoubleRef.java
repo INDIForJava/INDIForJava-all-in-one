@@ -21,8 +21,33 @@ package org.indilib.i4j.driver.telescope.alignment;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+/**
+ * pointer to a double value. mostly used for coordinates. This should later be
+ * replaced with a coordinate class for alt/az and ra/dec.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class DoubleRef {
 
-    public double value;
+    /**
+     * the referenced double value.
+     */
+    private double value;
+
+    /**
+     * @return the referenced value.
+     */
+    public double getValue() {
+        return value;
+    }
+
+    /**
+     * set the referenced value.
+     * 
+     * @param value
+     *            the new value.
+     */
+    public void setValue(double value) {
+        this.value = value;
+    }
 }

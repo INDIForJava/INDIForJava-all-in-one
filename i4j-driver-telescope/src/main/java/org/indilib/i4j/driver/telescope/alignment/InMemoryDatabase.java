@@ -44,23 +44,47 @@ import org.slf4j.LoggerFactory;
  */
 public class InMemoryDatabase {
 
-    public static interface LoadDatabaseCallback {
+    /**
+     * the default maximum tolerance between sync points.
+     */
+    private static final double MAXIMUM_TOLERANCE_BETWEEN_SYNC_POINTS = 0.1;
 
+    /**
+     * callback when the database is loaded.
+     */
+    public interface LoadDatabaseCallback {
+
+        /**
+         * the database was loaded.
+         */
         void loadDatabaseCallback();
     }
 
+    /**
+     * the logger to log to.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(InMemoryDatabase.class);
 
-    private static String DATABASE_FILE = "alignment.db";
+    /**
+     * default name of the database file.
+     */
+    private static final String DATABASE_FILE = "alignment.db";
 
+    /**
+     * list of callbacks, to call when the database was loaded.
+     */
     private List<LoadDatabaseCallback> callbacks = new ArrayList<InMemoryDatabase.LoadDatabaseCallback>();
 
+    /**
+     * the complete list of sync points. (this is the database contens).
+     */
     private List<AlignmentDatabaseEntry> mySyncPoints = new ArrayList<>();
 
     /**
      * construct a file name for the point database for this device.
      * 
      * @param deviceName
+     *            the name of the device
      * @return the file to use.
      */
     private File getDataBaseFile(String deviceName) {
@@ -88,26 +112,26 @@ public class InMemoryDatabase {
     }
 
     /**
-     * Get the database reference position
+     * Get the database reference position.
      * 
-     * @param Position
+     * @param position
      *            A pointer to a ln_lnlat_posn object to return the current
      *            position in
      * @return True if successful
      */
-    protected boolean getDatabaseReferencePosition(LnLnlatPosn Position) {
+    protected boolean getDatabaseReferencePosition(LnLnlatPosn position) {
         return false;
     }
 
     /**
-     * Load the database from persistent storage
+     * Load the database from persistent storage.
      * 
-     * @param DeviceName
+     * @param deviceName
      *            The name of the current device.
      * @return True if successful
      */
-    protected boolean loadDatabase(String DeviceName) {
-        File db = getDataBaseFile(DeviceName);
+    protected boolean loadDatabase(String deviceName) {
+        File db = getDataBaseFile(deviceName);
         if (db.getParentFile().mkdirs()) {
             LOG.error("sync point db directory created");
         }
@@ -129,14 +153,14 @@ public class InMemoryDatabase {
     }
 
     /**
-     * Save the database to persistent storage
+     * Save the database to persistent storage.
      * 
-     * @param DeviceName
+     * @param deviceName
      *            The name of the current device.
      * @return True if successful
      */
-    protected boolean saveDatabase(String DeviceName) {
-        File db = getDataBaseFile(DeviceName);
+    protected boolean saveDatabase(String deviceName) {
+        File db = getDataBaseFile(deviceName);
         if (db.getParentFile().mkdirs()) {
             LOG.error("sync point db directory created");
         }
@@ -150,40 +174,47 @@ public class InMemoryDatabase {
     }
 
     /**
-     * Set the database reference position
+     * Set the database reference position.
      * 
-     * @param Latitude
-     * @param Longitude
+     * @param latitude
+     *            the latitude of the reference position
+     * @param longitude
+     *            the longitude of the reference position
      */
-    protected void SetDatabaseReferencePosition(double Latitude, double Longitude) {
+    protected void setDatabaseReferencePosition(double latitude, double longitude) {
     }
 
     /**
-     * Set the function to be called when the database is loaded or reloaded
+     * Set the function to be called when the database is loaded or reloaded.
      * 
-     * @param CallbackPointer
-     *            A pointer to the class function to call
-     * @param ThisPointer
-     *            A pointer to the class object of the callback function
+     * @param callback
+     *            the callback to call.
      */
-    protected void SetLoadDatabaseCallback(LoadDatabaseCallback callback) {
+    protected void setLoadDatabaseCallback(LoadDatabaseCallback callback) {
         callbacks.add(callback);
     }
 
-    public boolean CheckForDuplicateSyncPoint(AlignmentDatabaseEntry CandidateEntry) {
-        return CheckForDuplicateSyncPoint(CandidateEntry, 0.1);
+    /**
+     * Check the database for duplicate sync points.
+     * 
+     * @param candidateEntry
+     *            the entry to compaire
+     * @return true if there was a duplicate.
+     */
+    public boolean checkForDuplicateSyncPoint(AlignmentDatabaseEntry candidateEntry) {
+        return checkForDuplicateSyncPoint(candidateEntry, MAXIMUM_TOLERANCE_BETWEEN_SYNC_POINTS);
     }
 
     /**
-     * Check if a entry already exists in the database
+     * Check if a entry already exists in the database.
      * 
-     * @param CandidateEntry
+     * @param candidateEntry
      *            The candidate entry to check
-     * @param Tolerance
+     * @param tolerance
      *            The % tolerance used in the checking process (default 0.1%)
      * @return True if an entry already exists within the required tolerance
      */
-    public boolean CheckForDuplicateSyncPoint(AlignmentDatabaseEntry CandidateEntry, double Tolerance) {
+    public boolean checkForDuplicateSyncPoint(AlignmentDatabaseEntry candidateEntry, double tolerance) {
         return false;
     }
 

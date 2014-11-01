@@ -22,46 +22,88 @@ package org.indilib.i4j.driver.telescope.alignment;
  * #L%
  */
 
+/**
+ * The math plugin interface for the alignment. all implementors can calculate
+ * conversions between the telescope vector and the celestrial coordinates.
+ * (Both directions)
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public interface IMathPlugin {
 
+    /**
+     * create the new math plugin.
+     */
     void create();
 
+    /**
+     * destroy the math plugin.
+     */
     void destroy();
 
-    // Public methods
-    // / \brief Get the approximate alognment of the mount
-    // / \return the approximate alignment
-    MountAlignment getApproximateMountAlignment();
+    /**
+     * Get the approximate alignment of the mount.
+     * 
+     * @return the approximate alignment.
+     */
+    MountAlignment getApproximateAlignment();
 
+    /**
+     * @return the identification of this plugin.
+     */
     String id();
 
-    // / \brief Initialise or re-initialise the math plugin. Re-reading the in
-    // memory database as necessary.
-    // / \return True if successful
+    /**
+     * Initialise or re-initialise the math plugin. Re-reading the in memory
+     * database as necessary.
+     * 
+     * @param inMemoryDatabase
+     *            the database to use
+     * @return true if successful
+     */
     boolean initialise(InMemoryDatabase inMemoryDatabase);
 
+    /**
+     * @return the human readable name of the plugin.
+     */
     String name();
 
-    void setApproximateMountAlignment(MountAlignment approximateAlignment);
+    /**
+     * the approximate alignment of the mount.
+     * 
+     * @param approximateAlignment
+     *            the approximate alignment
+     */
+    void setApproximateAlignment(MountAlignment approximateAlignment);
 
-    // / \brief Get the alignment corrected telescope pointing direction for the
-    // supplied celestial coordinates
-    // / \param[in] RightAscension Right Ascension (Decimal Hours).
-    // / \param[in] Declination Declination (Decimal Degrees).
-    // / \param[in] JulianOffset to be applied to the current julian date.
-    // / \param[out] ApparentTelescopeDirectionVector Parameter to receive the
-    // corrected telescope direction
-    // / \return True if successful
+    /**
+     * Get the alignment corrected telescope pointing direction for the supplied
+     * celestial coordinates.
+     * 
+     * @param rightAscension
+     *            Right Ascension (Decimal Hours).
+     * @param declination
+     *            Declination (Decimal Degrees).
+     * @param julianOffset
+     *            to be applied to the current julian date.
+     * @param apparentTelescopeDirectionVector
+     *            Parameter to receive the corrected telescope direction
+     * @return True if successful
+     */
     boolean transformCelestialToTelescope(double rightAscension, double declination, double julianOffset, TelescopeDirectionVector apparentTelescopeDirectionVector);
 
-    // / \brief Get the true celestial coordinates for the supplied telescope
-    // pointing direction
-    // / \param[in] ApparentTelescopeDirectionVector the telescope direction
-    // / \param[out] RightAscension Parameter to receive the Right Ascension
-    // (Decimal Hours).
-    // / \param[out] Declination Parameter to receive the Declination (Decimal
-    // Degrees).
-    // / \return True if successful
-    boolean transformTelescopeToCelestial(TelescopeDirectionVector telescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination);
+    /**
+     * Get the true celestial coordinates for the supplied telescope pointing
+     * direction.
+     * 
+     * @param apparentTelescopeDirectionVector
+     *            the telescope direction
+     * @param rightAscension
+     *            Parameter to receive the Right Ascension (Decimal Hours).
+     * @param declination
+     *            Parameter to receive the Declination (Decimal Degrees).
+     * @return True if successful
+     */
+    boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination);
 
 }

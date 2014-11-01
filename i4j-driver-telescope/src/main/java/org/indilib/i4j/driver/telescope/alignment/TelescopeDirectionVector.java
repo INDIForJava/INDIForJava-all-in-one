@@ -45,6 +45,16 @@ import org.gnu.savannah.gsl.GslVector;
 public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
+     * the number of degrees in a half circle.
+     */
+    private static final double HALF_CIRCLE_IN_DEGREES = 180.0;
+
+    /**
+     * 3 dimentions.
+     */
+    private static final int DIM_3D = 3;
+
+    /**
      * Servial version id.
      */
     private static final long serialVersionUID = 7085347593351496492L;
@@ -127,7 +137,7 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * coordinate information. TelescopeDirectionVectors are always assumed to
      * be normalised and right handed.
      * 
-     * @param AzimuthAngle
+     * @param azimuthAngle
      *            The azimuth angle in radians
      * @param azimuthAngleDirection
      *            The direction the azimuth angle has been measured either
@@ -168,21 +178,40 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         return vector;
     }
 
+    /**
+     * x part of the vector.
+     */
     protected double x;
 
+    /**
+     * y part of the vector.
+     */
     protected double y;
 
+    /**
+     * z part of the vector.
+     */
     protected double z;
 
-    /** Default constructor */
-
+    /**
+     * Default constructor.
+     */
     public TelescopeDirectionVector() {
         x = 0;
         y = 0;
         z = 0;
     }
 
-    /** Copy constructor */
+    /**
+     * Copy constructor .
+     * 
+     * @param x
+     *            the x part of the vector.
+     * @param y
+     *            the y part of the vector.
+     * @param z
+     *            the z part of the vector.
+     */
     public TelescopeDirectionVector(double x, double y, double z) {
         this.x = x;
         this.y = y;
@@ -198,13 +227,13 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      *            give an anti-clockwise rotation from the perspective of
      *            looking down the positive axis towards the origin.
      **/
-    void RotateAroundY(double angle) {
-        angle = angle * Math.PI / 180.0;
-        GslVector pGSLInputVector = new GslVector(3);
+    void rotateAroundY(double angle) {
+        angle = angle * Math.PI / HALF_CIRCLE_IN_DEGREES;
+        GslVector pGSLInputVector = new GslVector(DIM_3D);
         pGSLInputVector.set(0, x);
         pGSLInputVector.set(1, y);
         pGSLInputVector.set(2, z);
-        GslMatrix pRotationMatrix = new GslMatrix(3, 3);
+        GslMatrix pRotationMatrix = new GslMatrix(DIM_3D, DIM_3D);
         pRotationMatrix.set(0, 0, Math.cos(angle));
         pRotationMatrix.set(0, 1, 0.0);
         pRotationMatrix.set(0, 2, Math.sin(angle));
@@ -214,7 +243,7 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         pRotationMatrix.set(2, 0, -Math.sin(angle));
         pRotationMatrix.set(2, 1, 0.0);
         pRotationMatrix.set(2, 2, Math.cos(angle));
-        GslVector pGSLOutputVector = new GslVector(3);
+        GslVector pGSLOutputVector = new GslVector(DIM_3D);
         pGSLOutputVector.setZero();
         Gsl.gsl_blas_dgemv(CBLAS_TRANSPOSE.CblasNoTrans, 1.0, pRotationMatrix, pGSLInputVector, 0.0, pGSLOutputVector);
         x = pGSLOutputVector.get(0);
@@ -235,8 +264,8 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         DoubleRef azimuthAngle = new DoubleRef();
         DoubleRef altitudeAngle = new DoubleRef();
         sphericalCoordinateFromTelescopeDirectionVector(azimuthAngle, AzimuthAngleDirection.CLOCKWISE, altitudeAngle, PolarAngleDirection.FROM_AZIMUTHAL_PLANE);
-        Utility.ln_rad_to_dms(azimuthAngle.value, horizontalCoordinates.az);
-        Utility.ln_rad_to_dms(altitudeAngle.value, horizontalCoordinates.alt);
+        Utility.ln_rad_to_dms(azimuthAngle.getValue(), horizontalCoordinates.az);
+        Utility.ln_rad_to_dms(altitudeAngle.getValue(), horizontalCoordinates.alt);
     }
 
     /**
@@ -252,8 +281,8 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         DoubleRef azimuthAngle = new DoubleRef();
         DoubleRef altitudeAngle = new DoubleRef();
         sphericalCoordinateFromTelescopeDirectionVector(azimuthAngle, AzimuthAngleDirection.CLOCKWISE, altitudeAngle, PolarAngleDirection.FROM_AZIMUTHAL_PLANE);
-        horizontalCoordinates.az = Utility.ln_rad_to_deg(azimuthAngle.value);
-        horizontalCoordinates.alt = Utility.ln_rad_to_deg(altitudeAngle.value);
+        horizontalCoordinates.az = Utility.ln_rad_to_deg(azimuthAngle.getValue());
+        horizontalCoordinates.alt = Utility.ln_rad_to_deg(altitudeAngle.getValue());
     }
 
     @Override
@@ -261,6 +290,13 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         return super.clone();
     };
 
+    /**
+     * do a dot product of this vector.
+     * 
+     * @param rhs
+     *            the richt hand side of the operation.
+     * @return the result of the dor product.
+     */
     public double dotProduct(TelescopeDirectionVector rhs) {
         return x * rhs.x + y * rhs.y + z * rhs.z;
 
@@ -278,8 +314,8 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         DoubleRef azimuthAngle = new DoubleRef();
         DoubleRef polarAngle = new DoubleRef();
         sphericalCoordinateFromTelescopeDirectionVector(azimuthAngle, AzimuthAngleDirection.ANTI_CLOCKWISE, polarAngle, PolarAngleDirection.FROM_AZIMUTHAL_PLANE);
-        equatorialCoordinates.ra = Utility.ln_rad_to_deg(azimuthAngle.value);
-        equatorialCoordinates.dec = Utility.ln_rad_to_deg(polarAngle.value);
+        equatorialCoordinates.ra = Utility.ln_rad_to_deg(azimuthAngle.getValue());
+        equatorialCoordinates.dec = Utility.ln_rad_to_deg(polarAngle.getValue());
     };
 
     /**
@@ -295,10 +331,13 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         DoubleRef azimuthAngle = new DoubleRef();
         DoubleRef polarAngle = new DoubleRef();
         sphericalCoordinateFromTelescopeDirectionVector(azimuthAngle, AzimuthAngleDirection.ANTI_CLOCKWISE, polarAngle, PolarAngleDirection.FROM_AZIMUTHAL_PLANE);
-        Utility.ln_rad_to_hms(azimuthAngle.value, equatorialCoordinates.ra);
-        Utility.ln_rad_to_dms(polarAngle.value, equatorialCoordinates.dec);
+        Utility.ln_rad_to_hms(azimuthAngle.getValue(), equatorialCoordinates.ra);
+        Utility.ln_rad_to_dms(polarAngle.getValue(), equatorialCoordinates.dec);
     };
 
+    /**
+     * @return the length of the vecor.
+     */
     public double length() {
         return Math.sqrt(x * x + y * y + z * z);
 
@@ -317,8 +356,8 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         DoubleRef azimuthAngle = new DoubleRef();
         DoubleRef polarAngle = new DoubleRef();
         sphericalCoordinateFromTelescopeDirectionVector(azimuthAngle, AzimuthAngleDirection.CLOCKWISE, polarAngle, PolarAngleDirection.FROM_AZIMUTHAL_PLANE);
-        equatorialCoordinates.ra = Utility.ln_rad_to_deg(azimuthAngle.value);
-        equatorialCoordinates.dec = Utility.ln_rad_to_deg(polarAngle.value);
+        equatorialCoordinates.ra = Utility.ln_rad_to_deg(azimuthAngle.getValue());
+        equatorialCoordinates.dec = Utility.ln_rad_to_deg(polarAngle.getValue());
     };
 
     /**
@@ -335,15 +374,29 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
         DoubleRef azimuthAngle = new DoubleRef();
         DoubleRef polarAngle = new DoubleRef();
         sphericalCoordinateFromTelescopeDirectionVector(azimuthAngle, AzimuthAngleDirection.CLOCKWISE, polarAngle, PolarAngleDirection.FROM_AZIMUTHAL_PLANE);
-        Utility.ln_rad_to_hms(azimuthAngle.value, equatorialCoordinates.ra);
-        Utility.ln_rad_to_dms(polarAngle.value, equatorialCoordinates.dec);
+        Utility.ln_rad_to_hms(azimuthAngle.getValue(), equatorialCoordinates.ra);
+        Utility.ln_rad_to_dms(polarAngle.getValue(), equatorialCoordinates.dec);
     }
 
+    /**
+     * minus operation.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
+     * @return the resulting new vector.
+     */
     public TelescopeDirectionVector minus(TelescopeDirectionVector rhs) {
         return new TelescopeDirectionVector(x - rhs.x, y - rhs.y, z - rhs.z);
 
     };
 
+    /**
+     * multiply operation.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
+     * @return the resulting new vector.
+     */
     public TelescopeDirectionVector multiply(double rhs) {
         TelescopeDirectionVector result = new TelescopeDirectionVector();
 
@@ -354,6 +407,13 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     };
 
+    /**
+     * multiply operation.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
+     * @return the resulting new vector.
+     */
     public TelescopeDirectionVector multiply(TelescopeDirectionVector rhs) {
         TelescopeDirectionVector result = new TelescopeDirectionVector();
 
@@ -364,6 +424,13 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     };
 
+    /**
+     * multiply operation and set the results to this vector.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
+     * @return the resulting new vector.
+     */
     public TelescopeDirectionVector multiplyAsign(double rhs) {
         x = x * rhs;
         y = y * rhs;
@@ -372,6 +439,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     };
 
+    /**
+     * normalize the vector.
+     */
     public void normalise() {
         double length = Math.sqrt(x * x + y * y + z * z);
         x /= length;
@@ -384,7 +454,7 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Calculates a spherical coordinate from the supplied telescope direction
      * vectorTelescope.DirectionVectors are always normalised and right handed.
      * 
-     * @param AzimuthAngle
+     * @param azimuthAngle
      *            The azimuth angle in radians
      * @param azimuthAngleDirection
      *            The direction the azimuth angle has been measured either
@@ -395,25 +465,37 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      *            The direction the polar angle has been measured either
      *            FROM_POLAR_AXIS or FROM_AZIMUTHAL_PLANE
      */
-    public void sphericalCoordinateFromTelescopeDirectionVector(DoubleRef AzimuthAngle, AzimuthAngleDirection azimuthAngleDirection, DoubleRef polarAngle,
+    public void sphericalCoordinateFromTelescopeDirectionVector(DoubleRef azimuthAngle, AzimuthAngleDirection azimuthAngleDirection, DoubleRef polarAngle,
             PolarAngleDirection polarAngleDirection) {
         if (AzimuthAngleDirection.ANTI_CLOCKWISE == azimuthAngleDirection) {
             if (PolarAngleDirection.FROM_AZIMUTHAL_PLANE == polarAngleDirection) {
-                AzimuthAngle.value = Math.atan2(y, x);
-                polarAngle.value = Math.asin(z);
+                azimuthAngle.setValue(Math.atan2(y, x));
+                polarAngle.setValue(Math.asin(z));
             } else {
-                AzimuthAngle.value = Math.atan2(y, x);
-                polarAngle.value = Math.acos(z);
+                azimuthAngle.setValue(Math.atan2(y, x));
+                polarAngle.setValue(Math.acos(z));
             }
         } else {
             if (PolarAngleDirection.FROM_AZIMUTHAL_PLANE == polarAngleDirection) {
-                AzimuthAngle.value = Math.atan2(-y, x);
-                polarAngle.value = Math.asin(z);
+                azimuthAngle.setValue(Math.atan2(-y, x));
+                polarAngle.setValue(Math.asin(z));
             } else {
-                AzimuthAngle.value = Math.atan2(-y, x);
-                polarAngle.value = Math.acos(z);
+                azimuthAngle.setValue(Math.atan2(-y, x));
+                polarAngle.setValue(Math.acos(z));
             }
         }
+    }
+
+    /**
+     * copy the direction from the other vector.
+     * 
+     * @param otherVector
+     *            the vector to copy the data from.
+     */
+    public void copyFrom(TelescopeDirectionVector otherVector) {
+        this.x = otherVector.x;
+        this.y = otherVector.y;
+        this.z = otherVector.z;
     }
 
 }

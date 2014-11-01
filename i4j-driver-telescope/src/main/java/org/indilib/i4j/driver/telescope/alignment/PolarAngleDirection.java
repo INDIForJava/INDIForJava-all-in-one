@@ -32,11 +32,11 @@ package org.indilib.i4j.driver.telescope.alignment;
  */
 public enum PolarAngleDirection {
     /**
-     * Angle is measured down from the polar axis
+     * Angle is measured down from the polar axis.
      */
     FROM_POLAR_AXIS,
     /**
-     * Angle is measured upwards from the azimuthal plane
+     * Angle is measured upwards from the azimuthal plane.
      */
     FROM_AZIMUTHAL_PLANE
 }

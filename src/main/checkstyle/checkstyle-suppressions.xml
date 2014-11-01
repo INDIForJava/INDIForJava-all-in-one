@@ -7,7 +7,5 @@
 <suppressions>
 	<suppress checks="." files="org[\\/]gnu[\\/]savannah[\\/]gsl[\\/]" />
 	<suppress checks="." files="org[\\/]gnu[\\/]savannah[\\/]gsl[\\/]util[\\/]" />
-	<suppress checks="." files="org[\\/]indilib[\\/]i4j[\\/]driver[\\/]telescope[\\/]alignment[\\/]" />
 	<suppress checks="." files="org[\\/]indilib[\\/]i4j[\\/]driver[\\/]guider[\\/]" />
-	<suppress checks="." files="quickhull3d[\\/]" />
 </suppressions>

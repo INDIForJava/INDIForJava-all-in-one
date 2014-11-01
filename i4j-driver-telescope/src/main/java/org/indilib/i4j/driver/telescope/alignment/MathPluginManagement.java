@@ -45,44 +45,91 @@ import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.driver.telescope.INDITelescope;
 
+/**
+ * This driver extension is used to configure and select a math plugin to use
+ * for the telescope alignment calculations.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
 
-    private final static String ALIGNMENT_TAB = "Alignment";
+    /**
+     * tab to use for the alignment fields.
+     */
+    private static final String ALIGNMENT_TAB = "Alignment";
 
+    /**
+     * All defined plugins in the current classloader. key is the id of the
+     * plugin.
+     */
     private Map<String, IMathPlugin> plugins;
 
+    /**
+     * The switch property with all the availabe math plugins.
+     */
     @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_MATH_PLUGINS", label = "Math Plugins", group = ALIGNMENT_TAB)
     private INDISwitchProperty alignmentSubsystemMathPlugins;
 
+    /**
+     * The predefined entry for the default build in meth plugin.
+     */
     @InjectElement(name = BuiltInMathPlugin.INBUILT_MATH_PLUGIN_NAME, label = BuiltInMathPlugin.INBUILT_MATH_PLUGIN_LABEL, switchValue = SwitchStatus.ON)
     private INDISwitchElement builtInMathPluginElement;
 
+    /**
+     * Reinitialisation switch property. initialize the math plugin.
+     */
     @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_MATH_PLUGIN_INITIALISE", label = "(Re)Initialise Plugin", group = ALIGNMENT_TAB, switchRule = SwitchRules.AT_MOST_ONE)
     private INDISwitchProperty alignmentSubsystemMathPluginInitialise;
 
+    /**
+     * Reinitialisation switch element. initialize the math plugin.
+     */
     @InjectElement(name = "ALIGNMENT_SUBSYSTEM_MATH_PLUGIN_INITIALISE", label = "OK")
     private INDISwitchElement alignmentSubsystemMathPluginInitialiseElement;
 
+    /**
+     * Activation of the alignment system switch property.
+     */
     @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_ACTIVE", label = "Activate alignment subsystem", group = ALIGNMENT_TAB, switchRule = SwitchRules.AT_MOST_ONE)
     private INDISwitchProperty alignmentSubsystemActive;
 
+    /**
+     * Activation of the alignment system switch element..
+     */
     @InjectElement(name = "ALIGNMENT SUBSYSTEM ACTIVE", label = "Alignment Subsystem Active")
     private INDISwitchElement alignmentSubsystemActiveElement;
 
     /**
      * The following property is used for configuration purposes only and is not
-     * exposed to the client.
+     * exposed to the client.The currenty selected math plugin property.
      */
     @InjectProperty(name = "ALIGNMENT_SUBSYSTEM_CURRENT_MATH_PLUGIN", label = "Current Math Plugin", group = ALIGNMENT_TAB, saveable = true)
     private INDITextProperty alignmentSubsystemCurrentMathPlugin;
 
+    /**
+     * The currenty selected math plugin element.
+     */
     @InjectElement(name = "ALIGNMENT ALIGNMENT_SUBSYSTEM_CURRENT_MATH_PLUGIN ACTIVE", label = "Current Math Plugin", textValue = BuiltInMathPlugin.INBUILT_MATH_PLUGIN_NAME)
     private INDITextElement alignmentSubsystemCurrentMathPluginElement;
 
+    /**
+     * The active math plugin.
+     */
     private IMathPlugin plugin;
 
+    /**
+     * The in memmory sync point database to use.
+     */
     private final InMemoryDatabase inMemoryDatabase = new InMemoryDatabase();
 
+    /**
+     * Constructor for the math plugin extention. Only available for telescope
+     * drivers.
+     * 
+     * @param driver
+     *            the telescope driver.
+     */
     public MathPluginManagement(INDITelescope driver) {
         super(driver);
         enumeratePlugins();
@@ -119,6 +166,10 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         });
     }
 
+    /**
+     * Scann the class path after defined math plugins and store them in the
+     * map.
+     */
     private void enumeratePlugins() {
         plugins = new HashMap<>();
         ServiceLoader<IMathPlugin> loader = ServiceLoader.load(IMathPlugin.class, Thread.currentThread().getContextClassLoader());
@@ -129,6 +180,12 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         }
     }
 
+    /**
+     * activation/deactivations switch of the alignement system pressed.
+     * 
+     * @param elementsAndValues
+     *            the new values for the button.
+     */
     private void newAlignmentSubsystemActiveValue(INDISwitchElementAndValue[] elementsAndValues) {
         alignmentSubsystemActive.setState(OK);
         alignmentSubsystemActive.setValues(elementsAndValues);
@@ -137,6 +194,13 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         driver.updateProperty(alignmentSubsystemActive);
     }
 
+    /**
+     * The selection of the current math plugin was changed. (But maybe it did
+     * not really change)
+     * 
+     * @param elementsAndValues
+     *            the new values for the selected plugin.
+     */
     private void newAlignmentSubsystemCurrentMathPluginValue(INDITextElementAndValue[] elementsAndValues) {
         INDISwitchElement currentPlugin = alignmentSubsystemMathPlugins.getOnElement();
         alignmentSubsystemMathPlugins.setState(OK);
@@ -146,6 +210,9 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         resetPluginIfChanged(currentPlugin);
     }
 
+    /**
+     * (re)initialize the current math plugin.
+     */
     private void newAlignmentSubsystemMathPluginInitialiseValue() {
         alignmentSubsystemMathPluginInitialise.setState(OK);
         alignmentSubsystemMathPluginInitialise.resetAllSwitches();
@@ -155,6 +222,13 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         initialise();
     }
 
+    /**
+     * The selection of the current math plugin was changed by the client. (But
+     * maybe it did not really change)
+     * 
+     * @param elementsAndValues
+     *            the new values for the selected plugin.
+     */
     private void newAlignmentSubsystemMathPluginsValue(INDISwitchElementAndValue[] elementsAndValues) {
         INDISwitchElement currentPlugin = alignmentSubsystemMathPlugins.getOnElement();
         alignmentSubsystemMathPlugins.setValues(elementsAndValues);
@@ -162,10 +236,14 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         resetPluginIfChanged(currentPlugin);
     }
 
+    /**
+     * @return the current math plugin. get it from the map when nessesary.
+     */
     private IMathPlugin plugin() {
         if (plugin == null) {
             String message = null;
-            if ((plugin = plugins.get(alignmentSubsystemCurrentMathPluginElement.getValue())) != null) {
+            plugin = plugins.get(alignmentSubsystemCurrentMathPluginElement.getValue());
+            if (plugin != null) {
                 plugin.create();
                 alignmentSubsystemMathPlugins.setOnlyOneSwitchOn(alignmentSubsystemMathPlugins.getElement(plugin.id()));
             } else {
@@ -177,6 +255,12 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         return plugin;
     }
 
+    /**
+     * ok, the plugin changed destroy the old one.
+     * 
+     * @param currentPlugin
+     *            the current plugin.
+     */
     private void resetPluginIfChanged(INDISwitchElement currentPlugin) {
         INDISwitchElement newPlugin = alignmentSubsystemMathPlugins.getOnElement();
 
@@ -205,32 +289,72 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         removeProperty(this.alignmentSubsystemActive);
     }
 
-    // These must match the function signatures in MathPlugin
-
-    public MountAlignment getApproximateMountAlignment() {
-        return plugin().getApproximateMountAlignment();
+    /**
+     * @return the current mount alignment from the active math plugin.
+     */
+    public MountAlignment getApproximateAlignment() {
+        return plugin().getApproximateAlignment();
     }
 
+    /**
+     * initialize the current math plugin.
+     * 
+     * @return true if successful.
+     */
     public boolean initialise() {
         return plugin().initialise(this.inMemoryDatabase);
     }
 
-    public void setApproximateMountAlignment(MountAlignment approximateAlignment) {
-        plugin().setApproximateMountAlignment(approximateAlignment);
+    /**
+     * set the mount alignment of the current math plugin.
+     * 
+     * @param approximateAlignment
+     *            the alignment to set.
+     */
+    public void setApproximateAlignment(MountAlignment approximateAlignment) {
+        plugin().setApproximateAlignment(approximateAlignment);
     }
 
+    /**
+     * Get the alignment corrected telescope pointing direction for the supplied
+     * celestial coordinates.
+     * 
+     * @param rightAscension
+     *            Right Ascension (Decimal Hours).
+     * @param declination
+     *            Declination (Decimal Degrees).
+     * @param julianOffset
+     *            to be applied to the current julian date.
+     * @param apparentTelescopeDirectionVector
+     *            Parameter to receive the corrected telescope direction
+     * @return True if successful
+     */
     public boolean transformCelestialToTelescope(double rightAscension, double declination, double julianOffset, TelescopeDirectionVector apparentTelescopeDirectionVector) {
-        if (alignmentSubsystemActiveElement.isOn())
+        if (alignmentSubsystemActiveElement.isOn()) {
             return plugin().transformCelestialToTelescope(rightAscension, declination, julianOffset, apparentTelescopeDirectionVector);
-        else
+        } else {
             return false;
+        }
     }
 
+    /**
+     * Get the true celestial coordinates for the supplied telescope pointing
+     * direction.
+     * 
+     * @param apparentTelescopeDirectionVector
+     *            the telescope direction
+     * @param rightAscension
+     *            Parameter to receive the Right Ascension (Decimal Hours).
+     * @param declination
+     *            Parameter to receive the Declination (Decimal Degrees).
+     * @return True if successful
+     */
     public boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination) {
-        if (alignmentSubsystemActiveElement.isOn())
+        if (alignmentSubsystemActiveElement.isOn()) {
             return plugin().transformTelescopeToCelestial(apparentTelescopeDirectionVector, rightAscension, declination);
-        else
+        } else {
             return false;
+        }
     }
 
 }
