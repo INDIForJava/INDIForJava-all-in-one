@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.indilib.i4j</groupId>
@@ -31,16 +32,10 @@
 			<artifactId>novaforjava</artifactId>
 			<version>0.15.0.0</version>
 		</dependency>
-   <dependency>
-                        <groupId>com.github.quickhull3d</groupId>
-                        <artifactId>quickhull3d</artifactId>
-                        <version>1.0.0</version>
-                </dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
+			<groupId>com.github.quickhull3d</groupId>
+			<artifactId>quickhull3d</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 	<properties>

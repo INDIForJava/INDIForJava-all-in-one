@@ -302,6 +302,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      * @return true if successful.
      */
     public boolean initialise() {
+        this.inMemoryDatabase.loadDatabase(this.driver.getName());
         return plugin().initialise(this.inMemoryDatabase);
     }
 
