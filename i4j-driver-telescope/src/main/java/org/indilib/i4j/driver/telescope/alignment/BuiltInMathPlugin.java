@@ -763,7 +763,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
     }
 
     @Override
-    public boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination) {
+    public boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
+            DoubleRef declination) {
 
         LnLnlatPosn position = new LnLnlatPosn();
 
@@ -779,15 +780,15 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
         switch (inMemoryDatabase.getAlignmentDatabase().size()) {
             case POINT_DB_EMPTY:
-                transformTelescopeToCelestialWithEmptyDb(apparentTelescopeDirectionVector, rightAscension, declination, position);
+                transformTelescopeToCelestialWithEmptyDb(apparentTelescopeDirectionVector, julianOffset, rightAscension, declination, position);
                 break;
             case POINT_DB_ONE_ENTRY:
             case POINT_DB_TWO_ENTRIES:
             case POINT_DB_THREE_ENTRIES:
-                transformTelescopeToCelestialWithSmallDb(apparentTelescopeDirectionVector, rightAscension, declination, position);
+                transformTelescopeToCelestialWithSmallDb(apparentTelescopeDirectionVector, julianOffset, rightAscension, declination, position);
                 break;
             default:
-                transformTelescopeToCelestialWithBigDb(apparentTelescopeDirectionVector, rightAscension, declination, position);
+                transformTelescopeToCelestialWithBigDb(apparentTelescopeDirectionVector, julianOffset, rightAscension, declination, position);
                 break;
         }
         return true;
@@ -799,6 +800,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * 
      * @param apparentTelescopeDirectionVector
      *            the vector the scope is pointing.
+     * @param julianOffset
+     *            to be applied to the current julian date.
      * @param rightAscension
      *            the resulting right ascension
      * @param declination
@@ -806,8 +809,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * @param position
      *            the current scope position.
      */
-    protected void transformTelescopeToCelestialWithBigDb(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination,
-            LnLnlatPosn position) {
+    protected void transformTelescopeToCelestialWithBigDb(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
+            DoubleRef declination, LnLnlatPosn position) {
 
         List<AlignmentDatabaseEntry> syncPoints = inMemoryDatabase.getAlignmentDatabase();
 
@@ -887,7 +890,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         actualTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
         LnEquPosn actualRaDec = new LnEquPosn();
-        Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys(), actualRaDec);
+        Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys() + julianOffset, actualRaDec);
 
         // libnova works in decimal degrees so conversion is needed here
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
@@ -902,6 +905,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * 
      * @param apparentTelescopeDirectionVector
      *            the vector the scope is pointing.
+     * @param julianOffset
+     *            to be applied to the current julian date.
      * @param rightAscension
      *            the resulting right ascension
      * @param declination
@@ -909,8 +914,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * @param position
      *            the current scope position.
      */
-    protected void transformTelescopeToCelestialWithSmallDb(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination,
-            LnLnlatPosn position) {
+    protected void transformTelescopeToCelestialWithSmallDb(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
+            DoubleRef declination, LnLnlatPosn position) {
 
         TelescopeDirectionVector actualTelescopeDirectionVector = new TelescopeDirectionVector();
 
@@ -920,7 +925,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         actualTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
         LnEquPosn actualRaDec = new LnEquPosn();
-        Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys(), actualRaDec);
+        Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys() + julianOffset, actualRaDec);
 
         // libnova works in decimal degrees so conversion is needed here
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
@@ -935,6 +940,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * 
      * @param apparentTelescopeDirectionVector
      *            the vector the scope is pointing.
+     * @param julianOffset
+     *            to be applied to the current julian date.
      * @param rightAscension
      *            the resulting right ascension
      * @param declination
@@ -942,8 +949,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * @param position
      *            the current scope position.
      */
-    protected void transformTelescopeToCelestialWithEmptyDb(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination,
-            LnLnlatPosn position) {
+    protected void transformTelescopeToCelestialWithEmptyDb(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
+            DoubleRef declination, LnLnlatPosn position) {
 
         LnHrzPosn actualAltAz = new LnHrzPosn();
         LnEquPosn actualRaDec = new LnEquPosn();
@@ -975,7 +982,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         }
         rotatedTDV.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
-        Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys(), actualRaDec);
+        Transform.ln_get_equ_from_hrz(actualAltAz, position, JulianDay.ln_get_julian_from_sys() + julianOffset, actualRaDec);
 
         // libnova works in decimal degrees so conversion is needed here
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
@@ -1043,7 +1050,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         } else {
             matrixMatrixMultiply(betaMatrix, invertedAlphaMatrix, alphaToBeta);
 
-            if (betaToAlpha != null && !betaToAlpha.isNull()) {
+            if (betaToAlpha != null) {
                 // Invert the matrix to get the Apparent to Actual transform
                 if (!matrixInvert3x3(alphaToBeta, betaToAlpha)) {
                     // pAlphaToBeta is singular and therefore is not a true

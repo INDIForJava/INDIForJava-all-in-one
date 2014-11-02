@@ -84,6 +84,14 @@ public class BuildInMathPluginTest {
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
         printAltAz(actualAltAz, expectedAlt, expectedAz);
 
+        DoubleRef rightAscensionRef = new DoubleRef();
+        DoubleRef declinationRef = new DoubleRef();
+        TelescopeDirectionVector vector = new TelescopeDirectionVector();
+        vector.copyFrom(apparentTelescopeDirectionVector);
+        plugin.transformTelescopeToCelestial(vector, julianOffset, rightAscensionRef, declinationRef);
+        Assert.assertEquals(rightAscensionRef.getValue(), rightAscension, 0.01d);
+        Assert.assertEquals(declinationRef.getValue(), declination, 0.01d);
+
         // -----------------------------------------------------------
         AlignmentDatabaseEntry e = new AlignmentDatabaseEntry();
         e.declination = declination;
@@ -111,6 +119,12 @@ public class BuildInMathPluginTest {
         actualAltAz = new LnHrzPosn();
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
         printAltAz(actualAltAz, expectedAlt, expectedAz);
+
+        vector = new TelescopeDirectionVector();
+        vector.copyFrom(apparentTelescopeDirectionVector);
+        plugin.transformTelescopeToCelestial(vector, julianOffset, rightAscensionRef, declinationRef);
+        Assert.assertEquals(rightAscensionRef.getValue(), rightAscension, 0.01d);
+        Assert.assertEquals(declinationRef.getValue(), declination, 0.01d);
 
         // -----------------------------------------------------------
         e = new AlignmentDatabaseEntry();
@@ -140,6 +154,12 @@ public class BuildInMathPluginTest {
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
         printAltAz(actualAltAz, expectedAlt, expectedAz);
 
+        vector = new TelescopeDirectionVector();
+        vector.copyFrom(apparentTelescopeDirectionVector);
+        plugin.transformTelescopeToCelestial(vector, julianOffset, rightAscensionRef, declinationRef);
+        Assert.assertEquals(rightAscensionRef.getValue(), rightAscension, 0.01d);
+        Assert.assertEquals(declinationRef.getValue(), declination, 0.01d);
+
         // -----------------------------------------------------------
         e = new AlignmentDatabaseEntry();
         e.declination = declination;
@@ -167,6 +187,12 @@ public class BuildInMathPluginTest {
         actualAltAz = new LnHrzPosn();
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
         printAltAz(actualAltAz, expectedAlt, expectedAz);
+
+        vector = new TelescopeDirectionVector();
+        vector.copyFrom(apparentTelescopeDirectionVector);
+        plugin.transformTelescopeToCelestial(vector, julianOffset, rightAscensionRef, declinationRef);
+        Assert.assertEquals(rightAscensionRef.getValue(), rightAscension, 0.01d);
+        Assert.assertEquals(declinationRef.getValue(), declination, 0.01d);
 
         // -----------------------------------------------------------
         e = new AlignmentDatabaseEntry();
@@ -196,6 +222,12 @@ public class BuildInMathPluginTest {
         actualAltAz = new LnHrzPosn();
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
         printAltAz(actualAltAz, expectedAlt, expectedAz);
+
+        vector = new TelescopeDirectionVector();
+        vector.copyFrom(apparentTelescopeDirectionVector);
+        plugin.transformTelescopeToCelestial(vector, julianOffset, rightAscensionRef, declinationRef);
+        Assert.assertEquals(rightAscensionRef.getValue(), rightAscension, 0.01d);
+        Assert.assertEquals(declinationRef.getValue(), declination, 0.01d);
     }
 
     protected void printSimpleAltAzValues(LnLnlatPosn position, double rightAscension, double declination, double julianOffset, double expectedAlt, double expectedAz) {

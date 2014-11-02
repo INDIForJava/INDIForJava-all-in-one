@@ -98,12 +98,14 @@ public interface IMathPlugin {
      * 
      * @param apparentTelescopeDirectionVector
      *            the telescope direction
+     * @param julianOffset
+     *            to be applied to the current julian date.
      * @param rightAscension
      *            Parameter to receive the Right Ascension (Decimal Hours).
      * @param declination
      *            Parameter to receive the Declination (Decimal Degrees).
      * @return True if successful
      */
-    boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, DoubleRef rightAscension, DoubleRef declination);
+    boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension, DoubleRef declination);
 
 }
