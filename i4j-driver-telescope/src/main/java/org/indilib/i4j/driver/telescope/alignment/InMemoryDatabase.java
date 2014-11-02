@@ -81,6 +81,16 @@ public class InMemoryDatabase {
     private List<AlignmentDatabaseEntry> mySyncPoints = new ArrayList<>();
 
     /**
+     * the latitude of the reference position.
+     */
+    private double latitude;
+
+    /**
+     * the longitude of the reference position.
+     */
+    private double longitude;
+
+    /**
      * construct a file name for the point database for this device.
      * 
      * @param deviceName
@@ -120,7 +130,9 @@ public class InMemoryDatabase {
      * @return True if successful
      */
     protected boolean getDatabaseReferencePosition(LnLnlatPosn position) {
-        return false;
+        position.lat = latitude;
+        position.lng = longitude;
+        return true;
     }
 
     /**
@@ -176,12 +188,14 @@ public class InMemoryDatabase {
     /**
      * Set the database reference position.
      * 
-     * @param latitude
+     * @param newLatitude
      *            the latitude of the reference position
-     * @param longitude
+     * @param newLongitude
      *            the longitude of the reference position
      */
-    protected void setDatabaseReferencePosition(double latitude, double longitude) {
+    protected void setDatabaseReferencePosition(double newLatitude, double newLongitude) {
+        latitude = newLatitude;
+        longitude = newLongitude;
     }
 
     /**

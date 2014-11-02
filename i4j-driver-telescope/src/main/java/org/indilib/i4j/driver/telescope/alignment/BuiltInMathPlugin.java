@@ -201,17 +201,17 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Actual Convex hull for 4+ sync points case.
      */
-    private WrappedQuickHull3D actualConvexHull;
+    private WrappedQuickHull3D actualConvexHull = new WrappedQuickHull3D();
 
     /**
      * Apperent Convex hull for 4+ sync points case.
      */
-    private WrappedQuickHull3D apparentConvexHull;
+    private WrappedQuickHull3D apparentConvexHull = new WrappedQuickHull3D();
 
     /**
      * Actual direction cosines for the 4+ case.
      */
-    private List<TelescopeDirectionVector> actualDirectionCosines;
+    private List<TelescopeDirectionVector> actualDirectionCosines = new ArrayList<TelescopeDirectionVector>();
 
     /**
      * the in memory alignment database.
@@ -545,7 +545,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         LnHrzPosn actualAltAz = new LnHrzPosn();
         Transform.ln_get_hrz_from_equ(actualRaDec, position, JulianDay.ln_get_julian_from_sys() + julianOffset, actualAltAz);
 
-        LOG.debug("Celestial to telescope - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
+        LOG.debug(String.format("Celestial to telescope - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az));
 
         TelescopeDirectionVector actualVector = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualAltAz);
         switch (inMemoryDatabase.getAlignmentDatabase().size()) {
@@ -567,7 +567,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
         LnHrzPosn apparentAltAz = new LnHrzPosn();
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(apparentAltAz);
-        LOG.info("Celestial to telescope - Apparent Alt %f Az %f", apparentAltAz.alt, apparentAltAz.az);
+        LOG.info(String.format("Celestial to telescope - Apparent Alt %f Az %f", apparentAltAz.alt, apparentAltAz.az));
         return true;
     }
 
@@ -770,7 +770,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         LnHrzPosn apparentAltAz = new LnHrzPosn();
 
         apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(apparentAltAz);
-        LOG.info("Telescope to celestial - Apparent Alt %f Az %f", apparentAltAz.alt, apparentAltAz.az);
+        LOG.info(String.format("Telescope to celestial - Apparent Alt %f Az %f", apparentAltAz.alt, apparentAltAz.az));
 
         // Should check that this the same as the current observing position
         if (!inMemoryDatabase.getDatabaseReferencePosition(position)) {
@@ -893,7 +893,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
         declination.setValue(actualRaDec.dec);
 
-        LOG.info("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
+        LOG.info(String.format("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az));
     }
 
     /**
@@ -926,7 +926,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
         declination.setValue(actualRaDec.dec);
 
-        LOG.info("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
+        LOG.info(String.format("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az));
     }
 
     /**
@@ -981,7 +981,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         rightAscension.setValue(actualRaDec.ra * HOUR_TO_DEGREES);
         declination.setValue(actualRaDec.dec);
 
-        LOG.info("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az);
+        LOG.info(String.format("Telescope to Celestial - Actual Alt %f Az %f", actualAltAz.alt, actualAltAz.az));
     }
 
     /**
@@ -993,8 +993,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      *            the vector to print
      */
     protected void dump3(String label, GslVector vector) {
-        LOG.info("Vector dump - %s", label);
-        LOG.info("%f %f %f", vector.get(0), vector.get(1), vector.get(2));
+        LOG.info(String.format("Vector dump - %s", label));
+        LOG.info(String.format("%f %f %f", vector.get(0), vector.get(1), vector.get(2)));
     }
 
     /**
@@ -1006,10 +1006,10 @@ public class BuiltInMathPlugin implements IMathPlugin {
      *            the matrix to print
      */
     protected void dump3x3(String label, GslMatrix matrix) {
-        LOG.info("Matrix dump - %s", label);
-        LOG.info("Row 0 %f %f %f", matrix.get(0, 0), matrix.get(0, 1), matrix.get(0, 2));
-        LOG.info("Row 1 %f %f %f", matrix.get(1, 0), matrix.get(1, 1), matrix.get(1, 2));
-        LOG.info("Row 2 %f %f %f", matrix.get(2, 0), matrix.get(2, 1), matrix.get(2, 2));
+        LOG.info(String.format("Matrix dump - %s", label));
+        LOG.info(String.format("Row 0 %f %f %f", matrix.get(0, 0), matrix.get(0, 1), matrix.get(0, 2)));
+        LOG.info(String.format("Row 1 %f %f %f", matrix.get(1, 0), matrix.get(1, 1), matrix.get(1, 2)));
+        LOG.info(String.format("Row 2 %f %f %f", matrix.get(2, 0), matrix.get(2, 1), matrix.get(2, 2)));
     }
 
     /**
@@ -1043,7 +1043,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         } else {
             matrixMatrixMultiply(betaMatrix, invertedAlphaMatrix, alphaToBeta);
 
-            if (!betaToAlpha.isNull()) {
+            if (betaToAlpha != null && !betaToAlpha.isNull()) {
                 // Invert the matrix to get the Apparent to Actual transform
                 if (!matrixInvert3x3(alphaToBeta, betaToAlpha)) {
                     // pAlphaToBeta is singular and therefore is not a true

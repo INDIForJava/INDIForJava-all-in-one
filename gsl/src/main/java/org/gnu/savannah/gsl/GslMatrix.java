@@ -115,7 +115,7 @@ public class GslMatrix {
         }
 
         {
-            GslVector v = new GslVector(j);
+            GslVector v = new GslVector(this.size1);
 
             // should referense same data
             v.data = new DoubleArray(this.data, j * 1);
