@@ -89,4 +89,15 @@ public class OneNumber extends OneElement<OneNumber> {
         this.min = newMin;
         return this;
     }
+
+    @Override
+    public boolean isOneNumber() {
+        return true;
+    }
+
+    @Override
+    public boolean isNumber() {
+        return true;
+    }
+
 }

@@ -30,6 +30,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("defNumberVector")
-public class DefNumberVector {
+public class DefNumberVector extends DefVector<DefNumberVector> {
 
+    @Override
+    public boolean isDefNumberVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isNumber() {
+        return true;
+    }
 }

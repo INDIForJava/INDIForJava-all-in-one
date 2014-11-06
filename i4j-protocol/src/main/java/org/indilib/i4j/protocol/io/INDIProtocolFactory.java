@@ -55,6 +55,8 @@ import org.indilib.i4j.protocol.SetNumberVector;
 import org.indilib.i4j.protocol.SetSwitchVector;
 import org.indilib.i4j.protocol.SetTextVector;
 import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.api.INDIOutputStream;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
@@ -143,7 +145,7 @@ public final class INDIProtocolFactory {
      *             when something went wrong with the underlaying intput stream.
      */
     public static INDIInputStream createINDIInputStream(InputStream in) throws IOException {
-        return new INDIInputStream(XSTREAM.createObjectInputStream(inputStreamWithRootTag(in)));
+        return new INDIInputStreamImpl(XSTREAM.createObjectInputStream(inputStreamWithRootTag(in)));
     }
 
     /**
@@ -157,7 +159,7 @@ public final class INDIProtocolFactory {
      */
     public static INDIOutputStream createINDIOutputStream(OutputStream out) throws IOException {
         final StatefulWriter statefulWriter = new StatefulWriter(STREAM_DRIVER.createWriter(out));
-        return new INDIOutputStream(new CustomObjectOutputStream(new CustomObjectOutputStream.StreamCallback() {
+        return new INDIOutputStreamImpl(new CustomObjectOutputStream(new CustomObjectOutputStream.StreamCallback() {
 
             public void close() {
                 if (statefulWriter.state() != StatefulWriter.STATE_CLOSED) {

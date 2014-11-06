@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("setLightVector")
 public class SetLightVector extends SetVector<SetLightVector> {
 
+    @Override
+    public boolean isSetLightVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isLight() {
+        return true;
+    }
 }

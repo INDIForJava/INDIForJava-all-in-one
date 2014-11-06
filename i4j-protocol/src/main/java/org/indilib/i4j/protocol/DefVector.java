@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  *            type for the builder
  * @author Richard van Nieuwenhoven
  */
-public class DefVector<T> extends INDIProtocol<T> {
+public abstract class DefVector<T> extends INDIProtocol<T> {
 
     /**
      * the device element attribute.
@@ -242,4 +242,13 @@ public class DefVector<T> extends INDIProtocol<T> {
         return (T) this;
     }
 
+    @Override
+    public boolean isVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isDef() {
+        return true;
+    }
 }

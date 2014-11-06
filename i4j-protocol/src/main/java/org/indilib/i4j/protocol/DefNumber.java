@@ -132,4 +132,14 @@ public class DefNumber extends DefElement<DefNumber> {
         this.step = newLeft;
         return this;
     }
+
+    @Override
+    public boolean isDefNumberElement() {
+        return true;
+    }
+
+    @Override
+    public boolean isNumber() {
+        return true;
+    }
 }

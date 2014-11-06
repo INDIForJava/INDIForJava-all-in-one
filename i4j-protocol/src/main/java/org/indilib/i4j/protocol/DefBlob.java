@@ -31,4 +31,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 @XStreamAlias("defBLOB")
 public class DefBlob extends DefElement<DefBlob> {
+
+    @Override
+    public boolean isBlob() {
+        return true;
+    }
+
+    @Override
+    public boolean isDefBlobElement() {
+        return true;
+    }
 }

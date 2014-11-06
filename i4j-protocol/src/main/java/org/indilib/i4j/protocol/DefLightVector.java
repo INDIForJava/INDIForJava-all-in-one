@@ -32,4 +32,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("defLightVector")
 public class DefLightVector extends DefVector<DefLightVector> {
 
+    @Override
+    public boolean isDefLightVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isDefLightElement() {
+        return true;
+    }
+
 }

@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("setNumberVector")
 public class SetNumberVector extends SetVector<SetNumberVector> {
 
+    @Override
+    public boolean isSetNumberVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isNumber() {
+        return true;
+    }
 }

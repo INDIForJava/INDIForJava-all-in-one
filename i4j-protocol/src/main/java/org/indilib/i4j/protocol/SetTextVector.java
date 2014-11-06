@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("setTextVector")
 public class SetTextVector extends SetVector<SetTextVector> {
 
+    @Override
+    public boolean isSetTextVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isText() {
+        return true;
+    }
 }

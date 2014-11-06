@@ -39,4 +39,13 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 })
 public class OneText extends OneElement<OneText> {
 
+    @Override
+    public boolean isOneText() {
+        return true;
+    }
+
+    @Override
+    public boolean isText() {
+        return true;
+    }
 }

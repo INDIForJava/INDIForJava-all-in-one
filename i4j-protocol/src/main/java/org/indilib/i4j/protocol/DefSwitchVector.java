@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("defSwitchVector")
 public class DefSwitchVector extends DefVector<DefSwitchVector> {
 
+    @Override
+    public boolean isDefSwitchVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isSwitch() {
+        return true;
+    }
 }

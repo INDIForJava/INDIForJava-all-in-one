@@ -27,13 +27,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.api.INDIInputStream;
 
 /**
  * Input stream of INDIProtocol objects. deserialized from a xml stream.
  * 
  * @author Richard van Nieuwenhoven
  */
-public class INDIInputStream {
+public class INDIInputStreamImpl implements INDIInputStream {
 
     /**
      * The xstream object input stream that deserializes the INDIProtocol
@@ -49,27 +50,16 @@ public class INDIInputStream {
      * @throws IOException
      *             when something with the underlaying stream went wrong.
      */
-    protected INDIInputStream(ObjectInputStream in) throws IOException {
+    protected INDIInputStreamImpl(ObjectInputStream in) throws IOException {
         this.in = in;
     }
 
-    /**
-     * closes the underlaying input stream.
-     * 
-     * @throws IOException
-     *             when something went wrong with the underlaying input stream.
-     */
+    @Override
     public void close() throws IOException {
         in.close();
     }
 
-    /**
-     * @return the next indi protocol object from the stream. (blocking till the
-     *         next is available or null at end of stream)
-     * @throws IOException
-     *             if something went wrong with the desiralisation or the
-     *             underlaying stream.
-     */
+    @Override
     public INDIProtocol<?> readObject() throws IOException {
         try {
             return (INDIProtocol<?>) in.readObject();

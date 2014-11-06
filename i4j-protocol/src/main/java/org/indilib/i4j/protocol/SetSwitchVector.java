@@ -57,4 +57,14 @@ public class SetSwitchVector extends SetVector<SetSwitchVector> {
         this.rule = newRule;
         return this;
     }
+
+    @Override
+    public boolean isSetSwitchVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isSwitch() {
+        return true;
+    }
 }

@@ -25,6 +25,7 @@ package org.indilib.i4j.protocol.io;
 import java.io.IOException;
 
 import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.api.INDIOutputStream;
 
 import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
 
@@ -33,7 +34,7 @@ import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class INDIOutputStream {
+public class INDIOutputStreamImpl implements INDIOutputStream {
 
     /**
      * The xstream serializer.
@@ -48,28 +49,16 @@ public class INDIOutputStream {
      * @throws IOException
      *             when something went wrong with the underlaying output stream.
      */
-    protected INDIOutputStream(CustomObjectOutputStream out) throws IOException {
+    protected INDIOutputStreamImpl(CustomObjectOutputStream out) throws IOException {
         this.out = out;
     }
 
-    /**
-     * close the underlaying output stream.
-     * 
-     * @throws IOException
-     *             when something went wrong with the underlaying output stream.
-     */
+    @Override
     public void close() throws IOException {
         out.close();
     }
 
-    /**
-     * Write an INDI protocol object to the output stream. (and flush it)
-     * 
-     * @param element
-     *            the element to write
-     * @throws IOException
-     *             when something went wrong with the underlaying output stream.
-     */
+    @Override
     public void writeObject(INDIProtocol<?> element) throws IOException {
         out.writeObject(element);
         out.flush();

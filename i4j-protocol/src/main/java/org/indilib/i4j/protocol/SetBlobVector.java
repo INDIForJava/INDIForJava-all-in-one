@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("setBLOBVector")
 public class SetBlobVector extends SetVector<SetBlobVector> {
 
+    @Override
+    public boolean isSetBlobVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isBlob() {
+        return true;
+    }
 }

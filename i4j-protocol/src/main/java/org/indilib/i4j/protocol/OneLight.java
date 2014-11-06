@@ -39,4 +39,13 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 })
 public class OneLight extends OneElement<OneLight> {
 
+    @Override
+    public boolean isOneLight() {
+        return true;
+    }
+
+    @Override
+    public boolean isLight() {
+        return true;
+    }
 }

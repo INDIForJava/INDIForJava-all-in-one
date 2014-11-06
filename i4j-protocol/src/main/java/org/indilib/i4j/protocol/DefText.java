@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("defText")
 public class DefText extends DefElement<DefText> {
 
+    @Override
+    public boolean isText() {
+        return true;
+    }
+
+    @Override
+    public boolean isDefTextElement() {
+        return true;
+    }
 }

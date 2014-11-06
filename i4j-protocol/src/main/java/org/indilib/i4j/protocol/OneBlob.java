@@ -106,4 +106,14 @@ public class OneBlob extends OneElement<OneBlob> {
         this.format = newFormat;
         return this;
     }
+
+    @Override
+    public boolean isBlob() {
+        return true;
+    }
+
+    @Override
+    public boolean isOneBlob() {
+        return true;
+    }
 }

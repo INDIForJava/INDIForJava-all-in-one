@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("defLight")
 public class DefLight extends DefElement<DefLight> {
 
+    @Override
+    public boolean isLight() {
+        return true;
+    }
+
+    @Override
+    public boolean isDefLightElement() {
+        return true;
+    }
 }

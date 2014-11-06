@@ -32,4 +32,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("defTextVector")
 public class DefTextVector extends DefVector<DefTextVector> {
 
+    @Override
+    public boolean isText() {
+        return true;
+    }
+
+    @Override
+    public boolean isDefTextVector() {
+        return true;
+    }
 }

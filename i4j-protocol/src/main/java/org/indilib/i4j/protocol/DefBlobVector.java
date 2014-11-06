@@ -32,4 +32,18 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("defBLOBVector")
 public class DefBlobVector extends DefVector<DefBlobVector> {
 
+    @Override
+    public boolean isVector() {
+        return true;
+    }
+
+    @Override
+    public boolean isBlob() {
+        return true;
+    }
+
+    @Override
+    public boolean isDefBlobVector() {
+        return true;
+    }
 }
