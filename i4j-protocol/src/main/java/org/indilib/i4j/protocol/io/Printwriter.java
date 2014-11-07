@@ -59,11 +59,6 @@ final class Printwriter extends PrettyPrintWriter {
     }
 
     @Override
-    protected String getNewLine() {
-        return "";
-    }
-
-    @Override
     public void endNode() {
         try {
             tagIsEmpty.set(this, false);
@@ -71,6 +66,11 @@ final class Printwriter extends PrettyPrintWriter {
         } catch (Exception e) {
             throw new RuntimeException("?", e);
         }
+    }
+
+    @Override
+    protected String getNewLine() {
+        return "";
     }
 
 }

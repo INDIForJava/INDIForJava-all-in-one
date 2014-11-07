@@ -1,4 +1,9 @@
-package org.indilib.i4j.protocol;
+/**
+ * This package provides the indi xml protokol api interfaces for xstream.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+package org.indilib.i4j.protocol.api;
 
 /*
  * #%L
@@ -13,32 +18,12 @@ package org.indilib.i4j.protocol;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-/**
- * This class represents an INDI XML protocol element.
- * 
- * @author Richard van Nieuwenhoven
- */
-@XStreamAlias("defTextVector")
-public class DefTextVector extends DefVector<DefTextVector> {
-
-    @Override
-    public boolean isDefTextVector() {
-        return true;
-    }
-
-    @Override
-    public boolean isText() {
-        return true;
-    }
-}

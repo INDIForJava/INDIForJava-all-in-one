@@ -46,11 +46,6 @@ public class EncodedByteArrayConverter implements Converter, SingleValueConverte
     }
 
     @Override
-    public String toString(Object obj) {
-        return new String(Base64.encodeBase64((byte[]) obj), Charsets.UTF_8);
-    }
-
-    @Override
     public Object fromString(String str) {
         return Base64.decodeBase64(str);
     }
@@ -59,6 +54,11 @@ public class EncodedByteArrayConverter implements Converter, SingleValueConverte
     public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
         writer.setValue(toString(source));
 
+    }
+
+    @Override
+    public String toString(Object obj) {
+        return new String(Base64.encodeBase64((byte[]) obj), Charsets.UTF_8);
     }
 
     @Override

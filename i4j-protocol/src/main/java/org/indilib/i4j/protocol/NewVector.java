@@ -13,11 +13,11 @@ package org.indilib.i4j.protocol;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -68,6 +68,19 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
     private String timestamp;
 
     /**
+     * add one element to the list.
+     * 
+     * @param element
+     *            the element to add.
+     * @return this for builder pattern.
+     */
+    @SuppressWarnings("unchecked")
+    public T addElement(OneElement<?> element) {
+        getElements().add(element);
+        return (T) this;
+    }
+
+    /**
      * @return the device attribute of the element.
      */
     public String getDevice() {
@@ -82,19 +95,6 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
             elements = new ArrayList<>();
         }
         return elements;
-    }
-
-    /**
-     * add one element to the list.
-     * 
-     * @param element
-     *            the element to add.
-     * @return this for builder pattern.
-     */
-    @SuppressWarnings("unchecked")
-    public T addElement(OneElement<?> element) {
-        getElements().add(element);
-        return (T) this;
     }
 
     /**
@@ -116,6 +116,16 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
      */
     public String getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public boolean isNew() {
+        return true;
+    }
+
+    @Override
+    public boolean isNewVector() {
+        return true;
     }
 
     /**
@@ -168,15 +178,5 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
     public T setTimestamp(String newTimestamp) {
         this.timestamp = newTimestamp;
         return (T) this;
-    }
-
-    @Override
-    public boolean isNew() {
-        return true;
-    }
-
-    @Override
-    public boolean isNewVector() {
-        return true;
     }
 }

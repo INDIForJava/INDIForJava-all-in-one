@@ -38,16 +38,10 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * set the name element attribute.
-     * 
-     * @param newName
-     *            the new name of the attribute.
-     * @return this for builder pattern.
+     * @return is this a blob element.
      */
-    @SuppressWarnings("unchecked")
-    public T setName(String newName) {
-        this.name = newName;
-        return (T) this;
+    public boolean isBlob() {
+        return false;
     }
 
     /**
@@ -58,23 +52,9 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * @return is this a definition element.
-     */
-    public boolean isElement() {
-        return false;
-    }
-
-    /**
      * @return is this a definition blob element.
      */
     public boolean isDefBlobElement() {
-        return false;
-    }
-
-    /**
-     * @return is this a blob element.
-     */
-    public boolean isBlob() {
         return false;
     }
 
@@ -128,13 +108,6 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * @return is this a switch.
-     */
-    public boolean isSwitch() {
-        return false;
-    }
-
-    /**
      * @return is this a definition text element.
      */
     public boolean isDefTextElement() {
@@ -152,6 +125,90 @@ public abstract class INDIProtocol<T> {
      * @return is this a definition vector.
      */
     public boolean isDefVector() {
+        return false;
+    }
+
+    /**
+     * @return is this a definition element.
+     */
+    public boolean isElement() {
+        return false;
+    }
+
+    /**
+     * @return is this a enable blob message.
+     */
+    public boolean isEnableBLOB() {
+        return false;
+    }
+
+    /**
+     * @return is this a get properties.
+     */
+    public boolean isGetProperties() {
+        return false;
+    }
+
+    /**
+     * @return is this a light element.
+     */
+    public boolean isLight() {
+        return false;
+    }
+
+    /**
+     * @return is this a new properties.
+     */
+    public boolean isNew() {
+        return false;
+    }
+
+    /**
+     * @return is this a new properties.
+     */
+    public boolean isNewBlobVector() {
+        return false;
+    }
+
+    /**
+     * @return is this a n ewproperties.
+     */
+    public boolean isNewLightVector() {
+        return false;
+    }
+
+    /**
+     * @return is this a new properties.
+     */
+    public boolean isNewNumberVector() {
+        return false;
+    }
+
+    /**
+     * @return is this a new properties.
+     */
+    public boolean isNewSwitchVector() {
+        return false;
+    }
+
+    /**
+     * @return is this a new properties.
+     */
+    public boolean isNewTextVector() {
+        return false;
+    }
+
+    /**
+     * @return is this a new properties.
+     */
+    public boolean isNewVector() {
+        return false;
+    }
+
+    /**
+     * @return is this a number element.
+     */
+    public boolean isNumber() {
         return false;
     }
 
@@ -184,23 +241,9 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * @return is this a light element.
-     */
-    public boolean isLight() {
-        return false;
-    }
-
-    /**
      * @return is this a one number element.
      */
     public boolean isOneNumber() {
-        return false;
-    }
-
-    /**
-     * @return is this a number element.
-     */
-    public boolean isNumber() {
         return false;
     }
 
@@ -212,23 +255,9 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * @return is this a text element.
-     */
-    public boolean isText() {
-        return false;
-    }
-
-    /**
      * @return is this a set element.
      */
     public boolean isSet() {
-        return false;
-    }
-
-    /**
-     * @return is this a vector.
-     */
-    public boolean isVector() {
         return false;
     }
 
@@ -275,58 +304,36 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * @return is this a get properties.
+     * @return is this a switch.
      */
-    public boolean isGetProperties() {
+    public boolean isSwitch() {
         return false;
     }
 
     /**
-     * @return is this a get properties.
+     * @return is this a text element.
      */
-    public boolean isNewBlobVector() {
+    public boolean isText() {
         return false;
     }
 
     /**
-     * @return is this a get properties.
+     * @return is this a vector.
      */
-    public boolean isNewLightVector() {
+    public boolean isVector() {
         return false;
     }
 
     /**
-     * @return is this a get properties.
+     * set the name element attribute.
+     * 
+     * @param newName
+     *            the new name of the attribute.
+     * @return this for builder pattern.
      */
-    public boolean isNewNumberVector() {
-        return false;
-    }
-
-    /**
-     * @return is this a get properties.
-     */
-    public boolean isNewSwitchVector() {
-        return false;
-    }
-
-    /**
-     * @return is this a get properties.
-     */
-    public boolean isNewTextVector() {
-        return false;
-    }
-
-    /**
-     * @return is this a get properties.
-     */
-    public boolean isNewVector() {
-        return false;
-    }
-
-    /**
-     * @return is this a get properties.
-     */
-    public boolean isNew() {
-        return false;
+    @SuppressWarnings("unchecked")
+    public T setName(String newName) {
+        this.name = newName;
+        return (T) this;
     }
 }

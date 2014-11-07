@@ -374,6 +374,7 @@
 		<module>i4j-server</module>
 		<module>i4j-server-examples</module>
 		<module>i4j-driver-guider</module>
+		<module>i4j-protocol</module>
 		<module>i4j-all-in-one</module>
 		<module>gsl</module>
 	</modules>

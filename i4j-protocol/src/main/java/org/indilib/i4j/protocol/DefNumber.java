@@ -13,11 +13,11 @@ package org.indilib.i4j.protocol;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -85,6 +85,16 @@ public class DefNumber extends DefElement<DefNumber> {
         return step;
     }
 
+    @Override
+    public boolean isDefNumberElement() {
+        return true;
+    }
+
+    @Override
+    public boolean isNumber() {
+        return true;
+    }
+
     /**
      * set the format element atttribute.
      * 
@@ -131,15 +141,5 @@ public class DefNumber extends DefElement<DefNumber> {
     public DefNumber setStep(String newLeft) {
         this.step = newLeft;
         return this;
-    }
-
-    @Override
-    public boolean isDefNumberElement() {
-        return true;
-    }
-
-    @Override
-    public boolean isNumber() {
-        return true;
     }
 }
