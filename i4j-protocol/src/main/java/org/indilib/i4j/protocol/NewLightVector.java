@@ -23,48 +23,22 @@ package org.indilib.i4j.protocol;
  */
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * This class represents an INDI XML protocol element.
  * 
  * @author Richard van Nieuwenhoven
  */
-@XStreamAlias("setSwitchVector")
-public class SetSwitchVector extends SetVector<SetSwitchVector> {
-
-    /**
-     * the rule attribute of the element.
-     */
-    @XStreamAsAttribute
-    private String rule;
-
-    /**
-     * @return the rule attribute of the element.
-     */
-    public String getRule() {
-        return rule;
-    }
-
-    /**
-     * set the rule attribute of the element.
-     * 
-     * @param newRule
-     *            the new value for the rule attribute.
-     * @return this for builder pattern.
-     */
-    public SetSwitchVector setRule(String newRule) {
-        this.rule = newRule;
-        return this;
-    }
+@XStreamAlias("newLightVector")
+public class NewLightVector extends SetVector<NewLightVector> {
 
     @Override
-    public boolean isSetSwitchVector() {
+    public boolean isNewLightVector() {
         return true;
     }
 
     @Override
-    public boolean isSwitch() {
+    public boolean isLight() {
         return true;
     }
 }
