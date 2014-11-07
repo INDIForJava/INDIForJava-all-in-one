@@ -147,6 +147,10 @@ public class InMemoryDatabase {
         if (db.getParentFile().mkdirs()) {
             LOG.error("sync point db directory created");
         }
+        if (!db.exists()) {
+            LOG.info("no database to load");
+            return true;
+        }
         try (ObjectInputStream out = new ObjectInputStream(new FileInputStream(db))) {
             mySyncPoints = (List<AlignmentDatabaseEntry>) out.readObject();
             return true;

@@ -348,6 +348,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * If the telescope supports parking, the handling is done in this
      * extention.
      */
+    @InjectExtension
     protected INDITelescopeParkExtension parkExtension;
 
     /**

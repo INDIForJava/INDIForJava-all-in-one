@@ -50,27 +50,32 @@ public class AxisWithEncoder {
     /**
      * minimum position of the encoder.
      */
-    private long minimum = DEFAULT_MIN_ENCODER;
+    protected long minimum = DEFAULT_MIN_ENCODER;
 
     /**
      * maximum position of the encoder. defaults to 10000.
      */
-    private long maximum = DEFAULT_MAX_ENCODER;
+    protected long maximum = DEFAULT_MAX_ENCODER;
 
     /**
      * the current position.
      */
-    private long position;
+    protected long position;
 
     /**
      * the zero degrees position.
      */
-    private long zeroPosition;
+    protected long zeroPosition;
 
     /**
      * the current speed.
      */
-    private double speedInTicksPerSecond;
+    protected double speedInTicksPerSecond;
+
+    /**
+     * delta in degrees, for manual differences.
+     */
+    protected double delta;
 
     /**
      * goto the position with the specified degrees, and try to get there in the
@@ -85,8 +90,9 @@ public class AxisWithEncoder {
      *            the alloted time to get there.
      */
     public void gotoWithSpeed(double degrees, double secondsInFuture) {
+        double degreesWithDelta = degrees + delta;
         double range = maximum - minimum;
-        double posZeroOne = degreeRange(degrees) / FULL_CIRCLE_IN_DEGREES;
+        double posZeroOne = degreeRange(degreesWithDelta) / FULL_CIRCLE_IN_DEGREES;
         double futurePos = zeroPosition + range * posZeroOne;
 
         while (futurePos > maximum) {
@@ -95,7 +101,7 @@ public class AxisWithEncoder {
         while (futurePos < minimum) {
             futurePos = futurePos + range;
         }
-        double difference = position - futurePos;
+        double difference = futurePos - position;
         // check if the other direction would be faster.
         if (Math.abs(difference) > (range / 2d)) {
             // ok, the other way around is faster.
@@ -108,7 +114,7 @@ public class AxisWithEncoder {
         double speed = difference / secondsInFuture;
 
         // regulate the speed depending on the distance.
-        double maximumSpeed = getMaximumSpeed(Math.abs(degreeRange(degrees) - getCurrentPosition()));
+        double maximumSpeed = getMaximumSpeed(Math.abs(degreeRange(degreesWithDelta) - getCurrentPosition()));
 
         if (speed > 0) {
             speed = Math.min(speed, maximumSpeed);
@@ -182,6 +188,6 @@ public class AxisWithEncoder {
     protected double getCurrentPosition() {
         double range = maximum - minimum;
         double positionRelativeToZero = position - zeroPosition;
-        return degreeRange((positionRelativeToZero / range) * FULL_CIRCLE_IN_DEGREES);
+        return degreeRange(((positionRelativeToZero / range) * FULL_CIRCLE_IN_DEGREES) - delta);
     }
 }

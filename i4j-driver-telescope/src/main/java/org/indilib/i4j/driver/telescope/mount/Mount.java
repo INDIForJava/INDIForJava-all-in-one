@@ -24,18 +24,21 @@ package org.indilib.i4j.driver.telescope.mount;
 
 /**
  * The virtual telescope mount with two encoder axis.
+ * 
+ * @param <AxisWithEncoderType>
+ *            the type for the axis.
  */
-class Mount {
+public class Mount<AxisWithEncoderType extends AxisWithEncoder> {
 
     /**
      * The horizontal encoder.
      */
-    private final AxisWithEncoder horizontalAxis;
+    protected final AxisWithEncoderType horizontalAxis;
 
     /**
      * The vertical encoder.
      */
-    private final AxisWithEncoder verticalAxis;
+    protected final AxisWithEncoderType verticalAxis;
 
     /**
      * The constructor of the mount.
@@ -74,14 +77,26 @@ class Mount {
     /**
      * @return an encoder to use for the horizontal axis.
      */
-    protected AxisWithEncoder createHorizontalAxis() {
-        return new AxisWithEncoder();
+    @SuppressWarnings("unchecked")
+    protected AxisWithEncoderType createHorizontalAxis() {
+        return (AxisWithEncoderType) new AxisWithEncoder();
     }
 
     /**
      * @return an encoder to use for the vertical axis.
      */
-    protected AxisWithEncoder createVerticalAxis() {
-        return new AxisWithEncoder();
+    @SuppressWarnings("unchecked")
+    protected AxisWithEncoderType createVerticalAxis() {
+        return (AxisWithEncoderType) new AxisWithEncoder();
+    }
+    
+
+
+    public double getHorizontalPosition() {
+        return horizontalAxis.getCurrentPosition();
+    }
+
+    public double getVerticalPosition() {
+        return verticalAxis.getCurrentPosition();
     }
 }

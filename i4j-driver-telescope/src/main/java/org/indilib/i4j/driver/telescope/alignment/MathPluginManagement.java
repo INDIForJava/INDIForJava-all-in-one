@@ -121,7 +121,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
     /**
      * The in memmory sync point database to use.
      */
-    private final InMemoryDatabase inMemoryDatabase = new InMemoryDatabase();
+    private final InMemoryDatabase inMemoryDatabase;
 
     /**
      * Constructor for the math plugin extention. Only available for telescope
@@ -132,6 +132,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      */
     public MathPluginManagement(INDITelescope driver) {
         super(driver);
+        inMemoryDatabase = new InMemoryDatabase();
         enumeratePlugins();
         for (IMathPlugin mathPlugin : plugins.values()) {
             this.alignmentSubsystemMathPlugins.newElement().name(mathPlugin.id()).label(mathPlugin.name()).create();
@@ -359,6 +360,10 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         } else {
             return false;
         }
+    }
+
+    public void setDatabaseReferencePosition(double lat, double lng) {
+        inMemoryDatabase.setDatabaseReferencePosition(lat, lng);
     }
 
 }
