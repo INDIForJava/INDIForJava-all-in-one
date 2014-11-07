@@ -1,4 +1,4 @@
-package org.indilib.i4j.driver.telescope;
+package org.indilib.i4j.driver.telescope.simulator;
 
 /*
  * #%L
@@ -41,6 +41,10 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
+import org.indilib.i4j.driver.telescope.INDIDirection;
+import org.indilib.i4j.driver.telescope.INDITelescope;
+import org.indilib.i4j.driver.telescope.INDITelescopeParkInterface;
+import org.indilib.i4j.driver.telescope.INDITelescopeSyncInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

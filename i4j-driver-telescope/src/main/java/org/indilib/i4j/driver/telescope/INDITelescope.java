@@ -573,7 +573,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * @param elementsAndValues
      *            The new Elements and Values
      */
-    private void newEqnValue(INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
+    protected void newEqnValue(INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
         // this is for us, and it is a goto
         double ra = Double.NaN;
         double dec = Double.NaN;

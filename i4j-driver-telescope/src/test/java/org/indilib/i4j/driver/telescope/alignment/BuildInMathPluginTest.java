@@ -42,7 +42,7 @@ public class BuildInMathPluginTest {
     /**
      * The logger to log to.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(BuiltInMathPlugin.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BuildInMathPluginTest.class);
 
     private INDISexagesimalFormatter indiSexagesimalFormatter = new INDISexagesimalFormatter("%010.6m");
 
