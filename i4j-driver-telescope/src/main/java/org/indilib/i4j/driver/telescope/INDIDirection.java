@@ -40,7 +40,7 @@ public class INDIDirection {
      * the declination of the direction pointer coordinates.
      */
     private double dec;
-    
+
     /**
      * formatter for the toStrings.
      */

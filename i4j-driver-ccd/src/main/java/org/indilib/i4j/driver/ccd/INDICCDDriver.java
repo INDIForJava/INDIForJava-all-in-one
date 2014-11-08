@@ -98,7 +98,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * The temperature of the ccd chip.
      */
     @InjectElement(name = "CCD_TEMPERATURE_VALUE", label = "Temperature (C)", minimum = MINIMAL_CCD_TEMPERATURE, maximum = MAXIMUM_CCD_TEMPERATURE, numberFormat = "%5.2f")
-    private INDINumberElement temperatureTemp;
+    protected INDINumberElement temperatureTemp;
 
     /**
      * The upload mode for the images, if they should be saved on the server or
@@ -297,7 +297,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         if (dirFile.exists()) {
             for (File file : dirFile.listFiles()) {
                 if (file.getName().startsWith(uptoXX) && file.getName().endsWith(afterXX)) {
-                    int number = Integer.parseInt(file.getName().substring(indexOfXX));
+                    int number = Integer.parseInt(file.getName().substring(indexOfXX, file.getName().lastIndexOf('.')));
                     if (number > maxNumber) {
                         maxNumber = number;
                     }
@@ -353,7 +353,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         }
         addProperty(upload);
 
-        if (uploadSettingsDir.getValue() == null) {
+        if (uploadSettingsDir.getValue() == null || uploadSettingsDir.getValue().trim().isEmpty()) {
             uploadSettingsDir.setValue(new File(FileUtils.getI4JBaseDirectory(), "images").getAbsolutePath());
         }
         addProperty(uploadSettings);

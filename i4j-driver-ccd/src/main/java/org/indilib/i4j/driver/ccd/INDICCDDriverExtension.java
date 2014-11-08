@@ -592,6 +592,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         if (imageExposure.getState() == PropertyStates.BUSY) {
             driverInterface.abortExposure();
         }
+        exposureDuration = imageExposureDuration.getValue();
         startExposureTime = new Date();
         if (driverInterface.startExposure(exposureDuration)) {
             imageExposure.setState(PropertyStates.BUSY);
