@@ -22,6 +22,8 @@ package org.indilib.i4j.driver.telescope.simulator;
  * #L%
  */
 
+import static org.indilib.i4j.Constants.PropertyStates.IDLE;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -34,6 +36,7 @@ import net.sourceforge.novaforjava.api.LnLnlatPosn;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDISexagesimalFormatter;
 import org.indilib.i4j.driver.annotation.InjectExtension;
+import org.indilib.i4j.driver.telescope.INDIDirection;
 import org.indilib.i4j.driver.telescope.INDITelescope;
 import org.indilib.i4j.driver.telescope.alignment.DoubleRef;
 import org.indilib.i4j.driver.telescope.alignment.MathPluginManagement;
@@ -53,36 +56,76 @@ import org.slf4j.LoggerFactory;
 public class TelescopeAltAzSimulator extends INDITelescope {
 
     /**
+     * the right assertion pression when a goto is defined as position reached.
+     */
+    private static final double RA_GOTO_PRECISION = 0.004;
+
+    /**
+     * the declination pression when a goto is defined as position reached.
+     */
+    private static final double DEC_GOTO_PRECISION = 0.015;
+
+    /**
+     * the number of milliseconds per second.
+     */
+    private static final double MILLISECONDS_PER_SECOND = 1000d;
+
+    /**
+     * the number of arc minutes per degree.
+     */
+    private static final double ARCMINUTES_PER_DEGREE = 60d;
+
+    /**
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(TelescopeAltAzSimulator.class);
 
+    /**
+     * the simulated axis, that will update its position itself.
+     */
     class SimulatedAxisWithEncoder extends AxisWithEncoder {
 
-        private static final double MILLISECONDS_PER_SECOND = 1000d;
-
+        /**
+         * when was the last update (in system millisecond time).
+         */
         private long updateTime = -1;
 
+        /**
+         * update the encoder simulate the movement acourding to the speed.
+         */
         public void update() {
             long now = System.currentTimeMillis();
             if (updateTime > 0) {
                 double millisecondsPassed = now - updateTime;
-                this.position = (long) (this.position + (speedInTicksPerSecond * millisecondsPassed / MILLISECONDS_PER_SECOND));
+                setPosition((long) (getPosition() + (speedInTicksPerSecond * millisecondsPassed / MILLISECONDS_PER_SECOND)));
             }
             updateTime = now;
         }
 
     }
 
+    /**
+     * Simulate a mount with two axis. It will run a thread as long as it is
+     * connected.
+     */
     class SimulatedMount extends Mount<SimulatedAxisWithEncoder> implements Runnable {
 
+        /**
+         * how many times will the update tread trigger during a scope update
+         * interfall.
+         */
+        private static final long UPDATE_TIMES_PER_INTERFALL = 4L;
+
+        /**
+         * stop the thread.
+         */
         private boolean stop = false;
 
         @Override
         public void run() {
             while (!stop) {
                 try {
-                    Thread.sleep(updateInterfall() / 4L);
+                    Thread.sleep(updateInterfall() / UPDATE_TIMES_PER_INTERFALL);
                     horizontalAxis.update();
                     verticalAxis.update();
                 } catch (InterruptedException e) {
@@ -108,6 +151,9 @@ public class TelescopeAltAzSimulator extends INDITelescope {
      */
     private SimulatedMount mount = new SimulatedMount();
 
+    /**
+     * The math plugin for the calculation from eqn to hoziontal.
+     */
     @InjectExtension
     private MathPluginManagement mathPluginManagement;
 
@@ -148,39 +194,54 @@ public class TelescopeAltAzSimulator extends INDITelescope {
 
     @Override
     protected boolean abort() {
-        gotoRa = Double.NaN;
-        gotoDec = Double.NaN;
+        gotoDirection = null;
+        trackState = TelescopeStatus.SCOPE_IDLE;
         mount.stop();
         return true;
     }
 
-    private double gotoRa = Double.NaN;
-
-    private double gotoDec = Double.NaN;
+    /**
+     * Current goto or tracking position.
+     */
+    private INDIDirection gotoDirection = null;
 
     @Override
     protected void doGoto(double ra, double dec) {
-        gotoRa = ra;
-        gotoDec = dec;
-        gotoUpdate(gotoRa, gotoDec);
+        parkExtension.setParked(false);
+        trackState = TelescopeStatus.SCOPE_SLEWING;
+
+        gotoDirection = new INDIDirection(ra, dec);
+        gotoUpdate();
     }
 
-    protected void gotoUpdate(double ra, double dec) {
+    /**
+     * update the commands to the mount, acording to the goto position (if it is
+     * set).
+     */
+    protected void gotoUpdate() {
+        if (gotoDirection != null) {
+            long now = System.currentTimeMillis();
+            long doubleUpdateInterfall = updateInterfall() * 2;
 
-        long now = System.currentTimeMillis();
-        long doubleUpdateInterfall = updateInterfall() * 2;
+            double jdNow = jdTimeFromCurrentMiliseconds(now);
+            double jdTarget = jdTimeFromCurrentMiliseconds(now + doubleUpdateInterfall);
 
-        double jdNow = jdTimeFromCurrentMiliseconds(now);
-        double jdTarget = jdTimeFromCurrentMiliseconds(now + doubleUpdateInterfall);
+            TelescopeDirectionVector apparentTelescopeDirectionVector = new TelescopeDirectionVector();
+            mathPluginManagement.transformCelestialToTelescope(gotoDirection.getRa(), gotoDirection.getDec(), jdTarget - jdNow, apparentTelescopeDirectionVector);
+            LnHrzPosn actualAltAz = new LnHrzPosn();
+            apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
-        TelescopeDirectionVector apparentTelescopeDirectionVector = new TelescopeDirectionVector();
-        mathPluginManagement.transformCelestialToTelescope(ra, dec, jdTarget - jdNow, apparentTelescopeDirectionVector);
-        LnHrzPosn actualAltAz = new LnHrzPosn();
-        apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
-
-        mount.gotoWithSpeed(actualAltAz.az, actualAltAz.alt, ((double) doubleUpdateInterfall) / 1000d);
+            mount.gotoWithSpeed(actualAltAz.az, actualAltAz.alt, ((double) doubleUpdateInterfall) / MILLISECONDS_PER_SECOND);
+        }
     }
 
+    /**
+     * convert the millisecond system time in julian date.
+     * 
+     * @param now
+     *            the system time in milliseconds.
+     * @return the julian date.
+     */
     protected double jdTimeFromCurrentMiliseconds(long now) {
         LnDate dateNow = new LnDate();
         JulianDay.ln_get_date_from_UTC_milliseconds(dateNow, now);
@@ -189,9 +250,8 @@ public class TelescopeAltAzSimulator extends INDITelescope {
 
     @Override
     protected void readScopeStatus() {
-        if (!Double.isNaN(gotoRa)) {
-            gotoUpdate(gotoRa, gotoDec);
-        }
+        gotoUpdate();
+
         LnHrzPosn actualAltAz = new LnHrzPosn();
         actualAltAz.az = mount.getHorizontalPosition();
         actualAltAz.alt = mount.getVerticalPosition();
@@ -201,6 +261,22 @@ public class TelescopeAltAzSimulator extends INDITelescope {
         TelescopeDirectionVector vector = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualAltAz);
         mathPluginManagement.transformTelescopeToCelestial(vector, 0, rightAscensionRef, declinationRef);
         newRaDec(rightAscensionRef.getValue(), declinationRef.getValue());
+        if (gotoDirection != null && trackState == TelescopeStatus.SCOPE_SLEWING) {
+            double raDiff = Math.abs(rightAscensionRef.getValue() - gotoDirection.getRa());
+            double decDiff = Math.abs(declinationRef.getValue() - gotoDirection.getDec());
+            if (decDiff < DEC_GOTO_PRECISION && raDiff < RA_GOTO_PRECISION) {
+                // target reached!
+                if (coordTrack.isOn()) {
+                    LOG.info("target reached, switching to tracking");
+                    trackState = TelescopeStatus.SCOPE_TRACKING;
+                } else {
+                    LOG.info("target reached, going idle");
+                    trackState = TelescopeStatus.SCOPE_IDLE;
+                    gotoDirection = null;
+                    mount.stop();
+                }
+            }
+        }
     }
 
     @Override
@@ -216,5 +292,53 @@ public class TelescopeAltAzSimulator extends INDITelescope {
     @Override
     public String getName() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    protected boolean moveNS(TelescopeMotionNS dir) {
+        this.movementNSS.resetAllSwitches();
+        this.movementNSS.setState(IDLE);
+        String message = null;
+        double rate;
+        if (dir == TelescopeMotionNS.MOTION_NORTH) {
+            rate = 1d / ARCMINUTES_PER_DEGREE;
+        } else {
+            rate = -1d / ARCMINUTES_PER_DEGREE;
+        }
+        if (trackState == TelescopeStatus.SCOPE_IDLE) {
+            trackState = TelescopeStatus.SCOPE_SLEWING;
+            gotoDirection = new INDIDirection(eqnRa.getValue(), eqnDec.getValue() + rate);
+        } else if (trackState == TelescopeStatus.SCOPE_TRACKING || trackState == TelescopeStatus.SCOPE_SLEWING) {
+            gotoDirection.addDec(rate);
+        } else {
+            message = "can only move if the scope is idle or tracking";
+        }
+        updateProperty(this.movementNSS, message);
+
+        return true;
+    }
+
+    @Override
+    protected boolean moveWE(TelescopeMotionWE dir) {
+        this.movementWES.resetAllSwitches();
+        this.movementWES.setState(IDLE);
+        String message = null;
+        double rate;
+        if (dir == TelescopeMotionWE.MOTION_WEST) {
+            rate = 1d / ARCMINUTES_PER_DEGREE;
+        } else {
+            rate = -1d / ARCMINUTES_PER_DEGREE;
+        }
+        if (trackState == TelescopeStatus.SCOPE_IDLE) {
+            trackState = TelescopeStatus.SCOPE_SLEWING;
+            gotoDirection = new INDIDirection(eqnRa.getValue() + rate, eqnDec.getValue());
+        } else if (trackState == TelescopeStatus.SCOPE_TRACKING || trackState == TelescopeStatus.SCOPE_SLEWING) {
+            gotoDirection.addRa(rate);
+        } else {
+            message = "can only move if the scope is idle or tracking";
+        }
+        updateProperty(this.movementWES, message);
+
+        return true;
     }
 }

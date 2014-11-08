@@ -89,13 +89,19 @@ public class Mount<AxisWithEncoderType extends AxisWithEncoder> {
     protected AxisWithEncoderType createVerticalAxis() {
         return (AxisWithEncoderType) new AxisWithEncoder();
     }
-    
 
-
+    /**
+     * @return the position of the horizontal axis in degrees relative to the
+     *         zero position. (value range 0 to 360)
+     */
     public double getHorizontalPosition() {
         return horizontalAxis.getCurrentPosition();
     }
 
+    /**
+     * @return the position of the vertical axis in degrees relative to the zero
+     *         position. (value range 0 to 360)
+     */
     public double getVerticalPosition() {
         return verticalAxis.getCurrentPosition();
     }

@@ -1,5 +1,7 @@
 package org.indilib.i4j.driver.telescope;
 
+import org.indilib.i4j.INDISexagesimalFormatter;
+
 /*
  * #%L
  * INDI for Java Abstract Telescope Driver
@@ -30,21 +32,6 @@ package org.indilib.i4j.driver.telescope;
 public class INDIDirection {
 
     /**
-     * how many seconds in an hour.
-     */
-    private static final int SECONDS_PER_HOUR = 3600;
-
-    /**
-     * how many minutes in an hour.
-     */
-    private static final int MINUTES_PER_HOUR = 60;
-
-    /**
-     * how many seconds in a minute.
-     */
-    private static final int SECONDS_PER_MINUTES = 60;
-
-    /**
      * the right ascension of the direction pointer coordinates.
      */
     private double ra;
@@ -53,6 +40,11 @@ public class INDIDirection {
      * the declination of the direction pointer coordinates.
      */
     private double dec;
+    
+    /**
+     * formatter for the toStrings.
+     */
+    private final INDISexagesimalFormatter formatter = new INDISexagesimalFormatter("%010.6m");
 
     /**
      * create a direction pointer coordinates for a telescope.
@@ -85,7 +77,7 @@ public class INDIDirection {
      *         string.
      */
     public String getRaString() {
-        return formatStringSexa(ra);
+        return formatter.format(ra);
     }
 
     /**
@@ -109,7 +101,7 @@ public class INDIDirection {
      * @return the declination of the direction pointer coordinates as a string.
      */
     public String getDecString() {
-        return formatStringSexa(dec);
+        return formatter.format(dec);
     }
 
     /**
@@ -156,45 +148,4 @@ public class INDIDirection {
         this.dec += addDec;
     }
 
-    /**
-     * This must be replaced by {@link org.indilib.i4j.INDISexagesimalFormatter}
-     * .
-     * 
-     * @param value
-     *            value to format
-     * @return the formatted string
-     */
-    private String formatStringSexa(double value) {
-        String out = "";
-        long n;
-        int d;
-        int f;
-        int m;
-        int s;
-
-        /* save whether it's negative but do all the rest with a positive */
-        boolean isneg = value < 0;
-        if (isneg) {
-            value = -value;
-        }
-
-        /* convert to an integral number of whole portions */
-        n = Math.round(value * SECONDS_PER_HOUR);
-        d = (int) (n / SECONDS_PER_HOUR);
-        f = (int) (n % SECONDS_PER_HOUR);
-
-        /* form the whole part; "negative 0" is a special case */
-        if (isneg && d == 0) {
-            out += String.format("%s%s-0", 0, "");
-        } else if (isneg) {
-            out += String.format("%d%d", 2, -d);
-        } else {
-            out += String.format("%d%d", 2, d);
-        }
-        /* dd:mm:ss */
-        m = f / (SECONDS_PER_HOUR / MINUTES_PER_HOUR);
-        s = f % (SECONDS_PER_HOUR / SECONDS_PER_MINUTES);
-        out += String.format(":%02d:%02d", m, s);
-        return out;
-    }
 }

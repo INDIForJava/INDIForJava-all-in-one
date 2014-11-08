@@ -362,6 +362,14 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         }
     }
 
+    /**
+     * set the location coordinates in the database.
+     * 
+     * @param lat
+     *            the latitude.
+     * @param lng
+     *            the longtitude.
+     */
     public void setDatabaseReferencePosition(double lat, double lng) {
         inMemoryDatabase.setDatabaseReferencePosition(lat, lng);
     }

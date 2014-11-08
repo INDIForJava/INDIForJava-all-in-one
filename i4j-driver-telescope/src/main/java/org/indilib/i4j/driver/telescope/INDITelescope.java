@@ -365,7 +365,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     /**
      * Most telescopes are controlled by a serial connection, this extension
-     * handles the connection for the driver so the driver dous only have to
+     * handles the connection for the driver so the driver does only have to
      * work with the input and output stream.
      */
     @InjectExtension(group = GROUP_OPTIONS)
@@ -491,6 +491,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
                 property.setState(OK);
                 property.setValues(elementsAndValues);
+                updateProperty(property);
             }
         });
         this.abort.setEventHandler(new SwitchEvent() {

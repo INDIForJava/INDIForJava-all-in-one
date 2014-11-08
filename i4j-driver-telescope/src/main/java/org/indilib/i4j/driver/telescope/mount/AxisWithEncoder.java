@@ -28,6 +28,11 @@ package org.indilib.i4j.driver.telescope.mount;
 public class AxisWithEncoder {
 
     /**
+     * number of milliseconds per second.
+     */
+    private static final double MILLISECONDS_PER_SECOND = 1000d;
+
+    /**
      * how many seconds in a minute.
      */
     private static final double SECONDS_PER_MINUTE = 60d;
@@ -60,7 +65,31 @@ public class AxisWithEncoder {
     /**
      * the current position.
      */
-    protected long position;
+    private long position;
+
+    /**
+     * @return the current position.
+     */
+    protected long getPosition() {
+        return position;
+    }
+
+    /**
+     * set the current position.
+     * 
+     * @param position
+     *            the new position value.
+     */
+    protected void setPosition(long position) {
+        this.position = position;
+        this.positionTimeMs = System.currentTimeMillis();
+    }
+
+    /**
+     * the time in milliseconds when the last position was requested from the
+     * real encoder.
+     */
+    private long positionTimeMs;
 
     /**
      * the zero degrees position.
@@ -187,7 +216,10 @@ public class AxisWithEncoder {
      */
     protected double getCurrentPosition() {
         double range = maximum - minimum;
-        double positionRelativeToZero = position - zeroPosition;
+        double secondsSinsLastPositionUpdate = (System.currentTimeMillis() - positionTimeMs) / MILLISECONDS_PER_SECOND;
+        double currentPosition = position + secondsSinsLastPositionUpdate * speedInTicksPerSecond;
+        double positionRelativeToZero = currentPosition - zeroPosition;
         return degreeRange(((positionRelativeToZero / range) * FULL_CIRCLE_IN_DEGREES) - delta);
     }
+
 }
