@@ -235,6 +235,10 @@ public class INDINumberElement extends INDIElement {
             setValueAsString((String) newValue);
         } else if (newValue instanceof Double) {
             setValueAsdouble(((Double) newValue).doubleValue());
+        } else if (newValue instanceof Integer) {
+            setValueAsdouble(((Integer) newValue).doubleValue());
+        } else if (newValue instanceof Float) {
+            setValueAsdouble(((Float) newValue).doubleValue());
         } else {
             throw new IllegalArgumentException("Value for a Number Element must be a String or a Double");
         }

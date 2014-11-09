@@ -777,6 +777,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
             sendXML(msg);
             return true;
         } else {
+            if (connectionExtension.isActive() && !connectionExtension.isConnected()) {
+                // ok, this is normal behavior when a property is set but nobody
+                // has yet conneted the driver.
+                return true;
+            }
             LOG.error("The Property is not from this driver. Maybe you forgot to add it?");
             return false;
         }

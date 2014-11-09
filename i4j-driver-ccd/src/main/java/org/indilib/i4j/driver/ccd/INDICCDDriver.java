@@ -28,8 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
-import nom.tam.fits.BasicHDU;
-
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.FileUtils;
@@ -329,13 +327,6 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     protected abstract Boolean setTemperature(double theTargetTemperature);
 
     /**
-     * Abort ongoing exposure.
-     * 
-     * @return true is abort is successful, false otherwise.
-     */
-    public abstract boolean abortExposure();
-
-    /**
      * @return a collection of capabilities of this driver.
      */
     protected Capability capability() {
@@ -387,62 +378,4 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         return uploadClient.isOn() || uploadBoth.isOn();
     }
 
-    /**
-     * Start exposing primary CCD chip. This function must be implemented in the
-     * child class
-     * 
-     * @param duration
-     *            Duration in seconds
-     * @return true if OK and exposure will take some time to complete, false on
-     *         error.
-     */
-    public abstract boolean startExposure(double duration);
-
-    /**
-     * INDICCD calls this function when CCD Binning needs to be updated in the
-     * hardware. Derived classes should implement this function
-     * 
-     * @param hor
-     *            Horizontal binning.
-     * @param ver
-     *            Vertical binning.
-     * @return true is CCD chip update is successful, false otherwise.
-     */
-    public abstract boolean updateCCDBin(int hor, int ver);
-
-    /**
-     * INDICCD calls this function when CCD Frame dimension needs to be updated
-     * in the hardware. Derived classes should implement this function
-     * 
-     * @param x
-     *            Subframe X coordinate in pixels.
-     * @param y
-     *            Subframe Y coordinate in pixels.
-     * @param w
-     *            Subframe width in pixels.
-     * @param h
-     *            Subframe height in pixels. \note (0,0) is defined as most
-     *            left, top pixel in the subframe.
-     * @return true is CCD chip update is successful, false otherwise.
-     */
-    public abstract boolean updateCCDFrame(int x, int y, int w, int h);
-
-    /**
-     * INDICCD calls this function when CCD frame type needs to be updated in
-     * the hardware.The CCD hardware layer may either set the frame type when
-     * this function is called, or (optionally) before an exposure is started.
-     * 
-     * @param fType
-     *            Frame type
-     * @return true is CCD chip update is successful, false otherwise.
-     */
-    public abstract boolean updateCCDFrameType(CcdFrame fType);
-
-    /**
-     * add any aditinal fits header information to the fits image.
-     * 
-     * @param fitsHeader
-     *            the header to write the attributes.
-     */
-    public abstract void addFITSKeywords(BasicHDU fitsHeader);
 }

@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.DeflaterOutputStream;
 
 import nom.tam.fits.BasicHDU;
@@ -37,6 +39,7 @@ import nom.tam.fits.HeaderCardException;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.driver.INDIBLOBElement;
@@ -72,6 +75,11 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      * the default bits per pixel of an ccd.
      */
     private static final int DEFAULT_BITS_PER_PIXEL = 8;
+
+    /**
+     * max string length in fit header.
+     */
+    private static final int MAX_STRING_LENGTH_IN_FITS_HEADER = 67;
 
     /**
      * the date/time fomat iso-8601 as a simple date formatter.
@@ -258,6 +266,18 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     protected INDIBLOBElement fitsImage;
 
     /**
+     * should a new exposure start as soon as the old one is ready?
+     */
+    @InjectProperty(name = "AUTO_LOOP", label = "Auto loop", group = INDIDriver.GROUP_MAIN_CONTROL, switchRule = SwitchRules.AT_MOST_ONE)
+    protected INDISwitchProperty autoLoopProp;
+
+    /**
+     * should a new exposure start as soon as the old one is ready?
+     */
+    @InjectElement(name = "AUTO_LOOP", label = "Auto loop")
+    protected INDISwitchElement autoLoop;
+
+    /**
      * The driver specific functions are encapsulated in this interface.
      * Normally the driver implements this interface but when a ccd-driver has
      * multiple chips it must have a way to handle the functionality on a per
@@ -311,11 +331,6 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     private int binningY = 1;
 
     /**
-     * the fits header naxis.
-     */
-    private int fitsNAxis = 2;
-
-    /**
      * horizontal pixel size in microns.
      */
     private float pixelSizeX;
@@ -359,11 +374,6 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      * the current exposure time.
      */
     private float exposureTime = 0.0f;
-
-    /**
-     * should we start a next exposure as soon as the current exposure is ready?
-     */
-    protected boolean autoLoop = false;
 
     /**
      * Constructor of the extension, you should really know what you are doing
@@ -426,6 +436,19 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
                 newFrameTypeValue(elementsAndValues);
             }
         });
+        this.autoLoopProp.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                autoLoopProp.setValues(elementsAndValues);
+                if (autoLoop.isOff()) {
+                    autoLoopProp.setState(PropertyStates.IDLE);
+                } else {
+                    autoLoopProp.setState(PropertyStates.OK);
+                }
+                updateProperty(autoLoopProp);
+            }
+        });
 
     }
 
@@ -464,16 +487,34 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         fitsHeader.addValue("YBINNING", binningY, "Binning factor in height");
         fitsHeader.addValue("FRAME", currentFrameType.fitsValue(), "Frame Type");
 
-        if (fitsNAxis == 2) {
-            // TODO: should de done in the image processing
-            // fitsHeader.addValue("DATAMIN", &min_val, "Minimum value");
-            // fitsHeader.addValue("DATAMAX", &max_val, "Maximum value");
-            LOG.info("naxis handling should be done somewhere else probably in ccdimage");
-        }
-
         fitsHeader.addValue("INSTRUME", driver.getName(), "CCD Name");
         fitsHeader.addValue("DATE-OBS", getExposureStartTime(), "UTC start date of observation");
-        driverInterface.addFITSKeywords(fitsHeader);
+
+        Map<String, Object> attributes = driverInterface.getExtraFITSKeywords(fitsHeader);
+        if (attributes != null) {
+            for (Entry<String, Object> attribute : attributes.entrySet()) {
+                if (attribute.getValue() instanceof Date) {
+                    fitsHeader.addValue(attribute.getKey(), this.dateFormatISO8601.format((Date) attribute.getValue()), "");
+                } else if (attribute.getValue() instanceof String) {
+                    String stringValue = (String) attribute.getValue();
+                    String comment = "";
+                    if (stringValue.length() > MAX_STRING_LENGTH_IN_FITS_HEADER) {
+                        comment = stringValue;
+                        stringValue = "value in comment";
+                    }
+                    fitsHeader.addValue(attribute.getKey(), stringValue, comment);
+                } else if (attribute.getValue() instanceof Integer) {
+                    fitsHeader.addValue(attribute.getKey(), (Integer) attribute.getValue(), "");
+                } else if (attribute.getValue() instanceof Double) {
+                    fitsHeader.addValue(attribute.getKey(), (Double) attribute.getValue(), "");
+                } else if (attribute.getValue() instanceof Boolean) {
+                    fitsHeader.addValue(attribute.getKey(), (Boolean) attribute.getValue(), "");
+                } else {
+                    throw new IllegalArgumentException("unknown bits per pixel");
+                }
+            }
+        }
+
     }
 
     /**
@@ -533,17 +574,20 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     private void newFrameTypeValue(INDISwitchElementAndValue[] elementsAndValues) {
         frameType.setValues(elementsAndValues);
         frameType.setState(PropertyStates.OK);
+        String message = null;
         if (frameTypeLight.isOn()) {
             currentFrameType = CcdFrame.LIGHT_FRAME;
         } else if (frameTypeBais.isOn()) {
             currentFrameType = CcdFrame.BIAS_FRAME;
             if (!capability().hasShutter()) {
-                LOG.info("The CCD does not have a shutter. Cover the camera in order to take a bias frame.");
+                message = "The CCD does not have a shutter. Cover the camera in order to take a bias frame.";
+                LOG.info(message);
             }
         } else if (frameTypeDark.isOn()) {
             currentFrameType = CcdFrame.DARK_FRAME;
             if (!capability().hasShutter()) {
-                LOG.info("The CCD does not have a shutter. Cover the camera in order to take a dark frame.");
+                message = "The CCD does not have a shutter. Cover the camera in order to take a dark frame.";
+                LOG.info(message);
             }
         } else if (frameTypeFlat.isOn()) {
             currentFrameType = CcdFrame.FLAT_FRAME;
@@ -551,7 +595,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         if (!driverInterface.updateCCDFrameType(currentFrameType)) {
             frameType.setState(PropertyStates.ALERT);
         }
-        updateProperty(frameType);
+        updateProperty(frameType, message);
     }
 
     /**
@@ -663,7 +707,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      */
     private void setBitsPerPixel(int bpp) {
         bitsPerPixel = bpp;
-        imagePixelSizeBitPerPixel.setValue(bpp);
+        imagePixelSizeBitPerPixel.setValue(bitsPerPixel);
         this.updateProperty(imagePixelSize);
     }
 
@@ -722,8 +766,8 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         xResolution = x;
         yResolution = y;
 
-        imagePixelSizeMaxX.setValue(x);
-        imagePixelSizeMaxY.setValue(y);
+        imagePixelSizeMaxX.setValue(xResolution);
+        imagePixelSizeMaxY.setValue(yResolution);
         this.updateProperty(imagePixelSize);
 
         imageFrameX.setMin(0);
@@ -754,6 +798,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         addProperty(this.compress);
         addProperty(this.fits);
         addProperty(this.frameType);
+        addProperty(this.autoLoopProp);
     }
 
     @Override
@@ -773,6 +818,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         removeProperty(this.compress);
         removeProperty(this.fits);
         removeProperty(this.frameType);
+        removeProperty(this.autoLoopProp);
     }
 
     /**
@@ -798,7 +844,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         }
         imageExposure.setState(PropertyStates.OK);
         updateProperty(imageExposure);
-        if (autoLoop) {
+        if (autoLoop.isOn()) {
             imageExposureDuration.setValue(exposureTime);
             imageExposure.setState(PropertyStates.BUSY);
             if (driverInterface.startExposure(exposureTime)) {
@@ -950,5 +996,12 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             fits.setState(PropertyStates.OK);
             updateProperty(fits);
         }
+    }
+
+    /**
+     * @return desired frame type for next exposure.
+     */
+    public CcdFrame getCurrentFrameType() {
+        return currentFrameType;
     }
 }

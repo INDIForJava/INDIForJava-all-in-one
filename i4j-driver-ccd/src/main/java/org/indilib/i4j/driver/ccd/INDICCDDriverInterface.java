@@ -1,5 +1,7 @@
 package org.indilib.i4j.driver.ccd;
 
+import java.util.Map;
+
 import nom.tam.fits.BasicHDU;
 
 /*
@@ -39,55 +41,64 @@ public interface INDICCDDriverInterface {
     boolean abortExposure();
 
     /**
-     * start an exposure with the specified duration.
+     * Start exposing primary CCD chip. This function must be implemented in the
+     * child class
      * 
      * @param duration
-     *            the duration in seconds.
-     * @return true is successful
+     *            Duration in seconds
+     * @return true if OK and exposure will take some time to complete, false on
+     *         error.
      */
     boolean startExposure(double duration);
 
     /**
-     * The ccd binning was updated. perform the necessary operations.
+     * INDICCD calls this function when CCD Binning needs to be updated in the
+     * hardware. Derived classes should implement this function
      * 
      * @param binX
-     *            the binning in x axis
+     *            Horizontal binning.
      * @param binY
-     *            the binning in y axis
-     * @return true is successful
+     *            Vertical binning.
+     * @return true is CCD chip update is successful, false otherwise.
      */
     boolean updateCCDBin(int binX, int binY);
 
     /**
-     * the subframe size was updated. perform the necessary operations.
+     * INDICCD calls this function when CCD Frame dimension needs to be updated
+     * in the hardware. Derived classes should implement this function
      * 
      * @param x
-     *            the start x
+     *            Subframe X coordinate in pixels.
      * @param y
-     *            the start y
+     *            Subframe Y coordinate in pixels.
      * @param width
-     *            the width
+     *            Subframe width in pixels.
      * @param height
-     *            the height
-     * @return true is successful
+     *            Subframe height in pixels. \note (0,0) is defined as most
+     *            left, top pixel in the subframe.
+     * @return true is CCD chip update is successful, false otherwise.
      */
     boolean updateCCDFrame(int x, int y, int width, int height);
 
     /**
-     * the frame type was updated. perform the necessary operations.
+     * INDICCD calls this function when CCD frame type needs to be updated in
+     * the hardware.The CCD hardware layer may either set the frame type when
+     * this function is called, or (optionally) before an exposure is started.
      * 
      * @param frameType
-     *            the new frametype
-     * @return true is successful
+     *            Frame type
+     * @return true is CCD chip update is successful, false otherwise.
      */
     boolean updateCCDFrameType(CcdFrame frameType);
 
     /**
-     * add any additinal fits header information to the fits image.
+     * get a map of any additinal fits header information to the fits image. if
+     * no extra atts needed keep it null.
      * 
      * @param fitsHeader
-     *            the header to write the attributes.
+     *            the orignal header with the existing attributes.
+     * @return null or a map with the new header attributes.
      */
-    void addFITSKeywords(BasicHDU fitsHeader);
+    Map<String, Object> getExtraFITSKeywords(BasicHDU fitsHeader);
 
 }

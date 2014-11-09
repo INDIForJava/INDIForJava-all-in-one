@@ -23,10 +23,6 @@ package org.indilib.i4j.driver.ccd;
  */
 
 import java.io.DataOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
@@ -43,11 +39,6 @@ import nom.tam.fits.HeaderCardException;
  * @author Richard van Nieuwenhoven
  */
 public abstract class INDICCDImage {
-
-    /**
-     * max string length in fit header.
-     */
-    private static final int MAX_STRING_LENGTH_IN_FITS_HEADER = 67;
 
     /**
      * axis value for the third layer.
@@ -234,11 +225,6 @@ public abstract class INDICCDImage {
             indexLayer3 = ((indexLayer3 + 1) % width) * width + width;
         }
     }
-
-    /**
-     * date format for fits headers.
-     */
-    private final SimpleDateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     /**
      * type of the image.
@@ -547,7 +533,7 @@ public abstract class INDICCDImage {
     private void convertToFits() throws FitsException {
         f = new Fits();
         BasicHDU imageFits = FitsFactory.HDUFactory(getImageData());
-        addFitsAttributes(imageFits, null);
+        addFitsAttributes(imageFits);
         f.addHDU(imageFits);
     }
 
@@ -556,13 +542,11 @@ public abstract class INDICCDImage {
      * 
      * @param imageFits
      *            the fits image to add the attributes.
-     * @param attributes
-     *            the extra headers to include
      * @throws HeaderCardException
      *             if the header got illegal
      */
-    private void addFitsAttributes(BasicHDU imageFits, Map<String, Object> attributes) throws HeaderCardException {
-        imageFits.addValue("HISTORY", "FITS image created by an INDI driver", "");
+    private void addFitsAttributes(BasicHDU imageFits) throws HeaderCardException {
+        imageFits.addValue("HISTORY", "FITS image created by i4j", "");
         imageFits.addValue("SIMPLE", "T", "");
         imageFits.addValue("BITPIX", bpp, "");
         imageFits.addValue("NAXIS", type == ImageType.COLOR ? COLOR_SCALE_NAXIS : GRAY_SCALE_NAXIS, "");
@@ -579,29 +563,7 @@ public abstract class INDICCDImage {
         } else {
             throw new IllegalArgumentException("unknown bits per pixel");
         }
-        if (attributes != null) {
-            for (Entry<String, Object> attribute : attributes.entrySet()) {
-                if (attribute.getValue() instanceof Date) {
-                    imageFits.addValue(attribute.getKey(), this.dateFormatISO8601.format((Date) attribute.getValue()), "");
-                } else if (attribute.getValue() instanceof String) {
-                    String stringValue = (String) attribute.getValue();
-                    String comment = "";
-                    if (stringValue.length() > MAX_STRING_LENGTH_IN_FITS_HEADER) {
-                        comment = stringValue;
-                        stringValue = "value in comment";
-                    }
-                    imageFits.addValue(attribute.getKey(), stringValue, comment);
-                } else if (attribute.getValue() instanceof Integer) {
-                    imageFits.addValue(attribute.getKey(), (Integer) attribute.getValue(), "");
-                } else if (attribute.getValue() instanceof Double) {
-                    imageFits.addValue(attribute.getKey(), (Double) attribute.getValue(), "");
-                } else if (attribute.getValue() instanceof Boolean) {
-                    imageFits.addValue(attribute.getKey(), (Boolean) attribute.getValue(), "");
-                } else {
-                    throw new IllegalArgumentException("unknown bits per pixel");
-                }
-            }
-        }
+
     }
 
     /**

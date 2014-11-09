@@ -22,12 +22,12 @@ package org.indilib.i4j.driver.ccd.simulator;
  * #L%
  */
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -43,6 +43,12 @@ import org.indilib.i4j.driver.ccd.INDICCDImage.PixelIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This driver simulates a ccd dirver by sending always sending the same pictute
+ * when an exposure is ready.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class CCDSimulator extends INDICCDDriver {
 
     /**
@@ -50,25 +56,107 @@ public class CCDSimulator extends INDICCDDriver {
      */
     private static final Logger LOG = LoggerFactory.getLogger(CCDSimulator.class);
 
-    class Camera implements Runnable {
+    /**
+     * the pixel size of the simulated pixels.
+     */
+    private static final int SIMULATED_PIXEL_SIZE = 20;
 
-        double exposure = Double.NaN;
+    /**
+     * the number of bits per pixel color.
+     */
+    private static final int BITS_PER_PIXEL_COLOR = 8;
 
-        Random random = new Random(System.currentTimeMillis());
+    /**
+     * the number of milliseconds per second.
+     */
+    private static final double MILLISECONDS_PER_SECOND = 1000d;
 
-        boolean stop = false;
+    /**
+     * The simulated camera. running as a thread- runnable.
+     */
+    final class Camera implements Runnable {
 
-        double temperature = 20.0d;
+        /**
+         * the random part is 1/20 of a degree.
+         */
+        private static final double TEMPERATURE_RANDOM_PART = 20d;
 
-        double theTargetTemperature = Double.NaN;
+        /**
+         * the random value is between 0 and 1. shift it so that it is between
+         * -0.5 and +0.5.
+         */
+        private static final double RANDOM_VALUE_MOVE = 0.5d;
 
-        int heigth;
+        /**
+         * with every loop the temperature will com this step closer to the
+         * target value.
+         */
+        private static final double TEMPERATURE_STEPPING = 0.1d;
 
-        int width;
+        /**
+         * the maximum value of a byte.
+         */
+        private static final int MAXIMUM_BYTE_VALUE = 255;
 
-        BufferedImage stdImage;
+        /**
+         * how many values are there per color.
+         */
+        private static final int VALUES_PER_COLOR = 3;
 
-        public Camera() {
+        /**
+         * update the properties not in every loop but in every x'th interation.
+         */
+        private static final int PROPERTY_UPDATE_EVERY_X_LOOPS = 10;
+
+        /**
+         * sleep time for 1/10 of a second.
+         */
+        private static final long ONE_TENTH_OF_A_SECOND = 100L;
+
+        /**
+         * as soon as this value is a real number the count down starts.
+         */
+        private double exposure = Double.NaN;
+
+        /**
+         * random seed to give some reality.
+         */
+        private Random random = new Random(System.currentTimeMillis());
+
+        /**
+         * stop the camera.
+         */
+        private boolean stop = false;
+
+        /**
+         * the current (simulated) temperature.
+         */
+        private double temperature = 0.0d;
+
+        /**
+         * the target temperature to reach.
+         */
+        private double theTargetTemperature = Double.NaN;
+
+        /**
+         * the camera vertical resolution.
+         */
+        private final int heigth;
+
+        /**
+         * the camera horizontal resolution.
+         */
+        private final int width;
+
+        /**
+         * the image to send.
+         */
+        private BufferedImage stdImage;
+
+        /**
+         * constructor of the camera.
+         */
+        private Camera() {
             try {
                 stdImage = ImageIO.read(CCDSimulator.class.getResourceAsStream("default.jpg"));
                 heigth = stdImage.getHeight();
@@ -83,11 +171,11 @@ public class CCDSimulator extends INDICCDDriver {
             int count = 0;
             while (!stop) {
                 try {
-                    Thread.sleep(100L);
+                    Thread.sleep(ONE_TENTH_OF_A_SECOND);
                     if (connectionExtension.isConnected()) {
-                        updateTemperature(100L, count);
-                        updateExposure(100L, count);
-                        count = (count + 1) % 10;
+                        updateTemperature(count == 0);
+                        updateExposure(ONE_TENTH_OF_A_SECOND, count == 0);
+                        count = (count + 1) % PROPERTY_UPDATE_EVERY_X_LOOPS;
                     }
                 } catch (InterruptedException e) {
                     LOG.error("camera thread interrrupted", e);
@@ -96,52 +184,95 @@ public class CCDSimulator extends INDICCDDriver {
             }
         }
 
-        private void updateExposure(long sleeptime, int count) {
+        /**
+         * update the exposure left value. and send the image if the rest
+         * reaches 0.
+         * 
+         * @param sleeptime
+         *            the sleep time per loop
+         * @param updateProperty
+         *            send the property values to the client.
+         */
+        private void updateExposure(long sleeptime, boolean updateProperty) {
             if (!Double.isNaN(exposure)) {
                 exposure = exposure - sleeptime;
             }
-            if (count == 0) {
-                primaryCCD.setExposureLeft(Math.max(0, exposure) / 1000d);
+            if (updateProperty) {
+                primaryCCD.setExposureLeft(Math.max(0, exposure) / MILLISECONDS_PER_SECOND);
             }
             if (exposure < 0) {
-                exposure = Double.NaN;
-                INDICCDImage newCcdImage = INDICCDImage.createImage(width, heigth, 8, ImageType.COLOR);
-                Raster stdData = stdImage.getData();
-                int[] pixel = new int[3];
-                PixelIterator pixelIter = newCcdImage.iteratePixel();
-                for (int y = 0; y < heigth; y++) {
-                    for (int x = 0; x < width; x++) {
+                sendImage();
+            }
+        }
+
+        /**
+         * send the image to the client.
+         */
+        private void sendImage() {
+            exposure = Double.NaN;
+            INDICCDImage newCcdImage = INDICCDImage.createImage(width, heigth, BITS_PER_PIXEL_COLOR, ImageType.COLOR);
+            Raster stdData = stdImage.getData();
+            int[] pixel = new int[VALUES_PER_COLOR];
+            PixelIterator pixelIter = newCcdImage.iteratePixel();
+
+            for (int y = 0; y < heigth; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (primaryCCD.getCurrentFrameType() == CcdFrame.FLAT_FRAME) {
+                        stdData.getPixel(x, y, pixel);
+                        pixelIter.setPixel(MAXIMUM_BYTE_VALUE, MAXIMUM_BYTE_VALUE, MAXIMUM_BYTE_VALUE);
+                    } else if (primaryCCD.getCurrentFrameType() == CcdFrame.DARK_FRAME || primaryCCD.getCurrentFrameType() == CcdFrame.BIAS_FRAME) {
+                        stdData.getPixel(x, y, pixel);
+                        pixelIter.setPixel(0, 0, 0);
+                    } else {
                         stdData.getPixel(x, y, pixel);
                         pixelIter.setPixel(pixel[0], pixel[1], pixel[2]);
                     }
                 }
-                primaryCCD.setFrameBuffer(newCcdImage);
-                exposureComplete(primaryCCD);
             }
+            primaryCCD.setFrameBuffer(newCcdImage);
+            exposureComplete(primaryCCD);
         }
 
-        protected void updateTemperature(long sleeptime, int count) {
-            double tempDiff = (random.nextDouble() - 0.5d) / 20d;
+        /**
+         * update the temperature field.
+         * 
+         * @param updateProperty
+         *            should the client property be updated?
+         */
+        protected void updateTemperature(boolean updateProperty) {
+            double tempDiff = (random.nextDouble() - RANDOM_VALUE_MOVE) / TEMPERATURE_RANDOM_PART;
             if (!Double.isNaN(theTargetTemperature)) {
                 if (theTargetTemperature > temperature) {
-                    tempDiff += 0.1d;
+                    tempDiff += TEMPERATURE_STEPPING;
                 } else {
-                    tempDiff -= 0.1d;
+                    tempDiff -= TEMPERATURE_STEPPING;
                 }
             }
             temperature += tempDiff;
-            if (count == 0) {
+            if (updateProperty) {
                 CCDSimulator.this.temperatureTemp.setValue(temperature);
                 updateProperty(CCDSimulator.this.temperature);
             }
         }
     }
 
-    Camera camera = new Camera();
+    /**
+     * the simulated camera.
+     */
+    private final Camera camera = new Camera();
 
+    /**
+     * standard constructor for the simulated ccd driver.
+     * 
+     * @param inputStream
+     *            The stream from which to read messages.
+     * @param outputStream
+     *            The stream to which to write the messages.
+     */
     public CCDSimulator(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
         new Thread(camera, "camera").start();
+        primaryCCD.setCCDParams(camera.width, camera.heigth, BITS_PER_PIXEL_COLOR, SIMULATED_PIXEL_SIZE, SIMULATED_PIXEL_SIZE);
     }
 
     @Override
@@ -169,7 +300,7 @@ public class CCDSimulator extends INDICCDDriver {
 
     @Override
     public boolean startExposure(double duration) {
-        camera.exposure = duration * 1000d;
+        camera.exposure = duration * MILLISECONDS_PER_SECOND;
         return true;
     }
 
@@ -185,12 +316,12 @@ public class CCDSimulator extends INDICCDDriver {
 
     @Override
     public boolean updateCCDFrameType(CcdFrame fType) {
-        return false;
+        return true;
     }
 
     @Override
-    public void addFITSKeywords(BasicHDU fitsHeader) {
-
+    public Map<String, Object> getExtraFITSKeywords(BasicHDU fitsHeader) {
+        return null;
     }
 
     @Override
