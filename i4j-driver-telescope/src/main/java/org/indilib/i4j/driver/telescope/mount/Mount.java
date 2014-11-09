@@ -31,6 +31,16 @@ package org.indilib.i4j.driver.telescope.mount;
 public class Mount<AxisWithEncoderType extends AxisWithEncoder> {
 
     /**
+     * the maximum altitude value.
+     */
+    private static final double MAXIMUM_LEGAL_ALT_VALUE = 190d;
+
+    /**
+     * the minimum legal altitude value.
+     */
+    private static final double MINIMUM_LEGAL_ALT_VALUE = -10d;
+
+    /**
      * The horizontal encoder.
      */
     protected final AxisWithEncoderType horizontalAxis;
@@ -46,6 +56,7 @@ public class Mount<AxisWithEncoderType extends AxisWithEncoder> {
     public Mount() {
         horizontalAxis = createHorizontalAxis();
         verticalAxis = createVerticalAxis();
+        verticalAxis.setValidRange(MINIMUM_LEGAL_ALT_VALUE, MAXIMUM_LEGAL_ALT_VALUE);
     }
 
     /**
@@ -105,4 +116,5 @@ public class Mount<AxisWithEncoderType extends AxisWithEncoder> {
     public double getVerticalPosition() {
         return verticalAxis.getCurrentPosition();
     }
+
 }

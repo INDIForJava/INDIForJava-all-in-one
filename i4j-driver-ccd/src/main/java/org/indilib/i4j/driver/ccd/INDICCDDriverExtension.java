@@ -653,15 +653,20 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      *            The new Elements and Values
      */
     private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
-        imageFrame.setValues(elementsAndValues);
-        imageFrame.setState(PropertyStates.OK);
-        String message =
-                String.format("Requested CCD Frame is %4d,%4d %4d x %4d", imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(),
-                        imageFrameHeigth.getIntValue());
-        LOG.info(message);
-
-        if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue())) {
-            imageFrame.setState(PropertyStates.ALERT);
+        String message = null;
+        if (capability().canSubFrame()) {
+            imageFrame.setValues(elementsAndValues);
+            imageFrame.setState(PropertyStates.OK);
+            message = String.format("Requested CCD Frame is %4d,%4d %4d x %4d", //
+                    imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue());
+            LOG.info(message);
+            if (!driverInterface.updateCCDFrame(imageFrameX.getIntValue(), imageFrameY.getIntValue(), imageFrameWidth.getIntValue(), imageFrameHeigth.getIntValue())) {
+                imageFrame.setState(PropertyStates.ALERT);
+            }
+        } else {
+            message = "sub frame is not supported!";
+            LOG.info(message);
+            imageFrame.setState(PropertyStates.OK);
         }
         updateProperty(imageFrame, message);
     }
@@ -1003,5 +1008,19 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      */
     public CcdFrame getCurrentFrameType() {
         return currentFrameType;
+    }
+
+    /**
+     * @return the horizontal binning of the CCD chip.
+     */
+    public int getBinningX() {
+        return binningX;
+    }
+
+    /**
+     * @return the vertical binning of the CCD chip.
+     */
+    public int getBinningY() {
+        return binningY;
     }
 }

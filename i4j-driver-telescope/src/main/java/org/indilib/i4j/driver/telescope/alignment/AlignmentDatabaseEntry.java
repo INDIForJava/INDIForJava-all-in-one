@@ -63,6 +63,31 @@ public class AlignmentDatabaseEntry implements Cloneable, Serializable {
      */
     private byte[] privateData;
 
+    /**
+     * constructor with all fields at once.
+     * 
+     * @param rightAscension
+     *            the right ascention
+     * @param declination
+     *            the declination
+     * @param observationJulianDate
+     *            the observation date
+     * @param telescopeDirection
+     *            the telescope direction vector
+     */
+    public AlignmentDatabaseEntry(double rightAscension, double declination, double observationJulianDate, TelescopeDirectionVector telescopeDirection) {
+        this.rightAscension = rightAscension;
+        this.declination = declination;
+        this.observationJulianDate = observationJulianDate;
+        this.telescopeDirection = telescopeDirection;
+    }
+
+    /**
+     * default constructor.
+     */
+    public AlignmentDatabaseEntry() {
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         AlignmentDatabaseEntry clone = (AlignmentDatabaseEntry) super.clone();

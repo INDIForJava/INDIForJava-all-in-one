@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.INDIDriverExtension;
@@ -132,7 +133,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      */
     public MathPluginManagement(INDITelescope driver) {
         super(driver);
-        inMemoryDatabase = new InMemoryDatabase();
+        this.inMemoryDatabase = new InMemoryDatabase();
         enumeratePlugins();
         for (IMathPlugin mathPlugin : plugins.values()) {
             this.alignmentSubsystemMathPlugins.newElement().name(mathPlugin.id()).label(mathPlugin.name()).create();
@@ -371,7 +372,30 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      *            the longtitude.
      */
     public void setDatabaseReferencePosition(double lat, double lng) {
-        inMemoryDatabase.setDatabaseReferencePosition(lat, lng);
+        this.inMemoryDatabase.setDatabaseReferencePosition(lat, lng);
+    }
+
+    /**
+     * force the alignment system active. use this method in the constructor of
+     * your driver if your telescope driver depends on the alignment system to
+     * be active.
+     */
+    public void forceActive() {
+        this.alignmentSubsystemActiveElement.setOn();
+        this.alignmentSubsystemActive.setPermission(PropertyPermissions.RO);
+        this.alignmentSubsystemActive.setState(OK);
+        this.driver.updateProperty(alignmentSubsystemActive);
+    }
+
+    /**
+     * add the database entry to the database and reinitialize.
+     * 
+     * @param entry
+     *            the entry to add to the database
+     */
+    public void add(AlignmentDatabaseEntry entry) {
+        inMemoryDatabase.getAlignmentDatabase().add(entry);
+        plugin.initialise(inMemoryDatabase);
     }
 
 }

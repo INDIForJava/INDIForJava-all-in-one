@@ -567,6 +567,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         } else {
             this.abort.setState(ALERT);
         }
+        updateProperty(abort);
     }
 
     /**

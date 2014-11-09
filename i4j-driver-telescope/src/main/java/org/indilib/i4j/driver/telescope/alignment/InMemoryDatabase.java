@@ -45,6 +45,12 @@ import org.slf4j.LoggerFactory;
 public class InMemoryDatabase {
 
     /**
+     * tollerance between locations. a to big difference will delete all sync
+     * points.
+     */
+    private static final double LOCATION_TOLERANCE = 0.01d;
+
+    /**
      * the default maximum tolerance between sync points.
      */
     private static final double MAXIMUM_TOLERANCE_BETWEEN_SYNC_POINTS = 0.1;
@@ -198,6 +204,11 @@ public class InMemoryDatabase {
      *            the longitude of the reference position
      */
     protected void setDatabaseReferencePosition(double newLatitude, double newLongitude) {
+        double diff = Math.abs(newLatitude - latitude) + Math.abs(newLongitude - longitude);
+        if (diff > LOCATION_TOLERANCE) {
+            LOG.warn("location to different! remove all sync points");
+            mySyncPoints.clear();
+        }
         latitude = newLatitude;
         longitude = newLongitude;
     }

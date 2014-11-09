@@ -31,13 +31,13 @@ import java.util.Date;
 import net.sourceforge.novaforjava.JulianDay;
 import net.sourceforge.novaforjava.api.LnDate;
 import net.sourceforge.novaforjava.api.LnHrzPosn;
-import net.sourceforge.novaforjava.api.LnLnlatPosn;
 
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.INDISexagesimalFormatter;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.telescope.INDIDirection;
 import org.indilib.i4j.driver.telescope.INDITelescope;
+import org.indilib.i4j.driver.telescope.INDITelescopeSyncInterface;
+import org.indilib.i4j.driver.telescope.alignment.AlignmentDatabaseEntry;
 import org.indilib.i4j.driver.telescope.alignment.DoubleRef;
 import org.indilib.i4j.driver.telescope.alignment.MathPluginManagement;
 import org.indilib.i4j.driver.telescope.alignment.MountAlignment;
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class TelescopeAltAzSimulator extends INDITelescope {
+public class TelescopeAltAzSimulator extends INDITelescope implements INDITelescopeSyncInterface {
 
     /**
      * the right assertion pression when a goto is defined as position reached.
@@ -168,12 +168,7 @@ public class TelescopeAltAzSimulator extends INDITelescope {
     public TelescopeAltAzSimulator(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
         mathPluginManagement.setApproximateAlignment(MountAlignment.ZENITH);
-
-        LnLnlatPosn position = new LnLnlatPosn();
-        INDISexagesimalFormatter indiSexagesimalFormatter = new INDISexagesimalFormatter("%010.6m");
-        position.lng = indiSexagesimalFormatter.parseSexagesimal("16:22:00");
-        position.lat = indiSexagesimalFormatter.parseSexagesimal("48:13:00");
-        mathPluginManagement.setDatabaseReferencePosition(position.lat, position.lng);
+        mathPluginManagement.forceActive();
         mathPluginManagement.initialise();
     }
 
@@ -281,6 +276,8 @@ public class TelescopeAltAzSimulator extends INDITelescope {
 
     @Override
     protected boolean updateLocation(double targetLat, double targetLong, double targetElev) {
+        mathPluginManagement.setDatabaseReferencePosition(targetLat, targetLong);
+        mathPluginManagement.initialise();
         return true;
     }
 
@@ -339,6 +336,17 @@ public class TelescopeAltAzSimulator extends INDITelescope {
         }
         updateProperty(this.movementWES, message);
 
+        return true;
+    }
+
+    @Override
+    public boolean sync(double rightAscension, double declination) {
+        LnHrzPosn actualAltAz = new LnHrzPosn();
+        actualAltAz.az = mount.getHorizontalPosition();
+        actualAltAz.alt = mount.getVerticalPosition();
+        TelescopeDirectionVector vector = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualAltAz);
+        AlignmentDatabaseEntry e = new AlignmentDatabaseEntry(rightAscension, declination, jdTimeFromCurrentMiliseconds(System.currentTimeMillis()), vector);
+        this.mathPluginManagement.add(e);
         return true;
     }
 }

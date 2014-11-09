@@ -63,6 +63,16 @@ public class AxisWithEncoder {
     protected long maximum = DEFAULT_MAX_ENCODER;
 
     /**
+     * minimum legal value in degrees.
+     */
+    protected double minimumLegalValue = Double.NaN;
+
+    /**
+     * maximum legal value in degrees.
+     */
+    protected double maximumLegalValue = Double.NaN;
+
+    /**
      * the current position.
      */
     private long position;
@@ -102,11 +112,6 @@ public class AxisWithEncoder {
     protected double speedInTicksPerSecond;
 
     /**
-     * delta in degrees, for manual differences.
-     */
-    protected double delta;
-
-    /**
      * goto the position with the specified degrees, and try to get there in the
      * alloted time frame. Attention the axis will continue to go in that
      * direction even if the coordinates are reached, so update the direction
@@ -119,9 +124,15 @@ public class AxisWithEncoder {
      *            the alloted time to get there.
      */
     public void gotoWithSpeed(double degrees, double secondsInFuture) {
-        double degreesWithDelta = degrees + delta;
+        double protectedDegrees = degrees;
+        if (!Double.isNaN(minimumLegalValue) && protectedDegrees < minimumLegalValue) {
+            protectedDegrees = minimumLegalValue;
+        }
+        if (!Double.isNaN(maximumLegalValue) && protectedDegrees > maximumLegalValue) {
+            protectedDegrees = maximumLegalValue;
+        }
         double range = maximum - minimum;
-        double posZeroOne = degreeRange(degreesWithDelta) / FULL_CIRCLE_IN_DEGREES;
+        double posZeroOne = degreeRange(protectedDegrees) / FULL_CIRCLE_IN_DEGREES;
         double futurePos = zeroPosition + range * posZeroOne;
 
         while (futurePos > maximum) {
@@ -143,7 +154,7 @@ public class AxisWithEncoder {
         double speed = difference / secondsInFuture;
 
         // regulate the speed depending on the distance.
-        double maximumSpeed = getMaximumSpeed(Math.abs(degreeRange(degreesWithDelta) - getCurrentPosition()));
+        double maximumSpeed = getMaximumSpeed(Math.abs(degreeRange(protectedDegrees) - getCurrentPosition()));
 
         if (speed > 0) {
             speed = Math.min(speed, maximumSpeed);
@@ -219,7 +230,20 @@ public class AxisWithEncoder {
         double secondsSinsLastPositionUpdate = (System.currentTimeMillis() - positionTimeMs) / MILLISECONDS_PER_SECOND;
         double currentPosition = position + secondsSinsLastPositionUpdate * speedInTicksPerSecond;
         double positionRelativeToZero = currentPosition - zeroPosition;
-        return degreeRange(((positionRelativeToZero / range) * FULL_CIRCLE_IN_DEGREES) - delta);
+        return degreeRange(((positionRelativeToZero / range) * FULL_CIRCLE_IN_DEGREES));
     }
 
+    /**
+     * axis protection, all tries to leave the range will be blocked. to protect
+     * the scope against breaking.
+     * 
+     * @param newMinimumLegalValue
+     *            the minimum legal value in degrees
+     * @param newMaximumLegalValue
+     *            the maximum legal value in degrees
+     */
+    protected void setValidRange(double newMinimumLegalValue, double newMaximumLegalValue) {
+        this.minimumLegalValue = newMinimumLegalValue;
+        this.maximumLegalValue = newMaximumLegalValue;
+    }
 }

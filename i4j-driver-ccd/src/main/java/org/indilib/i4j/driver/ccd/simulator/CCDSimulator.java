@@ -210,22 +210,45 @@ public class CCDSimulator extends INDICCDDriver {
          */
         private void sendImage() {
             exposure = Double.NaN;
-            INDICCDImage newCcdImage = INDICCDImage.createImage(width, heigth, BITS_PER_PIXEL_COLOR, ImageType.COLOR);
+
+            int binx = primaryCCD.getBinningX();
+            int biny = primaryCCD.getBinningY();
+            int sensorWidth = width;
+            int sensorHeigth = heigth;
+            sensorWidth = (sensorWidth / binx) * binx;
+            sensorHeigth = (sensorHeigth / biny) * biny;
+
+            INDICCDImage newCcdImage = INDICCDImage.createImage(sensorWidth / binx, sensorHeigth / biny, BITS_PER_PIXEL_COLOR, ImageType.COLOR);
             Raster stdData = stdImage.getData();
             int[] pixel = new int[VALUES_PER_COLOR];
+            int[] pixelSum = new int[VALUES_PER_COLOR];
             PixelIterator pixelIter = newCcdImage.iteratePixel();
 
-            for (int y = 0; y < heigth; y++) {
-                for (int x = 0; x < width; x++) {
+            for (int y = 0; y < sensorHeigth; y += biny) {
+                for (int x = 0; x < sensorWidth; x += biny) {
+                    pixelSum[0] = 0;
+                    pixelSum[1] = 0;
+                    pixelSum[2] = 0;
+                    int binCount = 0;
+                    for (int yy = 0; yy < biny; yy++) {
+                        for (int xx = 0; xx < binx; xx++) {
+                            stdData.getPixel(x + xx, y + yy, pixel);
+                            pixelSum[0] += pixel[0];
+                            pixelSum[1] += pixel[1];
+                            pixelSum[2] += pixel[2];
+                            binCount++;
+                        }
+                    }
+                    pixelSum[0] = pixelSum[0] / binCount;
+                    pixelSum[1] = pixelSum[1] / binCount;
+                    pixelSum[2] = pixelSum[2] / binCount;
                     if (primaryCCD.getCurrentFrameType() == CcdFrame.FLAT_FRAME) {
-                        stdData.getPixel(x, y, pixel);
                         pixelIter.setPixel(MAXIMUM_BYTE_VALUE, MAXIMUM_BYTE_VALUE, MAXIMUM_BYTE_VALUE);
                     } else if (primaryCCD.getCurrentFrameType() == CcdFrame.DARK_FRAME || primaryCCD.getCurrentFrameType() == CcdFrame.BIAS_FRAME) {
-                        stdData.getPixel(x, y, pixel);
                         pixelIter.setPixel(0, 0, 0);
                     } else {
-                        stdData.getPixel(x, y, pixel);
-                        pixelIter.setPixel(pixel[0], pixel[1], pixel[2]);
+
+                        pixelIter.setPixel(pixelSum[0], pixelSum[1], pixelSum[2]);
                     }
                 }
             }
@@ -280,7 +303,7 @@ public class CCDSimulator extends INDICCDDriver {
         Capability capabilities = new Capability();
         capabilities.canAbort(true);
         capabilities.canBin(true);
-        capabilities.canSubFrame(true);
+        capabilities.canSubFrame(false);
         capabilities.hasCooler(true);
         capabilities.hasGuideHead(false);
         capabilities.hasShutter(true);
@@ -306,7 +329,7 @@ public class CCDSimulator extends INDICCDDriver {
 
     @Override
     public boolean updateCCDBin(int hor, int ver) {
-        return false;
+        return true;
     }
 
     @Override

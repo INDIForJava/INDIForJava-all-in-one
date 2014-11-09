@@ -166,7 +166,7 @@ public class INDISwitchElement extends INDIElement {
      * set the value to on.
      */
     public final void setOn() {
-        setValue(SwitchStatus.OFF);
+        setValue(SwitchStatus.ON);
     }
 
 }
