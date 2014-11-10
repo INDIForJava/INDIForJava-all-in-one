@@ -22,7 +22,6 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import java.util.List;
 
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
@@ -70,7 +69,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      * @return The selected element
      */
     private INDISwitchElement getSelectedElement() {
-        for (INDISwitchElement e : getElementsAsList()) {
+        for (INDISwitchElement e : this) {
             if (e.getValue() == SwitchStatus.ON) {
                 return e;
             }
@@ -84,36 +83,15 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      * @return The index of the selected element
      */
     public int getSelectedIndex() {
-        List<INDISwitchElement> list = getElementsAsList();
-
-        for (int i = 0; i < list.size(); i++) {
-            INDISwitchElement e = list.get(i);
-
+        int index = 0;
+        for (INDISwitchElement e: this) {
             if (e.getValue() == SwitchStatus.ON) {
-                return i;
+                return index;
             }
+            index++;
         }
 
         return -1; // Should never happen
-    }
-
-    /**
-     * Sets the selected Element to the one with a particular <code>index</code>
-     * .
-     * 
-     * @param index
-     *            The index of the Element that is being selected
-     */
-    public void setSelectedIndex(int index) {
-        if (index < 0 || index >= this.getElementCount()) {
-            return;
-        }
-
-        List<INDISwitchElement> list = getElementsAsList();
-
-        INDISwitchElement e = (INDISwitchElement) list.get(index);
-
-        setOnlyOneSwitchOn(e);
     }
 
     /**
@@ -128,13 +106,13 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      */
     public int getSelectedIndex(INDISwitchElementAndValue[] ev) {
         INDISwitchElementAndValue indiSwitchElementAndValue = getSelectedElement(ev);
-        List<INDISwitchElement> list = getElementsAsList();
-        for (int h = 0; h < list.size(); h++) {
-            if (list.get(h) == indiSwitchElementAndValue.getElement()) {
-                return h;
+        int index = 0;
+        for (INDISwitchElement e:this) {
+            if (e == indiSwitchElementAndValue.getElement()) {
+                return index;
             }
+            index++;
         }
-
         return -1;
     }
 
@@ -166,12 +144,11 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      */
     public String getSelectedValue(INDISwitchElementAndValue[] ev) {
         INDISwitchElementAndValue indiSwitchElementAndValue = getSelectedElement(ev);
-        for (INDISwitchElement e : getElementsAsList()) {
+        for (INDISwitchElement e : this) {
             if (e == indiSwitchElementAndValue.getElement()) {
                 return e.getName();
             }
         }
-
         return null;
     }
 
@@ -183,7 +160,8 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      *            The pairs of elements and values
      */
     public void setSelectedIndex(INDISwitchElementAndValue[] ev) {
-        int selected = getSelectedIndex(ev);
-        setSelectedIndex(selected);
+        INDISwitchElementAndValue selected = getSelectedElement(ev);
+        resetAllSwitches();
+        selected.getElement().setOn();
     }
 }

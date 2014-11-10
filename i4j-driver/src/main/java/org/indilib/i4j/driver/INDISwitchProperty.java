@@ -24,8 +24,6 @@ package org.indilib.i4j.driver;
 
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
-import java.util.List;
-
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
@@ -73,7 +71,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * hold.
      */
     public void resetAllSwitches() {
-        for (INDIElement element : getElementsAsList()) {
+        for (INDIElement element : this) {
             if (element.getValue() == SwitchStatus.ON) {
                 ((INDISwitchElement) element).setValue(SwitchStatus.OFF);
             }
@@ -142,16 +140,11 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      */
     private int getSelectedCount() {
         int selectedCount = 0;
-
-        List<INDISwitchElement> list = getElementsAsList();
-
-        for (int i = 0; i < list.size(); i++) {
-            INDISwitchElement el = list.get(i);
+        for (INDISwitchElement el : this) {
             if (el.getValue() == SwitchStatus.ON) {
                 selectedCount++;
             }
         }
-
         return selectedCount;
     }
 
@@ -217,7 +210,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         if (rule == SwitchRules.ONE_OF_MANY) {
             throw new UnsupportedOperationException("getOnElement() is only valid with SwitchRules.ONE_OF_MANY");
         } else {
-            for (INDIElement element : getElementsAsList()) {
+            for (INDIElement element : this) {
                 if (element.getValue() == SwitchStatus.ON) {
                     return (INDISwitchElement) element;
                 }
