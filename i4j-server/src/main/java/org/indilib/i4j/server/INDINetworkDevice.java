@@ -44,19 +44,14 @@ import org.slf4j.LoggerFactory;
 public class INDINetworkDevice extends INDIDevice {
 
     /**
-     * The logger to log to.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(INDINetworkDevice.class);
-
-    /**
      * timeout to use with tcp connections.
      */
     private static final int CONNECT_TIMEOUT = 20000;
 
     /**
-     * The socket to connect for the INDI Server.
+     * The logger to log to.
      */
-    private Socket socket;
+    private static final Logger LOG = LoggerFactory.getLogger(INDINetworkDevice.class);
 
     /**
      * The host to connect for the INDI Server.
@@ -64,14 +59,19 @@ public class INDINetworkDevice extends INDIDevice {
     private String host;
 
     /**
+     * A list of names of the Device (it may be more than one).
+     */
+    private List<String> names;
+
+    /**
      * The port to connect for the INDI Server.
      */
     private int port;
 
     /**
-     * A list of names of the Device (it may be more than one).
+     * The socket to connect for the INDI Server.
      */
-    private List<String> names;
+    private Socket socket;
 
     /**
      * Constructs a new Network Device and connects to it.
@@ -85,7 +85,7 @@ public class INDINetworkDevice extends INDIDevice {
      * @throws INDIException
      *             if there is any problem with the connection.
      */
-    protected INDINetworkDevice(AbstractINDIServer server, String host, int port) throws INDIException {
+    protected INDINetworkDevice(INDIServer server, String host, int port) throws INDIException {
         super(server);
 
         names = new ArrayList<String>();
@@ -102,13 +102,62 @@ public class INDINetworkDevice extends INDIDevice {
         }
     }
 
+    @Override
+    public void closeConnections() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            LOG.warn("close connection error", e);
+        }
+    }
+
+    @Override
+    public String getDeviceIdentifier() {
+        return getNetworkName();
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        try {
+            return socket.getInputStream();
+        } catch (IOException e) {
+            LOG.warn("could not open input stream", e);
+        }
+        return null;
+    }
+
+    @Override
+    public String[] getNames() {
+        return names.toArray(new String[names.size()]);
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        try {
+            return socket.getOutputStream();
+        } catch (IOException e) {
+            LOG.warn("could not open output stream", e);
+        }
+        return null;
+    }
+
+    @Override
+    public void isBeingDestroyed() {
+    }
+
+    @Override
+    public boolean isDevice(String deviceIdentifier) {
+        return getDeviceIdentifier().equals(deviceIdentifier);
+    }
+
     /**
-     * Gets a String with the host and port of the connection.
+     * Gets a String representation of the Device.
      * 
-     * @return A String with the host and port of the connection.
+     * @return A String representation of the Device.
      */
-    private String getNetworkName() {
-        return host + ":" + port;
+    @Override
+    public String toString() {
+        return "Network Device: " + this.getNetworkName() + " - " + Arrays.toString(getNames());
     }
 
     /**
@@ -137,61 +186,12 @@ public class INDINetworkDevice extends INDIDevice {
         return names.contains(name);
     }
 
-    @Override
-    public void closeConnections() {
-        try {
-            socket.close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-    }
-
-    @Override
-    public InputStream getInputStream() {
-        try {
-            return socket.getInputStream();
-        } catch (IOException e) {
-            LOG.warn("could not open input stream", e);
-        }
-        return null;
-    }
-
-    @Override
-    public OutputStream getOutputStream() {
-        try {
-            return socket.getOutputStream();
-        } catch (IOException e) {
-            LOG.warn("could not open output stream", e);
-        }
-        return null;
-    }
-
-    @Override
-    public String getDeviceIdentifier() {
-        return getNetworkName();
-    }
-
-    @Override
-    public boolean isDevice(String deviceIdentifier) {
-        return getDeviceIdentifier().equals(deviceIdentifier);
-    }
-
-    @Override
-    protected String[] getNames() {
-        return names.toArray(new String[names.size()]);
-    }
-
     /**
-     * Gets a String representation of the Device.
+     * Gets a String with the host and port of the connection.
      * 
-     * @return A String representation of the Device.
+     * @return A String with the host and port of the connection.
      */
-    @Override
-    public String toString() {
-        return "Network Device: " + this.getNetworkName() + " - " + Arrays.toString(getNames());
-    }
-
-    @Override
-    public void isBeingDestroyed() {
+    private String getNetworkName() {
+        return host + ":" + port;
     }
 }

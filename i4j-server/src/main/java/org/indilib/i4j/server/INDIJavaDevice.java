@@ -57,15 +57,9 @@ public class INDIJavaDevice extends INDIDevice {
     private INDIDriver driver;
 
     /**
-     * An identifier of the Java Device. Can be the name of a JAR file or any
-     * other String, but it must be UNIQUE.
+     * The class of the Driver.
      */
-    private String identifier;
-
-    /**
-     * A buffer to send information to the Driver.
-     */
-    private CircularByteBuffer toDriver;
+    private Class<?> driverClass;
 
     /**
      * A buffer to get information from the Driver.
@@ -73,14 +67,20 @@ public class INDIJavaDevice extends INDIDevice {
     private CircularByteBuffer fromDriver;
 
     /**
-     * The class of the Driver.
+     * An identifier of the Java Device. Can be the name of a JAR file or any
+     * other String, but it must be UNIQUE.
      */
-    private Class<?> driverClass;
+    private String identifier;
 
     /**
      * A list of names of the Device (it may be more than one).
      */
     private List<String> names;
+
+    /**
+     * A buffer to send information to the Driver.
+     */
+    private CircularByteBuffer toDriver;
 
     /**
      * Constructs a new Java Device and starts listening to its messages.
@@ -94,7 +94,7 @@ public class INDIJavaDevice extends INDIDevice {
      * @throws INDIException
      *             if there is any problem instantiating the Driver.
      */
-    protected INDIJavaDevice(AbstractINDIServer server, Class driverClass, String identifier) throws INDIException {
+    protected INDIJavaDevice(INDIServer server, Class driverClass, String identifier) throws INDIException {
         super(server);
 
         // name = null;
@@ -128,14 +128,76 @@ public class INDIJavaDevice extends INDIDevice {
         driver.startListening();
     }
 
+    @Override
+    public void closeConnections() {
+        try {
+            toDriver.getInputStream().close();
+        } catch (IOException e) {
+            LOG.warn("close connection error", e);
+        }
+        try {
+            toDriver.getOutputStream().close();
+        } catch (IOException e) {
+            LOG.warn("close connection error", e);
+        }
+        try {
+            fromDriver.getInputStream().close();
+        } catch (IOException e) {
+            LOG.warn("close connection error", e);
+        }
+        try {
+            fromDriver.getOutputStream().close();
+        } catch (IOException e) {
+            LOG.warn("close connection error", e);
+        }
+    }
+
+    @Override
+    public String getDeviceIdentifier() {
+        return identifier + "-+-" + driverClass.getName();
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return fromDriver.getInputStream();
+    }
+
+    @Override
+    public String[] getNames() {
+        return names.toArray(new String[names.size()]);
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        return toDriver.getOutputStream();
+    }
+
+    @Override
+    public void isBeingDestroyed() {
+        driver.isBeingDestroyed();
+    }
+
     /**
-     * Gets the identifier of the Device (probablythe name of the JAR file that
-     * includes it).
+     * Checks if the Device corresponds to a particular Device Identifier.
      * 
-     * @return The identifier of the Device
+     * @param deviceIdentifier
+     *            The Device Identifier to check.
+     * @return <code>true</code> if the Device corresponds to the Device
+     *         Identifier (that is, is in the jar file).
      */
-    protected String getIdentifier() {
-        return identifier;
+    @Override
+    public boolean isDevice(String deviceIdentifier) {
+        return getDeviceIdentifier().startsWith(deviceIdentifier);
+    }
+
+    /**
+     * Gets a String representation of the Device.
+     * 
+     * @return A String representation of the Device.
+     */
+    @Override
+    public String toString() {
+        return "Java Device: " + identifier + " - " + driverClass.getName();
     }
 
     /**
@@ -162,77 +224,5 @@ public class INDIJavaDevice extends INDIDevice {
     @Override
     protected boolean hasName(String name) {
         return names.contains(name);
-    }
-
-    @Override
-    public void closeConnections() {
-        try {
-            toDriver.getInputStream().close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-        try {
-            toDriver.getOutputStream().close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-        try {
-            fromDriver.getInputStream().close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-        try {
-            fromDriver.getOutputStream().close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-    }
-
-    @Override
-    public InputStream getInputStream() {
-        return fromDriver.getInputStream();
-    }
-
-    @Override
-    public OutputStream getOutputStream() {
-        return toDriver.getOutputStream();
-    }
-
-    @Override
-    public String getDeviceIdentifier() {
-        return identifier + "-+-" + driverClass.getName();
-    }
-
-    /**
-     * Checks if the Device corresponds to a particular Device Identifier.
-     * 
-     * @param deviceIdentifier
-     *            The Device Identifier to check.
-     * @return <code>true</code> if the Device corresponds to the Device
-     *         Identifier (that is, is in the jar file).
-     */
-    @Override
-    public boolean isDevice(String deviceIdentifier) {
-        return getDeviceIdentifier().startsWith(deviceIdentifier);
-    }
-
-    @Override
-    protected String[] getNames() {
-        return names.toArray(new String[names.size()]);
-    }
-
-    /**
-     * Gets a String representation of the Device.
-     * 
-     * @return A String representation of the Device.
-     */
-    @Override
-    public String toString() {
-        return "Java Device: " + identifier + " - " + driverClass.getName();
-    }
-
-    @Override
-    public void isBeingDestroyed() {
-        driver.isBeingDestroyed();
     }
 }

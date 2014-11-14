@@ -30,6 +30,7 @@ import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIProtocolReader;
+import org.indilib.i4j.server.api.INDIClientInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -40,7 +41,7 @@ import org.w3c.dom.Element;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.31, April 12, 2012
  */
-public class INDIClient extends INDIDeviceListener {
+public class INDIClient extends INDIDeviceListener implements INDIClientInterface {
 
     /**
      * Logger to log to.
@@ -48,19 +49,19 @@ public class INDIClient extends INDIDeviceListener {
     private static final Logger LOG = LoggerFactory.getLogger(INDIClient.class);
 
     /**
-     * The socket to communicate with the Client.
+     * The reader.
      */
-    private Socket socket;
+    private INDIProtocolReader reader;
 
     /**
      * The Server to which the Client is connected.
      */
-    private AbstractINDIServer server;
+    private INDIServer server;
 
     /**
-     * The reader.
+     * The socket to communicate with the Client.
      */
-    private INDIProtocolReader reader;
+    private Socket socket;
 
     /**
      * Constructs a new INDIClient that connects to the server and starts
@@ -71,12 +72,35 @@ public class INDIClient extends INDIDeviceListener {
      * @param server
      *            The Server to which the Client is connected.
      */
-    public INDIClient(Socket socket, AbstractINDIServer server) {
+    public INDIClient(Socket socket, INDIServer server) {
         this.socket = socket;
         this.server = server;
 
         reader = new INDIProtocolReader(this);
         reader.start();
+    }
+
+    @Override
+    public void finishReader() {
+        server.removeClient(this);
+    }
+
+    /**
+     * Gets a String representation of the host and port of the Client.
+     * 
+     * @return A String representation of the host and port of the Client.
+     */
+    public String getInetAddress() {
+        return socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        try {
+            return socket.getInputStream();
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     /**
@@ -100,20 +124,6 @@ public class INDIClient extends INDIDeviceListener {
     }
 
     @Override
-    public void finishReader() {
-        server.removeClient(this);
-    }
-
-    /**
-     * Gets a String representation of the host and port of the Client.
-     * 
-     * @return A String representation of the host and port of the Client.
-     */
-    public String getInetAddress() {
-        return socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
-    }
-
-    @Override
     protected void parseXMLElement(Element child) {
         String name = child.getNodeName();
 
@@ -129,6 +139,31 @@ public class INDIClient extends INDIDeviceListener {
             processNewXXXVector(child);
         } else if (name.equals("enableBLOB")) {
             processEnableBLOB(child);
+        }
+    }
+
+    /**
+     * notify server of get properties if they are listening.
+     * 
+     * @param xml
+     *            the xml message
+     */
+    protected void processGetProperties(Element xml) {
+        String version = xml.getAttribute("version").trim();
+        if (version.isEmpty()) { // Some conditions to ignore the messages
+            return;
+        }
+        super.processGetProperties(xml);
+        server.notifyClientListenersGetProperties(this, xml);
+    }
+
+    @Override
+    protected void sendXMLMessage(String xml) {
+        try {
+            socket.getOutputStream().write(xml.getBytes(Charsets.UTF_8));
+            socket.getOutputStream().flush();
+        } catch (IOException e) {
+            disconnect();
         }
     }
 
@@ -190,40 +225,6 @@ public class INDIClient extends INDIDeviceListener {
                                                         // property avoid
                                                         // changing it
             server.notifyClientListenersNewXXXVector(this, xml);
-        }
-    }
-
-    /**
-     * notify server of get properties if they are listening.
-     * 
-     * @param xml
-     *            the xml message
-     */
-    protected void processGetProperties(Element xml) {
-        String version = xml.getAttribute("version").trim();
-        if (version.isEmpty()) { // Some conditions to ignore the messages
-            return;
-        }
-        super.processGetProperties(xml);
-        server.notifyClientListenersGetProperties(this, xml);
-    }
-
-    @Override
-    protected void sendXMLMessage(String xml) {
-        try {
-            socket.getOutputStream().write(xml.getBytes(Charsets.UTF_8));
-            socket.getOutputStream().flush();
-        } catch (IOException e) {
-            disconnect();
-        }
-    }
-
-    @Override
-    public InputStream getInputStream() {
-        try {
-            return socket.getInputStream();
-        } catch (IOException e) {
-            return null;
         }
     }
 }

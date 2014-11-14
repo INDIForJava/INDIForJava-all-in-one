@@ -13,11 +13,11 @@ package org.indilib.i4j.server.examples;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -27,7 +27,11 @@ import java.util.Arrays;
 
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.examples.RandomNumberGeneratorDriver;
-import org.indilib.i4j.server.DefaultINDIServer;
+import org.indilib.i4j.server.api.INDIClientInterface;
+import org.indilib.i4j.server.api.INDIDeviceInterface;
+import org.indilib.i4j.server.api.INDIServerAccessLookup;
+import org.indilib.i4j.server.api.INDIServerEventHandler;
+import org.indilib.i4j.server.api.INDIServerInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.21, April 4, 2012
  */
-public class MinimumINDIServer extends DefaultINDIServer {
+public final class MinimumINDIServer {
 
     /**
      * Logger to log to.
@@ -59,36 +63,49 @@ public class MinimumINDIServer extends DefaultINDIServer {
     /**
      * Just loads the available driver.
      */
-    public MinimumINDIServer() {
-        super();
+    private MinimumINDIServer() {
+        INDIServerInterface server = INDIServerAccessLookup.indiServerAccess().createOrGet(null, -1);
+        server.addEventHandler(new INDIServerEventHandler() {
 
+            @Override
+            public void driverDisconnected(INDIDeviceInterface device) {
+            }
+
+            @Override
+            public void connectionWithClientEstablished(INDIClientInterface client) {
+            }
+
+            @Override
+            public void connectionWithClientBroken(INDIClientInterface client) {
+            }
+
+            /**
+             * Accepts the client if it is 127.0.0.1 (localhost).
+             * 
+             * @param socket
+             *            socket to accept client from.
+             * @return <code>true</code> if it is the 127.0.0.1 host.
+             */
+            @Override
+            public boolean acceptClient(Socket clientSocket) {
+                byte[] address = clientSocket.getInetAddress().getAddress();
+
+                if (Arrays.equals(address, LOCALHOST)) {
+                    return true;
+                }
+
+                return false;
+            }
+        });
         // Loads the Java Driver. Please note that its class must be in the
         // classpath.
         try {
-            loadJavaDriver(RandomNumberGeneratorDriver.class);
+            server.loadJavaDriver(RandomNumberGeneratorDriver.class.getName());
         } catch (INDIException e) {
             LOG.error("indi exception", e);
 
             System.exit(-1);
         }
-    }
-
-    /**
-     * Accepts the client if it is 127.0.0.1 (localhost).
-     * 
-     * @param socket
-     *            socket to accept client from.
-     * @return <code>true</code> if it is the 127.0.0.1 host.
-     */
-    @Override
-    protected boolean acceptClient(Socket socket) {
-        byte[] address = socket.getInetAddress().getAddress();
-
-        if (Arrays.equals(address, LOCALHOST)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

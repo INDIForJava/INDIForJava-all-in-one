@@ -13,11 +13,11 @@ package org.indilib.i4j.server.examples;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -25,15 +25,17 @@ package org.indilib.i4j.server.examples;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.net.Socket;
+import java.util.Arrays;
 import java.util.List;
 
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.server.DefaultINDIServer;
-import org.indilib.i4j.server.INDIClient;
-import org.indilib.i4j.server.INDIDevice;
+import org.indilib.i4j.server.api.INDIClientInterface;
+import org.indilib.i4j.server.api.INDIDeviceInterface;
+import org.indilib.i4j.server.api.INDIServerAccessLookup;
+import org.indilib.i4j.server.api.INDIServerEventHandler;
+import org.indilib.i4j.server.api.INDIServerInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, July 23, 2013
  */
-public class INDIBasicServer extends DefaultINDIServer {
+public class INDIBasicServer implements INDIServerEventHandler {
 
     /**
      * poll interfall.
@@ -61,18 +63,13 @@ public class INDIBasicServer extends DefaultINDIServer {
     /**
      * The only server.
      */
-    private static INDIBasicServer server;
-
-    /**
-     * Loaded jar files.
-     */
-    private final List<String> jarFiles = new ArrayList<String>();
+    private INDIServerInterface server;
 
     /**
      * Constructs the server.
      */
     public INDIBasicServer() {
-        super();
+        this(-1);
     }
 
     /**
@@ -82,7 +79,8 @@ public class INDIBasicServer extends DefaultINDIServer {
      *            The port to which the server will listen.
      */
     public INDIBasicServer(int port) {
-        super(port);
+        server = INDIServerAccessLookup.indiServerAccess().createOrGet(null, port);
+        server.addEventHandler(this);
     }
 
     /**
@@ -94,9 +92,7 @@ public class INDIBasicServer extends DefaultINDIServer {
      */
     public void loadJava(String jar) {
         try {
-            loadJavaDriversFromJAR(jar);
-
-            jarFiles.add(jar);
+            server.loadJavaDriversFromJAR(jar);
         } catch (INDIException e) {
             System.err.println(e.getMessage());
         }
@@ -110,53 +106,24 @@ public class INDIBasicServer extends DefaultINDIServer {
      */
     public void loadJavaClass(String className) {
         try {
-            Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(className);
-            if (INDIDriver.class.isAssignableFrom(cls)) {
-                loadJavaDriver(cls);
-            }
-        } catch (Exception e) {
+            server.loadJavaDriver(className);
+        } catch (INDIException e) {
             System.err.println(e.getMessage());
         }
     }
 
     /**
-     * Unloads the Java Drivers in a JAR file.
+     * Unloads the Java Driver.
      * 
-     * @param jar
-     *            The JAR file.
-     * @see #loadJava
+     * @param className
+     *            class name of the driver
      */
-    public void unloadJava(String jar) {
-        destroyJavaDriversFromJAR(jar);
-
-        jarFiles.remove(jar);
-    }
-
-    /**
-     * reload the drivers in the jar.
-     * 
-     * @param jar
-     *            the jar to reload.
-     */
-    private void reloadJava(String jar) {
-        server.unloadJava(jar);
-
+    public void unloadJavaClass(String className) {
         try {
-            Thread.sleep(LOAD_POLL_INTERFALL);
-        } catch (InterruptedException e) {
-            LOG.warn("sleep interupted", e);
+            server.destroyJavaDriver(className);
+        } catch (INDIException e) {
+            System.err.println(e.getMessage());
         }
-
-        while (server.isAlreadyLoaded(jar)) {
-            System.err.println("Waiting for " + jar + " to unload");
-            try {
-                Thread.sleep(LOAD_POLL_INTERFALL);
-            } catch (InterruptedException e) {
-                LOG.warn("sleep interupted", e);
-            }
-        }
-
-        server.loadJava(jar);
     }
 
     /**
@@ -181,7 +148,7 @@ public class INDIBasicServer extends DefaultINDIServer {
      *            The path of the Driver. see #loadNative
      */
     public void unloadNative(String path) {
-        destroyNativeDriver(path);
+        server.destroyNativeDriver(path);
     }
 
     /**
@@ -195,7 +162,7 @@ public class INDIBasicServer extends DefaultINDIServer {
      */
     public void connect(String host, int port) {
         try {
-            loadNetworkDriver(host, port);
+            server.loadNetworkDriver(host, port);
         } catch (INDIException e) {
             System.err.println(e.getMessage());
         }
@@ -211,14 +178,14 @@ public class INDIBasicServer extends DefaultINDIServer {
      * @see #connect
      */
     public void disconnect(String host, int port) {
-        destroyNetworkDriver(host, port);
+        server.destroyNetworkDriver(host, port);
     }
 
     /**
      * Prints a list of the loaded devices to the Rrror stream.
      */
     public void listDevices() {
-        List<INDIDevice> devs = getDevices();
+        List<INDIDeviceInterface> devs = server.getDevices();
 
         System.err.println("Number of loaded Drivers: " + devs.size());
 
@@ -255,11 +222,11 @@ public class INDIBasicServer extends DefaultINDIServer {
             }
         }
 
-        server = new INDIBasicServer(port);
+        INDIBasicServer server = new INDIBasicServer(port);
 
         // Parse arguments
         for (int i = 0; i < args.length; i++) {
-            boolean correct = parseArgument(args[i]);
+            boolean correct = server.parseArgument(args[i]);
 
             if (!correct) {
                 System.err.println("Argument '" + args[i] + "' not correct. Use -help for help. Exiting.");
@@ -278,7 +245,7 @@ public class INDIBasicServer extends DefaultINDIServer {
                 line = line.trim();
 
                 if (line.length() > 0) {
-                    parseInputLine(line);
+                    server.parseInputLine(line);
                 }
             }
         } catch (IOException e) {
@@ -296,22 +263,26 @@ public class INDIBasicServer extends DefaultINDIServer {
      * @return <code>true</code> if it has been correctly parsed.
      *         <code>false</code> otherwise.
      */
-    private static boolean parseArgument(String arg) {
+    private boolean parseArgument(String arg) {
         String[] s = splitArgument(arg);
 
         if (s[0].equals("-help")) {
             printArgumentHelp();
             return true;
         } else if (s[0].equals("-add")) {
-            server.loadJava(s[1]);
+            loadJava(s[1]);
 
             return true;
         } else if (s[0].equals("-addc")) {
-            server.loadJavaClass(s[1]);
+            loadJavaClass(s[1]);
+
+            return true;
+        } else if (s[0].equals("-removec")) {
+            unloadJavaClass(s[1]);
 
             return true;
         } else if (s[0].equals("-addn")) {
-            server.loadNative(s[1]);
+            loadNative(s[1]);
 
             return true;
         } else if (s[0].equals("-connect")) {
@@ -334,7 +305,7 @@ public class INDIBasicServer extends DefaultINDIServer {
                 }
             }
 
-            server.connect(host, port);
+            connect(host, port);
 
             return true;
         } else if (s[0].equals("-p")) {
@@ -367,9 +338,7 @@ public class INDIBasicServer extends DefaultINDIServer {
         System.err.println("  list                    Lists all loaded drivers.");
         System.err.println("  add jarFile             Loads all INDIDrivers in the jarFile.");
         System.err.println("  addc class              Loads the INDIDriver specified by the class.");
-        System.err.println("  remove jarFile          Removes all INDIDrivers in the jarFile");
-        System.err.println("  reload jarFile          Reloads all INDIDrivers in the jarFile");
-        System.err.println("  r                       Reloads all INDIDrivers in jarFiles (useful for testing)");
+        System.err.println("  removec class           Removes the INDIDriver specified by the class.");
         System.err.println("  addn driverPath         Loads the native driver described by driverPath");
         System.err.println("  removen driverPath      Removes the native driver described by driverPath");
         System.err.println("  reloadn driverPath      Reloads the native driver described by driverPath");
@@ -414,7 +383,7 @@ public class INDIBasicServer extends DefaultINDIServer {
      * @param line
      *            The line to be parsed.
      */
-    private static void parseInputLine(String line) {
+    private void parseInputLine(String line) {
         String[] args = line.trim().split("\\s+");
 
         if (args.length < 1) {
@@ -426,29 +395,11 @@ public class INDIBasicServer extends DefaultINDIServer {
 
             return;
         } else if (args[0].equals("list")) {
-            server.listDevices();
+            listDevices();
 
             return;
         } else if (args[0].equals("stop")) {
             server.stopServer();
-
-            return;
-        } else if (args[0].equals("start")) {
-            if (server.isServerRunning()) {
-                System.err.println("Server already started");
-            } else {
-                server.startListeningToClients();
-            }
-
-            return;
-        } else if (args[0].equals("r")) {
-            List<String> copy = new ArrayList<>(server.jarFiles);
-
-            for (int i = 0; i < copy.size(); i++) {
-                String jar = copy.get(i);
-
-                server.reloadJava(jar);
-            }
 
             return;
         }
@@ -462,43 +413,37 @@ public class INDIBasicServer extends DefaultINDIServer {
         if (args[0].equals("add")) {
             String f = args[1];
 
-            server.loadJava(f);
-
-            return;
-        } else if (args[0].equals("remove")) {
-            String f = args[1];
-
-            server.unloadJava(f);
-
-            return;
-        } else if (args[0].equals("reload")) {
-            String f = args[1];
-
-            server.reloadJava(f);
+            loadJava(f);
 
             return;
         } else if ((args[0].equals("addN")) || (args[0].equals("addn"))) {
             String f = args[1];
 
-            server.loadNative(f);
+            loadNative(f);
 
             return;
         } else if ((args[0].equals("addC")) || (args[0].equals("addc"))) {
             String className = args[1];
 
-            server.loadJavaClass(className);
+            loadJavaClass(className);
+
+            return;
+        } else if ((args[0].equals("removeC")) || (args[0].equals("removec"))) {
+            String className = args[1];
+
+            unloadJavaClass(className);
 
             return;
         } else if ((args[0].equals("removeN")) || (args[0].equals("removen"))) {
             String f = args[1];
 
-            server.unloadNative(f);
+            unloadNative(f);
 
             return;
         } else if ((args[0].equals("reloadN")) || (args[0].equals("reloadn"))) {
             String f = args[1];
 
-            server.unloadNative(f);
+            unloadNative(f);
 
             try {
                 Thread.sleep(LOAD_POLL_INTERFALL);
@@ -515,7 +460,7 @@ public class INDIBasicServer extends DefaultINDIServer {
                 }
             }
 
-            server.loadNative(f);
+            loadNative(f);
 
             return;
         } else if ((args[0].equals("connect")) || (args[0].equals("disconnect"))) {
@@ -534,9 +479,9 @@ public class INDIBasicServer extends DefaultINDIServer {
             }
 
             if (args[0].equals("connect")) {
-                server.connect(host, port);
+                connect(host, port);
             } else if (args[0].equals("disconnect")) {
-                server.disconnect(host, port);
+                disconnect(host, port);
             }
 
             return;
@@ -552,7 +497,7 @@ public class INDIBasicServer extends DefaultINDIServer {
      *            The Client whose connection has been broken
      */
     @Override
-    protected void connectionWithClientBroken(INDIClient client) {
+    public void connectionWithClientBroken(INDIClientInterface client) {
         System.err.println("Connection with client " + client.getInetAddress() + " has been broken.");
     }
 
@@ -563,32 +508,19 @@ public class INDIBasicServer extends DefaultINDIServer {
      *            The Client whose connection has been established
      */
     @Override
-    protected void connectionWithClientEstablished(INDIClient client) {
+    public void connectionWithClientEstablished(INDIClientInterface client) {
         System.err.println("Connection with client " + client.getInetAddress() + " established.");
     }
 
-    /**
-     * Prints a message about the driver which has been disconnected.
-     * 
-     * @param driverIdentifier
-     *            driver identifier.
-     * @param deviceNames
-     *            the names of the devices.
-     */
     @Override
-    protected void driverDisconnected(String driverIdentifier, String[] deviceNames) {
-        String names = "[";
+    public void driverDisconnected(INDIDeviceInterface device) {
+        String names = Arrays.toString(device.getNames());
 
-        for (int i = 0; i < deviceNames.length; i++) {
-            if (i != 0) {
-                names += ", ";
-            }
+        System.err.println("Driver " + device.getDeviceIdentifier() + " has been disconnected. The following devices have dissapeared: " + names);
+    }
 
-            names += deviceNames[i];
-        }
-
-        names += "]";
-
-        System.err.println("Driver " + driverIdentifier + " has been disconnected. The following devices have dissapeared: " + names);
+    @Override
+    public boolean acceptClient(Socket clientSocket) {
+        return true;
     }
 }

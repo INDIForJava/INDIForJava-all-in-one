@@ -44,9 +44,9 @@ import org.w3c.dom.NodeList;
 public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
-     * Determines if the object listens to all devices.
+     * A list of BLOBEnable rules.
      */
-    private boolean listenToAllDevices;
+    private List<DevicePropertyBLOBEnableTuple> bLOBEnableRules;
 
     /**
      * A list of devices that are listened.
@@ -54,14 +54,14 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     private List<DevicePropertyBLOBEnableTuple> devicesToListen;
 
     /**
+     * Determines if the object listens to all devices.
+     */
+    private boolean listenToAllDevices;
+
+    /**
      * A list of properties that are listened.
      */
     private List<DevicePropertyBLOBEnableTuple> propertiesToListen;
-
-    /**
-     * A list of BLOBEnable rules.
-     */
-    private List<DevicePropertyBLOBEnableTuple> bLOBEnableRules;
 
     /**
      * Constructs a new <code>INDIDeviceListener</code>.
@@ -72,6 +72,45 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
         devicesToListen = new ArrayList<DevicePropertyBLOBEnableTuple>();
         propertiesToListen = new ArrayList<DevicePropertyBLOBEnableTuple>();
         bLOBEnableRules = new ArrayList<DevicePropertyBLOBEnableTuple>();
+    }
+
+    /**
+     * @return <code>true</code> if the listener listens to all the devices.
+     *         <code>false</code> otherwise.
+     */
+    public boolean listensToAllDevices() {
+        return listenToAllDevices;
+    }
+
+    @Override
+    public final void parseXML(Document doc) {
+        Element el = doc.getDocumentElement();
+
+        if (el.getNodeName().compareTo("INDI") != 0) {
+            return;
+        }
+
+        NodeList nodes = el.getChildNodes();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node n = nodes.item(i);
+
+            if (n instanceof Element) {
+                parseXMLElement((Element) n);
+            }
+        }
+    }
+
+    /**
+     * Sends a XML message to the listener.
+     * 
+     * @param xml
+     *            The message to be sent.
+     */
+    public void sendXMLMessage(Element xml) {
+        String message = XMLToString.transform(xml);
+
+        sendXMLMessage(message);
     }
 
     /**
@@ -110,6 +149,28 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
         }
 
         bLOBEnableRules.add(new DevicePropertyBLOBEnableTuple(deviceName, propertyName, enable));
+    }
+
+    /**
+     * Adds a new Device to be listened.
+     * 
+     * @param deviceName
+     *            The Device name to be listened.
+     */
+    protected void addDeviceToListen(String deviceName) {
+        devicesToListen.add(new DevicePropertyBLOBEnableTuple(deviceName));
+    }
+
+    /**
+     * Adds a new Property to be listened.
+     * 
+     * @param deviceName
+     *            The Device name owner of the Property
+     * @param propertyName
+     *            The Property name to be listened.
+     */
+    protected void addPropertyToListen(String deviceName, String propertyName) {
+        propertiesToListen.add(new DevicePropertyBLOBEnableTuple(deviceName, propertyName));
     }
 
     /**
@@ -167,78 +228,6 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     }
 
     /**
-     * @return <code>true</code> if the listener listens to all the devices.
-     *         <code>false</code> otherwise.
-     */
-    public boolean listensToAllDevices() {
-        return listenToAllDevices;
-    }
-
-    /**
-     * Adds a new Device to be listened.
-     * 
-     * @param deviceName
-     *            The Device name to be listened.
-     */
-    protected void addDeviceToListen(String deviceName) {
-        devicesToListen.add(new DevicePropertyBLOBEnableTuple(deviceName));
-    }
-
-    /**
-     * Adds a new Property to be listened.
-     * 
-     * @param deviceName
-     *            The Device name owner of the Property
-     * @param propertyName
-     *            The Property name to be listened.
-     */
-    protected void addPropertyToListen(String deviceName, String propertyName) {
-        propertiesToListen.add(new DevicePropertyBLOBEnableTuple(deviceName, propertyName));
-    }
-
-    /**
-     * Gets the BLOB Enable rule for a Property (if it exists).
-     * 
-     * @param deviceName
-     *            The Device name.
-     * @param propertyName
-     *            The Property name.
-     * @return The BLOB Enable rule.
-     */
-    private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName, String propertyName) {
-        for (int i = 0; i < bLOBEnableRules.size(); i++) {
-            DevicePropertyBLOBEnableTuple aux = bLOBEnableRules.get(i);
-
-            if (aux.isProperty(deviceName, propertyName)) {
-                return aux;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the BLOB Enable rule for a Device (if it exists).
-     * 
-     * @param deviceName
-     *            The Device name.
-     * @return The BLOB Enable rule.
-     */
-    private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName) {
-        return getBLOBEnableRule(deviceName, null);
-    }
-
-    /**
-     * Sets the listenToAllDevices flag.
-     * 
-     * @param listenToAllDevices
-     *            The new value of the flag.
-     */
-    protected void setListenToAllDevices(boolean listenToAllDevices) {
-        this.listenToAllDevices = listenToAllDevices;
-    }
-
-    /**
      * Determines if the listener listens to a Device.
      * 
      * @param deviceName
@@ -253,24 +242,6 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
         if (listensToParticularDevice(deviceName)) {
             return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if it is specifically listening to a particular Device.
-     * 
-     * @param deviceName
-     *            The Device name.
-     * @return <code>true</code> if the listener specifically listens to the
-     *         Device. <code>false</code> otherwise.
-     */
-    private boolean listensToParticularDevice(String deviceName) {
-        for (int i = 0; i < devicesToListen.size(); i++) {
-            if (devicesToListen.get(i).isDevice(deviceName)) {
-                return true;
-            }
         }
 
         return false;
@@ -299,27 +270,6 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     }
 
     /**
-     * Checks if it is specifically listening to a particular Property of a
-     * Device.
-     * 
-     * @param deviceName
-     *            The Device name.
-     * @param propertyName
-     *            the property to listen to.
-     * @return <code>true</code> if the listener specifically listens to the
-     *         Property of a Device. <code>false</code> otherwise.
-     */
-    private boolean listensToParticularProperty(String deviceName, String propertyName) {
-        for (int i = 0; i < propertiesToListen.size(); i++) {
-            if (propertiesToListen.get(i).isProperty(deviceName, propertyName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Determines if the listener listens to specifically one Property of a
      * Device.
      * 
@@ -336,45 +286,6 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
         }
 
         return false;
-    }
-
-    /**
-     * Sends a XML message to the listener.
-     * 
-     * @param xml
-     *            The message to be sent.
-     */
-    public void sendXMLMessage(Element xml) {
-        String message = XMLToString.transform(xml);
-
-        sendXMLMessage(message);
-    }
-
-    /**
-     * Sends a String (usually containing some XML) to the listener.
-     * 
-     * @param xml
-     *            The string to be sent.
-     */
-    protected abstract void sendXMLMessage(String xml);
-
-    @Override
-    public final void parseXML(Document doc) {
-        Element el = doc.getDocumentElement();
-
-        if (el.getNodeName().compareTo("INDI") != 0) {
-            return;
-        }
-
-        NodeList nodes = el.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-
-            if (n instanceof Element) {
-                parseXMLElement((Element) n);
-            }
-        }
     }
 
     /**
@@ -404,5 +315,94 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
                 addPropertyToListen(device, property);
             }
         }
+    }
+
+    /**
+     * Sends a String (usually containing some XML) to the listener.
+     * 
+     * @param xml
+     *            The string to be sent.
+     */
+    protected abstract void sendXMLMessage(String xml);
+
+    /**
+     * Sets the listenToAllDevices flag.
+     * 
+     * @param listenToAllDevices
+     *            The new value of the flag.
+     */
+    protected void setListenToAllDevices(boolean listenToAllDevices) {
+        this.listenToAllDevices = listenToAllDevices;
+    }
+
+    /**
+     * Gets the BLOB Enable rule for a Device (if it exists).
+     * 
+     * @param deviceName
+     *            The Device name.
+     * @return The BLOB Enable rule.
+     */
+    private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName) {
+        return getBLOBEnableRule(deviceName, null);
+    }
+
+    /**
+     * Gets the BLOB Enable rule for a Property (if it exists).
+     * 
+     * @param deviceName
+     *            The Device name.
+     * @param propertyName
+     *            The Property name.
+     * @return The BLOB Enable rule.
+     */
+    private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName, String propertyName) {
+        for (int i = 0; i < bLOBEnableRules.size(); i++) {
+            DevicePropertyBLOBEnableTuple aux = bLOBEnableRules.get(i);
+
+            if (aux.isProperty(deviceName, propertyName)) {
+                return aux;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if it is specifically listening to a particular Device.
+     * 
+     * @param deviceName
+     *            The Device name.
+     * @return <code>true</code> if the listener specifically listens to the
+     *         Device. <code>false</code> otherwise.
+     */
+    private boolean listensToParticularDevice(String deviceName) {
+        for (int i = 0; i < devicesToListen.size(); i++) {
+            if (devicesToListen.get(i).isDevice(deviceName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if it is specifically listening to a particular Property of a
+     * Device.
+     * 
+     * @param deviceName
+     *            The Device name.
+     * @param propertyName
+     *            the property to listen to.
+     * @return <code>true</code> if the listener specifically listens to the
+     *         Property of a Device. <code>false</code> otherwise.
+     */
+    private boolean listensToParticularProperty(String deviceName, String propertyName) {
+        for (int i = 0; i < propertiesToListen.size(); i++) {
+            if (propertiesToListen.get(i).isProperty(deviceName, propertyName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

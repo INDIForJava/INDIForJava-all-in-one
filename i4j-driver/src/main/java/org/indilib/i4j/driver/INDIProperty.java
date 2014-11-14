@@ -351,9 +351,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     public String[] getElementNames() {
         String[] names = new String[size()];
         int index = 0;
-        for (Element l: this) {
-            names[index] = l.getName(); 
-        }        
+        for (Element l : this) {
+            names[index] = l.getName();
+        }
         return names;
     }
 
@@ -654,10 +654,11 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     public Iterator<Element> iterator() {
         return elements.values().iterator();
     }
+
     /**
      * @return the number of elements in this property.
      */
     public int size() {
-       return elements.size(); 
+        return elements.size();
     }
 }

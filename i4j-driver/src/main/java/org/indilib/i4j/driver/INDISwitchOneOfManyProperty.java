@@ -22,7 +22,6 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
@@ -84,7 +83,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      */
     public int getSelectedIndex() {
         int index = 0;
-        for (INDISwitchElement e: this) {
+        for (INDISwitchElement e : this) {
             if (e.getValue() == SwitchStatus.ON) {
                 return index;
             }
@@ -107,7 +106,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
     public int getSelectedIndex(INDISwitchElementAndValue[] ev) {
         INDISwitchElementAndValue indiSwitchElementAndValue = getSelectedElement(ev);
         int index = 0;
-        for (INDISwitchElement e:this) {
+        for (INDISwitchElement e : this) {
             if (e == indiSwitchElementAndValue.getElement()) {
                 return index;
             }

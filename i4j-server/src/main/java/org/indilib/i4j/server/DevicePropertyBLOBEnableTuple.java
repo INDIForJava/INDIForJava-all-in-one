@@ -39,28 +39,39 @@ public class DevicePropertyBLOBEnableTuple {
     private String device;
 
     /**
+     * The BLOB enable.
+     */
+    private BLOBEnables enable;
+
+    /**
      * The Property name.
      */
     private String property;
 
     /**
-     * The BLOB enable.
+     * Constructs a new DevicePropertyBLOBEnableTuple with a Property name and
+     * BLOB Enable set to <code>null</code>.
+     * 
+     * @param device
+     *            The Device name.
      */
-    private BLOBEnables enable;
+    protected DevicePropertyBLOBEnableTuple(String device) {
+        this.device = device;
+        this.property = null;
+        this.enable = null;
+    }
 
     /**
      * Constructs a new DevicePropertyBLOBEnableTuple.
      * 
      * @param device
      *            The Device name.
-     * @param property
-     *            The Property name.
      * @param enable
      *            The BLOB Enable.
      */
-    protected DevicePropertyBLOBEnableTuple(String device, String property, BLOBEnables enable) {
+    protected DevicePropertyBLOBEnableTuple(String device, BLOBEnables enable) {
         this.device = device;
-        this.property = property;
+        this.property = null;
         this.enable = enable;
     }
 
@@ -84,26 +95,24 @@ public class DevicePropertyBLOBEnableTuple {
      * 
      * @param device
      *            The Device name.
+     * @param property
+     *            The Property name.
      * @param enable
      *            The BLOB Enable.
      */
-    protected DevicePropertyBLOBEnableTuple(String device, BLOBEnables enable) {
+    protected DevicePropertyBLOBEnableTuple(String device, String property, BLOBEnables enable) {
         this.device = device;
-        this.property = null;
+        this.property = property;
         this.enable = enable;
     }
 
     /**
-     * Constructs a new DevicePropertyBLOBEnableTuple with a Property name and
-     * BLOB Enable set to <code>null</code>.
+     * Gets the BLOB Enable.
      * 
-     * @param device
-     *            The Device name.
+     * @return the BLOB Enable.
      */
-    protected DevicePropertyBLOBEnableTuple(String device) {
-        this.device = device;
-        this.property = null;
-        this.enable = null;
+    protected BLOBEnables getBLOBEnable() {
+        return enable;
     }
 
     /**
@@ -122,15 +131,6 @@ public class DevicePropertyBLOBEnableTuple {
      */
     protected String getProperty() {
         return property;
-    }
-
-    /**
-     * Gets the BLOB Enable.
-     * 
-     * @return the BLOB Enable.
-     */
-    protected BLOBEnables getBLOBEnable() {
-        return enable;
     }
 
     /**

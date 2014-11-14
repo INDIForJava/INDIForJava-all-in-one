@@ -42,15 +42,15 @@ public class INDINativeDevice extends INDIDevice {
     private String driverPath;
 
     /**
-     * The process that will be launched to start the Driver.
-     */
-    private Process process;
-
-    /**
      * The name of the device. May be null if it has not been discovered through
      * a <code>defXXXVector</code> message.
      */
     private String name;
+
+    /**
+     * The process that will be launched to start the Driver.
+     */
+    private Process process;
 
     /**
      * Constructs a new Native Device and launches it as a external process.
@@ -63,7 +63,7 @@ public class INDINativeDevice extends INDIDevice {
      *             If there is any problem launching the external process of the
      *             driver.
      */
-    protected INDINativeDevice(AbstractINDIServer server, String driverPath) throws INDIException {
+    protected INDINativeDevice(INDIServer server, String driverPath) throws INDIException {
         super(server);
 
         name = null;
@@ -77,6 +77,16 @@ public class INDINativeDevice extends INDIDevice {
         }
     }
 
+    @Override
+    public void closeConnections() {
+        process.destroy();
+    }
+
+    @Override
+    public String getDeviceIdentifier() {
+        return driverPath;
+    }
+
     /**
      * Gets the path of the Driver.
      * 
@@ -84,6 +94,42 @@ public class INDINativeDevice extends INDIDevice {
      */
     public String getDriverPath() {
         return driverPath;
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return process.getInputStream();
+    }
+
+    @Override
+    public String[] getNames() {
+        return new String[]{
+            name
+        };
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        return process.getOutputStream();
+    }
+
+    @Override
+    public void isBeingDestroyed() {
+    }
+
+    @Override
+    public boolean isDevice(String deviceIdentifier) {
+        return getDeviceIdentifier().equals(deviceIdentifier);
+    }
+
+    /**
+     * Gets a String representation of the Device.
+     * 
+     * @return A String representation of the Device.
+     */
+    @Override
+    public String toString() {
+        return "Native Device: " + driverPath;
     }
 
     /**
@@ -119,51 +165,5 @@ public class INDINativeDevice extends INDIDevice {
         }
 
         return false;
-    }
-
-    @Override
-    public void closeConnections() {
-        process.destroy();
-    }
-
-    @Override
-    public InputStream getInputStream() {
-        return process.getInputStream();
-    }
-
-    @Override
-    public OutputStream getOutputStream() {
-        return process.getOutputStream();
-    }
-
-    @Override
-    public String getDeviceIdentifier() {
-        return driverPath;
-    }
-
-    @Override
-    public boolean isDevice(String deviceIdentifier) {
-        return getDeviceIdentifier().equals(deviceIdentifier);
-    }
-
-    @Override
-    protected String[] getNames() {
-        return new String[]{
-            name
-        };
-    }
-
-    /**
-     * Gets a String representation of the Device.
-     * 
-     * @return A String representation of the Device.
-     */
-    @Override
-    public String toString() {
-        return "Native Device: " + driverPath;
-    }
-
-    @Override
-    public void isBeingDestroyed() {
     }
 }

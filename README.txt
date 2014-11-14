@@ -1,51 +1,24 @@
 TO TAKE INTO ACCOUNT FOR THE 1.50 RELEASE:
 
   - In the client library some methods in the class INDIDevice have been renamed to comply wth code style recommendations: BLOBsEnable, BLOBsEnableNever, BLOBsEnableAlso, BLOBsEnableOnly... This change will break some existing client code. Fixing it is trivial, just changing the names.  However, we must clearly say so in the docs, maybe some small tutorial, etc.
-
-
-
-
-
-RELEASED FILES:
-  + I4JBase_vX.XX.zip: Basic classes that support the other libraries. Needed to create any Client, Driver and Server.
-  + I4JClient_vX.XX.zip: The Client library. Needed to create Clients.
-  + I4JClientUI_vX.XX.zip: The Client Graphical User Interface (GUI) library. Needed to create Swing Clients.
-  + I4JAndroidUI_vX.XX.zip: The Client Android GUI library. Needed to create Android Clients.
-  + I4JDriver_vX.XX.zip: The Driver library. Needed to create Drivers and Servers.
-  + I4JServer_vX.XX.zip: The Server library. Needed to create Servers.
-  + I4JQHYFilterWheelDriver_vX.XX.zip: A driver for the QHY Filter Wheel
-  + I4JSeletekDriver_vX.XX.zip: A driver for the Seletek
-  + I4JRaspberryPiGPIODriver_vX.XX.zip: A driver to control de the GPIO pins of the Raspberry Pi
-  + I4JSQMDriver_vX.XX.zip: A driver for the Sky Quality Meter - LU
+  - A complete refactoring was done, you probably have to adapt your code a migration guide will be provided. 
+  - See the sourceforce tickes for the details.
 
 Note that this project uses code and resources from other free software packages. Particularly, it uses:
 
   + The Ostermiller Java Utilities (http://ostermiller.org/utils/) by Stephen Ostermiller
   + The Silk icon set 1.3 (http://www.famfamfam.com/lab/icons/silk/) by Mark James
-  + The Base64 class (http://iharder.net/base64) by Robert Harder
   + Icons from Glypish (http://glyphish.com) 
 
 Please check their websites for more information about their work and usage licenses.
 
-
 Special thanks to:
   + Alexander Tuschen, Romain Fafet and Gerrit Viola for their input, testing and code.
 
-
-
 Known issues / bugs:
-  - The Server does not correctly reload a jar file (in case it is a recompiled Java driver). The problem comes from the URLClassLoader that does not clean the JAR files used and the classes are still kept in memory. Java 7 has a close() method that would eventually solve this issue. It must be investigated if it is worth the effort to change to Java 7 to have this feature.
-  - The Android UI does not check Switch policies.
-  - The Android UI does not handle the removal of devices or connection loses.
-
-
+  - The Android UI is a first try will be replaced soon.
 
 The rest of this file describes the main changes in the INDI for Java Libraries. Minor fixes are not listed.
-
-
-- Version 1.39 ():
-
-
 
 - Version 1.38 (July 22, 2014):
 

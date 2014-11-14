@@ -13,11 +13,11 @@ package org.indilib.i4j.server;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -30,6 +30,7 @@ import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDIProtocolReader;
+import org.indilib.i4j.server.api.INDIDeviceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -41,7 +42,7 @@ import org.w3c.dom.Element;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 13, 2013
  */
-public abstract class INDIDevice extends INDIDeviceListener {
+public abstract class INDIDevice extends INDIDeviceListener implements INDIDeviceInterface {
 
     /**
      * The logger to log to.
@@ -49,14 +50,14 @@ public abstract class INDIDevice extends INDIDeviceListener {
     private static final Logger LOG = LoggerFactory.getLogger(INDIDevice.class);
 
     /**
-     * The Server that listens to this Device.
-     */
-    private AbstractINDIServer server;
-
-    /**
      * The reader that reads from the Device.
      */
     private INDIProtocolReader reader;
+
+    /**
+     * The Server that listens to this Device.
+     */
+    private INDIServer server;
 
     /**
      * Constructs a new <code>INDIDevice</code>.
@@ -66,18 +67,77 @@ public abstract class INDIDevice extends INDIDeviceListener {
      * @throws INDIException
      *             If there is an error connecting or instantiating the Device.
      */
-    protected INDIDevice(AbstractINDIServer server) throws INDIException {
+    protected INDIDevice(INDIServer server) throws INDIException {
         this.server = server;
     }
 
     /**
-     * Starts the reader. Usually not directly called by Server particular
-     * implementations.
+     * Closes the connections of the device.
      */
-    protected void startReading() {
-        reader = new INDIProtocolReader(this);
-        reader.start();
+    public abstract void closeConnections();
+
+    /**
+     * Stops the reader and closes its connections.
+     */
+    public void destroy() {
+        isBeingDestroyed();
+
+        reader.setStop(true);
+
+        closeConnections();
     }
+
+    @Override
+    public void finishReader() {
+        server.removeDevice(this);
+        LOG.info("Finished reading from Driver " + getDeviceIdentifier());
+    }
+
+    @Override
+    public abstract InputStream getInputStream();
+
+    /**
+     * Gets the <code>OutputStream</code> of the Device.
+     * 
+     * @return The <code>OutputStream</code> of the Device.
+     */
+    public abstract OutputStream getOutputStream();
+
+    /**
+     * Notify drivers that they are being destroyed.
+     */
+    public abstract void isBeingDestroyed();
+
+    /**
+     * Checks if the Device corresponds to a particular Device Identifier.
+     * 
+     * @param deviceIdentifier
+     *            The Device Identifier to check.
+     * @return <code>true</code> if the Device corresponds to the Device
+     *         Identifier.
+     */
+    public abstract boolean isDevice(String deviceIdentifier);
+
+    /**
+     * Deals with a possible new Device name. If the device is a single one it
+     * just stores the name if none has been previously fixed. In case of a
+     * multiple device (like a Network one) it will probably add it to a list.
+     * 
+     * @param possibleNewName
+     *            The new possible new name.
+     */
+    protected abstract void dealWithPossibleNewDeviceName(String possibleNewName);
+
+    /**
+     * Checks if the Device has a particular name. Specially important for
+     * multiple name devices (Network ones).
+     * 
+     * @param name
+     *            The name to check.
+     * @return <code>true</code> if the Device respond to <code>name</code>.
+     *         <code>false</code> otherwise.
+     */
+    protected abstract boolean hasName(String name);
 
     @Override
     protected void parseXMLElement(Element child) {
@@ -117,6 +177,31 @@ public abstract class INDIDevice extends INDIDeviceListener {
         }
     }
 
+    @Override
+    protected void processGetProperties(Element xml) {
+        super.processGetProperties(xml);
+        server.notifyClientListenersGetProperties(this, xml);
+    }
+
+    @Override
+    protected void sendXMLMessage(String xml) {
+        try {
+            getOutputStream().write(xml.getBytes(Charsets.UTF_8));
+            getOutputStream().flush();
+        } catch (IOException e) {
+            destroy();
+        }
+    }
+
+    /**
+     * Starts the reader. Usually not directly called by Server particular
+     * implementations.
+     */
+    protected void startReading() {
+        reader = new INDIProtocolReader(this);
+        reader.start();
+    }
+
     /**
      * Checks the name in a XML element to detect possible new names in the
      * Driver (specially for multiple possible devices, like the Network one).
@@ -130,41 +215,6 @@ public abstract class INDIDevice extends INDIDeviceListener {
         if (!(newName.isEmpty())) {
             dealWithPossibleNewDeviceName(newName);
         }
-    }
-
-    /**
-     * Deals with a possible new Device name. If the device is a single one it
-     * just stores the name if none has been previously fixed. In case of a
-     * multiple device (like a Network one) it will probably add it to a list.
-     * 
-     * @param possibleNewName
-     *            The new possible new name.
-     */
-    protected abstract void dealWithPossibleNewDeviceName(String possibleNewName);
-
-    /**
-     * Checks if the Device has a particular name. Specially important for
-     * multiple name devices (Network ones).
-     * 
-     * @param name
-     *            The name to check.
-     * @return <code>true</code> if the Device respond to <code>name</code>.
-     *         <code>false</code> otherwise.
-     */
-    protected abstract boolean hasName(String name);
-
-    /**
-     * Gets the names that the Device is attending (might be more than one in
-     * Network Devices).
-     * 
-     * @return the names that the Device is attending.
-     */
-    protected abstract String[] getNames();
-
-    @Override
-    protected void processGetProperties(Element xml) {
-        super.processGetProperties(xml);
-        server.notifyClientListenersGetProperties(this, xml);
     }
 
     /**
@@ -196,6 +246,32 @@ public abstract class INDIDevice extends INDIDeviceListener {
     }
 
     /**
+     * Processes the <code>delProperty</code> XML message.
+     * 
+     * @param xml
+     *            The <code>delProperty</code> XML message
+     */
+    private void processDelProperty(Element xml) {
+        String device = xml.getAttribute("device");
+
+        if (!hasName(device)) { // Some conditions to ignore the messages
+            return;
+        }
+
+        server.notifyDeviceListenersDelProperty(this, xml);
+    }
+
+    /**
+     * Processes the <code>message</code> XML message.
+     * 
+     * @param xml
+     *            The <code>message</code> XML message
+     */
+    private void processMessage(Element xml) {
+        server.notifyDeviceListenersMessage(this, xml);
+    }
+
+    /**
      * Processes the <code>setXXXVector</code> XML message.
      * 
      * @param xml
@@ -216,94 +292,4 @@ public abstract class INDIDevice extends INDIDeviceListener {
 
         server.notifyDeviceListenersSetXXXVector(this, xml);
     }
-
-    /**
-     * Processes the <code>message</code> XML message.
-     * 
-     * @param xml
-     *            The <code>message</code> XML message
-     */
-    private void processMessage(Element xml) {
-        server.notifyDeviceListenersMessage(this, xml);
-    }
-
-    /**
-     * Processes the <code>delProperty</code> XML message.
-     * 
-     * @param xml
-     *            The <code>delProperty</code> XML message
-     */
-    private void processDelProperty(Element xml) {
-        String device = xml.getAttribute("device");
-
-        if (!hasName(device)) { // Some conditions to ignore the messages
-            return;
-        }
-
-        server.notifyDeviceListenersDelProperty(this, xml);
-    }
-
-    /**
-     * Stops the reader and closes its connections.
-     */
-    public void destroy() {
-        isBeingDestroyed();
-
-        reader.setStop(true);
-
-        closeConnections();
-    }
-
-    /**
-     * Notify drivers that they are being destroyed.
-     */
-    public abstract void isBeingDestroyed();
-
-    /**
-     * Closes the connections of the device.
-     */
-    public abstract void closeConnections();
-
-    @Override
-    protected void sendXMLMessage(String xml) {
-        try {
-            getOutputStream().write(xml.getBytes(Charsets.UTF_8));
-            getOutputStream().flush();
-        } catch (IOException e) {
-            destroy();
-        }
-    }
-
-    @Override
-    public void finishReader() {
-        server.removeDevice(this);
-        LOG.info("Finished reading from Driver " + getDeviceIdentifier());
-    }
-
-    @Override
-    public abstract InputStream getInputStream();
-
-    /**
-     * Gets the <code>OutputStream</code> of the Device.
-     * 
-     * @return The <code>OutputStream</code> of the Device.
-     */
-    public abstract OutputStream getOutputStream();
-
-    /**
-     * Gets a Device identifier.
-     * 
-     * @return A Device identifier.
-     */
-    public abstract String getDeviceIdentifier();
-
-    /**
-     * Checks if the Device corresponds to a particular Device Identifier.
-     * 
-     * @param deviceIdentifier
-     *            The Device Identifier to check.
-     * @return <code>true</code> if the Device corresponds to the Device
-     *         Identifier.
-     */
-    public abstract boolean isDevice(String deviceIdentifier);
 }
