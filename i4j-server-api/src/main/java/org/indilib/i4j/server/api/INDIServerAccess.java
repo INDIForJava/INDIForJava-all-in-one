@@ -41,5 +41,5 @@ public interface INDIServerAccess {
      *            the requested port to listen
      * @return the interface to the server.
      */
-    INDIServerInterface createOrGet(String host, int port);
+    INDIServerInterface createOrGet(String host, Integer port);
 }

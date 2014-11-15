@@ -13,11 +13,11 @@ package org.indilib.i4j;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -38,6 +38,11 @@ public final class FileUtils {
     }
 
     /**
+     * the current indi base directory.
+     */
+    private static File baseDirectory;
+
+    /**
      * Gets the base directory while auxiliary files for the I4J library should
      * be stored. This directory is ~/.i4j . In case of that directory not
      * existing, the directory is created. Every axiliary file produced by the
@@ -46,21 +51,38 @@ public final class FileUtils {
      * @return The base directory for I4J auxiliary files.
      */
     public static File getI4JBaseDirectory() {
-        String userDirName = System.getProperty("user.home");
+        if (baseDirectory == null) {
+            String userDirName = System.getProperty("user.home");
+            File userDir = new File(userDirName);
+            File i4jDir = new File(userDir, ".i4j");
+            if (!i4jDir.exists()) {
+                boolean created = i4jDir.mkdir();
+                if (!created) {
+                    throw new IllegalStateException("can not create indi base directory!" + i4jDir.getAbsolutePath());
+                }
+            }
+            baseDirectory = i4jDir;
+        }
+        return baseDirectory;
+    }
 
-        File userDir = new File(userDirName);
-
-        File i4jDir = new File(userDir, ".i4j");
-
+    /**
+     * redirect the indi base directory to an other location. the directory
+     * itself will be created if non existent but the parent directory must
+     * exist.
+     * 
+     * @param newBaseDirectory
+     *            the new indi base directory.
+     */
+    public static void setI4JBaseDirectory(String newBaseDirectory) {
+        File i4jDir = new File(newBaseDirectory);
         if (!i4jDir.exists()) {
             boolean created = i4jDir.mkdir();
-
             if (!created) {
-                return null;
+                throw new IllegalStateException("can not create indi base directory!" + i4jDir.getAbsolutePath());
             }
         }
-
-        return i4jDir;
+        baseDirectory = i4jDir;
     }
 
     /**

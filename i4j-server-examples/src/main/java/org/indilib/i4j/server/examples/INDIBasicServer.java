@@ -29,7 +29,9 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.cli.ParseException;
 import org.indilib.i4j.Constants;
+import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.server.api.INDIClientInterface;
 import org.indilib.i4j.server.api.INDIDeviceInterface;
@@ -78,7 +80,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
      * @param port
      *            The port to which the server will listen.
      */
-    public INDIBasicServer(int port) {
+    public INDIBasicServer(Integer port) {
         server = INDIServerAccessLookup.indiServerAccess().createOrGet(null, port);
         server.addEventHandler(this);
     }
@@ -204,52 +206,59 @@ public class INDIBasicServer implements INDIServerEventHandler {
      *            The arguments of the program.
      */
     public static void main(String[] args) {
-        System.err.println("INDI for Java Basic Server initializing...");
-
-        int port = Constants.INDI_DEFAULT_PORT;
-
-        for (int i = 0; i < args.length; i++) {
-            String[] s = splitArgument(args[i]);
-
-            if (s[0].equals("-p")) {
-                try {
-                    port = Integer.parseInt(s[1]);
-                } catch (NumberFormatException e) {
-                    System.err.println("Incorrect port number");
-                    printArgumentHelp();
-                    System.exit(-1);
-                }
-            }
-        }
-
-        INDIBasicServer server = new INDIBasicServer(port);
-
-        // Parse arguments
-        for (int i = 0; i < args.length; i++) {
-            boolean correct = server.parseArgument(args[i]);
-
-            if (!correct) {
-                System.err.println("Argument '" + args[i] + "' not correct. Use -help for help. Exiting.");
-                System.exit(-1);
-            }
-        }
-
-        System.err.println("Type 'help' for help.");
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        String line;
+        INDICommandLine commandLine = new INDICommandLine();
+        print("INDI for Java Basic Server initializing...");
 
         try {
-            while (true) {
-                line = in.readLine();
-                line = line.trim();
+            commandLine.parseArgument(args);
+        } catch (Exception e1) {
+            LOG.error("Incorrect command line (or error in the startup scripts)", e1);
+            commandLine.printHelp();
+            return;
+        }
 
-                if (line.length() > 0) {
-                    server.parseInputLine(line);
+        Integer port = null;
+
+        try {
+            port = commandLine.getPort();
+        } catch (ParseException e1) {
+            LOG.error("Incorrect command line", e1);
+            commandLine.printHelp();
+            return;
+        }
+        INDIBasicServer server = new INDIBasicServer(port);
+
+        commandLine.setBasicServer(server).execute(false);
+
+        if (commandLine.isInteractive()) {
+            commandLine.printInteractiveHelp();
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            String line;
+            try {
+                while (true) {
+                    line = in.readLine();
+                    line = line.trim();
+                    if (line.length() > 0) {
+                        try {
+                            new INDICommandLine(line).setBasicServer(server).execute(true);
+                        } catch (Exception e) {
+                            System.out.println("Error in command: " + e.getMessage() + ". type help?");
+                            LOG.error("could not parse/execute command");
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                LOG.error("io exception", e);
+            }
+        } else {
+            while (true) {
+                // TODO wait for kill signal
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LOG.debug("sleep interrrupted");
                 }
             }
-        } catch (IOException e) {
-            LOG.error("io exception", e);
         }
     }
 
@@ -316,39 +325,6 @@ public class INDIBasicServer implements INDIServerEventHandler {
     }
 
     /**
-     * Prints some help about the possible arguments of the program to the error
-     * stream.
-     */
-    private static void printArgumentHelp() {
-        System.err.println("\nThe following arguments can be used:");
-        System.err.println("  -help                Shows this help.");
-        System.err.println("  -p=port              Port to which the Server will listen.");
-        System.err.println("  -add=jarFile         Loads all INDIDrivers in the jarFile.");
-        System.err.println("  -addn=driverPath     Loads the native driver described by driverPath.");
-        System.err.println("  -connect=host[:port] Loads the drivers in a remote INDI server.\n");
-    }
-
-    /**
-     * Prints some help about the possible commands of the program to the error
-     * stream.
-     */
-    private static void printCommandHelp() {
-        System.err.println("\nThe following commands can be used:");
-        System.err.println("  help                    Shows this help.");
-        System.err.println("  list                    Lists all loaded drivers.");
-        System.err.println("  add jarFile             Loads all INDIDrivers in the jarFile.");
-        System.err.println("  addc class              Loads the INDIDriver specified by the class.");
-        System.err.println("  removec class           Removes the INDIDriver specified by the class.");
-        System.err.println("  addn driverPath         Loads the native driver described by driverPath");
-        System.err.println("  removen driverPath      Removes the native driver described by driverPath");
-        System.err.println("  reloadn driverPath      Reloads the native driver described by driverPath");
-        System.err.println("  connect host[:port]     Loads the drivers in a remote INDI server.");
-        System.err.println("  disconnect host[:port]  Removes the drivers in a remote INDI server.");
-        System.err.println("  stop                    Stops the Server and breaks all Client connections.");
-        System.err.println("  start                   Starts the Server (if it was previously not).\n");
-    }
-
-    /**
      * Splits an argument in two. Separator char is =
      * 
      * @param arg
@@ -399,7 +375,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
 
             return;
         } else if (args[0].equals("stop")) {
-            server.stopServer();
+            stopServer();
 
             return;
         }
@@ -490,6 +466,10 @@ public class INDIBasicServer implements INDIServerEventHandler {
         System.err.println("Command error. 'help' for help.\n");
     }
 
+    public void stopServer() {
+        server.stopServer();
+    }
+
     /**
      * Prints a message about the broken connection to the standard err.
      * 
@@ -522,5 +502,53 @@ public class INDIBasicServer implements INDIServerEventHandler {
     @Override
     public boolean acceptClient(Socket clientSocket) {
         return true;
+    }
+
+    /**
+     * Prints some help about the possible arguments of the program to the error
+     * stream.
+     */
+    private static void printArgumentHelp() {
+        System.err.println("\nThe following arguments can be used:");
+        System.err.println("  -help                Shows this help.");
+        System.err.println("  -p=port              Port to which the Server will listen.");
+        System.err.println("  -add=jarFile         Loads all INDIDrivers in the jarFile.");
+        System.err.println("  -addn=driverPath     Loads the native driver described by driverPath.");
+        System.err.println("  -connect=host[:port] Loads the drivers in a remote INDI server.\n");
+    }
+
+    /**
+     * Prints some help about the possible commands of the program to the error
+     * stream.
+     */
+    private static void printCommandHelp() {
+        System.err.println("\nThe following commands can be used:");
+        System.err.println("  help                    Shows this help.");
+        System.err.println("  list                    Lists all loaded drivers.");
+        System.err.println("  add jarFile             Loads all INDIDrivers in the jarFile.");
+        System.err.println("  addc class              Loads the INDIDriver specified by the class.");
+        System.err.println("  removec class           Removes the INDIDriver specified by the class.");
+        System.err.println("  addn driverPath         Loads the native driver described by driverPath");
+        System.err.println("  removen driverPath      Removes the native driver described by driverPath");
+        System.err.println("  reloadn driverPath      Reloads the native driver described by driverPath");
+        System.err.println("  connect host[:port]     Loads the drivers in a remote INDI server.");
+        System.err.println("  disconnect host[:port]  Removes the drivers in a remote INDI server.");
+        System.err.println("  stop                    Stops the Server and breaks all Client connections.");
+        System.err.println("  start                   Starts the Server (if it was previously not).\n");
+    }
+
+    public void listAvailableDevices() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public static void print(String string) {
+        System.out.println(string);
+        LOG.info("command print: " + string);
+    }
+
+    public void addLib(String lib) {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -112,11 +112,11 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      * @param listeningPort
      *            The port to which the Server will listen.
      */
-    protected INDIServer(int listeningPort) {
-        if (listeningPort <= 0) {
+    protected INDIServer(Integer listeningPort) {
+        if (listeningPort == null || listeningPort.intValue() <= 0) {
             this.listeningPort = Constants.INDI_DEFAULT_PORT;
         } else {
-            this.listeningPort = listeningPort;
+            this.listeningPort = listeningPort.intValue();
         }
         initServer();
     }

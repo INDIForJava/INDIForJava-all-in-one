@@ -39,7 +39,7 @@ public class INDIServerAccessImpl implements INDIServerAccess {
     private static INDIServerInterface server;
 
     @Override
-    public INDIServerInterface createOrGet(String host, int port) {
+    public INDIServerInterface createOrGet(String host, Integer port) {
         if (server == null || !server.isServerRunning()) {
             server = new INDIServer(port);
         }
