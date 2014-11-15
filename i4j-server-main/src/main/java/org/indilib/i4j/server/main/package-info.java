@@ -1,8 +1,7 @@
 /**
- * Some examples to test the INDI for Java Server library. Includes a basic but
- * functional INDI Server.
+ * this package includes the main program that starts a INDI Server.
  */
-package org.indilib.i4j.server.examples;
+package org.indilib.i4j.server.main;
 
 /*
  * #%L

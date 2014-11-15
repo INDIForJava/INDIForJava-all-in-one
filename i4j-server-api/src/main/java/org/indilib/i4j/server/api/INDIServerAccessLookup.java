@@ -22,7 +22,11 @@ package org.indilib.i4j.server.api;
  * #L%
  */
 
+import java.util.Iterator;
 import java.util.ServiceLoader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to load the server access interface from the service loader
@@ -31,6 +35,11 @@ import java.util.ServiceLoader;
  * @author Richard van Nieuwenhoven
  */
 public final class INDIServerAccessLookup {
+
+    /**
+     * Logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIServerAccessLookup.class);
 
     /**
      * the curremt service loader.
@@ -50,6 +59,11 @@ public final class INDIServerAccessLookup {
         if (serviceLoader == null) {
             serviceLoader = ServiceLoader.load(INDIServerAccess.class);
         }
-        return serviceLoader.iterator().next();
+        Iterator<INDIServerAccess> iterator = serviceLoader.iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        } else {
+            throw new IllegalStateException("no server access available");
+        }
     }
 }

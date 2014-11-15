@@ -1,4 +1,4 @@
-package org.indilib.i4j.server.examples;
+package org.indilib.i4j.server.main;
 
 /*
  * #%L
@@ -27,12 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.List;
 
-import org.apache.commons.cli.ParseException;
-import org.indilib.i4j.Constants;
-import org.indilib.i4j.FileUtils;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.server.api.INDIClientInterface;
 import org.indilib.i4j.server.api.INDIDeviceInterface;
 import org.indilib.i4j.server.api.INDIServerAccessLookup;
@@ -47,10 +42,20 @@ import org.slf4j.LoggerFactory;
  * allows to dinamically load / unload different kinds of Devices with simple
  * shell commands.
  * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es] & Richard van Nieuwenhoven
  * @version 1.32, July 23, 2013
  */
 public class INDIBasicServer implements INDIServerEventHandler {
+
+    /**
+     * maximum startup time before exit in seconds .
+     */
+    private static final int MAX_STARTUP_TIME_IN_SEC = 10;
+
+    /**
+     * one scecond in milliseconds.
+     */
+    private static final long ONE_SECOND_IN_MILLISECODS = 1000L;
 
     /**
      * Logger to log to.
@@ -70,19 +75,14 @@ public class INDIBasicServer implements INDIServerEventHandler {
     }
 
     /**
-     * Constructs the server.
-     */
-    public INDIBasicServer() {
-        this(-1);
-    }
-
-    /**
      * Constructs the server with a particular port.
      * 
+     * @param host
+     *            the host to bind the server.
      * @param port
      *            The port to which the server will listen.
      */
-    public INDIBasicServer(Integer port) {
+    public INDIBasicServer(String host, Integer port) {
         server = INDIServerAccessLookup.indiServerAccess().createOrGet(null, port);
         server.addEventHandler(this);
     }
@@ -98,38 +98,59 @@ public class INDIBasicServer implements INDIServerEventHandler {
         INDICommandLine commandLine = new INDICommandLine();
         print("INDI for Java Basic Server initializing...");
 
+        Integer port = null;
+        String host = null;
         try {
             commandLine.parseArgument(args);
+
+            port = commandLine.getPort();
+            host = commandLine.getHost();
+
+            commandLine.addLibraries();
         } catch (Exception e1) {
             LOG.error("Incorrect command line (or error in the startup scripts)", e1);
             commandLine.printHelp();
             return;
         }
+        INDIBasicServer server = new INDIBasicServer(host, port);
+        server.start(commandLine);
+    }
 
-        Integer port = null;
-
-        try {
-            port = commandLine.getPort();
-        } catch (ParseException e1) {
-            LOG.error("Incorrect command line", e1);
-            commandLine.printHelp();
+    /**
+     * start the server and process the command line and startup commands. then
+     * wait for the server to end. If the interactive mode is active start the
+     * processing.
+     * 
+     * @param commandLine
+     *            the commandline options.
+     */
+    private void start(INDICommandLine commandLine) {
+        commandLine.setBasicServer(this).execute(false);
+        int countDown = MAX_STARTUP_TIME_IN_SEC;
+        while (!server.isServerRunning() && countDown-- > 0) {
+            try {
+                Thread.sleep(ONE_SECOND_IN_MILLISECODS);
+            } catch (InterruptedException e) {
+                LOG.debug("sleep interrrupted");
+            }
+        }
+        if (!server.isServerRunning()) {
+            LOG.error("could not start server, exiting!");
             return;
         }
-        INDIBasicServer server = new INDIBasicServer(port);
-
-        commandLine.setBasicServer(server).execute(false);
 
         if (commandLine.isInteractive()) {
             commandLine.printInteractiveHelp();
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             String line;
             try {
-                while (server.server.isServerRunning()) {
+
+                while (server.isServerRunning()) {
                     line = in.readLine();
                     line = line.trim();
                     if (line.length() > 0) {
                         try {
-                            new INDICommandLine(line).setBasicServer(server).execute(true);
+                            new INDICommandLine(line).setBasicServer(this).execute(true);
                         } catch (Exception e) {
                             print("Error in command: " + e.getMessage() + ". (see log)");
                             LOG.error("could not parse/execute command", e);
@@ -140,10 +161,10 @@ public class INDIBasicServer implements INDIServerEventHandler {
                 LOG.error("io exception", e);
             }
         } else {
-            while (server.server.isServerRunning()) {
+            while (server.isServerRunning()) {
                 // TODO wait for kill signal
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(ONE_SECOND_IN_MILLISECODS);
                 } catch (InterruptedException e) {
                     LOG.debug("sleep interrrupted");
                 }
@@ -185,6 +206,12 @@ public class INDIBasicServer implements INDIServerEventHandler {
         return true;
     }
 
+    /**
+     * print the string to stad out and the log.
+     * 
+     * @param string
+     *            the string to print.
+     */
     public static void print(String string) {
         System.out.println(string);
         LOG.info("command print: " + string);

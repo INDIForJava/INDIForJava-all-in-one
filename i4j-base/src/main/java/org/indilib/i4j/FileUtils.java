@@ -75,7 +75,7 @@ public final class FileUtils {
      *            the new indi base directory.
      */
     public static void setI4JBaseDirectory(String newBaseDirectory) {
-        File i4jDir = new File(newBaseDirectory);
+        File i4jDir = new File(newBaseDirectory).getAbsoluteFile();
         if (!i4jDir.exists()) {
             boolean created = i4jDir.mkdir();
             if (!created) {

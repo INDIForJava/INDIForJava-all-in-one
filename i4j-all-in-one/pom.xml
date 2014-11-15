@@ -73,7 +73,17 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4j-server-examples</artifactId>
+			<artifactId>i4j-server-main</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-server</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-driver-nexstar-gt</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

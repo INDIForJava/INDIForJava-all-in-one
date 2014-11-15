@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.indilib.i4j</groupId>
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4j-server-examples</artifactId>
+	<artifactId>i4j-server-main</artifactId>
 	<name>INDI for Java Server Examples</name>
 	<description>INDI for Java Server Examples</description>
 	<packaging>jar</packaging>
@@ -20,7 +21,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>org.indilib.i4j.server.examples.INDIBasicServer</mainClass>
+							<mainClass>org.indilib.i4j.server.main.INDIBasicServer</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -30,13 +31,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4j-driver-examples</artifactId>
+			<artifactId>i4j-server-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>i4j-server</artifactId>
 			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>

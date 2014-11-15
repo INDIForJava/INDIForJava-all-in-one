@@ -385,7 +385,7 @@
 		<module>i4j-driver-examples</module>
 		<module>i4j-server</module>
 		<module>i4j-server-api</module>
-		<module>i4j-server-examples</module>
+		<module>i4j-server-main</module>
 		<module>i4j-driver-guider</module>
 		<module>i4j-driver-nexstar-gt</module>
 		<module>i4j-protocol</module>

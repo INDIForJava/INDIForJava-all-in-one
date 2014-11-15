@@ -1,4 +1,4 @@
-package org.indilib.i4j.server.examples;
+package org.indilib.i4j.server.main;
 
 /*
  * #%L
@@ -47,6 +47,11 @@ import org.indilib.i4j.server.api.INDIServerInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The commandline processing class.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 @SuppressWarnings("static-access")
 public class INDICommandLine {
 
@@ -55,24 +60,39 @@ public class INDICommandLine {
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDICommandLine.class);
 
+    /**
+     * the help option.
+     */
     private final Option help = OptionBuilder //
             .withDescription("print this message") //
             .create("help");
 
+    /**
+     * the Lists all loaded drivers option.
+     */
     private final Option list = OptionBuilder //
             .withDescription("Lists all loaded drivers") //
             .withLongOpt("list")//
             .create("ld");
 
+    /**
+     * the Lists all posible drivers option.
+     */
     private final Option listAvailable = OptionBuilder //
             .withDescription("Lists all posible drivers") //
             .withLongOpt("listAll").create("la");
 
+    /**
+     * the Stops the Server and breaks all Client connections option.
+     */
     private final Option stop = OptionBuilder //
             .withDescription("Stops the Server and breaks all Client connections") //
             .withLongOpt("stop")//
             .create("s");
 
+    /**
+     * the indi base directory option.
+     */
     private final Option home = OptionBuilder //
             .withDescription("indi base directory ~/.i4j") //
             .hasArgs() //
@@ -80,6 +100,9 @@ public class INDICommandLine {
             .withLongOpt("indiHome")//
             .create("d");
 
+    /**
+     * the host interface to bind the server option.
+     */
     private final Option host = OptionBuilder //
             .withDescription("host interface to bind the server") //
             .hasArgs() //
@@ -87,6 +110,9 @@ public class INDICommandLine {
             .withArgName("host-ip")//
             .create("h");
 
+    /**
+     * the ip port to bind the server option.
+     */
     private final Option port = OptionBuilder //
             .withDescription("ip port to bind the server") //
             .hasArgs()//
@@ -95,6 +121,9 @@ public class INDICommandLine {
             .withArgName("port-number")//
             .create("p");
 
+    /**
+     * the Loads all INDIDrivers in the jarFile option.
+     */
     private final Option add = OptionBuilder //
             .withDescription("Loads all INDIDrivers in the jarFile") //
             .hasArgs() //
@@ -103,6 +132,10 @@ public class INDICommandLine {
             .withValueSeparator(':')//
             .create("j");
 
+    /**
+     * the Loads the INDIDriver specified by the case insensitive class name
+     * option.
+     */
     private final Option addC = OptionBuilder //
             .withDescription("Loads the INDIDriver specified by the case insensitive class name (simple orf full)") //
             .hasArgs() //
@@ -111,6 +144,10 @@ public class INDICommandLine {
             .withValueSeparator(':')//
             .create("c");
 
+    /**
+     * the Removes the INDIDriver specified by the case insensitive class name
+     * option.
+     */
     private final Option removeC = OptionBuilder //
             .withDescription("Removes the INDIDriver specified by the case insensitive class name (simple orf full)") //
             .hasArgs() //
@@ -119,6 +156,9 @@ public class INDICommandLine {
             .withValueSeparator(':')//
             .create("r");
 
+    /**
+     * the Loads the native driver described by driverPath option.
+     */
     private final Option addN = OptionBuilder //
             .withDescription("Loads the native driver described by driverPath") //
             .hasArgs() //
@@ -127,6 +167,9 @@ public class INDICommandLine {
             .withValueSeparator(':')//
             .create("n");
 
+    /**
+     * the Removes the native driver described by driverPath option.
+     */
     private final Option removeN = OptionBuilder //
             .withDescription("Removes the native driver described by driverPath") //
             .hasArgs() //
@@ -135,6 +178,9 @@ public class INDICommandLine {
             .withValueSeparator(':')//
             .create("rn");
 
+    /**
+     * the Loads the drivers in a remote INDI server option.
+     */
     private final Option connect = OptionBuilder //
             .withDescription("Loads the drivers in a remote INDI server") //
             .hasArgs() //
@@ -143,6 +189,9 @@ public class INDICommandLine {
             .withArgName("host[:port]")//
             .create("nc");
 
+    /**
+     * the Removes the drivers in a remote INDI server option.
+     */
     private final Option disconnect = OptionBuilder //
             .withDescription("Removes the drivers in a remote INDI server") //
             .hasArgs() //
@@ -151,19 +200,31 @@ public class INDICommandLine {
             .withLongOpt("disconnect")//
             .create("dn");
 
+    /**
+     * the server listens to an interactive command interface (default no
+     * command interface will be started) option.
+     */
     private final Option interactive = OptionBuilder //
             .withDescription("The server listens to an interactive command interface (default no command interface will be started)") //
             .withLongOpt("interactive")//
             .create("i");
 
+    /**
+     * the directory with jar files to add to the classpath default
+     * $indiHome/lib option.
+     */
     private final Option lib = OptionBuilder //
-            .withDescription("directory with jar files to add to the classpath default $indiHome/lib and directory of the server.jar") //
+            .withDescription("directory with jar files to add to the classpath default $indiHome/lib") //
             .hasArgs() //
             .withValueSeparator(':')//
             .withArgName("directory-list")//
             .withLongOpt("lib")//
             .create("l");
 
+    /**
+     * the commands in the specified file are executed on startup (defaults to
+     * $indiHome/etc/server.boot) option.
+     */
     private final Option startup = OptionBuilder //
             .withDescription("the commands in the specified file are executed on startup (defaults to $indiHome/etc/server.boot)") //
             .hasArgs() //
@@ -171,24 +232,46 @@ public class INDICommandLine {
             .withLongOpt("startup")//
             .create("b");
 
+    /**
+     * the list of options.
+     */
     private final Options options = new Options();
 
+    /**
+     * the parsed commandline.
+     */
     private CommandLine commandLine;
 
+    /**
+     * the started basic server.
+     */
     private INDIBasicServer basicServer;
 
-    public INDICommandLine setBasicServer(INDIBasicServer basicServer) {
-        this.basicServer = basicServer;
+    /**
+     * set the basic server in this and all sub command lines.
+     * 
+     * @param newBasicServer
+     *            the server to set
+     * @return this.
+     */
+    public INDICommandLine setBasicServer(INDIBasicServer newBasicServer) {
+        this.basicServer = newBasicServer;
         if (startupCommandLines != null) {
             for (INDICommandLine startupCommandLine : startupCommandLines) {
-                startupCommandLine.setBasicServer(basicServer);
+                startupCommandLine.setBasicServer(newBasicServer);
             }
         }
         return this;
     }
 
+    /**
+     * the sub command lines, from startup scripts .
+     */
     private List<INDICommandLine> startupCommandLines;
 
+    /**
+     * construct the commandline (add all options together) .
+     */
     public INDICommandLine() {
         options.addOption(help);
         options.addOption(list);
@@ -209,16 +292,31 @@ public class INDICommandLine {
         options.addOption(startup);
     }
 
+    /**
+     * construct a kommand line based on a line with arguments (interactive so
+     * the first string is missing the "-" prefix.
+     * 
+     * @param commandLine
+     *            the commandline string to parse
+     * @throws Exception
+     *             if the command was not properly formattet.
+     */
     public INDICommandLine(String commandLine) throws Exception {
         this();
         parseArgument(splittString(commandLine));
     }
 
+    /**
+     * print the normal help to the std out.
+     */
     public void printHelp() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("i4j-server", options);
     }
 
+    /**
+     * print the interactive help to the std out (no "-" and "--" prefixes.
+     */
     public void printInteractiveHelp() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.defaultOptPrefix = "";
@@ -227,6 +325,15 @@ public class INDICommandLine {
 
     }
 
+    /**
+     * parse the array of argument strings.
+     * 
+     * @param args
+     *            teh argumants
+     * @return this
+     * @throws Exception
+     *             if the command was not properly formattet.
+     */
     public INDICommandLine parseArgument(String[] args) throws Exception {
         CommandLineParser parser = new PosixParser();
         commandLine = parser.parse(options, args);
@@ -234,6 +341,12 @@ public class INDICommandLine {
         return this;
     }
 
+    /**
+     * @return the port number (or null) from the commandline optione or one of
+     *         it sub commandlines.
+     * @throws ParseException
+     *             if the given option was no number.
+     */
     public Integer getPort() throws ParseException {
         Integer parsedOptionValue = (Integer) commandLine.getParsedOptionValue(port.getLongOpt());
         if (parsedOptionValue == null && startupCommandLines != null) {
@@ -247,7 +360,11 @@ public class INDICommandLine {
         return parsedOptionValue;
     }
 
-    public String getHost() throws ParseException {
+    /**
+     * @return the host name (or null) that was specified in the command line
+     *         options or one of ist sub command lines.
+     */
+    public String getHost() {
         String optionValue = commandLine.getOptionValue(host.getLongOpt());
         if (optionValue == null && startupCommandLines != null) {
             for (INDICommandLine startupCommand : startupCommandLines) {
@@ -260,19 +377,22 @@ public class INDICommandLine {
         return optionValue;
     }
 
-    public Option[] getOptions() {
-        return commandLine.getOptions();
-    }
-
-    public void execute(boolean interactive) {
-        if (!interactive && startupCommandLines != null) {
+    /**
+     * execute the given commandline options. including the ones of the sub
+     * commandlines.
+     * 
+     * @param interactiveMode
+     *            is this in the interactive mode?
+     */
+    public void execute(boolean interactiveMode) {
+        if (!interactiveMode && startupCommandLines != null) {
             for (INDICommandLine startupCommandLine : startupCommandLines) {
-                startupCommandLine.execute(interactive);
+                startupCommandLine.execute(interactiveMode);
             }
         }
         for (Option option : commandLine.getOptions()) {
             try {
-                executeCommand(interactive, option);
+                executeCommand(interactiveMode, option);
             } catch (Exception e) {
                 LOG.error("could not execute command deu to an exception", e);
                 INDIBasicServer.print("error on command " + option + " error message was " + e.getMessage());
@@ -280,10 +400,20 @@ public class INDICommandLine {
         }
     }
 
-    protected void executeCommand(boolean interactive, Option option) throws Exception {
+    /**
+     * execute one option command.
+     * 
+     * @param interactiveMode
+     *            is this in the interactive mode?
+     * @param option
+     *            the option to execute.
+     * @throws Exception
+     *             the the action failed.
+     */
+    protected void executeCommand(boolean interactiveMode, Option option) throws Exception {
         INDIServerInterface server = basicServer.getServer();
         if (option.equals(help)) {
-            if (interactive) {
+            if (interactiveMode) {
                 printInteractiveHelp();
             } else {
                 printHelp();
@@ -306,7 +436,7 @@ public class INDICommandLine {
             } else if (option.equals(home)) {
                 FileUtils.setI4JBaseDirectory(getArg(home));
             } else if (option.equals(host) || option.equals(port)) {
-                if (interactive) {
+                if (interactiveMode) {
                     INDIBasicServer.print("server already started change of host or port has no effect.");
                 }
             } else if (option.equals(add)) {
@@ -326,7 +456,7 @@ public class INDICommandLine {
                 String[] optionValues = commandLine.getOptionValues(option.getLongOpt());
                 server.destroyNetworkDriver(optionValues[0], Integer.parseInt(optionValues[1]));
             } else if (option.equals(this.interactive)) {
-                if (interactive) {
+                if (interactiveMode) {
                     INDIBasicServer.print("server already interactive.");
                 }
             } else if (option.equals(lib)) {
@@ -335,7 +465,7 @@ public class INDICommandLine {
                     extendClasspath(new File(libDirectory));
                 }
             } else if (option.equals(startup)) {
-                if (interactive) {
+                if (interactiveMode) {
                     INDIBasicServer.print("server already started, no startup possible anymore.");
                 }
             } else {
@@ -344,20 +474,47 @@ public class INDICommandLine {
         }
     }
 
-    protected String getArg(Option option) {
+    /**
+     * @param option
+     *            the option to get the argument from
+     * @return the option argument.
+     */
+    private String getArg(Option option) {
         return commandLine.getOptionValue(option.getLongOpt());
     }
 
+    /**
+     * @return the parsed startup commands.
+     * @throws Exception
+     *             if the startup commands where not correctly formatted.
+     */
     public List<INDICommandLine> parseStartupCommands() throws Exception {
         if (commandLine.hasOption(home.getLongOpt())) {
             FileUtils.setI4JBaseDirectory(commandLine.getOptionValue(home.getLongOpt()));
         }
-        if (!commandLine.hasOption(startup.getLongOpt())) {
-            return startup(new File(FileUtils.getI4JBaseDirectory(), "server.boot").getAbsolutePath());
+        List<INDICommandLine> result = new ArrayList<>();
+        if (commandLine.hasOption(startup.getLongOpt())) {
+            String startupFileName = commandLine.getOptionValue(startup.getLongOpt());
+            File startUpFile = new File(startupFileName);
+            if (!startUpFile.isAbsolute()) {
+                startUpFile = new File(FileUtils.getI4JBaseDirectory(), startupFileName);
+            }
+            result.addAll(startup(startUpFile.getAbsolutePath()));
         }
-        return null;
+        result.addAll(startup(new File(FileUtils.getI4JBaseDirectory(), "etc/server.boot").getAbsolutePath()));
+        return result;
     }
 
+    /**
+     * parse the file and convert every line in a INDICommandLine.
+     * 
+     * @param fileName
+     *            the file to read.
+     * @return a list with commands from the file (never null)
+     * @throws Exception
+     *             if the file could not be read or the commands in it are not
+     *             legal.
+     */
     private List<INDICommandLine> startup(String fileName) throws Exception {
         List<INDICommandLine> startupCommands = new ArrayList<>();
         File file = new File(fileName);
@@ -373,6 +530,15 @@ public class INDICommandLine {
         return startupCommands;
     }
 
+    /**
+     * splitt the argument in a array of substrings (separator characters ar
+     * blanks). use the escape charater backslash to include a whitespace
+     * character in a string.
+     * 
+     * @param command
+     *            the string to splitt.
+     * @return the array of substrings.
+     */
     private String[] splittString(String command) {
         ArrayList<String> subStrings = new ArrayList<>();
         boolean lastCharBackslash = false;
@@ -420,6 +586,10 @@ public class INDICommandLine {
         return subStrings.toArray(new String[subStrings.size()]);
     }
 
+    /**
+     * @return true if the interactive mode is active in the commandline or in
+     *         one of the sub command lines.
+     */
     public boolean isInteractive() {
         boolean isInteractive = commandLine.hasOption(interactive.getLongOpt());
         if (isInteractive) {
@@ -442,8 +612,13 @@ public class INDICommandLine {
      * 
      * @param dirOrJar
      *            the directory or jar file
+     * @throws Exception
+     *             if the classpath could not be extended.
      */
     protected static void extendClasspath(File dirOrJar) throws Exception {
+        if (!dirOrJar.isAbsolute()) {
+            dirOrJar = new File(FileUtils.getI4JBaseDirectory(), dirOrJar.getPath());
+        }
         if (!dirOrJar.exists()) {
             LOG.warn("classpath ignored because not existent. " + dirOrJar);
             return;
@@ -471,5 +646,26 @@ public class INDICommandLine {
         method.invoke(sysLoader, new Object[]{
             udir
         });
+    }
+
+    /**
+     * extend the classpath with the spesified libraries.
+     * 
+     * @throws Exception
+     *             if the classpath could not be extended.
+     */
+    public void addLibraries() throws Exception {
+        extendClasspath(new File("lib"));
+        if (commandLine.hasOption(lib.getLongOpt())) {
+            String[] libs = commandLine.getOptionValues(lib.getLongOpt());
+            for (String libDirectory : libs) {
+                extendClasspath(new File(libDirectory));
+            }
+        }
+        if (startupCommandLines != null) {
+            for (INDICommandLine indiCommandLine : startupCommandLines) {
+                indiCommandLine.addLibraries();
+            }
+        }
     }
 }
