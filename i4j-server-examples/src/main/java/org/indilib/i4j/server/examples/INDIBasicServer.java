@@ -53,11 +53,6 @@ import org.slf4j.LoggerFactory;
 public class INDIBasicServer implements INDIServerEventHandler {
 
     /**
-     * poll interfall.
-     */
-    private static final int LOAD_POLL_INTERFALL = 500;
-
-    /**
      * Logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIBasicServer.class);
@@ -66,6 +61,13 @@ public class INDIBasicServer implements INDIServerEventHandler {
      * The only server.
      */
     private INDIServerInterface server;
+
+    /**
+     * @return The only server.
+     */
+    protected INDIServerInterface getServer() {
+        return server;
+    }
 
     /**
      * Constructs the server.
@@ -83,119 +85,6 @@ public class INDIBasicServer implements INDIServerEventHandler {
     public INDIBasicServer(Integer port) {
         server = INDIServerAccessLookup.indiServerAccess().createOrGet(null, port);
         server.addEventHandler(this);
-    }
-
-    /**
-     * Loads the Java Drivers in a JAR file.
-     * 
-     * @param jar
-     *            The JAR file
-     * @see #unloadJava
-     */
-    public void loadJava(String jar) {
-        try {
-            server.loadJavaDriversFromJAR(jar);
-        } catch (INDIException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Loads the Java Drivers in Form the current classpath.
-     * 
-     * @param className
-     *            class name of the driver
-     */
-    public void loadJavaClass(String className) {
-        try {
-            server.loadJavaDriver(className);
-        } catch (INDIException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Unloads the Java Driver.
-     * 
-     * @param className
-     *            class name of the driver
-     */
-    public void unloadJavaClass(String className) {
-        try {
-            server.destroyJavaDriver(className);
-        } catch (INDIException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Loads a Native Driver.
-     * 
-     * @param path
-     *            The path of the Driver.
-     * @see #unloadNative
-     */
-    public void loadNative(String path) {
-        try {
-            server.loadNativeDriver(path);
-        } catch (INDIException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Unloads a Native Driver.
-     * 
-     * @param path
-     *            The path of the Driver. see #loadNative
-     */
-    public void unloadNative(String path) {
-        server.destroyNativeDriver(path);
-    }
-
-    /**
-     * Connects to a Network Driver (another Server).
-     * 
-     * @param host
-     *            The host of the other Server.
-     * @param port
-     *            The port of the other Server.
-     * @see #disconnect
-     */
-    public void connect(String host, int port) {
-        try {
-            server.loadNetworkDriver(host, port);
-        } catch (INDIException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Disconnects from a Network Driver (another Server).
-     * 
-     * @param host
-     *            The host of the other Server.
-     * @param port
-     *            The port of the other Server.
-     * @see #connect
-     */
-    public void disconnect(String host, int port) {
-        server.destroyNetworkDriver(host, port);
-    }
-
-    /**
-     * Prints a list of the loaded devices to the Rrror stream.
-     */
-    public void listDevices() {
-        List<INDIDeviceInterface> devs = server.getDevices();
-
-        System.err.println("Number of loaded Drivers: " + devs.size());
-
-        for (int i = 0; i < devs.size(); i++) {
-            System.err.println("  - " + devs.get(i));
-        }
-
-        System.err.println("");
     }
 
     /**
@@ -235,15 +124,15 @@ public class INDIBasicServer implements INDIServerEventHandler {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             String line;
             try {
-                while (true) {
+                while (server.server.isServerRunning()) {
                     line = in.readLine();
                     line = line.trim();
                     if (line.length() > 0) {
                         try {
                             new INDICommandLine(line).setBasicServer(server).execute(true);
                         } catch (Exception e) {
-                            System.out.println("Error in command: " + e.getMessage() + ". type help?");
-                            LOG.error("could not parse/execute command");
+                            print("Error in command: " + e.getMessage() + ". (see log)");
+                            LOG.error("could not parse/execute command", e);
                         }
                     }
                 }
@@ -251,7 +140,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
                 LOG.error("io exception", e);
             }
         } else {
-            while (true) {
+            while (server.server.isServerRunning()) {
                 // TODO wait for kill signal
                 try {
                     Thread.sleep(1000);
@@ -263,214 +152,6 @@ public class INDIBasicServer implements INDIServerEventHandler {
     }
 
     /**
-     * Parses a single argument of the application. Possible arguments are:
-     * <code>-help</code>, <code>-add jarFile</code>,
-     * <code>-addn driverPath</code> and <code>-connect host[:port]</code>.
-     * 
-     * @param arg
-     *            The argument to be parsed.
-     * @return <code>true</code> if it has been correctly parsed.
-     *         <code>false</code> otherwise.
-     */
-    private boolean parseArgument(String arg) {
-        String[] s = splitArgument(arg);
-
-        if (s[0].equals("-help")) {
-            printArgumentHelp();
-            return true;
-        } else if (s[0].equals("-add")) {
-            loadJava(s[1]);
-
-            return true;
-        } else if (s[0].equals("-addc")) {
-            loadJavaClass(s[1]);
-
-            return true;
-        } else if (s[0].equals("-removec")) {
-            unloadJavaClass(s[1]);
-
-            return true;
-        } else if (s[0].equals("-addn")) {
-            loadNative(s[1]);
-
-            return true;
-        } else if (s[0].equals("-connect")) {
-            int port = Constants.INDI_DEFAULT_PORT;
-            String host;
-
-            int pos = s[1].indexOf(":");
-
-            if (pos == -1) {
-                host = s[1];
-            } else {
-                host = s[1].substring(0, pos - 1);
-
-                String p = s[1].substring(pos + 1);
-
-                try {
-                    port = Integer.parseInt(p);
-                } catch (NumberFormatException e) {
-                    return false;
-                }
-            }
-
-            connect(host, port);
-
-            return true;
-        } else if (s[0].equals("-p")) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Splits an argument in two. Separator char is =
-     * 
-     * @param arg
-     *            The argument to split.
-     * @return An array of the two components of the parameter.
-     */
-    private static String[] splitArgument(String arg) {
-        int pos = arg.indexOf("=");
-
-        if (pos != -1) {
-            return new String[]{
-                arg.substring(0, pos),
-                arg.substring(pos + 1)
-            };
-        } else {
-            return new String[]{
-                arg,
-                ""
-            };
-        }
-    }
-
-    /**
-     * Parses an input command. Possible commands are <code>help</code>,
-     * <code>list</code>, <code>add jarFile</code>, <code>remove jarFile</code>,
-     * <code>reload jarFile</code>, <code>r</code>, <code>addn driverPath</code>
-     * , <code>addc driverClass</code>, <code>removen driverPath</code>,
-     * <code>reloadn driverPath</code>, <code>connect host[:port]</code>,
-     * <code>disconnect host[:port]</code>, <code>stop</code> and
-     * <code>start</code>.
-     * 
-     * @param line
-     *            The line to be parsed.
-     */
-    private void parseInputLine(String line) {
-        String[] args = line.trim().split("\\s+");
-
-        if (args.length < 1) {
-            return;
-        }
-
-        if (args[0].equals("help")) {
-            printCommandHelp();
-
-            return;
-        } else if (args[0].equals("list")) {
-            listDevices();
-
-            return;
-        } else if (args[0].equals("stop")) {
-            stopServer();
-
-            return;
-        }
-
-        if (args.length < 2) {
-            System.err.println("Command error. 'help' for help.\n");
-
-            return;
-        }
-
-        if (args[0].equals("add")) {
-            String f = args[1];
-
-            loadJava(f);
-
-            return;
-        } else if ((args[0].equals("addN")) || (args[0].equals("addn"))) {
-            String f = args[1];
-
-            loadNative(f);
-
-            return;
-        } else if ((args[0].equals("addC")) || (args[0].equals("addc"))) {
-            String className = args[1];
-
-            loadJavaClass(className);
-
-            return;
-        } else if ((args[0].equals("removeC")) || (args[0].equals("removec"))) {
-            String className = args[1];
-
-            unloadJavaClass(className);
-
-            return;
-        } else if ((args[0].equals("removeN")) || (args[0].equals("removen"))) {
-            String f = args[1];
-
-            unloadNative(f);
-
-            return;
-        } else if ((args[0].equals("reloadN")) || (args[0].equals("reloadn"))) {
-            String f = args[1];
-
-            unloadNative(f);
-
-            try {
-                Thread.sleep(LOAD_POLL_INTERFALL);
-            } catch (InterruptedException e) {
-                LOG.warn("sleep interupted", e);
-            }
-
-            while (server.isAlreadyLoaded(f)) {
-                System.err.println("Waiting for " + f + " to unload");
-                try {
-                    Thread.sleep(LOAD_POLL_INTERFALL);
-                } catch (InterruptedException e) {
-                    LOG.warn("sleep interupted", e);
-                }
-            }
-
-            loadNative(f);
-
-            return;
-        } else if ((args[0].equals("connect")) || (args[0].equals("disconnect"))) {
-            String host = args[1];
-            int port = Constants.INDI_DEFAULT_PORT;
-
-            if (args.length > 2) {
-                String p = args[2];
-
-                try {
-                    port = Integer.parseInt(p);
-                } catch (NumberFormatException e) {
-                    System.err.println("Port not valid.");
-                    return;
-                }
-            }
-
-            if (args[0].equals("connect")) {
-                connect(host, port);
-            } else if (args[0].equals("disconnect")) {
-                disconnect(host, port);
-            }
-
-            return;
-        }
-
-        System.err.println("Command error. 'help' for help.\n");
-    }
-
-    public void stopServer() {
-        server.stopServer();
-    }
-
-    /**
      * Prints a message about the broken connection to the standard err.
      * 
      * @param client
@@ -478,7 +159,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
      */
     @Override
     public void connectionWithClientBroken(INDIClientInterface client) {
-        System.err.println("Connection with client " + client.getInetAddress() + " has been broken.");
+        print("Connection with client " + client.getInetAddress() + " has been broken.");
     }
 
     /**
@@ -489,14 +170,14 @@ public class INDIBasicServer implements INDIServerEventHandler {
      */
     @Override
     public void connectionWithClientEstablished(INDIClientInterface client) {
-        System.err.println("Connection with client " + client.getInetAddress() + " established.");
+        print("Connection with client " + client.getInetAddress() + " established.");
     }
 
     @Override
     public void driverDisconnected(INDIDeviceInterface device) {
         String names = Arrays.toString(device.getNames());
 
-        System.err.println("Driver " + device.getDeviceIdentifier() + " has been disconnected. The following devices have dissapeared: " + names);
+        print("Driver " + device.getDeviceIdentifier() + " has been disconnected. The following devices have dissapeared: " + names);
     }
 
     @Override
@@ -504,51 +185,8 @@ public class INDIBasicServer implements INDIServerEventHandler {
         return true;
     }
 
-    /**
-     * Prints some help about the possible arguments of the program to the error
-     * stream.
-     */
-    private static void printArgumentHelp() {
-        System.err.println("\nThe following arguments can be used:");
-        System.err.println("  -help                Shows this help.");
-        System.err.println("  -p=port              Port to which the Server will listen.");
-        System.err.println("  -add=jarFile         Loads all INDIDrivers in the jarFile.");
-        System.err.println("  -addn=driverPath     Loads the native driver described by driverPath.");
-        System.err.println("  -connect=host[:port] Loads the drivers in a remote INDI server.\n");
-    }
-
-    /**
-     * Prints some help about the possible commands of the program to the error
-     * stream.
-     */
-    private static void printCommandHelp() {
-        System.err.println("\nThe following commands can be used:");
-        System.err.println("  help                    Shows this help.");
-        System.err.println("  list                    Lists all loaded drivers.");
-        System.err.println("  add jarFile             Loads all INDIDrivers in the jarFile.");
-        System.err.println("  addc class              Loads the INDIDriver specified by the class.");
-        System.err.println("  removec class           Removes the INDIDriver specified by the class.");
-        System.err.println("  addn driverPath         Loads the native driver described by driverPath");
-        System.err.println("  removen driverPath      Removes the native driver described by driverPath");
-        System.err.println("  reloadn driverPath      Reloads the native driver described by driverPath");
-        System.err.println("  connect host[:port]     Loads the drivers in a remote INDI server.");
-        System.err.println("  disconnect host[:port]  Removes the drivers in a remote INDI server.");
-        System.err.println("  stop                    Stops the Server and breaks all Client connections.");
-        System.err.println("  start                   Starts the Server (if it was previously not).\n");
-    }
-
-    public void listAvailableDevices() {
-        // TODO Auto-generated method stub
-
-    }
-
     public static void print(String string) {
         System.out.println(string);
         LOG.info("command print: " + string);
-    }
-
-    public void addLib(String lib) {
-        // TODO Auto-generated method stub
-
     }
 }

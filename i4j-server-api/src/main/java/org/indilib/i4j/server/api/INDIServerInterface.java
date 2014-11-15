@@ -147,4 +147,9 @@ public interface INDIServerInterface {
      * existing clients are also broken.
      */
     void stopServer();
+
+    /**
+     * @return a list of available java devices.
+     */
+    List<String> getAvailableDevices();
 }

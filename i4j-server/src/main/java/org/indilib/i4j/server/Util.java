@@ -31,6 +31,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.indilib.i4j.driver.INDIDriver;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexView;
@@ -51,6 +52,11 @@ public final class Util {
      * the classpath jandex index.
      */
     private static IndexView classPathIndex;
+
+    /**
+     * the number of entries in the system classpath (to check if they changed).
+     */
+    private static int nrOfSystemClasspathEntries;
 
     /**
      * Logger to log to.
@@ -102,8 +108,9 @@ public final class Util {
      * @return the current classpath jandex index.
      */
     protected static IndexView classPathIndex() {
-        if (classPathIndex == null) {
-            URLClassLoader loader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
+        URLClassLoader loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        if (classPathIndex == null || nrOfSystemClasspathEntries != loader.getURLs().length) {
+
             try {
                 reindex(loader.getURLs(), null);
             } catch (Exception e) {

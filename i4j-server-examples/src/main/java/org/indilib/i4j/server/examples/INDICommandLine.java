@@ -26,6 +26,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.indilib.i4j.FileUtils;
+import org.indilib.i4j.server.api.INDIDeviceInterface;
+import org.indilib.i4j.server.api.INDIServerInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -266,57 +271,81 @@ public class INDICommandLine {
             }
         }
         for (Option option : commandLine.getOptions()) {
-            if (option.equals(help)) {
-                if (interactive) {
-                    printInteractiveHelp();
-                } else {
-                    printHelp();
-                }
-            } else if (option.equals(list)) {
-                basicServer.listDevices();
-            } else if (option.equals(listAvailable)) {
-                basicServer.listAvailableDevices();
-            } else if (option.equals(stop)) {
-                basicServer.stopServer();
+            try {
+                executeCommand(interactive, option);
+            } catch (Exception e) {
+                LOG.error("could not execute command deu to an exception", e);
+                INDIBasicServer.print("error on command " + option + " error message was " + e.getMessage());
+            }
+        }
+    }
+
+    protected void executeCommand(boolean interactive, Option option) throws Exception {
+        INDIServerInterface server = basicServer.getServer();
+        if (option.equals(help)) {
+            if (interactive) {
+                printInteractiveHelp();
+            } else {
+                printHelp();
+            }
+        } else if (option.equals(list)) {
+            List<INDIDeviceInterface> devs = this.basicServer.getServer().getDevices();
+            INDIBasicServer.print("Number of loaded Drivers: " + devs.size());
+            for (INDIDeviceInterface indiDeviceInterface : devs) {
+                INDIBasicServer.print("  - " + indiDeviceInterface);
+            }
+        } else if (option.equals(listAvailable)) {
+            List<String> classes = this.basicServer.getServer().getAvailableDevices();
+            INDIBasicServer.print("Number of available Drivers: " + classes.size());
+            for (String className : classes) {
+                INDIBasicServer.print("  - " + className);
+            }
+        } else {
+            if (option.equals(stop)) {
+                server.stopServer();
             } else if (option.equals(home)) {
-                FileUtils.setI4JBaseDirectory(commandLine.getOptionValue(home.getLongOpt()));
+                FileUtils.setI4JBaseDirectory(getArg(home));
             } else if (option.equals(host) || option.equals(port)) {
                 if (interactive) {
-                    basicServer.print("server already started change of host or port has no effect.");
+                    INDIBasicServer.print("server already started change of host or port has no effect.");
                 }
             } else if (option.equals(add)) {
-                basicServer.loadJava(commandLine.getOptionValue(option.getLongOpt()));
+                server.loadJavaDriversFromJAR(getArg(option));
             } else if (option.equals(addC)) {
-                basicServer.loadJavaClass(commandLine.getOptionValue(option.getLongOpt()));
+                server.loadJavaDriver(getArg(option));
             } else if (option.equals(removeC)) {
-                basicServer.unloadJavaClass(commandLine.getOptionValue(option.getLongOpt()));
+                server.destroyJavaDriver(getArg(option));
             } else if (option.equals(addN)) {
-                basicServer.loadNative(commandLine.getOptionValue(option.getLongOpt()));
+                server.loadNativeDriver(getArg(option));
             } else if (option.equals(removeN)) {
-                basicServer.unloadNative(commandLine.getOptionValue(option.getLongOpt()));
+                server.destroyNativeDriver(getArg(option));
             } else if (option.equals(connect)) {
                 String[] optionValues = commandLine.getOptionValues(option.getLongOpt());
-                basicServer.connect(optionValues[0], Integer.parseInt(optionValues[1]));
+                server.loadNetworkDriver(optionValues[0], Integer.parseInt(optionValues[1]));
             } else if (option.equals(disconnect)) {
                 String[] optionValues = commandLine.getOptionValues(option.getLongOpt());
-                basicServer.connect(optionValues[0], Integer.parseInt(optionValues[1]));
+                server.destroyNetworkDriver(optionValues[0], Integer.parseInt(optionValues[1]));
             } else if (option.equals(this.interactive)) {
                 if (interactive) {
-                    basicServer.print("server already interactive.");
+                    INDIBasicServer.print("server already interactive.");
                 }
             } else if (option.equals(lib)) {
                 String[] libs = commandLine.getOptionValues(option.getLongOpt());
                 for (String libDirectory : libs) {
-                    basicServer.addLib(libDirectory);
+                    extendClasspath(new File(libDirectory));
                 }
             } else if (option.equals(startup)) {
                 if (interactive) {
-                    basicServer.print("server already started, no startup possible anymore.");
+                    INDIBasicServer.print("server already started, no startup possible anymore.");
                 }
             } else {
-                basicServer.print("unknown command: " + option);
+                INDIBasicServer.print("unknown command: " + option);
             }
         }
+    }
+
+    protected String getArg(Option option) {
+        return commandLine.getOptionValue(option.getLongOpt());
     }
 
     public List<INDICommandLine> parseStartupCommands() throws Exception {
@@ -404,5 +433,43 @@ public class INDICommandLine {
             }
         }
         return false;
+    }
+
+    /**
+     * extend the classpath with one file or a directory with classes. If the
+     * directory cotains jars add them all to the classpath else just the
+     * directory.
+     * 
+     * @param dirOrJar
+     *            the directory or jar file
+     */
+    protected static void extendClasspath(File dirOrJar) throws Exception {
+        if (!dirOrJar.exists()) {
+            LOG.warn("classpath ignored because not existent. " + dirOrJar);
+            return;
+        }
+        if (dirOrJar.isDirectory()) {
+            boolean containsJar = false;
+            for (File child : dirOrJar.listFiles()) {
+                if (child.getName().endsWith(".jar")) {
+                    containsJar = true;
+                    extendClasspath(child);
+                }
+            }
+            if (containsJar) {
+                // no classes dir;
+                return;
+            }
+        }
+        URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        URL udir = dirOrJar.toURI().toURL();
+        Class<URLClassLoader> sysClass = URLClassLoader.class;
+        Method method = sysClass.getDeclaredMethod("addURL", new Class[]{
+            URL.class
+        });
+        method.setAccessible(true);
+        method.invoke(sysLoader, new Object[]{
+            udir
+        });
     }
 }

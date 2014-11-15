@@ -893,4 +893,15 @@ public final class INDIServer implements Runnable, INDIServerInterface {
         }
     }
 
+    @Override
+    public List<String> getAvailableDevices() {
+        List<String> result = new ArrayList<>();
+        for (ClassInfo subclass : Util.classPathIndex().getAllKnownSubclasses(DotName.createSimple(INDIDriver.class.getName()))) {
+            if (!Modifier.isAbstract(subclass.flags())) {
+                result.add(subclass.toString());
+            }
+        }
+        return result;
+    }
+
 }
