@@ -50,6 +50,16 @@ import org.slf4j.LoggerFactory;
 public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
+     * helper to convert integers to unsigned bytes and back.
+     */
+    private static final int UNSIGNED_BYTE_HELPER = 0xFF;
+
+    /**
+     * wait 100 miniseconds before skipping bytes in the queue.
+     */
+    private static final long MILLISECONDS_TO_WAIT_BEFORE_SKIPPING_BYTES = 100L;
+
+    /**
      * The logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDISerialPortExtension.class);
@@ -270,5 +280,113 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     public INDISerialPortExtension setStopbits(int newStopbits) {
         this.stopbits = newStopbits;
         return this;
+    }
+
+    /**
+     * send one byte over the serial port. An illegal state exception will be
+     * thrown if the communication breaks down.
+     * 
+     * @param value
+     *            the byte value to send.
+     * @param skipQueue
+     *            if true all bytes currently in the read queue will be scipped.
+     */
+    public void sendByte(byte value, boolean skipQueue) {
+        try {
+            if (skipQueue) {
+                skipBytes();
+            }
+            this.serialPort.writeByte(value);
+        } catch (Exception e) {
+            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        }
+    }
+
+    /**
+     * send multiple bytes over the serial port. An illegal state exception will
+     * be thrown if the communication breaks down. All bytes currently in the
+     * read queue will be scipped.
+     * 
+     * @param bytes
+     *            the bytes to send.
+     * @param skipQueue
+     *            if true all bytes currently in the read queue will be scipped.
+     */
+    public void sendBytes(byte[] bytes, boolean skipQueue) {
+        try {
+            skipBytes();
+            this.serialPort.writeBytes(bytes);
+        } catch (Exception e) {
+            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        }
+    }
+
+    /**
+     * send one byte over the serial port. An illegal state exception will be
+     * thrown if the communication breaks down. All bytes currently in the read
+     * queue will be scipped.
+     * 
+     * @param value
+     *            the byte value to send (the integer will be cast to a byte).
+     * @param skipQueue
+     *            if true all bytes currently in the read queue will be scipped.
+     */
+    public void sendByte(int value, boolean skipQueue) {
+        sendByte((byte) value, skipQueue);
+    }
+
+    /**
+     * skip all bytes currently in the queue.
+     */
+    public void skipBytes() {
+        try {
+            if (this.serialPort.getInputBufferBytesCount() > 0) {
+                // ok there is something wrong here lets wait for more to come.
+                Thread.sleep(MILLISECONDS_TO_WAIT_BEFORE_SKIPPING_BYTES);
+                // now consume them all
+                byte[] buffer = this.serialPort.readBytes();
+                StringBuffer string = new StringBuffer();
+                for (byte b : buffer) {
+                    String hexString = Integer.toHexString(b & UNSIGNED_BYTE_HELPER);
+                    while (hexString.length() < 2) {
+                        hexString = "0" + hexString;
+                    }
+                    string.append(hexString);
+                }
+                LOG.warn("skipped 0x" + string);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        }
+    }
+
+    /**
+     * blocking read one byte from the serial port. An illegal state exception
+     * will be thrown if the communication breaks down.
+     * 
+     * @return the read byte.
+     */
+    public byte readByte() {
+        try {
+            return this.serialPort.readBytes(1)[0];
+        } catch (Exception e) {
+            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        }
+    }
+
+    /**
+     * blocking read a number of bytes from the serial port. An illegal state
+     * exception will be thrown if the communication breaks down.
+     * 
+     * @param nrOfBytes
+     *            the number of bytes to read.
+     * @return the read byte array.
+     */
+    public byte[] readByte(int nrOfBytes) {
+        try {
+            return this.serialPort.readBytes(nrOfBytes);
+        } catch (Exception e) {
+            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        }
     }
 }
