@@ -1,0 +1,70 @@
+%{include|source-content=<div id\="apt-box">}
+
+INDI for Java - All in one zip
+
+ This is our first try for an end-user targeted package. It is a zip file with all the nessesary libraries and a startup script. Because
+this is the first version there is not jet the possibility to let it run as a service. That will be one of our targets for the next major release, 
+help would be greatly apresiated. (does somebody out there have experianse with the service-wrapper project or does know something simmular?)
+
+*Download
+
+ The all in one zip (i4j-all-in-one-${project.version}-distribution.zip) can be found on the sourceforge files page of the project {{{https://sourceforge.net/projects/indiforjava/files/}indiforjava on sourceforge}}. 
+
+*Usage
+
+ Just unzip the i4j-all-in-one-${project.version}-distribution.zip where you want it. In the bin sub directory the start scripts are situated.
+start.sh for unix based operation systems and start.bat for windows based operation systems. This start script takes many parameters that are
+explained in the help. Just execute "start.sh -help" to see the help page.
+
+----------------------------------
+usage: i4j-server
+ -b,--startup <arg>                the commands in the specified file are
+                                   executed on startup (defaults to
+                                   $indiHome/etc/server.boot)
+ -c,--addClass <class>             Loads the INDIDriver specified by the
+                                   case insensitive class name (simple orf
+                                   full)
+ -d,--indiHome <directory>         indi base directory ~/.i4j
+ -dn,--disconnect <host[:port]>    Removes the drivers in a remote INDI
+                                   server
+ -h,--host <host-ip>               host interface to bind the server
+ -help                             print this message
+ -i,--interactive                  The server listens to an interactive
+                                   command interface (default no command
+                                   interface will be started)
+ -j,--addJar <jar>                 Loads all INDIDrivers in the jarFile
+ -l,--lib <directory-list>         directory with jar files to add to the
+                                   classpath default $indiHome/lib
+ -la,--listAll                     Lists all posible drivers
+ -ld,--list                        Lists all loaded drivers
+ -n,--addNative <executable>       Loads the native driver described by
+                                   driverPath
+ -nc,--connect <host[:port]>       Loads the drivers in a remote INDI
+                                   server
+ -p,--port <port-number>           ip port to bind the server
+ -r,--removeClass <class>          Removes the INDIDriver specified by the
+                                   case insensitive class name (simple orf
+                                   full)
+ -rn,--removeNative <executable>   Removes the native driver described by
+                                   driverPath
+ -s,--stop                         Stops the Server and breaks all Client
+                                   connections
+----------------------------------
+
+ Wenn started with the start script some defaults are different. The indiHome will be set to the directory where you unzipped the package and the lib directory of the
+zip will be added auttomaticaly.
+
+ If you want do do some commands on startup. For example loading your drivers immediately after startup just put the commands in the file $indiHome/etc/server.boot
+(without the minus prefix). The command in that file will be done immediately after the start of the server.
+
+ If you are still testing, you can use the interacive mode, see below.
+ 
+*Interactive mode
+
+ When acivating the interactive mode, the help will be printed and you will be able to control the server from the command line by
+typing the commands. For example by typing "la" all currently avaiable driver classes will be listed.
+
+ To start a driver just execute the "c" command with as a parameter the class name of the driver. Use the "ld" command to check if the driver 
+is active. Now you can connect to the server with your indi client.
+ 
+%{include|source-content=</div>}

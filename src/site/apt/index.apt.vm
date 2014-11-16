@@ -9,8 +9,7 @@ Drivers and Servers that follow the INDI distributed control protocol, a protoco
 
  The provided libraries are focused on the development of Drivers, Clients and Servers using the INDI protocol in the Java programming language. 
 If you are a regular software user or if you are looking for a simple program to control your astronomical devices and you don't know anything about drivers, 
-programming and Java probably this page is not (yet) for you. Try looking at INDI Clients for a list of programs that may be useful for your purposes. We are
-working toward a end user capable release, maybe that will be the 2.0.0 release.
+programming and Java then go to the {{{i4-all-in-one/index.html}i4-all-in-one}} module.
 
  However, if you are a programmer and you want to start your own astronomical control program or you want to program a driver for a particular astronomical device, 
 this might be your starting point.

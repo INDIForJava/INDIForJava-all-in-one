@@ -612,6 +612,13 @@ public class INDICommandLine {
     }
 
     /**
+     * @return true if the help mode is active in the commandline.
+     */
+    public boolean isHelp() {
+        return commandLine.hasOption(help.getLongOpt());
+    }
+
+    /**
      * extend the classpath with one file or a directory with classes. If the
      * directory cotains jars add them all to the classpath else just the
      * directory.

@@ -103,6 +103,11 @@ public class INDIBasicServer implements INDIServerEventHandler {
         try {
             commandLine.parseArgument(args, false);
 
+            if (commandLine.isHelp()) {
+                commandLine.printHelp();
+                return;
+            }
+
             port = commandLine.getPort();
             host = commandLine.getHost();
 
