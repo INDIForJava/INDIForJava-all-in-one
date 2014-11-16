@@ -7,7 +7,27 @@
 	<formats>
 		<format>zip</format>
 	</formats>
-	<includeBaseDirectory>false</includeBaseDirectory>
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<files>
+		<file>
+			<source>LICENSE.txt</source>
+			<outputDirectory>/</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/bin/start.sh</source>
+			<outputDirectory>/bin</outputDirectory>
+			<fileMode>0755</fileMode>
+		</file>
+		<file>
+			<source>src/main/bin/start.bat</source>
+			<outputDirectory>/bin</outputDirectory>
+		</file>
+		<file>
+			<source>src/main/etc/logback.xml</source>
+			<outputDirectory>/etc</outputDirectory>
+		</file>
+	</files>
 	<dependencySets>
 		<dependencySet>
 			<outputDirectory>/lib</outputDirectory>

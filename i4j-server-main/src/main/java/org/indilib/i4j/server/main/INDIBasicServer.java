@@ -101,7 +101,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
         Integer port = null;
         String host = null;
         try {
-            commandLine.parseArgument(args);
+            commandLine.parseArgument(args, false);
 
             port = commandLine.getPort();
             host = commandLine.getHost();

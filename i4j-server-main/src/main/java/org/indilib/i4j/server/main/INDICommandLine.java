@@ -303,7 +303,7 @@ public class INDICommandLine {
      */
     public INDICommandLine(String commandLine) throws Exception {
         this();
-        parseArgument(splittString(commandLine));
+        parseArgument(splittString(commandLine), true);
     }
 
     /**
@@ -330,14 +330,16 @@ public class INDICommandLine {
      * 
      * @param args
      *            teh argumants
+     * @param recursiv
+     *            is this a recursive call
      * @return this
      * @throws Exception
      *             if the command was not properly formattet.
      */
-    public INDICommandLine parseArgument(String[] args) throws Exception {
+    public INDICommandLine parseArgument(String[] args, boolean recursiv) throws Exception {
         CommandLineParser parser = new PosixParser();
         commandLine = parser.parse(options, args);
-        this.startupCommandLines = parseStartupCommands();
+        this.startupCommandLines = parseStartupCommands(recursiv);
         return this;
     }
 
@@ -484,11 +486,13 @@ public class INDICommandLine {
     }
 
     /**
+     * @param recursiv
+     *            is this a recursiv call
      * @return the parsed startup commands.
      * @throws Exception
      *             if the startup commands where not correctly formatted.
      */
-    public List<INDICommandLine> parseStartupCommands() throws Exception {
+    public List<INDICommandLine> parseStartupCommands(boolean recursiv) throws Exception {
         if (commandLine.hasOption(home.getLongOpt())) {
             FileUtils.setI4JBaseDirectory(commandLine.getOptionValue(home.getLongOpt()));
         }
@@ -501,7 +505,9 @@ public class INDICommandLine {
             }
             result.addAll(startup(startUpFile.getAbsolutePath()));
         }
-        result.addAll(startup(new File(FileUtils.getI4JBaseDirectory(), "etc/server.boot").getAbsolutePath()));
+        if (!recursiv) {
+            result.addAll(startup(new File(FileUtils.getI4JBaseDirectory(), "etc/server.boot").getAbsolutePath()));
+        }
         return result;
     }
 
@@ -522,7 +528,7 @@ public class INDICommandLine {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()));
             String line = reader.readLine();
             while (line != null) {
-                startupCommands.add(new INDICommandLine().parseArgument(splittString(line.trim())));
+                startupCommands.add(new INDICommandLine().parseArgument(splittString(line.trim()), true));
                 line = reader.readLine();
             }
             reader.close();
