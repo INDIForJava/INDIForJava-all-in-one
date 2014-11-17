@@ -13,11 +13,11 @@ package org.indilib.i4j.server;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -279,12 +279,11 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      *         Property of the Device. <code>false</code> otherwise.
      */
     protected boolean listensToSingleProperty(String deviceName) {
-        for (int i = 0; i < propertiesToListen.size(); i++) {
-            if (propertiesToListen.get(i).isDevice(deviceName)) {
+        for (DevicePropertyBLOBEnableTuple propertyToListen : propertiesToListen) {
+            if (propertyToListen.isDevice(deviceName)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -356,14 +355,11 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      * @return The BLOB Enable rule.
      */
     private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName, String propertyName) {
-        for (int i = 0; i < bLOBEnableRules.size(); i++) {
-            DevicePropertyBLOBEnableTuple aux = bLOBEnableRules.get(i);
-
+        for (DevicePropertyBLOBEnableTuple aux : bLOBEnableRules) {
             if (aux.isProperty(deviceName, propertyName)) {
                 return aux;
             }
         }
-
         return null;
     }
 
@@ -376,12 +372,11 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      *         Device. <code>false</code> otherwise.
      */
     private boolean listensToParticularDevice(String deviceName) {
-        for (int i = 0; i < devicesToListen.size(); i++) {
-            if (devicesToListen.get(i).isDevice(deviceName)) {
+        for (DevicePropertyBLOBEnableTuple device : devicesToListen) {
+            if (device.isDevice(deviceName)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -397,12 +392,11 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      *         Property of a Device. <code>false</code> otherwise.
      */
     private boolean listensToParticularProperty(String deviceName, String propertyName) {
-        for (int i = 0; i < propertiesToListen.size(); i++) {
-            if (propertiesToListen.get(i).isProperty(deviceName, propertyName)) {
+        for (DevicePropertyBLOBEnableTuple propertyToListen : propertiesToListen) {
+            if (propertyToListen.isProperty(deviceName, propertyName)) {
                 return true;
             }
         }
-
         return false;
     }
 }

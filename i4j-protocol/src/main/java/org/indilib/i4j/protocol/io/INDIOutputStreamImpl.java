@@ -13,16 +13,17 @@ package org.indilib.i4j.protocol.io;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
@@ -34,7 +35,7 @@ import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class INDIOutputStreamImpl implements INDIOutputStream {
+public class INDIOutputStreamImpl extends OutputStream implements INDIOutputStream {
 
     /**
      * The xstream serializer.
@@ -62,5 +63,10 @@ public class INDIOutputStreamImpl implements INDIOutputStream {
     public void writeObject(INDIProtocol<?> element) throws IOException {
         out.writeObject(element);
         out.flush();
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+        throw new IOException("not supported method");
     }
 }

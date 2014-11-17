@@ -24,6 +24,9 @@ package org.indilib.i4j.protocol.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.OneBlob;
@@ -31,6 +34,7 @@ import org.indilib.i4j.protocol.OneText;
 import org.indilib.i4j.protocol.SetTextVector;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -82,5 +86,14 @@ public class TestIOStreams {
             out.writeObject(object);
         }
         in.close();
+    }
+
+    @Test
+    @Ignore
+    public void testConnection() throws MalformedURLException, IOException {
+        org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory.init();
+        INDIInputStream stream = (INDIInputStream) new URL("indi://localhost").openStream();
+        System.out.println(stream.readObject());
+        stream.close();
     }
 }

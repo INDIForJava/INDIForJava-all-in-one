@@ -138,7 +138,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
 
     @Override
     public synchronized void destroyNativeDriver(String driverPath) {
-        print("Removing native driver " + driverPath);
+        LOG.info("Removing native driver " + driverPath);
 
         destroyIdentifiedDrivers(driverPath);
     }
@@ -147,7 +147,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
     public synchronized void destroyNetworkDriver(String host, int port) {
         String networkName = host + ":" + port;
 
-        print("Removing network driver " + networkName);
+        LOG.info("Removing network driver " + networkName);
 
         destroyIdentifiedDrivers(networkName);
     }
@@ -159,14 +159,11 @@ public final class INDIServer implements Runnable, INDIServerInterface {
 
     @Override
     public boolean isAlreadyLoaded(String deviceIdentifier) {
-        for (int i = 0; i < devices.size(); i++) {
-            INDIDevice d = devices.get(i);
-
+        for (INDIDevice d : devices) {
             if (d.isDevice(deviceIdentifier)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -212,7 +209,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
             throw new INDIException("Driver already loaded.");
         }
 
-        print("Loading Native Driver " + driverPath);
+        LOG.info("Loading Native Driver " + driverPath);
 
         INDINativeDevice newDevice;
 
@@ -229,7 +226,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
             throw new INDIException("Network Driver " + networkName + " already loaded.");
         }
 
-        print("Loading Network Driver " + networkName);
+        LOG.info("Loading Network Driver " + networkName);
 
         INDINetworkDevice newDevice;
 
@@ -296,10 +293,9 @@ public final class INDIServer implements Runnable, INDIServerInterface {
         } catch (IOException e) {
             LOG.warn("client close exception", e);
         }
-
-        for (int i = 0; i < clients.size(); i++) {
-            if (clients.get(i) instanceof INDIClient) {
-                ((INDIClient) clients.get(i)).disconnect();
+        for (INDIDeviceListener indiDeviceListener : clients) {
+            if (indiDeviceListener instanceof INDIClient) {
+                ((INDIClient) indiDeviceListener).disconnect();
             }
         }
     }
@@ -352,15 +348,11 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      */
     protected List<INDIDeviceListener> getClientsListeningToDevice(String deviceName) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-
-        for (int i = 0; i < clients.size(); i++) {
-            INDIDeviceListener c = clients.get(i);
-
+        for (INDIDeviceListener c : clients) {
             if (c.listensToDevice(deviceName)) {
                 list.add(c);
             }
         }
-
         return list;
     }
 
@@ -423,15 +415,11 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      */
     protected List<INDIDeviceListener> getClientsListeningToSingleProperties(String deviceName) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-
-        for (int i = 0; i < clients.size(); i++) {
-            INDIDeviceListener c = clients.get(i);
-
+        for (INDIDeviceListener c : clients) {
             if (c.listensToSingleProperty(deviceName)) {
                 list.add(c);
             }
         }
-
         return list;
     }
 
@@ -443,12 +431,11 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      * @return The Device with name <code>deviceName</code>.
      */
     protected INDIDevice getDevice(String deviceName) {
-        for (int i = 0; i < devices.size(); i++) {
-            if (devices.get(i).hasName(deviceName)) {
-                return devices.get(i);
+        for (INDIDevice device : devices) {
+            if (device.hasName(deviceName)) {
+                return device;
             }
         }
-
         return null;
     }
 
@@ -526,12 +513,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
     protected void notifyDeviceListenersDefXXXVector(INDIDevice device, Element xml) {
         String deviceName = xml.getAttribute("device").trim();
         String propertyName = xml.getAttribute("name").trim();
-
-        List<INDIDeviceListener> list = getClientsListeningToProperty(deviceName, propertyName);
-
-        for (int i = 0; i < list.size(); i++) {
-            INDIDeviceListener c = list.get(i);
-
+        for (INDIDeviceListener c : getClientsListeningToProperty(deviceName, propertyName)) {
             c.sendXMLMessage(xml);
         }
     }
@@ -546,12 +528,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      */
     protected void notifyDeviceListenersDelProperty(INDIDevice device, Element xml) {
         String deviceName = xml.getAttribute("device").trim();
-
-        List<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
-
-        for (int i = 0; i < list.size(); i++) {
-            INDIDeviceListener c = list.get(i);
-
+        for (INDIDeviceListener c : getClientsListeningToDevice(deviceName)) {
             c.sendXMLMessage(xml);
         }
     }
@@ -570,11 +547,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
         if (deviceName.isEmpty()) {
             sendXMLMessageToAllClients(xml);
         } else {
-            List<INDIDeviceListener> list = getClientsListeningToDevice(deviceName);
-
-            for (int i = 0; i < list.size(); i++) {
-                INDIDeviceListener c = list.get(i);
-
+            for (INDIDeviceListener c : getClientsListeningToDevice(deviceName)) {
                 c.sendXMLMessage(xml);
             }
         }
@@ -598,12 +571,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
         if (messageType.equals("setBLOBVector")) {
             isBLOB = true;
         }
-
-        List<INDIDeviceListener> list = getClientsListeningToPropertyUpdates(deviceName, propertyName, isBLOB);
-
-        for (int i = 0; i < list.size(); i++) {
-            INDIDeviceListener c = list.get(i);
-
+        for (INDIDeviceListener c : getClientsListeningToPropertyUpdates(deviceName, propertyName, isBLOB)) {
             c.sendXMLMessage(xml);
         }
     }
@@ -646,9 +614,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      *            The message to send.
      */
     protected void sendXMLMessageToAllClients(Element xml) {
-        for (int i = 0; i < clients.size(); i++) {
-            INDIDeviceListener c = clients.get(i);
-
+        for (INDIDeviceListener c : clients) {
             if (c instanceof INDIClient) {
                 c.sendXMLMessage(xml);
             }
@@ -715,12 +681,8 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      *            The device identifier.
      */
     private synchronized void destroyIdentifiedDrivers(String deviceIdentifier) {
-        List<INDIDevice> toRemove = getDevicesWithIdentifier(deviceIdentifier);
-
-        for (int i = 0; i < toRemove.size(); i++) {
-            INDIDevice d = toRemove.get(i);
-
-            d.destroy();
+        for (INDIDevice device : getDevicesWithIdentifier(deviceIdentifier)) {
+            device.destroy();
         }
     }
 
@@ -731,7 +693,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      *            The class of the Java Driver to remove.
      */
     private synchronized void destroyJavaDriver(Class<?> cls) {
-        print("Removing driver " + cls.getName());
+        LOG.info("Removing driver " + cls.getName());
 
         destroyIdentifiedDrivers(DRIVER_CLASS_ID_PREFIX + cls.getName());
     }
@@ -767,15 +729,11 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      */
     private List<INDIDevice> getDevicesWithIdentifier(String deviceIdentifier) {
         List<INDIDevice> found = new ArrayList<INDIDevice>();
-
-        for (int i = 0; i < devices.size(); i++) {
-            INDIDevice d = devices.get(i);
-
-            if (d.isDevice(deviceIdentifier)) {
-                found.add(d);
+        for (INDIDevice device : devices) {
+            if (device.isDevice(deviceIdentifier)) {
+                found.add(device);
             }
         }
-
         return found;
     }
 
@@ -849,37 +807,15 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      *            The names of the Devices that have been removed.
      */
     private void notifyClientsDeviceRemoved(String[] deviceNames) {
-        for (int h = 0; h < deviceNames.length; h++) {
-            String deviceName = deviceNames[h];
-
+        for (String deviceName : deviceNames) {
             String message = "<delProperty device=\"" + deviceName + "\" />";
-
-            List<INDIDeviceListener> list = this.getClientsListeningToDevice(deviceName);
-
-            for (int i = 0; i < list.size(); i++) {
-                INDIDeviceListener c = list.get(i);
-
+            for (INDIDeviceListener c : this.getClientsListeningToDevice(deviceName)) {
                 c.sendXMLMessage(message);
             }
-
-            List<INDIDeviceListener> list2 = this.getClientsListeningToSingleProperties(deviceName);
-
-            for (int i = 0; i < list2.size(); i++) {
-                INDIDeviceListener c = list2.get(i);
-
+            for (INDIDeviceListener c : this.getClientsListeningToSingleProperties(deviceName)) {
                 c.sendXMLMessage(message);
             }
         }
-    }
-
-    /**
-     * Prints a message to the standard output.
-     * 
-     * @param message
-     *            The message to print in the standard output.
-     */
-    private void print(String message) {
-        LOG.info(message);
     }
 
     /**

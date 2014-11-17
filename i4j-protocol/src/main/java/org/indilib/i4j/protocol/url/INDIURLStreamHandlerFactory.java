@@ -1,4 +1,4 @@
-package org.indilib.i4j.url;
+package org.indilib.i4j.protocol.url;
 
 /*
  * #%L
@@ -22,33 +22,31 @@ package org.indilib.i4j.url;
  * #L%
  */
 
-import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLStreamHandler;
-
-import org.indilib.i4j.Constants;
+import java.net.URLStreamHandlerFactory;
 
 /**
- * A handler for INDI connections. This is still a work in progress
+ * A class to handle INDI Streams.
  * 
  * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
  * @version 1.39, October 11, 2014
  */
-public class Handler extends URLStreamHandler {
+public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
-    @Override
-    protected final int getDefaultPort() {
-        return Constants.INDI_DEFAULT_PORT;
+    /**
+     * DOC MISSING.
+     */
+    public static void init() {
+        URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
     }
 
     @Override
-    protected final void parseURL(final URL u, final String spec, final int start, final int end) {
-        super.parseURL(u, spec, start, end);
-    }
-
-    @Override
-    protected final URLConnection openConnection(final URL url) throws IOException {
+    public final URLStreamHandler createURLStreamHandler(final String protocol) {
+        if ("indi".equals(protocol)) {
+            return new Handler();
+        }
         return null;
     }
+
 }

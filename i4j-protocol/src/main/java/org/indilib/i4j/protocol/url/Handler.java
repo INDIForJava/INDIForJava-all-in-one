@@ -1,4 +1,4 @@
-package org.indilib.i4j.url;
+package org.indilib.i4j.protocol.url;
 
 /*
  * #%L
@@ -13,40 +13,42 @@ package org.indilib.i4j.url;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
 
 /**
- * A class to handle INDI Streams.
+ * A handler for INDI connections. This is still a work in progress
  * 
  * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
  * @version 1.39, October 11, 2014
  */
-public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
+public class Handler extends URLStreamHandler {
 
-    /**
-     * DOC MISSING.
-     */
-    public static void init() {
-        URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
+    private static final int INDI_DEFAULT_PORT = 7624;
+
+    @Override
+    protected final int getDefaultPort() {
+        return INDI_DEFAULT_PORT;
     }
 
     @Override
-    public final URLStreamHandler createURLStreamHandler(final String protocol) {
-        if ("indi".equals(protocol)) {
-            return new Handler();
-        }
-        return null;
+    protected final void parseURL(final URL u, final String spec, final int start, final int end) {
+        super.parseURL(u, spec, start, end);
     }
 
+    @Override
+    protected final URLConnection openConnection(final URL url) throws IOException {
+        return new INDIURLConnection(url);
+    }
 }

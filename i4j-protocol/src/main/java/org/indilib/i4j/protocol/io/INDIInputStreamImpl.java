@@ -24,6 +24,7 @@ package org.indilib.i4j.protocol.io;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 
 import org.indilib.i4j.protocol.INDIProtocol;
@@ -34,7 +35,7 @@ import org.indilib.i4j.protocol.api.INDIInputStream;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class INDIInputStreamImpl implements INDIInputStream {
+public class INDIInputStreamImpl extends InputStream implements INDIInputStream {
 
     /**
      * The xstream object input stream that deserializes the INDIProtocol
@@ -68,5 +69,10 @@ public class INDIInputStreamImpl implements INDIInputStream {
         } catch (ClassNotFoundException e) {
             throw new IOException("could not deserialize xml", e);
         }
+    }
+
+    @Override
+    public int read() throws IOException {
+        throw new IOException("not supported method");
     }
 }

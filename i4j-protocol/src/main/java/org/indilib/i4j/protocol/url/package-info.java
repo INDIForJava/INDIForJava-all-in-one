@@ -26,5 +26,5 @@
  * @version 1.39, October 11, 2014
  */
 
-package org.indilib.i4j.url;
+package org.indilib.i4j.protocol.url;
 
