@@ -615,7 +615,7 @@ public class INDICommandLine {
      * @return true if the help mode is active in the commandline.
      */
     public boolean isHelp() {
-        return commandLine.hasOption(help.getLongOpt());
+        return commandLine.hasOption(help.getOpt());
     }
 
     /**
