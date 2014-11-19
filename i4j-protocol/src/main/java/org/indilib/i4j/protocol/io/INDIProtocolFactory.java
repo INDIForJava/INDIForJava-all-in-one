@@ -13,11 +13,11 @@ package org.indilib.i4j.protocol.io;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -43,7 +43,17 @@ import org.indilib.i4j.protocol.DefSwitchVector;
 import org.indilib.i4j.protocol.DefText;
 import org.indilib.i4j.protocol.DefTextVector;
 import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.DelProperty;
+import org.indilib.i4j.protocol.EnableBLOB;
+import org.indilib.i4j.protocol.GetProperties;
 import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.Message;
+import org.indilib.i4j.protocol.NewBlobVector;
+import org.indilib.i4j.protocol.NewLightVector;
+import org.indilib.i4j.protocol.NewNumberVector;
+import org.indilib.i4j.protocol.NewSwitchVector;
+import org.indilib.i4j.protocol.NewTextVector;
+import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneBlob;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.OneLight;
@@ -119,8 +129,17 @@ public final class INDIProtocolFactory {
             DefText.class,
             DefTextVector.class,
             DefVector.class,
+            DelProperty.class,
+            EnableBLOB.class,
+            GetProperties.class,
             INDIProtocol.class,
-            INDIProtocolFactory.class,
+            Message.class,
+            NewBlobVector.class,
+            NewLightVector.class,
+            NewNumberVector.class,
+            NewSwitchVector.class,
+            NewTextVector.class,
+            NewVector.class,
             OneBlob.class,
             OneElement.class,
             OneLight.class,
@@ -216,5 +235,16 @@ public final class INDIProtocolFactory {
             }
         };
         return new SequenceInputStream(streamEnum);
+    }
+
+    /**
+     * nice toString for the protocol objects.
+     * 
+     * @param protocol
+     *            the protocol object.
+     * @return the toString.
+     */
+    public static String toString(INDIProtocol<?> protocol) {
+        return protocol.getClass().getSimpleName() + " " + XSTREAM.toXML(protocol);
     }
 }

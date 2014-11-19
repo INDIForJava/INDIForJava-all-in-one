@@ -13,6 +13,9 @@ package org.indilib.i4j.protocol;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
+import org.indilib.i4j.protocol.io.INDIProtocolFactory;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
+
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
@@ -23,6 +26,10 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * @author Richard van Nieuwenhoven
  */
 public abstract class INDIProtocol<T> {
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
      * the name element attribute.
@@ -335,5 +342,10 @@ public abstract class INDIProtocol<T> {
     public T setName(String newName) {
         this.name = newName;
         return (T) this;
+    }
+
+    @Override
+    public String toString() {
+        return INDIProtocolFactory.toString(this);
     }
 }

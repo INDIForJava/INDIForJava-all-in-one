@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.ccd.simulator;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -27,6 +27,7 @@ import java.awt.image.Raster;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
@@ -34,6 +35,7 @@ import javax.imageio.ImageIO;
 
 import nom.tam.fits.BasicHDU;
 
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.ccd.Capability;
 import org.indilib.i4j.driver.ccd.CcdFrame;
 import org.indilib.i4j.driver.ccd.INDICCDDriver;
@@ -277,12 +279,16 @@ public class CCDSimulator extends INDICCDDriver {
                 updateProperty(CCDSimulator.this.temperature);
             }
         }
+
+        public void stop() {
+            stop = true;
+        }
     }
 
     /**
      * the simulated camera.
      */
-    private final Camera camera = new Camera();
+    private Camera camera;
 
     /**
      * standard constructor for the simulated ccd driver.
@@ -294,8 +300,20 @@ public class CCDSimulator extends INDICCDDriver {
      */
     public CCDSimulator(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
-        new Thread(camera, "camera").start();
         primaryCCD.setCCDParams(camera.width, camera.heigth, BITS_PER_PIXEL_COLOR, SIMULATED_PIXEL_SIZE, SIMULATED_PIXEL_SIZE);
+    }
+
+    @Override
+    public void driverConnect(Date timestamp) throws INDIException {
+        super.driverConnect(timestamp);
+        camera = new Camera();
+        new Thread(camera, "camera").start();
+    }
+
+    @Override
+    public void driverDisconnect(Date timestamp) throws INDIException {
+        super.driverDisconnect(timestamp);
+        camera.stop();
     }
 
     @Override

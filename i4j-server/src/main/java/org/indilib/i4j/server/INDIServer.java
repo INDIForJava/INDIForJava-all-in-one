@@ -153,6 +153,17 @@ public final class INDIServer implements Runnable, INDIServerInterface {
     }
 
     @Override
+    public List<String> getAvailableDevices() {
+        List<String> result = new ArrayList<>();
+        for (ClassInfo subclass : Util.classPathIndex().getAllKnownSubclasses(DotName.createSimple(INDIDriver.class.getName()))) {
+            if (!Modifier.isAbstract(subclass.flags())) {
+                result.add(subclass.toString());
+            }
+        }
+        return result;
+    }
+
+    @Override
     public List<INDIDeviceInterface> getDevices() {
         return new ArrayList<INDIDeviceInterface>(devices);
     }
@@ -827,17 +838,6 @@ public final class INDIServer implements Runnable, INDIServerInterface {
             Thread serverThread = new Thread(this);
             serverThread.start();
         }
-    }
-
-    @Override
-    public List<String> getAvailableDevices() {
-        List<String> result = new ArrayList<>();
-        for (ClassInfo subclass : Util.classPathIndex().getAllKnownSubclasses(DotName.createSimple(INDIDriver.class.getName()))) {
-            if (!Modifier.isAbstract(subclass.flags())) {
-                result.add(subclass.toString());
-            }
-        }
-        return result;
     }
 
 }

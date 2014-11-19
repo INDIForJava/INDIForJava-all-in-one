@@ -1,105 +1,155 @@
-<document xmlns="http://maven.apache.org/changes/1.0.0" 
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+<document xmlns="http://maven.apache.org/changes/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
 	<body>
-		<release version="1.50" date="" description="Major refactorings">
-			<action type="update" system="SourceForge2" date="2014-10-14T22:01:26">
+		<release version="1.50" date="" description="Next Release">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-14T05:44:52">
+				server api
+				<fixes issue="51" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-14T05:44:29">
+				class discovery (jandex and classloading)
+				<fixes issue="50" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-10T12:23:22">
+				telescope driver for the nexstar gt mount
+				<fixes issue="49" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-16T07:46:12">
+				end user installable system
+				<fixes issue="48" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-09T15:23:06">
+				ccd driver for raspberry pi camera
+				<fixes issue="47" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-09T15:19:34">
+				create a ccd simulator driver
+				<fixes issue="45" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-09T15:19:30">
+				create telescope simulator with the math plugin
+				<fixes issue="44" />
+			</action>
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-25T06:08:19">
+				small bug in device name check
+				<fixes issue="43" />
+			</action>
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-24T08:43:43">
+				fix org.indilib.i4j.INDISexagesimalFormatter
+				<fixes issue="42" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-22T18:26:34">
+				Use the builder design pattern for property creation
+				<fixes issue="41" />
+			</action>
+			<action type="update" system="SourceForge" date="2014-10-15T10:36:11">
+				Add new Documentation
+				<fixes issue="40" />
+			</action>
+			<action type="update" system="SourceForge" date="2014-10-14T22:01:26">
 				Check Client examples
 				<fixes issue="39" />
 			</action>
-			<action dev="zerjillo" type="update" system="SourceForge2" date="2014-10-14T15:43:40">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-14T15:43:40">
 				INDINumberElement in Client library should check the values in the [min, max] range
 				<fixes issue="38" />
 			</action>
-			<action dev="zerjillo" type="update" system="SourceForge2" date="2014-10-14T09:03:18">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-14T09:03:18">
 				Integrate Astronomy Control Center into de library
 				<fixes issue="36" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:15">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-16T07:39:31">
+				Use apache-cli for comandline options
+				<fixes issue="33" />
+			</action>
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:15">
 				updateProperty does not throw an exception anymore
 				<fixes issue="31" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:24">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:24">
 				slf4j introduced for better logging
 				<fixes issue="30" />
 			</action>
-			<action dev="zerjillo" type="update" system="SourceForge2" date="2014-10-14T09:03:22">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-14T09:03:22">
 				Maven folder renaming
 				<fixes issue="29" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:14">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:14">
 				Driver extensions
 				<fixes issue="28" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:27">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:27">
 				Event handler directly attached to the properties
 				<fixes issue="27" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:23">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:23">
 				Annotations for easy property definitions
 				<fixes issue="26" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:32">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:32">
 				Move every abstract driver to it's own Maven Module
 				<fixes issue="25" />
 			</action>
-			<action dev="zerjillo" type="update" system="SourceForge2" date="2014-10-14T09:03:33">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-14T09:03:33">
 				Package renaming: laazotea.indi.xxx -> org.indilib.i4j.xxx
 				<fixes issue="24" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:16">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:16">
 				Generics in INDIProperty
 				<fixes issue="23" />
 			</action>
-			<action dev="zerjillo" type="update" system="SourceForge2" date="2014-10-14T09:03:26">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-14T09:03:26">
 				Base directory for all I4J stuff
 				<fixes issue="22" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:25">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:25">
 				Use Logger framework
 				<fixes issue="18" />
 			</action>
-			<action type="update" system="SourceForge2" date="2014-10-14T09:03:34">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-11-02T07:56:54">
+				Finishing refactorings for CCD and Telescope
+				<fixes issue="17" />
+			</action>
+			<action type="update" system="SourceForge" date="2014-10-23T04:08:28">
 				Replace org.indilib.i4j.Base64 with apache commons-codec
 				<fixes issue="12" />
 			</action>
-			<action dev="zerjillo" type="update" system="SourceForge2" date="2014-10-14T09:03:12">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-14T09:03:12">
 				Update existing drivers to new changes
 				<fixes issue="11" />
 			</action>
-			<action type="update" system="SourceForge2" date="2014-10-14T09:03:35">
+			<action type="update" system="SourceForge" date="2014-10-14T09:03:35">
 				Check old tutorials and examples
 				<fixes issue="10" />
 			</action>
-			<action dev="zerjillo" type="update" system="SourceForge2" date="2014-10-14T09:03:29">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-10-14T09:03:29">
 				Extract Client examples to their own Maven Module
 				<fixes issue="9" />
 			</action>
-			<action type="update" system="SourceForge2" date="2014-10-14T09:03:28">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-11-11T05:45:21">
 				Check documentation of every method/class
 				<fixes issue="8" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:19">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:19">
 				Use Maven Code Formatting Plugin
 				<fixes issue="7" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:20">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:20">
 				Use Maven License Plugin
 				<fixes issue="6" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:21">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-14T09:03:21">
 				Remove CCD stuff that should be handled at client level
 				<fixes issue="5" />
 			</action>
-			<action dev="ritchie_gmx_at" type="update" system="SourceForge2" date="2014-10-14T09:03:13">
+			<action dev="ritchie_gmx_at" type="update" system="SourceForge" date="2014-10-23T04:13:20">
 				Getting maven-release to work with central
 				<fixes issue="3" />
 			</action>
-			<action type="update" system="SourceForge2" date="2014-10-14T09:03:30">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-11-11T05:54:44">
 				Avoid some API exposures
 				<fixes issue="2" />
 			</action>
-			<action type="update" system="SourceForge2" date="2014-10-14T09:03:31">
+			<action dev="zerjillo" type="update" system="SourceForge" date="2014-11-10T13:54:51">
 				Element iterators in properties
 				<fixes issue="1" />
 			</action>

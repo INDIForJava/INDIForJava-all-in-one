@@ -27,6 +27,7 @@ import java.io.OutputStream;
 
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 
 import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
 
@@ -36,6 +37,10 @@ import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
  * @author Richard van Nieuwenhoven
  */
 public class INDIOutputStreamImpl extends OutputStream implements INDIOutputStream {
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
      * The xstream serializer.
@@ -60,13 +65,13 @@ public class INDIOutputStreamImpl extends OutputStream implements INDIOutputStre
     }
 
     @Override
-    public void writeObject(INDIProtocol<?> element) throws IOException {
-        out.writeObject(element);
-        out.flush();
+    public void write(int b) throws IOException {
+        throw new IOException("not supported method");
     }
 
     @Override
-    public void write(int b) throws IOException {
-        throw new IOException("not supported method");
+    public void writeObject(INDIProtocol<?> element) throws IOException {
+        out.writeObject(element);
+        out.flush();
     }
 }

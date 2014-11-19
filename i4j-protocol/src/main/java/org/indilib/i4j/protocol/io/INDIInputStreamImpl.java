@@ -13,11 +13,11 @@ package org.indilib.i4j.protocol.io;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -29,6 +29,7 @@ import java.io.ObjectInputStream;
 
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 
 /**
  * Input stream of INDIProtocol objects. deserialized from a xml stream.
@@ -36,6 +37,10 @@ import org.indilib.i4j.protocol.api.INDIInputStream;
  * @author Richard van Nieuwenhoven
  */
 public class INDIInputStreamImpl extends InputStream implements INDIInputStream {
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
      * The xstream object input stream that deserializes the INDIProtocol
@@ -61,6 +66,11 @@ public class INDIInputStreamImpl extends InputStream implements INDIInputStream 
     }
 
     @Override
+    public int read() throws IOException {
+        throw new IOException("not supported method");
+    }
+
+    @Override
     public INDIProtocol<?> readObject() throws IOException {
         try {
             return (INDIProtocol<?>) in.readObject();
@@ -69,10 +79,5 @@ public class INDIInputStreamImpl extends InputStream implements INDIInputStream 
         } catch (ClassNotFoundException e) {
             throw new IOException("could not deserialize xml", e);
         }
-    }
-
-    @Override
-    public int read() throws IOException {
-        throw new IOException("not supported method");
     }
 }

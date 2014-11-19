@@ -33,8 +33,11 @@ import java.net.URLStreamHandler;
  * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
  * @version 1.39, October 11, 2014
  */
-public class Handler extends URLStreamHandler {
+public class INDIURLStreamHandler extends URLStreamHandler {
 
+    /**
+     * Th indi default port number.
+     */
     private static final int INDI_DEFAULT_PORT = 7624;
 
     @Override
@@ -43,12 +46,12 @@ public class Handler extends URLStreamHandler {
     }
 
     @Override
-    protected final void parseURL(final URL u, final String spec, final int start, final int end) {
-        super.parseURL(u, spec, start, end);
+    protected final URLConnection openConnection(final URL url) throws IOException {
+        return new INDIURLConnection(url);
     }
 
     @Override
-    protected final URLConnection openConnection(final URL url) throws IOException {
-        return new INDIURLConnection(url);
+    protected final void parseURL(final URL u, final String spec, final int start, final int end) {
+        super.parseURL(u, spec, start, end);
     }
 }

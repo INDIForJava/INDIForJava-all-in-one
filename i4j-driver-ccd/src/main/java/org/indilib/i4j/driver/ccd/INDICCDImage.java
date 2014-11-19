@@ -254,7 +254,7 @@ public abstract class INDICCDImage {
      * If the image has less or equal 8 bit per pixel the data fits in a byte
      * array.
      */
-    private static final class INDI8BitCCDImage extends INDICCDImage {
+    private static class INDI8BitCCDImage extends INDICCDImage {
 
         /**
          * the max bit per pixel supported by this class.
@@ -280,7 +280,7 @@ public abstract class INDICCDImage {
         /**
          * the image data.
          */
-        private byte[] imageData;
+        protected byte[] imageData;
 
         @Override
         Object getImageData() {
@@ -339,7 +339,7 @@ public abstract class INDICCDImage {
      * If the image has more than 8 but less or equal 16 bit per pixel the data
      * fits in a short array.
      */
-    private static final class INDI16BitCCDImage extends INDICCDImage {
+    private static class INDI16BitCCDImage extends INDICCDImage {
 
         /**
          * the max bit per pixel supported by this class.
@@ -365,7 +365,7 @@ public abstract class INDICCDImage {
         /**
          * the image data.
          */
-        private int[] imageData;
+        protected int[] imageData;
 
         @Override
         Object getImageData() {
@@ -423,7 +423,7 @@ public abstract class INDICCDImage {
      * If the image has more than 16 but less or equal 32 bit per pixel the data
      * fits in a int array.
      */
-    private static final class INDI32BitCCDImage extends INDICCDImage {
+    private static class INDI32BitCCDImage extends INDICCDImage {
 
         /**
          * the max bit per pixel supported by this class.
@@ -449,7 +449,7 @@ public abstract class INDICCDImage {
         /**
          * the image data.
          */
-        private int[] imageData;
+        protected int[] imageData;
 
         @Override
         Object getImageData() {

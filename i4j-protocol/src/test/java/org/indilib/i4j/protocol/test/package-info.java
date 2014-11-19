@@ -1,10 +1,15 @@
-package org.indilib.i4j;
+/**
+ * Test for the indi protocol classes.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+package org.indilib.i4j.protocol.test;
 
 /*
  * #%L
- * INDI for Java Base Library
+ * INDI Protocol implementation
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2012 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,15 +27,3 @@ package org.indilib.i4j;
  * #L%
  */
 
-import java.net.URL;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-public class TestURLStreamHandler {
-
-    @Test
-    public void testSexa() throws Exception {
-        System.out.println(new INDISexagesimalFormatter("%2.6m").format(0.66));
-    }
-}

@@ -13,17 +13,21 @@ package org.indilib.i4j.protocol.io;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
@@ -35,6 +39,10 @@ import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
  * @author Richard van Nieuwenhoven
  */
 final class Printwriter extends PrettyPrintWriter {
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
      * tagIsEmpty field of the superclass.
@@ -51,11 +59,18 @@ final class Printwriter extends PrettyPrintWriter {
         super(writer, XML_QUIRKS, new char[0], new XmlFriendlyNameCoder());
         try {
             tagIsEmpty = PrettyPrintWriter.class.getDeclaredField("tagIsEmpty");
-            tagIsEmpty.setAccessible(true);
+            final Field field = tagIsEmpty;
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    field.setAccessible(true);
+                    return null;
+                }
+            });
         } catch (Exception e) {
             throw new IllegalStateException("this should not happen, did the super class change?", e);
         }
-
     }
 
     @Override

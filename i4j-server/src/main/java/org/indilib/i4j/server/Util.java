@@ -31,7 +31,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.indilib.i4j.driver.INDIDriver;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexView;
@@ -54,14 +53,14 @@ public final class Util {
     private static IndexView classPathIndex;
 
     /**
-     * the number of entries in the system classpath (to check if they changed).
-     */
-    private static int nrOfSystemClasspathEntries;
-
-    /**
      * Logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+
+    /**
+     * the number of entries in the system classpath (to check if they changed).
+     */
+    private static int nrOfSystemClasspathEntries;
 
     /**
      * the scheme for urls to files.

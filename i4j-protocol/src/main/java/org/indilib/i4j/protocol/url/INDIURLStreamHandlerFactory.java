@@ -13,11 +13,11 @@ package org.indilib.i4j.protocol.url;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -35,16 +35,24 @@ import java.net.URLStreamHandlerFactory;
 public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
     /**
-     * DOC MISSING.
+     * is the handler already initialized.
+     */
+    private static boolean initialized = false;
+
+    /**
+     * initialize the indi protokol.
      */
     public static void init() {
-        URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
+        if (!initialized) {
+            initialized = true;
+            URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
+        }
     }
 
     @Override
     public final URLStreamHandler createURLStreamHandler(final String protocol) {
         if ("indi".equals(protocol)) {
-            return new Handler();
+            return new INDIURLStreamHandler();
         }
         return null;
     }

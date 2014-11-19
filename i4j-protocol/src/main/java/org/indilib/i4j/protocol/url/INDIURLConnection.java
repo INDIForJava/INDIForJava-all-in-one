@@ -13,11 +13,11 @@ package org.indilib.i4j.protocol.url;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -25,72 +25,97 @@ package org.indilib.i4j.protocol.url;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
-import org.indilib.i4j.protocol.io.INDIProtocolFactory;
+import org.indilib.i4j.protocol.io.INDISocketConnection;
 
-public class INDIURLConnection extends URLConnection {
+/**
+ * This class represents a indi connection to a server over an url referense.
+ * The url is decoded to get the connection data. Future extentions could also
+ * handle the selection of device and property as part of the url path.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+public class INDIURLConnection extends URLConnection implements INDIConnection {
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
-     * timeout to use with tcp connections.
+     * the undelaying socket indi connection.
      */
-    private static final int CONNECT_TIMEOUT = 20000;
+    private INDISocketConnection socketConnection;
 
-    private Socket socket;
-
-    private INDIInputStream inputStream;
-
-    private INDIOutputStream ouputStream;
-
+    /**
+     * constructor using the url.
+     * 
+     * @param url
+     *            the connection specification.
+     */
     protected INDIURLConnection(URL url) {
         super(url);
     }
 
     @Override
     public void connect() throws IOException {
-        int port = getURL().getPort();
-        if (port <= 0) {
-            port = getURL().getDefaultPort();
+        if (socketConnection == null) {
+            int port = getURL().getPort();
+            if (port <= 0) {
+                port = getURL().getDefaultPort();
+            }
+            String host = getURL().getHost();
+            if (host == null || host.isEmpty()) {
+                host = "localhost";
+            }
+            try {
+                socketConnection = new INDISocketConnection(host, port);
+            } catch (IOException e) {
+                throw new IOException("Problem connecting to " + host + ":" + port);
+            }
+            connected = true;
         }
-        String host = getURL().getHost();
-        if (host == null || host.isEmpty()) {
-            host = "localhost";
-        }
-        try {
-            socket = new Socket();
+    }
 
-            socket.connect(new InetSocketAddress(host, port), CONNECT_TIMEOUT);
-        } catch (IOException e) {
-            throw new IOException("Problem connecting to " + host + ":" + port);
-        }
+    @Override
+    public INDIInputStream getINDIInputStream() throws IOException {
+        return getSocketConnection().getINDIInputStream();
+    }
 
+    @Override
+    public INDIOutputStream getINDIOutputStream() throws IOException {
+        return getSocketConnection().getINDIOutputStream();
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        if (inputStream == null) {
-            if (socket == null) {
-                connect();
-            }
-            inputStream = INDIProtocolFactory.createINDIInputStream(socket.getInputStream());
-        }
-        return (InputStream) inputStream;
+        return (InputStream) getINDIInputStream();
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        if (ouputStream == null) {
-            if (socket == null) {
-                connect();
-            }
-            ouputStream = INDIProtocolFactory.createINDIOutputStream(socket.getOutputStream());
+        return (OutputStream) getINDIOutputStream();
+    }
+
+    /**
+     * @return the initialized socket connection.
+     * @throws IOException
+     *             is the connection could not be initialized.
+     */
+    private INDIConnection getSocketConnection() throws IOException {
+        connect();
+        return socketConnection;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (socketConnection != null) {
+            socketConnection.close();
         }
-        return (OutputStream) ouputStream;
     }
 
 }
