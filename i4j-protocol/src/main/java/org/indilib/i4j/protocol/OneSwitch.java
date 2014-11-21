@@ -23,7 +23,6 @@ package org.indilib.i4j.protocol;
  */
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
@@ -32,72 +31,21 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
  * 
  * @author Richard van Nieuwenhoven
  */
-@XStreamAlias("oneNumber")
+@XStreamAlias("oneSwitch")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {
     "textContent"
 }, types = {
     OneElement.class
 })
-public class OneNumber extends OneElement<OneNumber> {
-
-    /**
-     * the max attribute of the element.
-     */
-    @XStreamAsAttribute
-    private String max;
-
-    /**
-     * the min attribute of the element.
-     */
-    @XStreamAsAttribute
-    private String min;
-
-    /**
-     * @return the max attribute of the element.
-     */
-    public String getMax() {
-        return max;
-    }
-
-    /**
-     * @return the min attribute of the element.
-     */
-    public String getMin() {
-        return min;
-    }
+public class OneSwitch extends OneElement<OneSwitch> {
 
     @Override
-    public boolean isNumber() {
+    public boolean isLight() {
         return true;
     }
 
     @Override
-    public boolean isOneNumber() {
+    public boolean isOneLight() {
         return true;
     }
-
-    /**
-     * set the max attribute of the element.
-     * 
-     * @param newMax
-     *            the new max attribute value of the element
-     * @return this for builder pattern.
-     */
-    public OneNumber setMax(String newMax) {
-        this.max = newMax;
-        return this;
-    }
-
-    /**
-     * set the min attribute of the element.
-     * 
-     * @param newMin
-     *            the new min attribute value of the element
-     * @return this for builder pattern.
-     */
-    public OneNumber setMin(String newMin) {
-        this.min = newMin;
-        return this;
-    }
-
 }

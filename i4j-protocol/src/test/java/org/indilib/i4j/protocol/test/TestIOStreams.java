@@ -1,25 +1,16 @@
 package org.indilib.i4j.protocol.test;
 
 /*
- * #%L
- * INDI Protocol implementation
- * %%
- * Copyright (C) 2012 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI Protocol implementation %% Copyright (C) 2012 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import java.io.ByteArrayInputStream;
@@ -29,6 +20,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 
+import org.indilib.i4j.protocol.GetProperties;
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.OneBlob;
 import org.indilib.i4j.protocol.OneText;
@@ -40,6 +32,7 @@ import org.indilib.i4j.protocol.io.INDIProtocolFactory;
 import org.indilib.i4j.protocol.io.INDISocketConnection;
 import org.indilib.i4j.protocol.url.INDIURLConnection;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -230,5 +223,29 @@ public class TestIOStreams {
             Thread.sleep(HUNDERD_MILLISECONDS);
         }
         Assert.assertEquals("123DAEBFC", manyTimes[0].getTextContent());
+    }
+
+    /**
+     * This test is normally ignored because it only logs all message comming
+     * from the server.
+     * 
+     * @throws Exception
+     *             fails the test
+     */
+    @Test
+    @Ignore
+    public void testINDIServerConnection() throws Exception {
+        GetProperties element = new GetProperties();
+        element.setVersion("1.7");
+
+        // "indi:///" = localhost and default port
+        INDIURLConnection connection = (INDIURLConnection) new URL("indi:///").openConnection();
+        connection.getINDIOutputStream().writeObject(element);
+
+        INDIProtocol<?> result = connection.getINDIInputStream().readObject();
+        while (result != null) {
+            System.out.println(result);
+            result = connection.getINDIInputStream().readObject();
+        }
     }
 }

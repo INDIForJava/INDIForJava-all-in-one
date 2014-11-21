@@ -1,28 +1,23 @@
 package org.indilib.i4j.protocol;
 
 /*
- * #%L
- * INDI Protocol implementation
- * %%
- * Copyright (C) 2012 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI Protocol implementation %% Copyright (C) 2012 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * This class represents an INDI XML protocol element.
@@ -80,6 +75,12 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
      */
     @XStreamAsAttribute
     private String timestamp;
+
+    /**
+     * the child elements of the vector.
+     */
+    @XStreamImplicit
+    private List<DefElement<?>> elements;
 
     /**
      * @return the device element attribute.
@@ -250,5 +251,15 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
     public T setTimestamp(String newTimestamp) {
         this.timestamp = newTimestamp;
         return (T) this;
+    }
+
+    /**
+     * @return the list of element children of this element.
+     */
+    public List<DefElement<?>> getElements() {
+        if (elements == null) {
+            elements = new ArrayList<>();
+        }
+        return elements;
     }
 }

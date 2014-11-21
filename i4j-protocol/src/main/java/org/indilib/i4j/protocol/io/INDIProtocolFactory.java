@@ -39,6 +39,7 @@ import org.indilib.i4j.protocol.DefLight;
 import org.indilib.i4j.protocol.DefLightVector;
 import org.indilib.i4j.protocol.DefNumber;
 import org.indilib.i4j.protocol.DefNumberVector;
+import org.indilib.i4j.protocol.DefSwitch;
 import org.indilib.i4j.protocol.DefSwitchVector;
 import org.indilib.i4j.protocol.DefText;
 import org.indilib.i4j.protocol.DefTextVector;
@@ -58,6 +59,7 @@ import org.indilib.i4j.protocol.OneBlob;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.OneLight;
 import org.indilib.i4j.protocol.OneNumber;
+import org.indilib.i4j.protocol.OneSwitch;
 import org.indilib.i4j.protocol.OneText;
 import org.indilib.i4j.protocol.SetBlobVector;
 import org.indilib.i4j.protocol.SetLightVector;
@@ -125,6 +127,7 @@ public final class INDIProtocolFactory {
             DefLightVector.class,
             DefNumber.class,
             DefNumberVector.class,
+            DefSwitch.class,
             DefSwitchVector.class,
             DefText.class,
             DefTextVector.class,
@@ -145,6 +148,7 @@ public final class INDIProtocolFactory {
             OneLight.class,
             OneNumber.class,
             OneText.class,
+            OneSwitch.class,
             SetBlobVector.class,
             SetLightVector.class,
             SetNumberVector.class,
