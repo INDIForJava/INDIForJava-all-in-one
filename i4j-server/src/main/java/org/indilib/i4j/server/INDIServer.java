@@ -840,4 +840,13 @@ public final class INDIServer implements Runnable, INDIServerInterface {
         }
     }
 
+    @Override
+    public String getHost() {
+        return socket.getInetAddress().getHostName();
+    }
+
+    @Override
+    public int getPort() {
+        return socket.getLocalPort();
+    }
 }

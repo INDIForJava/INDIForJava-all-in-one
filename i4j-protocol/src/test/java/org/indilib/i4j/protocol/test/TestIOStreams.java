@@ -247,5 +247,6 @@ public class TestIOStreams {
             System.out.println(result);
             result = connection.getINDIInputStream().readObject();
         }
+        connection.close();
     }
 }

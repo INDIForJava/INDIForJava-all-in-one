@@ -152,4 +152,14 @@ public interface INDIServerInterface {
      * @return a list of available java devices.
      */
     List<String> getAvailableDevices();
+
+    /**
+     * @return the host name where the server is listening.
+     */
+    String getHost();
+
+    /**
+     * @return the port where the server is listening.
+     */
+    int getPort();
 }

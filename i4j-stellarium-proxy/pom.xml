@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.indilib.i4j</groupId>
+		<artifactId>i4j</artifactId>
+		<version>1.39-SNAPSHOT</version>
+	</parent>
+	<artifactId>i4j-stellarium-proxy</artifactId>
+	<name>INDI for Java Proxy for stelarium</name>
+	<description>INDI for Java Proxy for stelarium</description>
+	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-driver</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-server-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	<properties>
+		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
+	</properties>
+</project>
