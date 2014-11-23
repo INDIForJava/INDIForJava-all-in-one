@@ -87,6 +87,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
 
     public NexStarGt(InputStream inputStream, OutputStream outputStream) {
         super(inputStream, outputStream);
+        serialPortExtension.setMinimumMillisecondsBetweenCommands(25);
         mathPluginManagement.setApproximateAlignment(MountAlignment.ZENITH);
         mathPluginManagement.forceActive();
         mathPluginManagement.initialise();
@@ -170,8 +171,13 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
 
     @Override
     protected void readScopeStatus() {
+        if (mount == null) {
+            // scope not yet initialized.
+            return;
+        }
         gotoUpdate();
 
+        mount.update();
         LnHrzPosn actualAltAz = new LnHrzPosn();
         actualAltAz.az = mount.getHorizontalPosition();
         actualAltAz.alt = mount.getVerticalPosition();

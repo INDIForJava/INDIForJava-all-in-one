@@ -84,7 +84,8 @@ public class NexStarGtMount extends Mount<NexStarGtAxisWithEncoder> {
 
     private static final int MOVE_RIGHT_AZIMUTH = 0x06;
 
-    public static final int MAX_ENCODER_VALUE = 0xFFFFFF;
+    // whats' the best scale, experimenting now
+    public static final int MAX_ENCODER_VALUE = 0x100000;
 
     public boolean isBusy() {
         synchronized (this) {
@@ -94,6 +95,18 @@ public class NexStarGtMount extends Mount<NexStarGtAxisWithEncoder> {
     }
 
     protected int read3ByteInt() {
+        try {
+            int count = 0;
+            while (serialExt.getOpenSerialPort().getInputBufferBytesCount() < 3) {
+                count++;
+                Thread.sleep(50L);
+                if (count > 10) {
+                    return -1;
+                }
+            }
+        } catch (Exception e) {
+
+        }
         byte[] bytes = serialExt.readByte(3);
         return (bytes[0] & 0xFF) << 16 | (bytes[1] & 0xFF) << 8 | bytes[2] & 0xFF;
     }
@@ -140,5 +153,8 @@ public class NexStarGtMount extends Mount<NexStarGtAxisWithEncoder> {
     public void update() {
         horizontalAxis.update();
         verticalAxis.update();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("nexstar positions hor:" + horizontalAxis + " ver: " + verticalAxis);
+        }
     }
 }

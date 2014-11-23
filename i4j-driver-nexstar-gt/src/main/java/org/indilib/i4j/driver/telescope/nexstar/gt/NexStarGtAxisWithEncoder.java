@@ -76,16 +76,23 @@ public class NexStarGtAxisWithEncoder extends AxisWithEncoder {
     protected void update() {
         synchronized (mount) {
             mount.sendByte(readEncoderCommand);
-            setPosition(mount.read3ByteInt());
+            int read3ByteInt = mount.read3ByteInt();
+            if (read3ByteInt > 0) {
+                setPosition(read3ByteInt);
+            }
         }
     }
 
     /**
-     * Calculated this max 12500 ticks per second with 360 degrees = 0xFFFFFF. 1
-     * degree = 46603 ticks. result 12500/46603 = 0,268223076 degrees per second
+     * Max 12500 ticks per second
      */
     @Override
     protected double getMaximumSpeed(double distanceInDegrees) {
-        return 0.268d;
+        return 12500;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + minimum + "/" + getPosition() + "/" + maximum + ")";
     }
 }

@@ -107,6 +107,16 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     private int parity = SerialPort.PARITY_NONE;
 
     /**
+     * Minimum milliseconds between commands.
+     */
+    private int minimumMillisecondsBetweenCommands = 0;
+
+    /**
+     * last time a command was send.
+     */
+    private long lastSendCommand;
+
+    /**
      * The shutdown hook to clear the connection on jvm shutdown.
      */
     private Thread shutdownHook;
@@ -146,6 +156,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             }
         });
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);
+        addProperty(port);
     }
 
     /**
@@ -158,6 +169,27 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     private void handleSerialException(SerialPortException e) {
         updateProperty(port, "Serial port error " + e.getMessage());
         LOG.error("Serial port error", e);
+    }
+
+    /**
+     * make sure the miminum time between commands is honnered.
+     */
+    private void waitBeforeNextCommand() {
+        if (minimumMillisecondsBetweenCommands > 0) {
+            long now = System.currentTimeMillis();
+            long timeToWait = ((long) minimumMillisecondsBetweenCommands) - (now - lastSendCommand);
+            if (timeToWait > 0) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("waiting time between commands activated for " + timeToWait + " milliseconds.");
+                }
+                try {
+                    Thread.sleep(timeToWait);
+                } catch (InterruptedException e) {
+                    LOG.warn("waiting time between commands interrupted");
+                }
+            }
+            lastSendCommand = System.currentTimeMillis();
+        }
     }
 
     /**
@@ -184,7 +216,6 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
         if (!isActive()) {
             return;
         }
-        addProperty(port);
     }
 
     @Override
@@ -193,7 +224,6 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             return;
         }
         close();
-        removeProperty(port);
     }
 
     /**
@@ -232,6 +262,23 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             handleSerialException(e);
             return false;
         }
+    }
+
+    /**
+     * @return the Minimum milliseconds between commands.
+     */
+    public int getMinimumMillisecondsBetweenCommands() {
+        return minimumMillisecondsBetweenCommands;
+    }
+
+    /**
+     * set the Minimum milliseconds between commands.
+     * 
+     * @param minimumMillisecondsBetweenCommands
+     *            the new value
+     */
+    public void setMinimumMillisecondsBetweenCommands(int minimumMillisecondsBetweenCommands) {
+        this.minimumMillisecondsBetweenCommands = minimumMillisecondsBetweenCommands;
     }
 
     /**
@@ -292,13 +339,19 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      *            if true all bytes currently in the read queue will be scipped.
      */
     public void sendByte(byte value, boolean skipQueue) {
-        try {
-            if (skipQueue) {
-                skipBytes();
+        if (this.serialPort != null) {
+            try {
+
+                if (skipQueue) {
+                    skipBytes();
+                }
+                waitBeforeNextCommand();
+                this.serialPort.writeByte(value);
+            } catch (Exception e) {
+                throw new IllegalStateException("serial port communication with telescope interupted", e);
             }
-            this.serialPort.writeByte(value);
-        } catch (Exception e) {
-            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        } else {
+            LOG.warn("serial send ignored, port closed");
         }
     }
 
@@ -313,11 +366,16 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      *            if true all bytes currently in the read queue will be scipped.
      */
     public void sendBytes(byte[] bytes, boolean skipQueue) {
-        try {
-            skipBytes();
-            this.serialPort.writeBytes(bytes);
-        } catch (Exception e) {
-            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        if (this.serialPort != null) {
+            try {
+                skipBytes();
+                waitBeforeNextCommand();
+                this.serialPort.writeBytes(bytes);
+            } catch (Exception e) {
+                throw new IllegalStateException("serial port communication with telescope interupted", e);
+            }
+        } else {
+            LOG.warn("serial send ignored, port closed");
         }
     }
 
@@ -339,24 +397,29 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * skip all bytes currently in the queue.
      */
     public void skipBytes() {
-        try {
-            if (this.serialPort.getInputBufferBytesCount() > 0) {
-                // ok there is something wrong here lets wait for more to come.
-                Thread.sleep(MILLISECONDS_TO_WAIT_BEFORE_SKIPPING_BYTES);
-                // now consume them all
-                byte[] buffer = this.serialPort.readBytes();
-                StringBuffer string = new StringBuffer();
-                for (byte b : buffer) {
-                    String hexString = Integer.toHexString(b & UNSIGNED_BYTE_HELPER);
-                    while (hexString.length() < 2) {
-                        hexString = "0" + hexString;
+        if (this.serialPort != null) {
+            try {
+                if (this.serialPort.getInputBufferBytesCount() > 0) {
+                    // ok there is something wrong here lets wait for more to
+                    // come.
+                    Thread.sleep(MILLISECONDS_TO_WAIT_BEFORE_SKIPPING_BYTES);
+                    // now consume them all
+                    byte[] buffer = this.serialPort.readBytes();
+                    StringBuffer string = new StringBuffer();
+                    for (byte b : buffer) {
+                        String hexString = Integer.toHexString(b & UNSIGNED_BYTE_HELPER);
+                        while (hexString.length() < 2) {
+                            hexString = "0" + hexString;
+                        }
+                        string.append(hexString);
                     }
-                    string.append(hexString);
+                    LOG.warn("skipped 0x" + string);
                 }
-                LOG.warn("skipped 0x" + string);
+            } catch (Exception e) {
+                throw new IllegalStateException("serial port communication with telescope interupted", e);
             }
-        } catch (Exception e) {
-            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        } else {
+            LOG.warn("serial skip ignored, port closed");
         }
     }
 
@@ -383,10 +446,15 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return the read byte array.
      */
     public byte[] readByte(int nrOfBytes) {
-        try {
-            return this.serialPort.readBytes(nrOfBytes);
-        } catch (Exception e) {
-            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        if (this.serialPort != null) {
+            try {
+                return this.serialPort.readBytes(nrOfBytes);
+            } catch (Exception e) {
+                throw new IllegalStateException("serial port communication with telescope interupted", e);
+            }
+        } else {
+            LOG.warn("serial read ignored, port closed");
+            return new byte[0];
         }
     }
 }

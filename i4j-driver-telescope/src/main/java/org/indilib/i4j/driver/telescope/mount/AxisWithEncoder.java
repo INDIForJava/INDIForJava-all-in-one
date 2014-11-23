@@ -1,5 +1,8 @@
 package org.indilib.i4j.driver.telescope.mount;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * #%L
  * INDI for Java Abstract Telescope Driver
@@ -26,6 +29,11 @@ package org.indilib.i4j.driver.telescope.mount;
  * AxisWithEncoder class for one axis.
  */
 public class AxisWithEncoder {
+
+    /**
+     * The logger for any messages.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AxisWithEncoder.class);
 
     /**
      * number of milliseconds per second.
@@ -204,6 +212,9 @@ public class AxisWithEncoder {
      *            the new speed
      */
     protected void setSpeedInTicksPerSecond(double speedInTicksPerSecond) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("setting axis speed to " + speedInTicksPerSecond);
+        }
         this.speedInTicksPerSecond = speedInTicksPerSecond;
     }
 

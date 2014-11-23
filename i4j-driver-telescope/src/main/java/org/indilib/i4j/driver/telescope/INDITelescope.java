@@ -905,9 +905,12 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         removeProperty(this.config);
         parkExtension.disconnect();
         removeProperty(this.abort);
-        serialPortExtension.disconnect();
-        newAbortValue();
-
+        try {
+            serialPortExtension.disconnect();
+            newAbortValue();
+        } catch (Exception e) {
+            LOG.error("problem during disconnect", e);
+        }
         removeProperty(this.movementNSS);
         removeProperty(this.movementWES);
         removeProperty(this.scopeParameters);
