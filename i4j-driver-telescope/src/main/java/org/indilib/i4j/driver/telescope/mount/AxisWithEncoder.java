@@ -16,11 +16,11 @@ import org.slf4j.LoggerFactory;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -169,7 +169,16 @@ public class AxisWithEncoder {
         } else {
             speed = Math.max(speed, -maximumSpeed);
         }
-
+        if (Math.round(getSpeedInTicksPerSecond() * 10d) != 0L && Math.round(speed * 10d) != 0L) {
+            // before changing direction take one interfal update to a stop.
+            // maybe the direction change will not be nessesary in the next
+            // iteration. (a direction change makes a very bad accuracy due to
+            // the backlash.
+            if ((speed < 0) != (getSpeedInTicksPerSecond() < 0)) {
+                // direction change, lets try 0 first.
+                speed = 0;
+            }
+        }
         setSpeedInTicksPerSecond(speed);
     }
 

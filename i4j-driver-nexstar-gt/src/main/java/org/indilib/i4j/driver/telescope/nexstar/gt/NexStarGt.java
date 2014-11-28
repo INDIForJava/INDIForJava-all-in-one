@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.telescope.nexstar.gt;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -142,7 +142,9 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     protected void gotoUpdate() {
         if (gotoDirection != null) {
             long now = System.currentTimeMillis();
-            long doubleUpdateInterfall = updateInterfall() * 2;
+            // the gt is not so accurate so take a biger period (4 stecond in
+            // the future) that will make a smouther ride..
+            long doubleUpdateInterfall = updateInterfall() * 4;
 
             double jdNow = jdTimeFromCurrentMiliseconds(now);
             double jdTarget = jdTimeFromCurrentMiliseconds(now + doubleUpdateInterfall);

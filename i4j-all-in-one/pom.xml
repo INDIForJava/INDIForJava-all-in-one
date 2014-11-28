@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.indilib.i4j</groupId>
@@ -8,8 +7,8 @@
 	</parent>
 	<artifactId>i4j-all-in-one</artifactId>
 	<packaging>pom</packaging>
-	<name>INDI for Java all in one zip</name>
-	<description>This is a zip containing the comlete distribution</description>
+	<name>I4J INDI Server distribution</name>
+	<description>I4J INDI Server and client distribution with all core drivers</description>
 	<!-- prohibit normal deployment, we will copy the result to sourceforge -->
 	<distributionManagement>
 		<repository>
@@ -68,6 +67,141 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.9</version>
+				<configuration>
+					<configurationDirectory>etc</configurationDirectory>
+					<extraJvmArguments>-DI4J_HOME=@BASEDIR@ -Dlogback.configurationFile=@BASEDIR@/etc/logback.xml</extraJvmArguments>
+					<programs>
+						<program>
+							<mainClass>org.indilib.i4j.client.ui.examples.SimpleINDIFrameClient</mainClass>
+							<id>i4j-client</id>
+						</program>
+						<program>
+							<mainClass>org.indilib.i4j.server.main.INDIBasicServer</mainClass>
+							<id>i4j-server-interactive</id>
+							<commandLineArguments>
+								<commandLineArgument>-i</commandLineArgument>
+								<commandLineArgument>-indiHome</commandLineArgument>
+								<commandLineArgument>%I4J_HOME%</commandLineArgument>
+							</commandLineArguments>
+						</program>
+					</programs>
+					<daemons>
+						<daemon>
+							<id>i4j-server</id>
+							<wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
+							<mainClass>org.indilib.i4j.server.main.INDIBasicServer</mainClass>
+							<commandLineArguments>
+								<commandLineArgument>-indiHome</commandLineArgument>
+								<commandLineArgument>%I4J_HOME%</commandLineArgument>
+							</commandLineArguments>
+							<platforms>
+								<platform>jsw</platform>
+							</platforms>
+							<generatorConfigurations>
+								<generatorConfiguration>
+									<generator>jsw</generator>
+									<configuration>
+										<property>
+											<name>wrapper.console.loglevel</name>
+											<value>WARN</value>
+										</property>
+										<property>
+											<name>wrapper.logfile</name>
+											<value>%I4J_HOME%/logs/wrapper.log</value>
+										</property>
+										<property>
+											<name>app.base.envvar</name>
+											<value>I4J_HOME</value>
+										</property>
+										<property>
+											<name>wrapper.on_exit.0</name>
+											<value>SHUTDOWN</value>
+										</property>
+										<property>
+											<name>wrapper.restart.delay</name>
+											<value>30</value>
+										</property>
+									</configuration>
+									<includes>
+										<include>aix-ppc-32</include>
+										<include>aix-ppc-64</include>
+										<include>hpux-parisc-64</include>
+										<include>linux-x86-32</include>
+										<include>linux-x86-64</include>
+										<include>linux-ppc-64</include>
+										<include>macosx-ppc-32</include>
+										<include>macosx-x86-universal-32</include>
+										<include>macosx-universal-32</include>
+										<include>macosx-universal-64</include>
+										<include>solaris-sparc-32</include>
+										<include>solaris-sparc-64</include>
+										<include>solaris-x86-32</include>
+										<include>windows-x86-32</include>
+										<include>windows-x86-64</include>
+									</includes>
+								</generatorConfiguration>
+							</generatorConfigurations>
+							<jvmSettings>
+								<systemProperties>
+									<systemProperty>logback.configurationFile=%I4J_HOME%/etc/logback.xml</systemProperty>
+								</systemProperties>
+								<extraArguments>
+									<extraArgument>-server</extraArgument>
+									<extraArgument>-Xdebug</extraArgument>
+									<extraArgument>-Xrunjdwp:server=y,suspend=y,transport=dt_socket,address=4000</extraArgument>
+								</extraArguments>
+								<initialMemorySize>128</initialMemorySize>
+								<maxMemorySize>512</maxMemorySize>
+							</jvmSettings>
+						</daemon>
+					</daemons>
+					<repositoryName>lib</repositoryName>
+					<repoPath>lib</repoPath>
+					<repositoryLayout>flat</repositoryLayout>
+					<assembleDirectory>target/generated-resources/appassembler/jsw/i4j</assembleDirectory>
+					<configurationSourceDirectory>src/main/etc</configurationSourceDirectory>
+					<copyConfigurationDirectory>true</copyConfigurationDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate-daemons</goal>
+							<goal>assemble</goal>
+						</goals>
+						<phase>prepare-package</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.3.2</version>
+				<executions>
+					<execution>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>java</executable>
+							<arguments>
+								<argument>-Dlogback.configurationFile=src/site/resources/logback.xml</argument>
+								<argument>-classpath</argument>
+								<classpath />
+								<argument>org.indilib.i4j.server.main.INDIBasicServer</argument>
+								<argument>org.indilib.i4j.server.main.INDIBasicServer</argument>
+								<argument>-help</argument>
+							</arguments>
+							<outputFile>${project.build.directory}/help.txt</outputFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 	<dependencies>

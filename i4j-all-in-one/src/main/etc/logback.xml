@@ -2,7 +2,7 @@
 
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>${I4J_HOME}/log/i4j.log</file>
+    <file>${I4J_HOME}/logs/i4j.log</file>
     <encoder>
       <pattern>%d %-5level %logger{35} - %msg %n</pattern>
    </encoder>

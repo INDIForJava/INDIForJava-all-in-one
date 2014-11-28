@@ -101,6 +101,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
         Integer port = null;
         String host = null;
         try {
+            commandLine.parseSystemProperties();
             commandLine.parseArgument(args, false);
 
             if (commandLine.isHelp()) {
@@ -131,19 +132,26 @@ public class INDIBasicServer implements INDIServerEventHandler {
      */
     private void start(INDICommandLine commandLine) {
         commandLine.setBasicServer(this).execute(false);
-        int countDown = MAX_STARTUP_TIME_IN_SEC;
-        while (!server.isServerRunning() && countDown-- > 0) {
-            try {
-                Thread.sleep(ONE_SECOND_IN_MILLISECODS);
-            } catch (InterruptedException e) {
-                LOG.debug("sleep interrrupted");
-            }
-        }
+        waitWithTimeoutForTheServer(false);
         if (!server.isServerRunning()) {
             LOG.error("could not start server, exiting!");
             return;
         }
+        Runtime.getRuntime().addShutdownHook(new Thread() {
 
+            @Override
+            public void run() {
+                if (server.isServerRunning()) {
+                    server.stopServer();
+                    waitWithTimeoutForTheServer(true);
+                    if (server.isServerRunning()) {
+                        LOG.error("could not normaly end server, exiting!");
+                    } else {
+                        LOG.info("server stoped!");
+                    }
+                }
+            }
+        });
         if (commandLine.isInteractive()) {
             commandLine.printInteractiveHelp();
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -173,6 +181,17 @@ public class INDIBasicServer implements INDIServerEventHandler {
                 } catch (InterruptedException e) {
                     LOG.debug("sleep interrrupted");
                 }
+            }
+        }
+    }
+
+    private void waitWithTimeoutForTheServer(boolean started) {
+        int countDown = MAX_STARTUP_TIME_IN_SEC;
+        while (server.isServerRunning() == started && countDown-- > 0) {
+            try {
+                Thread.sleep(ONE_SECOND_IN_MILLISECODS);
+            } catch (InterruptedException e) {
+                LOG.debug("sleep interrrupted");
             }
         }
     }
