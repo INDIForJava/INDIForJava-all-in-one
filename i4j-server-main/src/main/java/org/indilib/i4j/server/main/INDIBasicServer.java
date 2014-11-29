@@ -185,6 +185,12 @@ public class INDIBasicServer implements INDIServerEventHandler {
         }
     }
 
+    /**
+     * wait for the server to start or stop (max MAX_STARTUP_TIME_IN_SEC).
+     * 
+     * @param started
+     *            wait for start or stop
+     */
     private void waitWithTimeoutForTheServer(boolean started) {
         int countDown = MAX_STARTUP_TIME_IN_SEC;
         while (server.isServerRunning() == started && countDown-- > 0) {

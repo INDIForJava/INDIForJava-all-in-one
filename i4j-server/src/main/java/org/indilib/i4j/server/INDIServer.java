@@ -23,9 +23,7 @@ package org.indilib.i4j.server;
  */
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +53,7 @@ import org.w3c.dom.Element;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es] & Richard van Nieuwenhoven
  * @version 1.34, October 13, 2012
  */
-public final class INDIServer implements Runnable, INDIServerInterface {
+public final class INDIServer implements INDIServerInterface {
 
     /**
      * Driver class id prefix.
@@ -84,19 +82,9 @@ public final class INDIServer implements Runnable, INDIServerInterface {
     private List<INDIServerEventHandler> eventHandlers = new ArrayList<>();
 
     /**
-     * The port to which the Server listens.
+     * The basis acceptor, normally a socket acceptor the basic indi protocol.
      */
-    private int listeningPort;
-
-    /**
-     * If <code>true</code> the mainThread will continue running.
-     */
-    private boolean mainThreadRunning;
-
-    /**
-     * The socket to which the Server listens.
-     */
-    private ServerSocket socket;
+    private INDIServerAcceptor baseAcceptor;
 
     /**
      * Constructs a new Server. The Server begins to listen to the default port.
@@ -113,11 +101,22 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      *            The port to which the Server will listen.
      */
     protected INDIServer(Integer listeningPort) {
-        if (listeningPort == null || listeningPort.intValue() <= 0) {
-            this.listeningPort = Constants.INDI_DEFAULT_PORT;
-        } else {
-            this.listeningPort = listeningPort.intValue();
-        }
+        baseAcceptor = new INDIServerSocketAcceptor(listeningPort == null ? 0 : listeningPort) {
+
+            @Override
+            public boolean acceptClient(Socket clientSocket) {
+                if (INDIServer.this.acceptClient(clientSocket)) {
+                    INDIClient client = new INDIClient(clientSocket, INDIServer.this);
+
+                    clients.add(client);
+
+                    connectionWithClientEstablished(client);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
         initServer();
     }
 
@@ -180,7 +179,7 @@ public final class INDIServer implements Runnable, INDIServerInterface {
 
     @Override
     public boolean isServerRunning() {
-        return mainThreadRunning;
+        return baseAcceptor.isRunning();
     }
 
     @Override
@@ -246,63 +245,11 @@ public final class INDIServer implements Runnable, INDIServerInterface {
         addDevice(newDevice);
     }
 
-    /**
-     * The thread listens to the server socket and when a client connects, it is
-     * added to the list of clients.
-     */
-    @Override
-    public void run() {
-        try {
-            socket = new ServerSocket(listeningPort);
-        } catch (IOException e) {
-            LOG.error("Could not listen on port: " + listeningPort + " (maybe busy)");
-            return; // The thread will stop
-        }
-
-        LOG.info("Listening to port " + listeningPort);
-
-        mainThreadRunning = true;
-
-        while (mainThreadRunning) {
-            Socket clientSocket;
-
-            try {
-                clientSocket = socket.accept();
-            } catch (IOException e) {
-                // This is usually the escape point of the thread when the
-                // server is stopped.
-                LOG.error("Server has stopped listening to new Client connections", e);
-                mainThreadRunning = false;
-                return; // The thread will stop
-            }
-
-            if (clientSocket != null) {
-                if (acceptClient(clientSocket)) {
-                    INDIClient client = new INDIClient(clientSocket, this);
-
-                    clients.add(client);
-
-                    connectionWithClientEstablished(client);
-                } else {
-                    try {
-                        clientSocket.close();
-                    } catch (IOException e) {
-                        LOG.warn("client close exception", e);
-                    }
-                    LOG.info("Client " + clientSocket.getInetAddress() + " rejected");
-                }
-            }
-        }
-    }
-
     @Override
     public void stopServer() {
-        mainThreadRunning = false;
-        try {
-            socket.close(); // Close the socket in order to avoid accepting new
-                            // connections
-        } catch (IOException e) {
-            LOG.warn("client close exception", e);
+        // Close the socket in order to avoid accepting new connections
+        if (baseAcceptor != null) {
+            baseAcceptor.close();
         }
         for (INDIDeviceListener indiDeviceListener : clients) {
             if (indiDeviceListener instanceof INDIClient) {
@@ -448,15 +395,6 @@ public final class INDIServer implements Runnable, INDIServerInterface {
             }
         }
         return null;
-    }
-
-    /**
-     * Gets the port to which the Server listens.
-     * 
-     * @return The port to which the Server listens.
-     */
-    protected int getListeningPort() {
-        return listeningPort;
     }
 
     /**
@@ -752,7 +690,6 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      * Inits the Server and launches the listening thread.
      */
     private void initServer() {
-        mainThreadRunning = false;
         devices = new ArrayList<INDIDevice>();
         clients = new ArrayList<INDIDeviceListener>();
 
@@ -834,19 +771,16 @@ public final class INDIServer implements Runnable, INDIServerInterface {
      * been explicitly stopped.
      */
     private void startListeningToClients() {
-        if (!mainThreadRunning) {
-            Thread serverThread = new Thread(this);
-            serverThread.start();
-        }
+        baseAcceptor.start();
     }
 
     @Override
     public String getHost() {
-        return socket.getInetAddress().getHostName();
+        return baseAcceptor.getHost();
     }
 
     @Override
     public int getPort() {
-        return socket.getLocalPort();
+        return baseAcceptor.getPort();
     }
 }

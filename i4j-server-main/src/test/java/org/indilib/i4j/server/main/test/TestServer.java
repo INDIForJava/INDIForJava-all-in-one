@@ -1,4 +1,6 @@
-package org.indilib.i4j.server.main;
+package org.indilib.i4j.server.main.test;
+
+import org.indilib.i4j.server.main.INDIBasicServer;
 
 /*
  * #%L
@@ -22,8 +24,27 @@ package org.indilib.i4j.server.main;
  * #L%
  */
 
-public class TestServer {
+/**
+ * This is a test server to make an easy start from the developing tools
+ * possible.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+public final class TestServer {
 
+    /**
+     * private constructor to prohibit instanciation.
+     */
+    private TestServer() {
+    }
+
+    /**
+     * std main method to start the test server. The server will be started in
+     * the interactive mode.
+     * 
+     * @param args
+     *            ignored arguments.
+     */
     public static void main(String[] args) {
         INDIBasicServer.main(new String[]{
             "-i"
