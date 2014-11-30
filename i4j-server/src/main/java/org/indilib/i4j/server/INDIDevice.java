@@ -259,7 +259,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * @param xml
      *            The <code>setXXXVector</code> XML message
      */
-    private void processSetXXXVector(SetVector xml) {
+    private void processSetXXXVector(SetVector<?> xml) {
         String device = xml.getDevice();
 
         if (!hasName(device)) { // Some conditions to ignore the messages

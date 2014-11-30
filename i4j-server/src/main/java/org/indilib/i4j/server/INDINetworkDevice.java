@@ -44,11 +44,6 @@ import org.slf4j.LoggerFactory;
 public class INDINetworkDevice extends INDIDevice {
 
     /**
-     * timeout to use with tcp connections.
-     */
-    private static final int CONNECT_TIMEOUT = 20000;
-
-    /**
      * The logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDINetworkDevice.class);

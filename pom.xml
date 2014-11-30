@@ -478,7 +478,6 @@
 				</property>
 			</activation>
 			<modules>
-				<module>ostermillerutils</module>
 				<module>fits</module>
 			</modules>
 		</profile>

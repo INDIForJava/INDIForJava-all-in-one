@@ -7,8 +7,8 @@
 	</parent>
 	<artifactId>i4j-all-in-one</artifactId>
 	<packaging>pom</packaging>
-	<name>I4J INDI Server distribution</name>
-	<description>I4J INDI Server and client distribution with all core drivers</description>
+	<name>INDI for Java Server distribution</name>
+	<description>INDI for Java Server and client distribution with all core drivers</description>
 	<!-- prohibit normal deployment, we will copy the result to sourceforge -->
 	<distributionManagement>
 		<repository>
