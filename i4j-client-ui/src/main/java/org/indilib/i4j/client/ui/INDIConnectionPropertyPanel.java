@@ -50,7 +50,6 @@ import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDISwitchElement;
 import org.indilib.i4j.client.INDISwitchProperty;
 import org.indilib.i4j.client.INDIValueException;
-import org.indilib.i4j.client.ui.examples.SimpleINDIFrameClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -38,7 +38,6 @@ import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.SetVector;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * A class representing a INDI Property. The subclasses

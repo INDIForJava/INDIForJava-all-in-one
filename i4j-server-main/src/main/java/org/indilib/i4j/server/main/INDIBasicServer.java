@@ -25,7 +25,6 @@ package org.indilib.i4j.server.main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Socket;
 import java.util.Arrays;
 
 import org.indilib.i4j.protocol.api.INDIConnection;

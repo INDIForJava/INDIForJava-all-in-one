@@ -26,14 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.indilib.i4j.Constants.BLOBEnables;
+import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.protocol.GetProperties;
 import org.indilib.i4j.protocol.INDIProtocol;
-import org.indilib.i4j.INDIProtocolParser;
-import org.indilib.i4j.XMLToString;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A class that represents a listener to devices. It is used to include both

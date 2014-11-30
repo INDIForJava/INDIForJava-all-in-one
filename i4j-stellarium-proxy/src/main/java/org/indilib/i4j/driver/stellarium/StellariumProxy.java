@@ -22,8 +22,6 @@ package org.indilib.i4j.driver.stellarium;
  * #L%
  */
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;

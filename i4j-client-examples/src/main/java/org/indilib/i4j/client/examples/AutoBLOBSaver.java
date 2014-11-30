@@ -25,8 +25,8 @@ package org.indilib.i4j.client.examples;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import org.indilib.i4j.Constants;
 
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.client.INDIBLOBElement;

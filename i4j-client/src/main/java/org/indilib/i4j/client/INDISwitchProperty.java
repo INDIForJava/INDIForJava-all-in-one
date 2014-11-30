@@ -25,25 +25,18 @@ package org.indilib.i4j.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefElement;
 import org.indilib.i4j.protocol.DefSwitch;
 import org.indilib.i4j.protocol.DefSwitchVector;
 import org.indilib.i4j.protocol.NewSwitchVector;
 import org.indilib.i4j.protocol.NewVector;
-import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.OneSwitch;
 import org.indilib.i4j.protocol.SetVector;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * A class representing a INDI Switch Property.
@@ -205,36 +198,7 @@ public class INDISwitchProperty extends INDIProperty {
         if (uiComponent != null) {
             removeINDIPropertyListener(uiComponent);
         }
-
-        Object[] arguments = new Object[]{
-            this
-        };
-        String[] possibleUIClassNames;
-
-        if (getName().equals("CONNECTION")) {
-            possibleUIClassNames = new String[]{
-                "org.indilib.i4j.client.ui.INDIConnectionPropertyPanel",
-                "org.indilib.i4j.client.ui.INDIDefaultPropertyPanel",
-                "org.indilib.i4j.androidui.INDIDefaultPropertyView"
-            };
-        } else if (rule == SwitchRules.ONE_OF_MANY) {
-            possibleUIClassNames = new String[]{
-                "org.indilib.i4j.client.ui.INDISwitchOneOfManyPropertyPanel",
-                "org.indilib.i4j.androidui.INDIDefaultPropertyView"
-            };
-        } else {
-            possibleUIClassNames = new String[]{
-                "org.indilib.i4j.client.ui.INDIDefaultPropertyPanel",
-                "org.indilib.i4j.androidui.INDIDefaultPropertyView"
-            };
-        }
-
-        try {
-            uiComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
-        }
-
+        uiComponent = INDIViewCreator.getDefault().createSwitchPropertyView(this);
         addINDIPropertyListener(uiComponent);
 
         return uiComponent;

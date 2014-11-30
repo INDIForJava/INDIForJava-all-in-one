@@ -29,11 +29,7 @@ import java.io.Serializable;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import org.apache.commons.codec.Charsets;
-import org.apache.commons.codec.binary.Base64;
 import org.indilib.i4j.protocol.OneBlob;
-import org.indilib.i4j.protocol.OneElement;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI BLOB Value (some bytes and a format).

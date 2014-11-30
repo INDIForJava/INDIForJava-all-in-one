@@ -25,14 +25,11 @@ package org.indilib.i4j.client;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDISexagesimalFormatter;
 import org.indilib.i4j.protocol.DefNumber;
-import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.OneNumber;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Number Element.
@@ -355,22 +352,7 @@ public class INDINumberElement extends INDIElement {
         if (uiComponent != null) {
             removeINDIElementListener(uiComponent);
         }
-
-        Object[] arguments = new Object[]{
-            this,
-            getProperty().getPermission()
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDINumberElementPanel",
-            "org.indilib.i4j.androidui.INDINumberElementView"
-        };
-
-        try {
-            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
-        }
-
+        uiComponent = INDIViewCreator.getDefault().createNumberElementView(this, getProperty().getPermission());
         addINDIElementListener(uiComponent);
 
         return uiComponent;

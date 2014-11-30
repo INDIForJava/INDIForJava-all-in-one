@@ -22,7 +22,6 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefLight;
@@ -124,20 +123,7 @@ public class INDILightElement extends INDIElement {
         if (uiComponent != null) {
             removeINDIElementListener(uiComponent);
         }
-
-        Object[] arguments = new Object[]{
-            this
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDILightElementPanel",
-            "org.indilib.i4j.androidui.INDILightElementView"
-        };
-
-        try {
-            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
-        }
+        uiComponent = INDIViewCreator.getDefault().createLightElementView(this, getProperty().getPermission());
 
         addINDIElementListener(uiComponent);
 

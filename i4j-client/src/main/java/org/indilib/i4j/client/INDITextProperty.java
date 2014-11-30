@@ -22,10 +22,6 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import org.indilib.i4j.ClassInstantiator;
-
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefElement;
 import org.indilib.i4j.protocol.DefText;
@@ -33,10 +29,7 @@ import org.indilib.i4j.protocol.DefTextVector;
 import org.indilib.i4j.protocol.NewTextVector;
 import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneText;
-import org.indilib.i4j.protocol.SetTextVector;
 import org.indilib.i4j.protocol.SetVector;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * A class representing a INDI Text Property.
@@ -103,20 +96,7 @@ public class INDITextProperty extends INDIProperty {
             removeINDIPropertyListener(uiComponent);
         }
 
-        Object[] arguments = new Object[]{
-            this
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDIDefaultPropertyPanel",
-            "org.indilib.i4j.androidui.INDIDefaultPropertyView"
-        };
-
-        try {
-            uiComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
-        }
-
+        uiComponent = INDIViewCreator.getDefault().createTextPropertyView(this);
         addINDIPropertyListener(uiComponent);
 
         return uiComponent;

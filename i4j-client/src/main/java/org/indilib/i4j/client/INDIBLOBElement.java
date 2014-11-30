@@ -22,13 +22,11 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefBlob;
 import org.indilib.i4j.protocol.OneBlob;
 import org.indilib.i4j.protocol.OneElement;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI BLOB Element.
@@ -102,24 +100,8 @@ public class INDIBLOBElement extends INDIElement {
         if (uiComponent != null) {
             removeINDIElementListener(uiComponent);
         }
-
-        Object[] arguments = new Object[]{
-            this,
-            getProperty().getPermission()
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDIBLOBElementPanel",
-            "org.indilib.i4j.androidui.INDIBLOBElementView"
-        };
-
-        try {
-            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
-        }
-
+        uiComponent = INDIViewCreator.getDefault().createBlobElementView(this, getProperty().getPermission());
         addINDIElementListener(uiComponent);
-
         return uiComponent;
     }
 

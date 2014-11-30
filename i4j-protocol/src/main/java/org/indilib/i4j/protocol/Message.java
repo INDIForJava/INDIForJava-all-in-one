@@ -23,7 +23,6 @@ package org.indilib.i4j.protocol;
  */
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * This class represents an INDI XML protocol element.

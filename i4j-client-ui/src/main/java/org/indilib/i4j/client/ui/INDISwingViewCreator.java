@@ -95,7 +95,7 @@ public class INDISwingViewCreator implements INDIViewCreatorInterface {
 
     @Override
     public INDIPropertyListener createSwitchPropertyView(INDISwitchProperty indiProperty) throws INDIException {
-        if (indiProperty.equals("CONNECTION")) {
+        if (indiProperty.getName().equals("CONNECTION")) {
             return new INDIConnectionPropertyPanel(indiProperty);
         } else if (indiProperty.getRule() == SwitchRules.ONE_OF_MANY) {
             return new INDISwitchOneOfManyPropertyPanel(indiProperty);

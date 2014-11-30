@@ -22,11 +22,8 @@ package org.indilib.i4j;
  * #L%
  */
 
-import java.io.InputStream;
-
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.api.INDIInputStream;
-import org.w3c.dom.Document;
 
 /**
  * A interface representing a generic INDI Protocol Parser.

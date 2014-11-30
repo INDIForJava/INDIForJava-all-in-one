@@ -22,8 +22,6 @@ package org.indilib.i4j.server;
  * #L%
  */
 
-import java.net.Socket;
-
 import org.indilib.i4j.protocol.api.INDIConnection;
 
 /**

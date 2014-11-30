@@ -22,13 +22,10 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefText;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.OneText;
-import org.indilib.i4j.protocol.SetVector;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Text Element.
@@ -100,21 +97,7 @@ public class INDITextElement extends INDIElement {
             removeINDIElementListener(uiComponent);
         }
 
-        Object[] arguments = new Object[]{
-            this,
-            getProperty().getPermission()
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDITextElementPanel",
-            "org.indilib.i4j.androidui.INDITextElementView"
-        };
-
-        try {
-            uiComponent = (INDIElementListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIElementListener. Probably a incorrect library in the classpath.");
-        }
-
+        uiComponent = INDIViewCreator.getDefault().createTextElementView(this, getProperty().getPermission());
         addINDIElementListener(uiComponent);
 
         return uiComponent;

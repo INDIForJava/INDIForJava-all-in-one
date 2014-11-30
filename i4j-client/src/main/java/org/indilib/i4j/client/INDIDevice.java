@@ -22,6 +22,8 @@ package org.indilib.i4j.client;
  * #L%
  */
 
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,9 +35,6 @@ import java.util.List;
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
-
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefBlobVector;
 import org.indilib.i4j.protocol.DefLightVector;
@@ -54,7 +53,6 @@ import org.indilib.i4j.protocol.SetTextVector;
 import org.indilib.i4j.protocol.SetVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Device.

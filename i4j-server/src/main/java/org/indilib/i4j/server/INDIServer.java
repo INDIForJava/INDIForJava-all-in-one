@@ -24,7 +24,6 @@ package org.indilib.i4j.server;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Server. It is in charge of dealing with several

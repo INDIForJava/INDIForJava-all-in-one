@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefElement;
 import org.indilib.i4j.protocol.OneElement;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Element. The subclasses

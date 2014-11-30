@@ -24,7 +24,6 @@ package org.indilib.i4j.client;
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -46,10 +45,6 @@ import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.io.INDISocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A class representing a INDI Server Connection. Usually this is the entry

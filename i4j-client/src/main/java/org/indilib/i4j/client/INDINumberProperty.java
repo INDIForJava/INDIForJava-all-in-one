@@ -22,10 +22,6 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import org.indilib.i4j.ClassInstantiator;
-
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefElement;
 import org.indilib.i4j.protocol.DefNumber;
@@ -34,8 +30,6 @@ import org.indilib.i4j.protocol.NewNumberVector;
 import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneNumber;
 import org.indilib.i4j.protocol.SetVector;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * A class representing a INDI Number Property.
@@ -99,21 +93,7 @@ public class INDINumberProperty extends INDIProperty {
         if (uiComponent != null) {
             removeINDIPropertyListener(uiComponent);
         }
-
-        Object[] arguments = new Object[]{
-            this
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDIDefaultPropertyPanel",
-            "org.indilib.i4j.androidui.INDIDefaultPropertyView"
-        };
-
-        try {
-            uiComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
-        }
-
+        uiComponent = INDIViewCreator.getDefault().createNumberPropertyView(this);
         addINDIPropertyListener(uiComponent);
 
         return uiComponent;

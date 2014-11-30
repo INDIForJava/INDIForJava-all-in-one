@@ -23,8 +23,6 @@ package org.indilib.i4j.server;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -38,8 +36,6 @@ import org.indilib.i4j.protocol.api.INDIOutputStream;
 import org.indilib.i4j.protocol.io.INDIPipedConnections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.Ostermiller.util.CircularByteBuffer;
 
 /**
  * A class that represent a Java Device (created with the INDI Driver library).

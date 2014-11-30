@@ -22,7 +22,6 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefElement;
@@ -128,19 +127,7 @@ public class INDILightProperty extends INDIProperty {
             removeINDIPropertyListener(uiComponent);
         }
 
-        Object[] arguments = new Object[]{
-            this
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDIDefaultPropertyPanel",
-            "org.indilib.i4j.androidui.INDIDefaultPropertyView"
-        };
-
-        try {
-            uiComponent = (INDIPropertyListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIPropertyListener. Probably a incorrect library in the classpath.");
-        }
+        uiComponent = INDIViewCreator.getDefault().createLightPropertyView(this);
 
         addINDIPropertyListener(uiComponent);
 

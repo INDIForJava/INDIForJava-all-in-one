@@ -23,27 +23,19 @@ package org.indilib.i4j.server;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
 
-import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIProtocolReader;
 import org.indilib.i4j.protocol.EnableBLOB;
 import org.indilib.i4j.protocol.GetProperties;
 import org.indilib.i4j.protocol.INDIProtocol;
-import org.indilib.i4j.protocol.NewBlobVector;
-import org.indilib.i4j.protocol.NewNumberVector;
-import org.indilib.i4j.protocol.NewSwitchVector;
-import org.indilib.i4j.protocol.NewTextVector;
 import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.server.api.INDIClientInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 /**
  * A class to represent a Client that connects to the Server.

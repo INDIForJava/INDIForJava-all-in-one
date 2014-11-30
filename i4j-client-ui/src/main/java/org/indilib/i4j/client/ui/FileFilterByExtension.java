@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import javax.swing.filechooser.FileFilter;
+
 import org.indilib.i4j.FileUtils;
 
 /**

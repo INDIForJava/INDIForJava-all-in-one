@@ -43,8 +43,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.Date;
-import org.indilib.i4j.Constants;
 
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
