@@ -42,4 +42,9 @@ public interface INDIServerAccess {
      * @return the interface to the server.
      */
     INDIServerInterface createOrGet(String host, Integer port);
+
+    /**
+     * @return the currently started server or null if no server was started.
+     */
+    INDIServerInterface get();
 }

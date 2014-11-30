@@ -93,7 +93,7 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
             host = url.getHost();
             port = url.getPort();
         } else {
-            INDIServerInterface currentServer = INDIServerAccessLookup.indiServerAccess().createOrGet(null, null);
+            INDIServerInterface currentServer = INDIServerAccessLookup.indiServerAccess().get();
             host = currentServer.getHost();
             port = currentServer.getPort();
             url = new INDIURI("indi://" + host + ":" + port);

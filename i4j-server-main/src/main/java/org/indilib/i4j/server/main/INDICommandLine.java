@@ -232,6 +232,11 @@ public class INDICommandLine {
             .withLongOpt("startup")//
             .create("b");
 
+    private final Option acceptor = OptionBuilder //
+            .withDescription("start an additional acceptor in the server, normally an additional ctivated protocol") //
+            .hasOptionalArgs(10).withLongOpt("acceptor")//
+            .create("ac");
+
     /**
      * the list of options.
      */
@@ -290,6 +295,7 @@ public class INDICommandLine {
         options.addOption(interactive);
         options.addOption(lib);
         options.addOption(startup);
+        options.addOption(acceptor);
     }
 
     /**
@@ -445,6 +451,12 @@ public class INDICommandLine {
                 server.loadJavaDriversFromJAR(getArg(option));
             } else if (option.equals(addC)) {
                 server.loadJavaDriver(getArg(option));
+            } else if (option.equals(acceptor)) {
+                String[] optionValues = commandLine.getOptionValues(option.getLongOpt());
+                String name = optionValues[0];
+                Object[] arguments = new Object[optionValues.length - 1];
+                System.arraycopy(optionValues, 1, arguments, 0, arguments.length);
+                server.activateAcceptor(name, arguments);
             } else if (option.equals(removeC)) {
                 server.destroyJavaDriver(getArg(option));
             } else if (option.equals(addN)) {

@@ -31,6 +31,12 @@
 			<groupId>com.netiq</groupId>
 			<artifactId>websockify</artifactId>
 			<version>1.5</version>
+			<exclusions>
+				<exclusion>
+					<groupId>args4j</groupId>
+					<artifactId>args4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<properties>

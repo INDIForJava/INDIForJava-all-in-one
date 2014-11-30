@@ -66,4 +66,17 @@ public interface INDIServerAcceptor extends Runnable {
      * @return the port number this acceptor is listening to.
      */
     int getPort();
+
+    /**
+     * @return human readable name of the server acceptor.
+     */
+    String getName();
+
+    /**
+     * the arguments to initialize the acceptor.
+     * 
+     * @param arguments
+     *            the array of arguments.
+     */
+    void setArguments(Object... arguments);
 }

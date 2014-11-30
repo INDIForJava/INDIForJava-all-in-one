@@ -45,4 +45,9 @@ public class INDIServerAccessImpl implements INDIServerAccess {
         }
         return server;
     }
+
+    @Override
+    public INDIServerInterface get() {
+        return server;
+    }
 }

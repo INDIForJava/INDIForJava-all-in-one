@@ -162,4 +162,14 @@ public interface INDIServerInterface {
      * @return the port where the server is listening.
      */
     int getPort();
+
+    /**
+     * Activate a server acceptor.
+     * 
+     * @param name
+     *            the acceport name
+     * @param arguments
+     *            the arguments for the acceptor.
+     */
+    void activateAcceptor(String name, Object... arguments);
 }

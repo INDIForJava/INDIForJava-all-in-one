@@ -25,7 +25,9 @@ package org.indilib.i4j.server;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
@@ -90,6 +92,11 @@ public final class INDIServer implements INDIServerInterface {
     private INDIServerAcceptor baseAcceptor;
 
     /**
+     * the list with additional loaded acceptors.
+     */
+    private List<INDIServerAcceptor> additionalAcceptors = new ArrayList<INDIServerAcceptor>();
+
+    /**
      * Constructs a new Server. The Server begins to listen to the default port.
      */
     protected INDIServer() {
@@ -104,7 +111,7 @@ public final class INDIServer implements INDIServerInterface {
      *            The port to which the Server will listen.
      */
     protected INDIServer(Integer listeningPort) {
-        baseAcceptor = new INDIServerSocketAcceptor(listeningPort == null ? 0 : listeningPort) {
+        baseAcceptor = new INDIServerSocketAcceptor() {
 
             @Override
             public boolean acceptClient(INDIConnection clientSocket) {
@@ -120,6 +127,7 @@ public final class INDIServer implements INDIServerInterface {
                 }
             }
         };
+        baseAcceptor.setArguments(listeningPort);
         initServer();
     }
 
@@ -784,5 +792,19 @@ public final class INDIServer implements INDIServerInterface {
     @Override
     public int getPort() {
         return baseAcceptor.getPort();
+    }
+
+    @Override
+    public void activateAcceptor(String name, Object... arguments) {
+        Iterator<INDIServerAcceptor> acceptors = ServiceLoader.load(INDIServerAcceptor.class).iterator();
+        while (acceptors.hasNext()) {
+            INDIServerAcceptor indiServerAcceptor = (INDIServerAcceptor) acceptors.next();
+            if (indiServerAcceptor.getName().equalsIgnoreCase(name)) {
+                additionalAcceptors.add(indiServerAcceptor);
+                indiServerAcceptor.setArguments(arguments);
+                indiServerAcceptor.start();
+            }
+        }
+
     }
 }
