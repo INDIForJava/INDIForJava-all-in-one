@@ -25,8 +25,6 @@ import static org.indilib.i4j.Constants.PropertyStates.BUSY;
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 import static org.indilib.i4j.Constants.PropertyStates.OK;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
@@ -45,6 +43,7 @@ import org.indilib.i4j.driver.telescope.INDIDirection;
 import org.indilib.i4j.driver.telescope.INDITelescope;
 import org.indilib.i4j.driver.telescope.INDITelescopeParkInterface;
 import org.indilib.i4j.driver.telescope.INDITelescopeSyncInterface;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -264,13 +263,11 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
     /**
      * Standard constructor for the simulated telescope driver.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public TelescopeSimulator(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public TelescopeSimulator(INDIConnection connection) {
+        super(connection);
         current.set(0, MAX_DECLINATION_DEGREES);
         parkExtension.setParked(false);
 

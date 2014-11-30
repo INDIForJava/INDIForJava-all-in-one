@@ -1,6 +1,9 @@
 package org.indilib.i4j.protocol;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /*
  * #%L
@@ -29,10 +32,45 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("enableBLOB")
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {
+    "textContent"
+}, types = {
+    EnableBLOB.class
+})
 public class EnableBLOB extends INDIProtocol<EnableBLOB> {
 
     @Override
     public boolean isEnableBLOB() {
         return true;
+    }
+
+    /**
+     * the text content value of the element.
+     */
+    private String textContent;
+
+    /**
+     * @return the text content of the element.
+     */
+    public String getTextContent() {
+        return textContent;
+    }
+
+    /**
+     * set the test content of the element.
+     * 
+     * @param newTextContent
+     *            the new text content value.
+     * @return this for builder pattern.
+     */
+    public EnableBLOB setTextContent(String newTextContent) {
+        this.textContent = newTextContent;
+        return (EnableBLOB) this;
+    }
+
+    @Override
+    public EnableBLOB trim() {
+        this.textContent = trim(this.textContent);
+        return super.trim();
     }
 }

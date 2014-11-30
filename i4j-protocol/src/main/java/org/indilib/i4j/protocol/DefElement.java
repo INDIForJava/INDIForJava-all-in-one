@@ -23,6 +23,8 @@ package org.indilib.i4j.protocol;
  */
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
  * This class represents an INDI XML protocol element.
@@ -31,6 +33,11 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  *            type for the builder
  * @author Richard van Nieuwenhoven
  */
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {
+    "textContent"
+}, types = {
+    DefElement.class
+})
 public abstract class DefElement<T> extends INDIProtocol<T> {
 
     /**
@@ -38,6 +45,11 @@ public abstract class DefElement<T> extends INDIProtocol<T> {
      */
     @XStreamAsAttribute
     private String label;
+
+    /**
+     * the text content value of the element.
+     */
+    private String textContent;
 
     /**
      * @return label attribute of the element .
@@ -67,5 +79,32 @@ public abstract class DefElement<T> extends INDIProtocol<T> {
     public T setLabel(String newLabel) {
         this.label = newLabel;
         return (T) this;
+    }
+
+    /**
+     * @return the text content of the element.
+     */
+    public String getTextContent() {
+        return textContent;
+    }
+
+    /**
+     * set the test content of the element.
+     * 
+     * @param newTextContent
+     *            the new text content value.
+     * @return this for builder pattern.
+     */
+    @SuppressWarnings("unchecked")
+    public T setTextContent(String newTextContent) {
+        this.textContent = newTextContent;
+        return (T) this;
+    }
+
+    @Override
+    public T trim() {
+        this.label = trim(this.label);
+        this.textContent = trim(this.textContent);
+        return super.trim();
     }
 }

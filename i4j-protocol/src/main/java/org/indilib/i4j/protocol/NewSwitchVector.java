@@ -30,8 +30,8 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * 
  * @author Richard van Nieuwenhoven
  */
-@XStreamAlias("sefSwitchVector")
-public class NewSwitchVector extends SetVector<NewSwitchVector> {
+@XStreamAlias("newSwitchVector")
+public class NewSwitchVector extends NewVector<NewSwitchVector> {
 
     /**
      * the rule attribute of the element.
@@ -66,5 +66,11 @@ public class NewSwitchVector extends SetVector<NewSwitchVector> {
     public NewSwitchVector setRule(String newRule) {
         this.rule = newRule;
         return this;
+    }
+
+    @Override
+    public NewSwitchVector trim() {
+        this.rule = trim(this.rule);
+        return super.trim();
     }
 }

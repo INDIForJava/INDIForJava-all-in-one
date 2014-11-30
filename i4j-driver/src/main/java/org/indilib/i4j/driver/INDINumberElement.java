@@ -27,7 +27,10 @@ import java.util.Locale;
 
 import org.indilib.i4j.INDISexagesimalFormatter;
 import org.indilib.i4j.driver.util.INDIElementBuilder;
-import org.w3c.dom.Element;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefNumber;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneNumber;
 
 /**
  * A class representing a INDI Number Element.
@@ -298,14 +301,12 @@ public class INDINumberElement extends INDIElement {
     }
 
     @Override
-    public String getXMLOneElement(boolean includeMinMaxStep) {
-        String xml;
+    public OneElement<?> getXMLOneElement(boolean includeMinMaxStep) {
+        OneNumber result = new OneNumber().setName(getName()).setTextContent(Double.toString(value));
         if (includeMinMaxStep) {
-            xml = "<oneNumber name=\"" + this.getName() + "\" min=\"" + min + "\" max=\"" + max + "\">" + value + "</oneNumber>";
-        } else {
-            xml = "<oneNumber name=\"" + this.getName() + "\">" + value + "</oneNumber>";
+            return result.setMin(Double.toString(min)).setMax(Double.toString(max));
         }
-        return xml;
+        return result;
     }
 
     @Override
@@ -314,16 +315,13 @@ public class INDINumberElement extends INDIElement {
     }
 
     @Override
-    protected String getXMLDefElement() {
-        String xml =
-                "<defNumber name=\"" + this.getName() + "\" label=\"" + getLabel() + "\" format=\"" + numberFormat + "\" min=\"" + min + "\" max=\"" + max + "\" step=\""
-                        + step + "\">" + value + "</defNumber>";
-
-        return xml;
+    protected DefElement<?> getXMLDefElement() {
+        return new DefNumber().setName(getName()).setLabel(getLabel()).setFormat(numberFormat)//
+                .setMin(Double.toString(min)).setMax(Double.toString(max)).setStep(Double.toString(step)).setTextContent(Double.toString(value));
     }
 
     @Override
-    public Object parseOneValue(Element xml) {
+    public Object parseOneValue(OneElement<?> xml) {
         double v = parseNumber(xml.getTextContent().trim());
 
         if (v < min || v > max) {

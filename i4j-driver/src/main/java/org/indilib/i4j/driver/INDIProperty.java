@@ -13,6 +13,8 @@ package org.indilib.i4j.driver;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.FileUtils;
@@ -33,6 +36,9 @@ import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.event.IEventHandler;
 import org.indilib.i4j.driver.util.INDIElementBuilder;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
+import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.SetVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -382,7 +388,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @return The XML code to define the property.
      */
-    protected String getXMLPropertyDefinition() {
+    protected INDIProtocol<?> getXMLPropertyDefinition() {
         return getXMLPropertyDefinition(null);
     }
 
@@ -395,21 +401,23 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      *            property.
      * @return The XML code to define the property.
      */
-    protected String getXMLPropertyDefinition(String message) {
-        StringBuffer xml = new StringBuffer();
-        if (message == null) {
-            xml.append(getXMLPropertyDefinitionInit());
-        } else {
-            xml.append(getXMLPropertyDefinitionInit(message));
-        }
+    protected DefVector<?> getXMLPropertyDefinition(String message) {
+        DefVector<?> xml = getXMLPropertyDefinitionInit();
+        xml.setDevice(getDriver().getName());
+        xml.setName(getName());
+        xml.setLabel(getLabel());
+        xml.setGroup(getGroup());
+        xml.setState(Constants.getPropertyStateAsString(getState()));
+        xml.setPerm(Constants.getPropertyPermissionAsString(getPermission()));
+        xml.setTimeout(Integer.toString(getTimeout()));
+        xml.setTimestamp(dateFormat().getCurrentTimestamp());
+        xml.setMessage(message);
         for (Element element : this) {
-            xml.append(element.getXMLDefElement());
+            xml.getElements().add(element.getXMLDefElement());
         }
-        xml.append(getXMLPropertyDefinitionEnd());
-
-        isInit = true; // The property now is initialized. No further changes
-                       // allowed
-        return xml.toString();
+        // The property now is initialized. No further changes allowed
+        isInit = true;
+        return xml;
     }
 
     /**
@@ -418,7 +426,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @return The XML code to set the values of the property.
      */
-    protected String getXMLPropertySet() {
+    protected SetVector<?> getXMLPropertySet() {
         return getXMLPropertySet(false, null);
     }
 
@@ -433,7 +441,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      *            the property.
      * @return The XML code to set the values of the property.
      */
-    protected String getXMLPropertySet(boolean includeMinMax, String message) {
+    protected SetVector<?> getXMLPropertySet(boolean includeMinMax, String message) {
         if (saveable) {
             try {
                 saveToFile();
@@ -441,17 +449,19 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
                 LOG.error("could not save the property to a file", e);
             }
         }
-        StringBuffer xml = new StringBuffer();
+        SetVector<?> result = getXMLPropertySetInit();
+        result.setDevice(getDriver().getName());
+        result.setName(getName());
+        result.setState(Constants.getPropertyStateAsString(getState()));
+        result.setTimeout(Integer.toString(getTimeout()));
+        result.setTimestamp(dateFormat().getCurrentTimestamp());
         if (message == null) {
-            xml.append(getXMLPropertySetInit());
-        } else {
-            xml.append(getXMLPropertySetInit(message));
+            result.setMessage(message);
         }
         for (Element element : this) {
-            xml.append(element.getXMLOneElement(includeMinMax));
+            result.getElements().add(element.getXMLOneElement(includeMinMax));
         }
-        xml.append(getXMLPropertySetEnd());
-        return xml.toString();
+        return result;
     }
 
     /**
@@ -459,48 +469,14 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @return the opening XML Element &lt;defXXXVector&gt; for this Property.
      */
-    protected abstract String getXMLPropertyDefinitionInit();
-
-    /**
-     * Gets the opening XML Element &lt;defXXXVector&gt; for this Property with
-     * a <code>message</code> to the client.
-     * 
-     * @param message
-     *            A message to be sent to the client.
-     * @return the opening XML Element &lt;defXXXVector&gt; for this Property.
-     */
-    protected abstract String getXMLPropertyDefinitionInit(String message);
-
-    /**
-     * Gets the closing XML Element &lt;/defXXXVector&gt; for this Property.
-     * 
-     * @return the closing XML Element &lt;/defXXXVector&gt; for this Property.
-     */
-    protected abstract String getXMLPropertyDefinitionEnd();
+    protected abstract DefVector<?> getXMLPropertyDefinitionInit();
 
     /**
      * Gets the opening XML Element &lt;setXXXVector&gt; for this Property.
      * 
      * @return the opening XML Element &lt;setXXXVector&gt; for this Property.
      */
-    protected abstract String getXMLPropertySetInit();
-
-    /**
-     * Gets the opening XML Element &lt;setXXXVector&gt; for this Property with
-     * a <code>message</code> to the client.
-     * 
-     * @param message
-     *            A message to be sent to the client.
-     * @return the opening XML Element &lt;setXXXVector&gt; for this Property.
-     */
-    protected abstract String getXMLPropertySetInit(String message);
-
-    /**
-     * Gets the closing XML Element &lt;/setXXXVector&gt; for this Property.
-     * 
-     * @return the closing XML Element &lt;/setXXXVector&gt; for this Property.
-     */
-    protected abstract String getXMLPropertySetEnd();
+    protected abstract SetVector<?> getXMLPropertySetInit();
 
     /**
      * Saves the property and its elements to a file. Ideal to later restore it

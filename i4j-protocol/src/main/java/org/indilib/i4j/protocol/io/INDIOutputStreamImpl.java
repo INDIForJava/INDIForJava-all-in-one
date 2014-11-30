@@ -28,6 +28,8 @@ import java.io.OutputStream;
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
 
@@ -37,6 +39,11 @@ import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
  * @author Richard van Nieuwenhoven
  */
 public class INDIOutputStreamImpl extends OutputStream implements INDIOutputStream {
+
+    /**
+     * logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIOutputStreamImpl.class);
 
     static {
         INDIURLStreamHandlerFactory.init();
@@ -71,6 +78,9 @@ public class INDIOutputStreamImpl extends OutputStream implements INDIOutputStre
 
     @Override
     public void writeObject(INDIProtocol<?> element) throws IOException {
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("sending indi object " + element);
+        }
         out.writeObject(element);
         out.flush();
     }

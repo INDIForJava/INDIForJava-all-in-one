@@ -25,16 +25,12 @@ package org.indilib.i4j.driver;
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIProtocolParser;
@@ -44,12 +40,25 @@ import org.indilib.i4j.driver.connection.INDIConnectionExtension;
 import org.indilib.i4j.driver.event.IEventHandler;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 import org.indilib.i4j.driver.util.INDIPropertyInjector;
+import org.indilib.i4j.protocol.DelProperty;
+import org.indilib.i4j.protocol.GetProperties;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.NewBlobVector;
+import org.indilib.i4j.protocol.NewNumberVector;
+import org.indilib.i4j.protocol.NewSwitchVector;
+import org.indilib.i4j.protocol.NewTextVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneBlob;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneNumber;
+import org.indilib.i4j.protocol.OneSwitch;
+import org.indilib.i4j.protocol.OneText;
+import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.api.INDIOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A class representing a Driver in the INDI Protocol. INDI Drivers should
@@ -77,14 +86,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
     public static final String GROUP_OPTIONS = "Options";
 
     /**
-     * the driver inputStream (xml stream of messages).
+     * the driver streamConnection (in out xml stream of messages).
      */
-    private InputStream inputStream;
-
-    /**
-     * the driver outputStrean (xml stream of messages).
-     */
-    private OutputStream outputStream;
+    private INDIConnection connection;
 
     /**
      * The protokol reader thread that reads asynchron from the input stream,
@@ -119,27 +123,16 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            The indi connection streams.
      */
-    protected INDIDriver(InputStream inputStream, OutputStream outputStream) {
-        out = new OutputStreamWriter(outputStream, Charsets.UTF_8);
-        this.inputStream = inputStream;
-        this.outputStream = outputStream;
+    protected INDIDriver(INDIConnection connection) {
+        this.connection = connection;
         this.subdrivers = new ArrayList<INDIDriver>();
         started = false;
         properties = new LinkedHashMap<>();
         INDIPropertyInjector.initialize(this, this);
     }
-
-    /**
-     * strange that this wrapper is needed, is suspect this has something to to
-     * with why the xml's are send in full blocks. What i didn't expect to
-     * happen. Will be replaced by xstream for a more correct solution.
-     */
-    private final OutputStreamWriter out;
 
     /**
      * Registers a subdriver that may receive messages.
@@ -230,24 +223,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            the messages to be parsed.
      */
     @Override
-    public void parseXML(Document doc) {
-        Element el = doc.getDocumentElement();
-
-        if (el.getNodeName().compareTo("INDI") != 0) {
-            return;
-        }
-
-        NodeList nodes = el.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-
-            if (n instanceof Element) {
-                Element child = (Element) n;
-
-                parseXMLElement(child);
-            }
-        }
+    public void parseXML(INDIProtocol<?> doc) {
+        parseXMLElement(doc);
     }
 
     /**
@@ -256,24 +233,23 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml
      *            The XML element to be parsed.
      */
-    private void parseXMLElement(Element xml) {
+    private void parseXMLElement(INDIProtocol<?> xml) {
         INDIDriver subd = getSubdriver(xml);
 
         if (subd != null) {
             subd.parseXMLElement(xml);
         } else {
-            String name = xml.getNodeName();
 
-            if (name.equals("getProperties")) {
-                processGetProperties(xml);
-            } else if (name.equals("newTextVector")) {
-                processNewTextVector(xml);
-            } else if (name.equals("newSwitchVector")) {
-                processNewSwitchVector(xml);
-            } else if (name.equals("newNumberVector")) {
-                processNewNumberVector(xml);
-            } else if (name.equals("newBLOBVector")) {
-                processNewBLOBVector(xml);
+            if (xml instanceof GetProperties) {
+                processGetProperties((GetProperties) xml);
+            } else if (xml instanceof NewTextVector) {
+                processNewTextVector((NewTextVector) xml);
+            } else if (xml instanceof NewSwitchVector) {
+                processNewSwitchVector((NewSwitchVector) xml);
+            } else if (xml instanceof NewNumberVector) {
+                processNewNumberVector((NewNumberVector) xml);
+            } else if (xml instanceof NewBlobVector) {
+                processNewBLOBVector((NewBlobVector) xml);
             }
         }
     }
@@ -284,7 +260,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml
      *            The &lt;newTextVector&gt; XML message to be parsed.
      */
-    private void processNewTextVector(Element xml) {
+    private void processNewTextVector(NewTextVector xml) {
         INDIProperty prop = processNewXXXVector(xml);
 
         if (prop == null) {
@@ -297,7 +273,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
 
         INDITextElementAndValue[] newEvs = new INDITextElementAndValue[evs.length];
 
@@ -338,7 +314,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml
      *            The &lt;newSwitchVector&gt; XML message to be parsed.
      */
-    private void processNewSwitchVector(Element xml) {
+    private void processNewSwitchVector(NewSwitchVector xml) {
         INDIProperty prop = processNewXXXVector(xml);
 
         if (prop == null) {
@@ -351,7 +327,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
 
         INDISwitchElementAndValue[] newEvs = new INDISwitchElementAndValue[evs.length];
 
@@ -392,7 +368,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml
      *            The &lt;newNumberVector&gt; XML message to be parsed.
      */
-    private void processNewNumberVector(Element xml) {
+    private void processNewNumberVector(NewNumberVector xml) {
         INDIProperty prop = processNewXXXVector(xml);
 
         if (prop == null) {
@@ -405,7 +381,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
 
         INDINumberElementAndValue[] newEvs = new INDINumberElementAndValue[evs.length];
 
@@ -446,7 +422,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml
      *            The &lt;newBLOBVector&gt; XML message to be parsed.
      */
-    private void processNewBLOBVector(Element xml) {
+    private void processNewBLOBVector(NewBlobVector xml) {
         INDIProperty prop = processNewXXXVector(xml);
 
         if (prop == null) {
@@ -459,7 +435,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
 
-        Date timestamp = dateFormat().parseTimestamp(xml.getAttribute("timestamp"));
+        Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
 
         INDIBLOBElementAndValue[] newEvs = new INDIBLOBElementAndValue[evs.length];
 
@@ -502,41 +478,32 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The XML message
      * @return An array of Elements and its corresponding requested values
      */
-    private INDIElementAndValue[] processINDIElements(INDIProperty property, Element xml) {
+    private INDIElementAndValue[] processINDIElements(INDIProperty property, NewVector<?> xml) {
 
-        String oneType;
+        Class<?> oneType;
         if (property instanceof INDITextProperty) {
-            oneType = "oneText";
+            oneType = OneText.class;
         } else if (property instanceof INDIBLOBProperty) {
-            oneType = "oneBLOB";
+            oneType = OneBlob.class;
         } else if (property instanceof INDINumberProperty) {
-            oneType = "oneNumber";
+            oneType = OneNumber.class;
         } else if (property instanceof INDISwitchProperty) {
-            oneType = "oneSwitch";
+            oneType = OneSwitch.class;
         } else {
             return new INDIElementAndValue[0];
         }
 
         List<INDIElementAndValue> list = new ArrayList<INDIElementAndValue>();
 
-        NodeList nodes = xml.getChildNodes();
+        for (OneElement<?> node : xml.getElements()) {
+            if (oneType.isAssignableFrom(node.getClass())) {
+                INDIElementAndValue ev = processOneXXX(property, node);
 
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-
-            if (n instanceof Element) {
-                Element child = (Element) n;
-
-                String name = child.getNodeName();
-
-                if (name.equals(oneType)) {
-                    INDIElementAndValue ev = processOneXXX(property, child);
-
-                    if (ev != null) {
-                        list.add(ev);
-                    }
+                if (ev != null) {
+                    list.add(ev);
                 }
             }
+
         }
 
         return list.toArray(new INDIElementAndValue[0]);
@@ -551,12 +518,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The &lt;oneXXX&gt; XML message
      * @return A Element and its corresponding requested value
      */
-    private INDIElementAndValue processOneXXX(INDIProperty property, Element xml) {
-        if (!xml.hasAttribute("name")) {
+    private INDIElementAndValue processOneXXX(INDIProperty property, OneElement<?> xml) {
+        if (!xml.hasName()) {
             return null;
         }
 
-        String elName = xml.getAttribute("name");
+        String elName = xml.getName();
 
         INDIElement el = property.getElement(elName);
 
@@ -593,12 +560,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The XML message
      * @return The subdriver to which the message is directed.
      */
-    private INDIDriver getSubdriver(Element xml) {
-        if (!xml.hasAttribute("device")) {
+    private INDIDriver getSubdriver(INDIProtocol<?> xml) {
+        if (!xml.hasDevice()) {
             return null;
         }
 
-        String deviceName = xml.getAttribute("device").trim();
+        String deviceName = xml.getDevice();
 
         return getSubdriver(deviceName);
     }
@@ -610,13 +577,13 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The XML message
      * @return The INDI Property to which the <code>xml</code> message refers.
      */
-    private INDIProperty processNewXXXVector(Element xml) {
-        if (!xml.hasAttribute("device") || !xml.hasAttribute("name")) {
+    private INDIProperty processNewXXXVector(NewVector<?> xml) {
+        if (!xml.hasDevice() || !xml.hasName()) {
             return null;
         }
 
-        String devName = xml.getAttribute("device");
-        String propName = xml.getAttribute("name");
+        String devName = xml.getDevice();
+        String propName = xml.getName();
 
         if (devName.compareTo(getName()) != 0) { // If the message is not for
                                                  // this device
@@ -634,15 +601,15 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml
      *            The XML message
      */
-    private void processGetProperties(Element xml) {
-        if (!xml.hasAttribute("version")) {
+    private void processGetProperties(GetProperties xml) {
+        if (xml.getVersion() == null || xml.getVersion().trim().isEmpty()) {
             printMessage("getProperties: no version specified\n");
 
             return;
         }
 
-        if (xml.hasAttribute("device")) {
-            String deviceName = xml.getAttribute("device").trim();
+        if (xml.getDevice() != null && !xml.getDevice().isEmpty()) {
+            String deviceName = xml.getDevice();
 
             // TODO: this is wrong ;-)
             if (deviceName.compareTo(deviceName) != 0) { // not asking for this
@@ -651,8 +618,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
             }
         }
 
-        if (xml.hasAttribute("name")) {
-            String propertyName = xml.getAttribute("name");
+        if (xml.getName() != null && !xml.getName().trim().isEmpty()) {
+            String propertyName = xml.getName();
             INDIProperty p = getProperty(propertyName);
 
             if (p != null) {
@@ -772,7 +739,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
                 }
             }
 
-            String msg = property.getXMLPropertySet(includeMinMax, message);
+            SetVector<?> msg = property.getXMLPropertySet(includeMinMax, message);
 
             sendXML(msg);
             return true;
@@ -798,9 +765,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The extra message text for the client.
      */
     private void sendDefXXXVectorMessage(INDIProperty property, String message) {
-        String msg = property.getXMLPropertyDefinition(message);
-
-        sendXML(msg);
+        sendXML(property.getXMLPropertyDefinition(message));
     }
 
     /**
@@ -809,19 +774,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml
      *            The message to be sended.
      */
-    private void sendXML(String xml) {
+    private void sendXML(INDIProtocol<?> xml) {
         try {
-            // just a trick to make it always true, without the code checker
-            // tools detecting it.
-            if (Integer.valueOf(1).intValue() == 1) {
-                out.write(xml);
-                out.flush();
-            } else {
-                // it should be like this, but that does interrupt the
-                // communication somehow.
-                outputStream.write(xml.getBytes(Charsets.UTF_8));
-                outputStream.flush();
-            }
+            connection.getINDIOutputStream().writeObject(xml);
         } catch (IOException e) {
             throw new IllegalStateException("could not write to output stream", e);
         }
@@ -879,15 +834,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            A optional message (can be <code>null</code>).
      */
     private void sendDelPropertyMessage(String message) {
-        String mm = "";
-
-        if (message != null) {
-            mm = " message=\"" + message + "\"";
-        }
-
-        String msg = "<delProperty device=\"" + this.getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\"" + mm + " />";
-
-        sendXML(msg);
+        sendXML(new DelProperty().setDevice(this.getName()).setTimestamp(dateFormat().getCurrentTimestamp()).setMessage(message));
     }
 
     /**
@@ -900,16 +847,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The optional message (can be <code>null</code>).
      */
     private void sendDelPropertyMessage(INDIProperty property, String message) {
-        String mm = "";
-
-        if (message != null) {
-            mm = " message=\"" + message + "\"";
-        }
-
-        String msg =
-                "<delProperty device=\"" + this.getName() + "\" name=\"" + property.getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\"" + mm + " />";
-
-        sendXML(msg);
+        sendXML(new DelProperty().setDevice(this.getName()).setName(property.getName()).setTimestamp(dateFormat().getCurrentTimestamp()).setMessage(message));
     }
 
     /**
@@ -946,17 +884,28 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     @Override
-    public InputStream getInputStream() {
-        return inputStream;
+    public INDIInputStream getInputStream() {
+        try {
+            return connection.getINDIInputStream();
+        } catch (IOException e) {
+            LOG.error("could not get input stream", e);
+            return null;
+        }
     }
 
     /**
-     * Gets the <code>OutputStream</code> of the driver (useful for subdrivers).
+     * Gets the <code>INDIOutputStream</code> of the driver (useful for
+     * subdrivers).
      * 
-     * @return The <code>OutputStream</code> of the driver.
+     * @return The <code>INDIOutputStream</code> of the driver.
      */
-    public OutputStream getOutputStream() {
-        return outputStream;
+    public INDIOutputStream getOutputStream() {
+        try {
+            return connection.getINDIOutputStream();
+        } catch (IOException e) {
+            LOG.error("could not get output stream", e);
+            return null;
+        }
     }
 
     /**
@@ -1015,6 +964,13 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     public INDIPropertyBuilder<INDIBLOBProperty> newBlobProperty() {
         return newProperty(INDIBLOBProperty.class);
+    }
+
+    /**
+     * @return undelaying indi connection.
+     */
+    protected INDIConnection getINDIConnection() {
+        return connection;
     }
 
 }

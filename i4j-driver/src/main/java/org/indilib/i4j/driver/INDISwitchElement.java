@@ -26,7 +26,10 @@ import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.util.INDIElementBuilder;
-import org.w3c.dom.Element;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefSwitch;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneSwitch;
 
 /**
  * A class representing a INDI Switch Element.
@@ -114,12 +117,8 @@ public class INDISwitchElement extends INDIElement {
     }
 
     @Override
-    public String getXMLOneElement(boolean includeMinMaxStep) {
-        String stat = Constants.getSwitchStatusAsString(status);
-
-        String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";
-
-        return xml;
+    public OneElement<?> getXMLOneElement(boolean includeMinMaxStep) {
+        return new OneSwitch().setName(getName()).setTextContent(Constants.getSwitchStatusAsString(status));
     }
 
     @Override
@@ -128,16 +127,12 @@ public class INDISwitchElement extends INDIElement {
     }
 
     @Override
-    protected String getXMLDefElement() {
-        String stat = Constants.getSwitchStatusAsString(status);
-
-        String xml = "<defSwitch name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + stat + "</defSwitch>";
-
-        return xml;
+    protected DefElement<?> getXMLDefElement() {
+        return new DefSwitch().setName(getName()).setLabel(getLabel()).setTextContent(Constants.getSwitchStatusAsString(status));
     }
 
     @Override
-    public Object parseOneValue(Element xml) {
+    public Object parseOneValue(OneElement<?> xml) {
         return Constants.parseSwitchStatus(xml.getTextContent().trim());
     }
 

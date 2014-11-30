@@ -23,7 +23,10 @@ package org.indilib.i4j.driver;
  */
 
 import org.indilib.i4j.driver.util.INDIElementBuilder;
-import org.w3c.dom.Element;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefText;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneText;
 
 /**
  * A class representing a INDI Text Element.
@@ -79,10 +82,8 @@ public class INDITextElement extends INDIElement {
     }
 
     @Override
-    public String getXMLOneElement(boolean includeMinMaxStep) {
-        String xml = "<oneText name=\"" + this.getName() + "\">" + value + "</oneText>";
-
-        return xml;
+    public OneElement<?> getXMLOneElement(boolean includeMinMaxStep) {
+        return new OneText().setName(getName()).setTextContent(value);
     }
 
     @Override
@@ -91,14 +92,12 @@ public class INDITextElement extends INDIElement {
     }
 
     @Override
-    protected String getXMLDefElement() {
-        String xml = "<defText name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + value + "</defText>";
-
-        return xml;
+    protected DefElement<?> getXMLDefElement() {
+        return new DefText().setName(getName()).setLabel(getLabel()).setTextContent(value);
     }
 
     @Override
-    public String parseOneValue(Element xml) {
+    public String parseOneValue(OneElement<?> xml) {
         return xml.getTextContent().trim();
     }
 }

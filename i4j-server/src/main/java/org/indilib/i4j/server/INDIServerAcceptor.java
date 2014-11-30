@@ -24,6 +24,8 @@ package org.indilib.i4j.server;
 
 import java.net.Socket;
 
+import org.indilib.i4j.protocol.api.INDIConnection;
+
 /**
  * This is the server side wrapper interface around different ways to connect to
  * the server. It is always a runnabble that will be started as a thread using
@@ -40,7 +42,7 @@ public interface INDIServerAcceptor extends Runnable {
      *            the socket the client is connected to.
      * @return true if the client is accepted.
      */
-    boolean acceptClient(Socket clientSocket);
+    boolean acceptClient(INDIConnection clientSocket);
 
     /**
      * @return is the thread running?

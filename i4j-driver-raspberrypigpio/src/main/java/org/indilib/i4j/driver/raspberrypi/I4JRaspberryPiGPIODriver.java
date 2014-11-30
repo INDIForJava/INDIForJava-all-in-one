@@ -29,8 +29,6 @@ import static org.indilib.i4j.Constants.SwitchStatus.ON;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
@@ -55,6 +53,7 @@ import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.connection.INDIConnectionHandler;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -325,13 +324,11 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      * messages (from clients) and a <code>outputStream</code> to write the
      * messages to the clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public I4JRaspberryPiGPIODriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public I4JRaspberryPiGPIODriver(INDIConnection connection) {
+        super(connection);
 
         pins = new GpioPin[NUMBER_OF_PINS];
 
@@ -422,8 +419,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
             cpu.newElement().name("voltage").label("Voltage").textValue(SystemInfo.getCpuVoltage() + "").create();
             addProperty(cpu);
 
-            INDINumberProperty memoryVoltage =
-                    newNumberProperty().name("memory_voltages").label("Memory Voltages").group("System Info").state(OK).permission(RO).create();
+            INDINumberProperty memoryVoltage = newNumberProperty().name("memory_voltages").label("Memory Voltages").group("System Info").state(OK).permission(RO).create();
             memoryVoltage.newElement().name("voltage_sdram_c").label("Voltage SDRAM C").numberValue(SystemInfo.getMemoryVoltageSDRam_C()).maximum(MAX_VOLTAGE).step(1)
                     .numberFormat("%1.2f").create();
             memoryVoltage.newElement().name("voltage_sdram_i").label("Voltage SDRAM I").numberValue(SystemInfo.getMemoryVoltageSDRam_I()).maximum(MAX_VOLTAGE).step(1)

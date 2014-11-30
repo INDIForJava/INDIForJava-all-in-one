@@ -39,8 +39,6 @@ package org.indilib.i4j.driver.seletek;
  * #L%
  */
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
@@ -58,6 +56,7 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.focuser.INDIFocuserDriver;
+import org.indilib.i4j.protocol.api.INDIConnection;
 
 /**
  * A class that acts as a INDI for Java Focuser Driver for a focuser connected
@@ -140,17 +139,15 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
      * clients) and a <code>outputStream</code> to write the messages to the
      * clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages
-     * @param outputStream
-     *            The stream to which to write the messages
+     * @param connection
+     *            the indi connection to the server.
      * @param seletekPort
      *            0 - Main port, 1 - Exp port
      * @param driver
      *            The Seletek Driver
      */
-    public SeletekFocuser(InputStream inputStream, OutputStream outputStream, int seletekPort, I4JSeletekDriver driver) {
-        super(inputStream, outputStream);
+    public SeletekFocuser(INDIConnection connection, int seletekPort, I4JSeletekDriver driver) {
+        super(connection);
 
         this.seletekPort = seletekPort;
         this.driver = driver;

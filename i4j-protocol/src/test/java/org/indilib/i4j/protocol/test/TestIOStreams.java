@@ -158,7 +158,7 @@ public class TestIOStreams {
         OneText result1 = (OneText) connection.getINDIInputStream().readObject();
         OneText result2 = (OneText) connection.getINDIInputStream().readObject();
 
-        Assert.assertEquals("123 was here ", result1.getTextContent());
+        Assert.assertEquals("123 was here", result1.getTextContent());
         Assert.assertEquals("123 was here again", result2.getTextContent());
         connection.close();
     }

@@ -30,8 +30,18 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
+
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefSwitch;
+import org.indilib.i4j.protocol.DefSwitchVector;
+import org.indilib.i4j.protocol.NewSwitchVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneSwitch;
+import org.indilib.i4j.protocol.SetVector;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -69,11 +79,9 @@ public class INDISwitchProperty extends INDIProperty {
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
      */
-    protected INDISwitchProperty(Element xml, INDIDevice device) {
+    protected INDISwitchProperty(DefSwitchVector xml, INDIDevice device) {
         super(xml, device);
-
-        String rul = xml.getAttribute("rule").trim();
-
+        String rul = xml.getRule().trim();
         if (rul.compareTo("OneOfMany") == 0) {
             rule = SwitchRules.ONE_OF_MANY;
         } else if (rul.compareTo("AtMostOne") == 0) {
@@ -83,35 +91,30 @@ public class INDISwitchProperty extends INDIProperty {
         } else {
             throw new IllegalArgumentException("Illegal Rule for the Switch Property");
         }
+        for (DefElement<?> element : xml.getElements()) {
+            if (element instanceof DefSwitch) {
+                String name = element.getName();
 
-        NodeList list = xml.getElementsByTagName("defSwitch");
+                INDIElement iel = getElement(name);
 
-        for (int i = 0; i < list.getLength(); i++) {
-            Element child = (Element) list.item(i);
-
-            String name = child.getAttribute("name");
-
-            INDIElement iel = getElement(name);
-
-            if (iel == null) { // Does not exist
-                INDISwitchElement ite = new INDISwitchElement(child, this);
-                addElement(ite);
+                if (iel == null) { // Does not exist
+                    INDISwitchElement ite = new INDISwitchElement((DefSwitch) element, this);
+                    addElement(ite);
+                }
             }
         }
-
         if (!checkCorrectValues()) {
             if (getSelectedCount() != 0) { // Sometimes de CONFIG_PROCESS is not
                                            // correct at the beginning. skip
                 throw new IllegalArgumentException("Illegal initial value for Switch Property");
             }
-
             setState(PropertyStates.ALERT);
         }
     }
 
     @Override
-    protected void update(Element el) {
-        super.update(el, "oneSwitch");
+    protected void update(SetVector<?> el) {
+        super.update(el, OneSwitch.class);
 
         if (!checkCorrectValues()) {
             setState(PropertyStates.ALERT);
@@ -193,23 +196,8 @@ public class INDISwitchProperty extends INDIProperty {
      *         Property.
      */
     @Override
-    protected String getXMLPropertyChangeInit() {
-        String xml = "<newSwitchVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
-
-        return xml;
-    }
-
-    /**
-     * Gets the closing XML Element &lt;/newSwitchVector&gt; for this Property.
-     * 
-     * @return the closing XML Element &lt;/newSwitchVector&gt; for this
-     *         Property.
-     */
-    @Override
-    protected String getXMLPropertyChangeEnd() {
-        String xml = "</newSwitchVector>";
-
-        return xml;
+    protected NewVector<?> getXMLPropertyChangeInit() {
+        return new NewSwitchVector();
     }
 
     @Override

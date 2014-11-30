@@ -30,6 +30,8 @@ import java.io.ObjectInputStream;
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Input stream of INDIProtocol objects. deserialized from a xml stream.
@@ -37,6 +39,11 @@ import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
  * @author Richard van Nieuwenhoven
  */
 public class INDIInputStreamImpl extends InputStream implements INDIInputStream {
+
+    /**
+     * logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIInputStreamImpl.class);
 
     static {
         INDIURLStreamHandlerFactory.init();
@@ -73,7 +80,12 @@ public class INDIInputStreamImpl extends InputStream implements INDIInputStream 
     @Override
     public INDIProtocol<?> readObject() throws IOException {
         try {
-            return (INDIProtocol<?>) in.readObject();
+            INDIProtocol<?> readObject = (INDIProtocol<?>) in.readObject();
+            readObject.trim();
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("received indi object " + readObject);
+            }
+            return readObject;
         } catch (EOFException e) {
             return null;
         } catch (ClassNotFoundException e) {

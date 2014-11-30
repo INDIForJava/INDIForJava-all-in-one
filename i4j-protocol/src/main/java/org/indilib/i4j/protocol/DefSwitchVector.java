@@ -23,6 +23,7 @@ package org.indilib.i4j.protocol;
  */
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * This class represents an INDI XML protocol element.
@@ -32,6 +33,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("defSwitchVector")
 public class DefSwitchVector extends DefVector<DefSwitchVector> {
 
+    /**
+     * the rule element attribute.
+     */
+    @XStreamAsAttribute
+    private String rule;
+
     @Override
     public boolean isDefSwitchVector() {
         return true;
@@ -40,5 +47,30 @@ public class DefSwitchVector extends DefVector<DefSwitchVector> {
     @Override
     public boolean isSwitch() {
         return true;
+    }
+
+    /**
+     * @return the rule element attribute.
+     */
+    public String getRule() {
+        return rule;
+    }
+
+    /**
+     * set the rule element atttribute.
+     * 
+     * @param newRule
+     *            the new rule value
+     * @return this for builder pattern.
+     */
+    public DefSwitchVector setRule(String newRule) {
+        this.rule = newRule;
+        return this;
+    }
+
+    @Override
+    public DefSwitchVector trim() {
+        this.rule = trim(this.rule);
+        return super.trim();
     }
 }

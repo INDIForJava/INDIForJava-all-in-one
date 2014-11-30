@@ -29,8 +29,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * 
  * @author Richard van Nieuwenhoven
  */
-@XStreamAlias("setTextVector")
-public class NewTextVector extends SetVector<NewTextVector> {
+@XStreamAlias("newTextVector")
+public class NewTextVector extends NewVector<NewTextVector> {
 
     @Override
     public boolean isNewTextVector() {

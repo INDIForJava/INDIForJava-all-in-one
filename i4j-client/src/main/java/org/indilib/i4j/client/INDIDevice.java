@@ -33,8 +33,25 @@ import java.util.List;
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
+
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefBlobVector;
+import org.indilib.i4j.protocol.DefLightVector;
+import org.indilib.i4j.protocol.DefNumberVector;
+import org.indilib.i4j.protocol.DefSwitchVector;
+import org.indilib.i4j.protocol.DefTextVector;
+import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.DelProperty;
+import org.indilib.i4j.protocol.EnableBLOB;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.SetBlobVector;
+import org.indilib.i4j.protocol.SetLightVector;
+import org.indilib.i4j.protocol.SetNumberVector;
+import org.indilib.i4j.protocol.SetSwitchVector;
+import org.indilib.i4j.protocol.SetTextVector;
+import org.indilib.i4j.protocol.SetVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -190,9 +207,7 @@ public class INDIDevice {
      *             if there is some problem sending the message.
      */
     public void blobsEnable(BLOBEnables enable) throws IOException {
-        String xml = "<enableBLOB device=\"" + getName() + "\">" + Constants.getBLOBEnableAsString(enable) + "</enableBLOB>";
-
-        sendMessageToServer(xml);
+        sendMessageToServer(new EnableBLOB().setDevice(getName()).setTextContent(Constants.getBLOBEnableAsString(enable)));
     }
 
     /**
@@ -208,9 +223,7 @@ public class INDIDevice {
      */
     public void blobsEnable(BLOBEnables enable, INDIProperty property) throws IOException {
         if ((properties.containsValue(property)) && (property instanceof INDIBLOBProperty)) {
-            String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">" + Constants.getBLOBEnableAsString(enable) + "</enableBLOB>";
-
-            sendMessageToServer(xml);
+            sendMessageToServer(new EnableBLOB().setDevice(getName()).setName(property.getName()).setTextContent(Constants.getBLOBEnableAsString(enable)));
         }
     }
 
@@ -225,9 +238,7 @@ public class INDIDevice {
      */
     @Deprecated
     public void blobsEnableNever() throws IOException {
-        String xml = "<enableBLOB device=\"" + getName() + "\">Never</enableBLOB>";
-
-        sendMessageToServer(xml);
+        sendMessageToServer(new EnableBLOB().setDevice(getName()).setTextContent("Never"));
     }
 
     /**
@@ -241,9 +252,7 @@ public class INDIDevice {
      */
     @Deprecated
     public void blobsEnableAlso() throws IOException {
-        String xml = "<enableBLOB device=\"" + getName() + "\">Also</enableBLOB>";
-
-        sendMessageToServer(xml);
+        sendMessageToServer(new EnableBLOB().setDevice(getName()).setTextContent("Also"));
     }
 
     /**
@@ -257,9 +266,7 @@ public class INDIDevice {
      */
     @Deprecated
     public void blobsEnableOnly() throws IOException {
-        String xml = "<enableBLOB device=\"" + getName() + "\">Only</enableBLOB>";
-
-        sendMessageToServer(xml);
+        sendMessageToServer(new EnableBLOB().setDevice(getName()).setTextContent("Only"));
     }
 
     /**
@@ -275,9 +282,7 @@ public class INDIDevice {
      */
     @Deprecated
     public void blobsEnableNever(INDIBLOBProperty property) throws IOException {
-        String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Never</enableBLOB>";
-
-        sendMessageToServer(xml);
+        sendMessageToServer(new EnableBLOB().setDevice(getName()).setName(property.getName()).setTextContent("Never"));
     }
 
     /**
@@ -293,9 +298,7 @@ public class INDIDevice {
      */
     @Deprecated
     public void blobsEnableAlso(INDIBLOBProperty property) throws IOException {
-        String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Also</enableBLOB>";
-
-        sendMessageToServer(xml);
+        sendMessageToServer(new EnableBLOB().setDevice(getName()).setName(property.getName()).setTextContent("Also"));
     }
 
     /**
@@ -311,9 +314,7 @@ public class INDIDevice {
      */
     @Deprecated
     public void blobsEnableOnly(INDIBLOBProperty property) throws IOException {
-        String xml = "<enableBLOB device=\"" + getName() + "\" name=\"" + property.getName() + "\">Only</enableBLOB>";
-
-        sendMessageToServer(xml);
+        sendMessageToServer(new EnableBLOB().setDevice(getName()).setName(property.getName()).setTextContent("Only"));
     }
 
     /**
@@ -350,13 +351,13 @@ public class INDIDevice {
      * @param xml
      *            the XML message to be processed.
      */
-    protected void messageReceived(Element xml) {
-        if (xml.hasAttribute("message")) {
-            String time = xml.getAttribute("timestamp").trim();
+    protected void messageReceived(INDIProtocol<?> xml) {
+        if (xml.hasMessage()) {
+            String time = xml.getTimestamp().trim();
 
             timestamp = dateFormat().parseTimestamp(time);
 
-            message = xml.getAttribute("message").trim();
+            message = xml.getMessage().trim();
 
             notifyListenersMessageChanged();
         }
@@ -369,8 +370,8 @@ public class INDIDevice {
      * @param xml
      *            the XML message to be processed.
      */
-    protected void deleteProperty(Element xml) {
-        String propertyName = xml.getAttribute("name").trim();
+    protected void deleteProperty(DelProperty xml) {
+        String propertyName = xml.getName().trim();
 
         if (!(propertyName.length() == 0)) {
             messageReceived(xml);
@@ -443,8 +444,8 @@ public class INDIDevice {
      * @param xml
      *            the XML message to be processed.
      */
-    protected void updateProperty(Element xml) {
-        String propertyName = xml.getAttribute("name").trim();
+    protected void updateProperty(SetVector<?> xml) {
+        String propertyName = xml.getName().trim();
 
         if (!(propertyName.length() == 0)) {
             // check message
@@ -453,24 +454,16 @@ public class INDIDevice {
             INDIProperty p = getProperty(propertyName);
 
             if (p != null) { // If it does not exist else ignore
-                if ((p.getClass() == INDITextProperty.class) && (xml.getTagName().compareTo("setTextVector") == 0)) {
-                    p.update(xml);
-                }
-
-                if ((p.getClass() == INDINumberProperty.class) && (xml.getTagName().compareTo("setNumberVector") == 0)) {
-                    p.update(xml);
-                }
-
-                if ((p.getClass() == INDISwitchProperty.class) && (xml.getTagName().compareTo("setSwitchVector") == 0)) {
-                    p.update(xml);
-                }
-
-                if ((p.getClass() == INDILightProperty.class) && (xml.getTagName().compareTo("setLightVector") == 0)) {
-                    p.update(xml);
-                }
-
-                if ((p.getClass() == INDIBLOBProperty.class) && (xml.getTagName().compareTo("setBLOBVector") == 0)) {
-                    p.update(xml);
+                if ((p instanceof INDITextProperty) && (xml instanceof SetTextVector)) {
+                    p.update((SetTextVector) xml);
+                } else if ((p instanceof INDINumberProperty) && (xml instanceof SetNumberVector)) {
+                    p.update((SetNumberVector) xml);
+                } else if ((p instanceof INDISwitchProperty) && (xml instanceof SetSwitchVector)) {
+                    p.update((SetSwitchVector) xml);
+                } else if ((p instanceof INDILightProperty) && (xml instanceof SetLightVector)) {
+                    p.update((SetLightVector) xml);
+                } else if ((p instanceof INDIBLOBProperty) && (xml instanceof SetBlobVector)) {
+                    p.update((SetBlobVector) xml);
                 }
             }
         }
@@ -483,8 +476,8 @@ public class INDIDevice {
      * @param xml
      *            The XML message to be processed.
      */
-    protected void addProperty(Element xml) {
-        String propertyName = xml.getAttribute("name").trim();
+    protected void addProperty(DefVector<?> xml) {
+        String propertyName = xml.getName().trim();
 
         if (!(propertyName.length() == 0)) {
             messageReceived(xml);
@@ -493,32 +486,32 @@ public class INDIDevice {
 
             if (p == null) { // If it does not exist
                 try {
-                    if (xml.getTagName().compareTo("defSwitchVector") == 0) {
-                        INDISwitchProperty sp = new INDISwitchProperty(xml, this);
+                    if (xml instanceof DefSwitchVector) {
+                        INDISwitchProperty sp = new INDISwitchProperty((DefSwitchVector) xml, this);
 
                         addProperty(sp);
 
                         notifyListenersNewProperty(sp);
-                    } else if (xml.getTagName().compareTo("defTextVector") == 0) {
-                        INDITextProperty tp = new INDITextProperty(xml, this);
+                    } else if (xml instanceof DefTextVector) {
+                        INDITextProperty tp = new INDITextProperty((DefTextVector) xml, this);
 
                         addProperty(tp);
 
                         notifyListenersNewProperty(tp);
-                    } else if (xml.getTagName().compareTo("defNumberVector") == 0) {
-                        INDINumberProperty np = new INDINumberProperty(xml, this);
+                    } else if (xml instanceof DefNumberVector) {
+                        INDINumberProperty np = new INDINumberProperty((DefNumberVector) xml, this);
 
                         addProperty(np);
 
                         notifyListenersNewProperty(np);
-                    } else if (xml.getTagName().compareTo("defLightVector") == 0) {
-                        INDILightProperty lp = new INDILightProperty(xml, this);
+                    } else if (xml instanceof DefLightVector) {
+                        INDILightProperty lp = new INDILightProperty((DefLightVector) xml, this);
 
                         addProperty(lp);
 
                         notifyListenersNewProperty(lp);
-                    } else if (xml.getTagName().compareTo("defBLOBVector") == 0) {
-                        INDIBLOBProperty bp = new INDIBLOBProperty(xml, this);
+                    } else if (xml instanceof DefBlobVector) {
+                        INDIBLOBProperty bp = new INDIBLOBProperty((DefBlobVector) xml, this);
 
                         addProperty(bp);
 
@@ -689,7 +682,7 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem with the connection to the server.
      */
-    protected void sendMessageToServer(String xmlMessage) throws IOException {
+    protected void sendMessageToServer(INDIProtocol<?> xmlMessage) throws IOException {
         server.sendMessageToServer(xmlMessage);
     }
 

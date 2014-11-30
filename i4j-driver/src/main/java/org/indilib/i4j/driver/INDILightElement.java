@@ -25,7 +25,10 @@ package org.indilib.i4j.driver;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.driver.util.INDIElementBuilder;
-import org.w3c.dom.Element;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefLight;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneLight;
 
 /**
  * A class representing a INDI Light Element.
@@ -80,12 +83,8 @@ public class INDILightElement extends INDIElement {
     }
 
     @Override
-    public String getXMLOneElement(boolean includeMinMaxStep) {
-        String v = Constants.getLightStateAsString(state);
-
-        String xml = "<oneLight name=\"" + this.getName() + "\">" + v + "</oneLight>";
-
-        return xml;
+    public OneElement<?> getXMLOneElement(boolean includeMinMaxStep) {
+        return new OneLight().setName(this.getName()).setTextContent(Constants.getLightStateAsString(state));
     }
 
     @Override
@@ -94,16 +93,12 @@ public class INDILightElement extends INDIElement {
     }
 
     @Override
-    protected String getXMLDefElement() {
-        String v = Constants.getLightStateAsString(state);
-
-        String xml = "<defLight name=\"" + this.getName() + "\" label=\"" + getLabel() + "\">" + v + "</defLight>";
-
-        return xml;
+    protected DefElement<?> getXMLDefElement() {
+        return new DefLight().setName(getName()).setLabel(getLabel()).setTextContent(Constants.getLightStateAsString(state));
     }
 
     @Override
-    public Object parseOneValue(Element xml) {
+    public Object parseOneValue(OneElement<?> xml) {
         return Constants.parseLightState(xml.getTextContent().trim());
     }
 }

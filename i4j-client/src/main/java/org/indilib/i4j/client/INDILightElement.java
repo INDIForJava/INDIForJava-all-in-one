@@ -25,7 +25,10 @@ package org.indilib.i4j.client;
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.INDIException;
-import org.w3c.dom.Element;
+import org.indilib.i4j.protocol.DefLight;
+import org.indilib.i4j.protocol.OneElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class representing a INDI Light Element.
@@ -34,6 +37,11 @@ import org.w3c.dom.Element;
  * @version 1.32, February 4, 2012
  */
 public class INDILightElement extends INDIElement {
+
+    /**
+     * A logger for the errors.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDILightElement.class);
 
     /**
      * Current State value for this Light Element.
@@ -57,7 +65,7 @@ public class INDILightElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDILightElement(Element xml, INDIProperty property) {
+    protected INDILightElement(DefLight xml, INDIProperty property) {
         super(xml, property);
 
         String sta = xml.getTextContent().trim();
@@ -82,7 +90,7 @@ public class INDILightElement extends INDIElement {
      *            A XML Element &lt;oneLight&gt; describing the Element.
      */
     @Override
-    protected void setValue(Element xml) {
+    protected void setValue(OneElement<?> xml) {
         String sta = xml.getTextContent().trim();
 
         setValue(sta);
@@ -178,8 +186,9 @@ public class INDILightElement extends INDIElement {
      * @return "";
      */
     @Override
-    protected String getXMLOneElementNewValue() {
-        return ""; // No XML for a light: it cannot be changed
+    protected OneElement<?> getXMLOneElementNewValue() {
+        LOG.error("changed but not possible, it should not be possible to change a light!");
+        return null;
     }
 
     @Override

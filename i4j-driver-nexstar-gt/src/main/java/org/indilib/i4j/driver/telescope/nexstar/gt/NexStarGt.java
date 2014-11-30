@@ -24,8 +24,6 @@ package org.indilib.i4j.driver.telescope.nexstar.gt;
 
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import net.sourceforge.novaforjava.JulianDay;
@@ -44,6 +42,7 @@ import org.indilib.i4j.driver.telescope.alignment.DoubleRef;
 import org.indilib.i4j.driver.telescope.alignment.MathPluginManagement;
 import org.indilib.i4j.driver.telescope.alignment.MountAlignment;
 import org.indilib.i4j.driver.telescope.alignment.TelescopeDirectionVector;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +84,8 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     @InjectExtension
     private MathPluginManagement mathPluginManagement;
 
-    public NexStarGt(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public NexStarGt(INDIConnection connection) {
+        super(connection);
         serialPortExtension.setMinimumMillisecondsBetweenCommands(25);
         mathPluginManagement.setApproximateAlignment(MountAlignment.ZENITH);
         mathPluginManagement.forceActive();

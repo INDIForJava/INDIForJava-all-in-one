@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("newNumberVector")
-public class NewNumberVector extends SetVector<NewNumberVector> {
+public class NewNumberVector extends NewVector<NewNumberVector> {
 
     @Override
     public boolean isNewNumberVector() {

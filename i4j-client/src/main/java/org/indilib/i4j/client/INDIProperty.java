@@ -22,6 +22,8 @@ package org.indilib.i4j.client;
  * #L%
  */
 
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,6 +33,10 @@ import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.SetVector;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -107,39 +113,39 @@ public abstract class INDIProperty {
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
      */
-    protected INDIProperty(Element xml, INDIDevice device) {
+    protected INDIProperty(DefVector<?> xml, INDIDevice device) {
 
         this.device = device;
 
-        name = xml.getAttribute("name").trim();
+        name = xml.getName().trim();
 
         if (name.compareTo("") == 0) { // If no name, ignore
             throw new IllegalArgumentException("No name for the Property");
         }
 
-        label = xml.getAttribute("label").trim();
+        label = xml.getLabel().trim();
 
         if (label.compareTo("") == 0) { // If no label copy from name
             this.label = name;
         }
 
-        group = xml.getAttribute("group").trim();
+        group = xml.getGroup().trim();
 
         if (group.compareTo("") == 0) { // If no group, create default group
             group = "Unsorted";
         }
 
-        String sta = xml.getAttribute("state").trim();
+        String sta = xml.getState().trim();
 
         setState(sta);
 
         if ((this instanceof INDITextProperty) || (this instanceof INDINumberProperty) || (this instanceof INDISwitchProperty) || (this instanceof INDIBLOBProperty)) {
 
-            String per = xml.getAttribute("perm").trim();
+            String per = xml.getPerm().trim();
 
             permission = Constants.parsePropertyPermission(per);
 
-            String to = xml.getAttribute("timeout").trim();
+            String to = xml.getTimeout().trim();
 
             if (!(to.length() == 0)) {
                 setTimeout(to);
@@ -169,7 +175,7 @@ public abstract class INDIProperty {
      *            property must be updated.
      * @see #update(Element, String)
      */
-    protected abstract void update(Element xml);
+    protected abstract void update(SetVector<?> xml);
 
     /**
      * Updates the values of its elements according to some XML data. Subclasses
@@ -188,38 +194,30 @@ public abstract class INDIProperty {
      *            <code>&lt;setTextVector&gt;</code>.
      * @see #update(Element)
      */
-    protected void update(Element xml, String childNodesType) {
+    protected void update(SetVector<?> xml, Class<?> childNodesType) {
         try {
-            String sta = xml.getAttribute("state").trim();
-
+            String sta = xml.getState().trim();
             if (!(sta.length() == 0)) {
                 setState(sta);
             }
-
-            String to = xml.getAttribute("timeout").trim();
-
+            String to = xml.getTimeout().trim();
             if (!(to.length() == 0)) {
                 setTimeout(to);
             }
-
-            NodeList list = xml.getElementsByTagName(childNodesType);
-
-            for (int i = 0; i < list.getLength(); i++) {
-                Element child = (Element) list.item(i);
-
-                String ename = child.getAttribute("name");
-
-                INDIElement iel = getElement(ename);
-
-                if (iel != null) { // It already exists else ignore
-                    iel.setValue(child);
+            for (OneElement<?> element : xml.getElements()) {
+                if (childNodesType.isAssignableFrom(element.getClass())) {
+                    String ename = element.getName();
+                    INDIElement iel = getElement(ename);
+                    if (iel != null) {
+                        // It already exists else ignore
+                        iel.setValue(element);
+                    }
                 }
             }
-        } catch (IllegalArgumentException e) { // If there was some poblem
-                                               // parsing then set to alert
+        } catch (IllegalArgumentException e) {
+            // If there was some problem parsing then set to alert
             state = PropertyStates.ALERT;
         }
-
         notifyListeners();
     }
 
@@ -414,21 +412,21 @@ public abstract class INDIProperty {
         ArrayList<INDIElement> elems = getElementsAsList();
 
         int changedElements = 0;
-        String xml = "";
+        NewVector<?> xml = getXMLPropertyChangeInit();
         for (int i = 0; i < elems.size(); i++) {
             INDIElement el = elems.get(i);
-
             if (el.isChanged()) {
                 changedElements++;
-
-                xml += el.getXMLOneElementNewValue();
+                xml.getElements().add(el.getXMLOneElementNewValue());
             }
         }
 
         if (changedElements > 0) {
             setState(PropertyStates.BUSY);
 
-            xml = getXMLPropertyChangeInit() + xml + getXMLPropertyChangeEnd();
+            xml.setDevice(getDevice().getName());
+            xml.setName(getName());
+            xml.setTimestamp(dateFormat().getCurrentTimestamp());
 
             device.sendMessageToServer(xml);
         }
@@ -472,14 +470,7 @@ public abstract class INDIProperty {
      * 
      * @return the opening XML Element &lt;newXXXVector&gt; for this Property.
      */
-    protected abstract String getXMLPropertyChangeInit();
-
-    /**
-     * Gets the closing XML Element &lt;/newXXXVector&gt; for this Property.
-     * 
-     * @return the closing XML Element &lt;/newXXXVector&gt; for this Property.
-     */
-    protected abstract String getXMLPropertyChangeEnd();
+    protected abstract NewVector<?> getXMLPropertyChangeInit();
 
     /**
      * Gets a default UI component to handle the repesentation and control of

@@ -30,6 +30,16 @@ import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIProtocolReader;
+import org.indilib.i4j.protocol.EnableBLOB;
+import org.indilib.i4j.protocol.GetProperties;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.NewBlobVector;
+import org.indilib.i4j.protocol.NewNumberVector;
+import org.indilib.i4j.protocol.NewSwitchVector;
+import org.indilib.i4j.protocol.NewTextVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.server.api.INDIClientInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +71,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     /**
      * The socket to communicate with the Client.
      */
-    private Socket socket;
+    private INDIConnection socket;
 
     /**
      * Constructs a new INDIClient that connects to the server and starts
@@ -72,7 +82,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @param server
      *            The Server to which the Client is connected.
      */
-    public INDIClient(Socket socket, INDIServer server) {
+    public INDIClient(INDIConnection socket, INDIServer server) {
         this.socket = socket;
         this.server = server;
 
@@ -91,14 +101,15 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @return A String representation of the host and port of the Client.
      */
     public String getInetAddress() {
-        return socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
+        return socket.toString();
     }
 
     @Override
-    public InputStream getInputStream() {
+    public INDIInputStream getInputStream() {
         try {
-            return socket.getInputStream();
+            return socket.getINDIInputStream();
         } catch (IOException e) {
+            LOG.error("could not open input stream to indi-connection", e);
             return null;
         }
     }
@@ -110,12 +121,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
         if (socket != null) {
             try {
                 reader.setStop(true);
-
-                socket.shutdownInput();
-                socket.getInputStream().close();
-                socket.getOutputStream().close();
                 socket.close();
-
                 socket = null;
             } catch (IOException e) {
                 LOG.error("disconnect exception", e);
@@ -124,21 +130,13 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     }
 
     @Override
-    protected void parseXMLElement(Element child) {
-        String name = child.getNodeName();
-
-        if (name.equals("getProperties")) {
-            processGetProperties(child);
-        } else if (name.equals("newTextVector")) {
-            processNewXXXVector(child);
-        } else if (name.equals("newNumberVector")) {
-            processNewXXXVector(child);
-        } else if (name.equals("newSwitchVector")) {
-            processNewXXXVector(child);
-        } else if (name.equals("newBLOBVector")) {
-            processNewXXXVector(child);
-        } else if (name.equals("enableBLOB")) {
-            processEnableBLOB(child);
+    protected void parseXMLElement(INDIProtocol<?> child) {
+        if (child instanceof GetProperties) {
+            processGetProperties((GetProperties) child);
+        } else if (child instanceof NewVector) {
+            processNewXXXVector((NewVector<?>) child);
+        } else if (child instanceof EnableBLOB) {
+            processEnableBLOB((EnableBLOB) child);
         }
     }
 
@@ -148,8 +146,8 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @param xml
      *            the xml message
      */
-    protected void processGetProperties(Element xml) {
-        String version = xml.getAttribute("version").trim();
+    protected void processGetProperties(GetProperties xml) {
+        String version = xml.getVersion().trim();
         if (version.isEmpty()) { // Some conditions to ignore the messages
             return;
         }
@@ -158,10 +156,9 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     }
 
     @Override
-    protected void sendXMLMessage(String xml) {
+    protected void sendXMLMessage(INDIProtocol<?> message) {
         try {
-            socket.getOutputStream().write(xml.getBytes(Charsets.UTF_8));
-            socket.getOutputStream().flush();
+            socket.getINDIOutputStream().writeObject(message);
         } catch (IOException e) {
             disconnect();
         }
@@ -173,31 +170,28 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @param xml
      *            xml message
      */
-    private void processEnableBLOB(Element xml) {
-        String device = xml.getAttribute("device").trim();
-        if (device.isEmpty()) {
+    private void processEnableBLOB(EnableBLOB xml) {
+        if (xml.hasDevice()) {
             return;
         }
-
-        String property = xml.getAttribute("name").trim();
-
         String rule = xml.getTextContent();
         BLOBEnables enable;
 
         try {
+            // TODO: move this to a xtream enum
             enable = Constants.parseBLOBEnable(rule);
         } catch (IllegalArgumentException e) {
             return;
         }
 
-        if (property.isEmpty()) {
-            if (this.listensToDevice(device)) {
-                this.addBLOBEnableRule(device, enable);
+        if (!xml.hasName()) {
+            if (this.listensToDevice(xml.getDevice())) {
+                this.addBLOBEnableRule(xml.getDevice(), enable);
                 server.notifyClientListenersEnableBLOB(this, xml);
             }
         } else {
-            if (this.listensToProperty(device, property)) {
-                this.addBLOBEnableRule(device, property, enable);
+            if (this.listensToProperty(xml.getDevice(), xml.getName())) {
+                this.addBLOBEnableRule(xml.getDevice(), xml.getName(), enable);
                 server.notifyClientListenersEnableBLOB(this, xml);
             }
         }
@@ -209,13 +203,13 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @param xml
      *            the xml messge.
      */
-    private void processNewXXXVector(Element xml) {
-        String device = xml.getAttribute("device").trim();
+    private void processNewXXXVector(NewVector<?> xml) {
+        String device = xml.getDevice();
         if (device.isEmpty()) {
             return;
         }
 
-        String property = xml.getAttribute("name").trim();
+        String property = xml.getName().trim();
         if (property.isEmpty()) {
             return;
         }

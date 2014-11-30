@@ -32,6 +32,10 @@ import java.util.List;
 
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.api.INDIOutputStream;
+import org.indilib.i4j.protocol.io.INDIPipedConnections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +66,6 @@ public class INDIJavaDevice extends INDIDevice {
     private Class<?> driverClass;
 
     /**
-     * A buffer to get information from the Driver.
-     */
-    private CircularByteBuffer fromDriver;
-
-    /**
      * An identifier of the Java Device. Can be the name of a JAR file or any
      * other String, but it must be UNIQUE.
      */
@@ -78,9 +77,9 @@ public class INDIJavaDevice extends INDIDevice {
     private List<String> names;
 
     /**
-     * A buffer to send information to the Driver.
+     * A buffer to send information from and to the Driver.
      */
-    private CircularByteBuffer toDriver;
+    private INDIConnection driverConnection;
 
     /**
      * Constructs a new Java Device and starts listening to its messages.
@@ -94,7 +93,7 @@ public class INDIJavaDevice extends INDIDevice {
      * @throws INDIException
      *             if there is any problem instantiating the Driver.
      */
-    protected INDIJavaDevice(INDIServer server, Class driverClass, String identifier) throws INDIException {
+    protected INDIJavaDevice(INDIServer server, Class<?> driverClass, String identifier) throws INDIException {
         super(server);
 
         // name = null;
@@ -102,12 +101,12 @@ public class INDIJavaDevice extends INDIDevice {
         this.identifier = identifier;
         this.driverClass = driverClass;
 
-        toDriver = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
-        fromDriver = new CircularByteBuffer(CircularByteBuffer.INFINITE_SIZE);
+        INDIPipedConnections connections = new INDIPipedConnections();
 
+        driverConnection = connections.first();
         try {
-            Constructor c = driverClass.getConstructor(InputStream.class, OutputStream.class);
-            this.driver = (INDIDriver) c.newInstance(toDriver.getInputStream(), fromDriver.getOutputStream());
+            Constructor c = driverClass.getConstructor(INDIConnection.class);
+            this.driver = (INDIDriver) c.newInstance(connections.second());
         } catch (InstantiationException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
             throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
@@ -131,22 +130,7 @@ public class INDIJavaDevice extends INDIDevice {
     @Override
     public void closeConnections() {
         try {
-            toDriver.getInputStream().close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-        try {
-            toDriver.getOutputStream().close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-        try {
-            fromDriver.getInputStream().close();
-        } catch (IOException e) {
-            LOG.warn("close connection error", e);
-        }
-        try {
-            fromDriver.getOutputStream().close();
+            driverConnection.close();
         } catch (IOException e) {
             LOG.warn("close connection error", e);
         }
@@ -158,8 +142,12 @@ public class INDIJavaDevice extends INDIDevice {
     }
 
     @Override
-    public InputStream getInputStream() {
-        return fromDriver.getInputStream();
+    public INDIInputStream getInputStream() {
+        try {
+            return driverConnection.getINDIInputStream();
+        } catch (IOException e) {
+            throw new IllegalStateException("could not get input stream from driver");
+        }
     }
 
     @Override
@@ -168,8 +156,12 @@ public class INDIJavaDevice extends INDIDevice {
     }
 
     @Override
-    public OutputStream getOutputStream() {
-        return toDriver.getOutputStream();
+    public INDIOutputStream getOutputStream() {
+        try {
+            return driverConnection.getINDIOutputStream();
+        } catch (IOException e) {
+            throw new IllegalStateException("could not get output stream from driver");
+        }
     }
 
     @Override

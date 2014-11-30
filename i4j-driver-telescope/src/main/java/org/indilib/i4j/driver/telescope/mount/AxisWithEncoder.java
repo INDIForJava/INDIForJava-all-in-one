@@ -31,6 +31,11 @@ import org.slf4j.LoggerFactory;
 public class AxisWithEncoder {
 
     /**
+     * 0.1 is the persission used to detect zero.
+     */
+    private static final double ZERO_DETECTION_PRESISION = 10d;
+
+    /**
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(AxisWithEncoder.class);
@@ -169,7 +174,7 @@ public class AxisWithEncoder {
         } else {
             speed = Math.max(speed, -maximumSpeed);
         }
-        if (Math.round(getSpeedInTicksPerSecond() * 10d) != 0L && Math.round(speed * 10d) != 0L) {
+        if (Math.round(getSpeedInTicksPerSecond() * ZERO_DETECTION_PRESISION) != 0L && Math.round(speed * ZERO_DETECTION_PRESISION) != 0L) {
             // before changing direction take one interfal update to a stop.
             // maybe the direction change will not be nessesary in the next
             // iteration. (a direction change makes a very bad accuracy due to

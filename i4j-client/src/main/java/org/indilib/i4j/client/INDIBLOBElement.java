@@ -25,6 +25,9 @@ package org.indilib.i4j.client;
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefBlob;
+import org.indilib.i4j.protocol.OneBlob;
+import org.indilib.i4j.protocol.OneElement;
 import org.w3c.dom.Element;
 
 /**
@@ -61,7 +64,7 @@ public class INDIBLOBElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDIBLOBElement(Element xml, INDIProperty property) {
+    protected INDIBLOBElement(DefBlob xml, INDIProperty property) {
         super(xml, property);
 
         desiredValue = null;
@@ -88,8 +91,8 @@ public class INDIBLOBElement extends INDIElement {
      *            A XML Element &lt;oneBLOB&gt; describing the Element.
      */
     @Override
-    public void setValue(Element xml) {
-        value = new INDIBLOBValue(xml);
+    public void setValue(OneElement<?> xml) {
+        value = new INDIBLOBValue((OneBlob) xml);
 
         notifyListeners();
     }
@@ -181,17 +184,14 @@ public class INDIBLOBElement extends INDIElement {
      * @see #setDesiredValue
      */
     @Override
-    protected String getXMLOneElementNewValue() {
+    protected OneElement<?> getXMLOneElementNewValue() {
         INDIBLOBValue ibv = (INDIBLOBValue) desiredValue;
-        int size = ibv.getSize();
 
-        String data = value.getBase64BLOBData();
-
-        String xml = "<oneBLOB name=\"" + this.getName() + "\" size=\"" + size + "\" format=\"" + ibv.getFormat() + "\">" + data + "</oneBLOB>";
+        OneBlob result = new OneBlob().setName(getName()).setByteContent(value.getBlobData()).setFormat(ibv.getFormat());
 
         desiredValue = null;
 
-        return xml;
+        return result;
     }
 
     @Override

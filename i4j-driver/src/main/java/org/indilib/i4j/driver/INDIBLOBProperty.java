@@ -22,10 +22,10 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
-import org.indilib.i4j.Constants;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
+import org.indilib.i4j.protocol.DefBlobVector;
+import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.SetBlobVector;
 
 /**
  * A class representing a INDI BLOB Property.
@@ -52,55 +52,13 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
     }
 
     @Override
-    protected String getXMLPropertyDefinitionInit() {
-        String xml =
-                "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
-                        + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
-                        + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
-
-        return xml;
+    protected DefVector<?> getXMLPropertyDefinitionInit() {
+        return new DefBlobVector();
     }
 
     @Override
-    protected String getXMLPropertyDefinitionInit(String message) {
-        String xml =
-                "<defBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
-                        + Constants.getPropertyStateAsString(getState()) + "\" perm=\"" + Constants.getPropertyPermissionAsString(getPermission()) + "\" timeout=\""
-                        + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertyDefinitionEnd() {
-        String xml = "</defBLOBVector>";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertySetInit() {
-        String xml =
-                "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertySetInit(String message) {
-        String xml =
-                "<setBLOBVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timeout=\"" + getTimeout() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertySetEnd() {
-        String xml = "</setBLOBVector>";
-
-        return xml;
+    protected SetBlobVector getXMLPropertySetInit() {
+        return new SetBlobVector();
     }
 
     @Override

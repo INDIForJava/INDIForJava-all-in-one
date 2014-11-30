@@ -23,8 +23,17 @@ package org.indilib.i4j.client;
  */
 
 import org.indilib.i4j.ClassInstantiator;
+
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefNumber;
+import org.indilib.i4j.protocol.DefNumberVector;
+import org.indilib.i4j.protocol.NewNumberVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneNumber;
+import org.indilib.i4j.protocol.SetVector;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -55,28 +64,23 @@ public class INDINumberProperty extends INDIProperty {
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
      */
-    protected INDINumberProperty(Element xml, INDIDevice device) {
+    protected INDINumberProperty(DefNumberVector xml, INDIDevice device) {
         super(xml, device);
-
-        NodeList list = xml.getElementsByTagName("defNumber");
-
-        for (int i = 0; i < list.getLength(); i++) {
-            Element child = (Element) list.item(i);
-
-            String name = child.getAttribute("name");
-
-            INDIElement iel = getElement(name);
-
-            if (iel == null) { // Does not exist
-                INDINumberElement ine = new INDINumberElement(child, this);
-                addElement(ine);
+        for (DefElement<?> element : xml.getElements()) {
+            if (element instanceof DefNumber) {
+                String name = element.getName();
+                INDIElement iel = getElement(name);
+                if (iel == null) { // Does not exist
+                    INDINumberElement ine = new INDINumberElement((DefNumber) element, this);
+                    addElement(ine);
+                }
             }
         }
     }
 
     @Override
-    protected void update(Element el) {
-        super.update(el, "oneNumber");
+    protected void update(SetVector<?> el) {
+        super.update(el, OneNumber.class);
     }
 
     /**
@@ -86,23 +90,8 @@ public class INDINumberProperty extends INDIProperty {
      *         Property.
      */
     @Override
-    protected String getXMLPropertyChangeInit() {
-        String xml = "<newNumberVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
-
-        return xml;
-    }
-
-    /**
-     * Gets the closing XML Element &lt;/newNumberVector&gt; for this Property.
-     * 
-     * @return the closing XML Element &lt;/newNumberVector&gt; for this
-     *         Property.
-     */
-    @Override
-    protected String getXMLPropertyChangeEnd() {
-        String xml = "</newNumberVector>";
-
-        return xml;
+    protected NewVector<?> getXMLPropertyChangeInit() {
+        return new NewNumberVector();
     }
 
     @Override

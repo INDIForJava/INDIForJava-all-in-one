@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Arrays;
 
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.server.api.INDIClientInterface;
 import org.indilib.i4j.server.api.INDIDeviceInterface;
 import org.indilib.i4j.server.api.INDIServerAccessLookup;
@@ -232,7 +233,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
     }
 
     @Override
-    public boolean acceptClient(Socket clientSocket) {
+    public boolean acceptClient(INDIConnection clientSocket) {
         return true;
     }
 

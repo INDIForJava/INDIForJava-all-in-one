@@ -21,22 +21,31 @@ package org.indilib.i4j.client;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.indilib.i4j.Constants;
 
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
+import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
 import org.indilib.i4j.INDIURI;
+import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.DelProperty;
+import org.indilib.i4j.protocol.GetProperties;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.Message;
+import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.io.INDISocketConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -51,6 +60,11 @@ import org.w3c.dom.NodeList;
  * @version 1.39, October 5, 2014
  */
 public class INDIServerConnection implements INDIProtocolParser {
+
+    /**
+     * The logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIServerConnection.class);
 
     /**
      * The elementName of the Connection.
@@ -68,14 +82,9 @@ public class INDIServerConnection implements INDIProtocolParser {
     private int port;
 
     /**
-     * The sockect used in the Connection.
+     * The socket used in the Connection.
      */
-    private Socket socket = null;
-
-    /**
-     * The output writer of the Connection.
-     */
-    private PrintWriter out = null;
+    private INDIConnection connection = null;
 
     /**
      * A reader to read from the Connection.
@@ -161,8 +170,7 @@ public class INDIServerConnection implements INDIProtocolParser {
         this.name = connectionName;
         this.host = connectionHost;
         this.port = connectionPort;
-        this.socket = null;
-        this.out = null;
+        this.connection = null;
         this.reader = null;
 
         devices = new LinkedHashMap<String, INDIDevice>();
@@ -276,17 +284,8 @@ public class INDIServerConnection implements INDIProtocolParser {
      *             if there is some problem connecting to the Server.
      */
     public void connect() throws IOException {
-        if (socket == null) {
-            socket = new Socket();
-
-            try {
-                socket.connect(new InetSocketAddress(host, port), SOCKET_TIMEOUT);
-            } catch (IOException e) {
-                socket = null;
-                throw e;
-            }
-
-            out = new PrintWriter(socket.getOutputStream(), true);
+        if (connection == null) {
+            connection = new INDISocketConnection(host, port);
 
             reader = new INDIProtocolReader(this);
             reader.start();
@@ -298,15 +297,13 @@ public class INDIServerConnection implements INDIProtocolParser {
      * listeners.
      */
     public void disconnect() {
-        if (socket != null) {
+        if (connection == null) {
             try {
-                socket.shutdownInput();
-                out.close();
-                // socket.close();
-            } catch (IOException e) { // LOG IT, but probably will never happen
+                connection.close();
+            } catch (IOException e) {
+                LOG.error("error durill connection close", e);
             }
 
-            socket = null;
             devices.clear();
             notifyListenersConnectionLost();
         }
@@ -319,7 +316,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      *         <code>false</code> otherwise.
      */
     public boolean isConnected() {
-        if (socket == null) {
+        if (connection == null) {
             return false;
         }
 
@@ -334,9 +331,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      *             if there is some problem with the Connection.
      */
     public void askForDevices() throws IOException {
-        String message = "<getProperties version=\"1.7\" />";
-
-        sendMessageToServer(message);
+        sendMessageToServer(new GetProperties().setVersion("1.7"));
     }
 
     /**
@@ -349,9 +344,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      *             if there is some problem with the Connection.
      */
     public void askForDevices(String device) throws IOException {
-        String message = "<getProperties version=\"1.7\" device=\"" + device + "\"/>";
-
-        sendMessageToServer(message);
+        sendMessageToServer(new GetProperties().setVersion("1.7").setDevice(device));
     }
 
     /**
@@ -366,9 +359,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      *             if there is some problem with the Connection.
      */
     public void askForDevices(String device, String propertyName) throws IOException {
-        String message = "<getProperties version=\"1.7\" device=\"" + device + "\" name=\"" + propertyName + "\"/>";
-
-        sendMessageToServer(message);
+        sendMessageToServer(new GetProperties().setVersion("1.7").setDevice(device).setName(propertyName));
     }
 
     /**
@@ -379,9 +370,8 @@ public class INDIServerConnection implements INDIProtocolParser {
      * @throws IOException
      *             if there is some problem with the Connection.
      */
-    protected void sendMessageToServer(String xmlMessage) throws IOException {
-        out.print(xmlMessage);
-        out.flush();
+    protected void sendMessageToServer(INDIProtocol<?> xmlMessage) throws IOException {
+        connection.getINDIOutputStream().writeObject(xmlMessage);
     }
 
     @Override
@@ -466,35 +456,15 @@ public class INDIServerConnection implements INDIProtocolParser {
      *            the messages to be parsed.
      */
     @Override
-    public void parseXML(Document doc) {
-        Element el = doc.getDocumentElement();
-
-        if (el.getNodeName().compareTo("INDI") != 0) {
-            return;
-        }
-
-        NodeList nodes = el.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-
-            if (n instanceof Element) {
-                Element child = (Element) n;
-
-                String elementName = child.getNodeName();
-
-                if ((elementName.equals("defTextVector")) || (elementName.equals("defNumberVector")) || (elementName.equals("defSwitchVector"))
-                        || (elementName.equals("defLightVector")) || (elementName.equals("defBLOBVector"))) {
-                    addProperty(child);
-                } else if ((elementName.equals("setTextVector")) || (elementName.equals("setNumberVector")) || (elementName.equals("setSwitchVector"))
-                        || (elementName.equals("setLightVector")) || (elementName.equals("setBLOBVector"))) {
-                    updateProperty(child);
-                } else if (elementName.equals("message")) {
-                    messageReceived(child);
-                } else if (elementName.equals("delProperty")) {
-                    deleteProperty(child);
-                }
-            }
+    public void parseXML(INDIProtocol<?> doc) {
+        if (doc instanceof DefVector<?>) {
+            addProperty((DefVector<?>) doc);
+        } else if (doc instanceof SetVector<?>) {
+            updateProperty((SetVector<?>) doc);
+        } else if (doc instanceof Message) {
+            messageReceived((Message) doc);
+        } else if (doc instanceof DelProperty) {
+            deleteProperty((DelProperty) doc);
         }
     }
 
@@ -504,14 +474,14 @@ public class INDIServerConnection implements INDIProtocolParser {
      * @param xml
      *            The element to be parsed.
      */
-    private void deleteProperty(Element xml) {
-        if (xml.hasAttribute("device")) {
-            String deviceName = xml.getAttribute("device").trim();
+    private void deleteProperty(DelProperty xml) {
+        if (xml.hasDevice()) {
+            String deviceName = xml.getDevice();
 
             INDIDevice d = getDevice(deviceName);
 
             if (d != null) {
-                String propertyName = xml.getAttribute("name").trim();
+                String propertyName = xml.getName().trim();
 
                 if (!(propertyName.length() == 0)) {
                     d.deleteProperty(xml);
@@ -554,9 +524,9 @@ public class INDIServerConnection implements INDIProtocolParser {
      * @param xml
      *            The XML to be parsed.
      */
-    private void messageReceived(Element xml) {
-        if (xml.hasAttribute("device")) {
-            String deviceName = xml.getAttribute("device").trim();
+    private void messageReceived(Message xml) {
+        if (xml.hasDevice()) {
+            String deviceName = xml.getDevice();
 
             INDIDevice d = getDevice(deviceName);
 
@@ -564,12 +534,12 @@ public class INDIServerConnection implements INDIProtocolParser {
                 d.messageReceived(xml);
             }
         } else { // Global message from server
-            if (xml.hasAttribute("message")) {
-                String time = xml.getAttribute("timestamp").trim();
+            if (xml.hasMessage()) {
+                String time = xml.getTimestamp().trim();
 
                 Date timestamp = dateFormat().parseTimestamp(time);
 
-                String message = xml.getAttribute("message").trim();
+                String message = xml.getMessage().trim();
 
                 notifyListenersNewMessage(timestamp, message);
             }
@@ -582,8 +552,8 @@ public class INDIServerConnection implements INDIProtocolParser {
      * @param xml
      *            the element to be parsed.
      */
-    private void addProperty(Element xml) {
-        String deviceName = xml.getAttribute("device").trim();
+    private void addProperty(DefVector<?> xml) {
+        String deviceName = xml.getDevice();
 
         INDIDevice d = getDevice(deviceName);
 
@@ -601,8 +571,8 @@ public class INDIServerConnection implements INDIProtocolParser {
      * @param el
      *            the element to be parsed.
      */
-    private void updateProperty(Element el) {
-        String deviceName = el.getAttribute("device").trim();
+    private void updateProperty(SetVector<?> el) {
+        String deviceName = el.getDevice();
 
         INDIDevice d = getDevice(deviceName);
 
@@ -795,9 +765,9 @@ public class INDIServerConnection implements INDIProtocolParser {
      * @return The input stream of this Connection.
      */
     @Override
-    public InputStream getInputStream() {
+    public INDIInputStream getInputStream() {
         try {
-            return socket.getInputStream();
+            return connection.getINDIInputStream();
         } catch (IOException e) {
             return null;
         }

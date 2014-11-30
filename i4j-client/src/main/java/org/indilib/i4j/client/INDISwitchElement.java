@@ -26,6 +26,9 @@ import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefSwitch;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneSwitch;
 import org.w3c.dom.Element;
 
 /**
@@ -63,7 +66,7 @@ public class INDISwitchElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDISwitchElement(Element xml, INDIProperty property) {
+    protected INDISwitchElement(DefSwitch xml, INDIProperty property) {
         super(xml, property);
 
         desiredStatus = null;
@@ -89,7 +92,7 @@ public class INDISwitchElement extends INDIElement {
      *            A XML Element &lt;oneSwitch&gt; describing the Element.
      */
     @Override
-    protected void setValue(Element xml) {
+    protected void setValue(OneElement<?> xml) {
         String sta = xml.getTextContent().trim();
 
         setValue(sta);
@@ -207,10 +210,8 @@ public class INDISwitchElement extends INDIElement {
      * @see #setDesiredValue
      */
     @Override
-    protected String getXMLOneElementNewValue() {
-        String stat = Constants.getSwitchStatusAsString(desiredStatus);
-
-        String xml = "<oneSwitch name=\"" + this.getName() + "\">" + stat + "</oneSwitch>";
+    protected OneElement<?> getXMLOneElementNewValue() {
+        OneSwitch xml = new OneSwitch().setName(getName()).setTextContent(Constants.getSwitchStatusAsString(desiredStatus));
 
         desiredStatus = null;
 

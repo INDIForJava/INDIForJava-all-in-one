@@ -25,8 +25,6 @@ package org.indilib.i4j.driver.ccd.simulator;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -42,6 +40,7 @@ import org.indilib.i4j.driver.ccd.INDICCDDriver;
 import org.indilib.i4j.driver.ccd.INDICCDImage;
 import org.indilib.i4j.driver.ccd.INDICCDImage.ImageType;
 import org.indilib.i4j.driver.ccd.INDICCDImage.PixelIterator;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,6 +279,9 @@ public class CCDSimulator extends INDICCDDriver {
             }
         }
 
+        /**
+         * stop the camera thread.
+         */
         public void stop() {
             stop = true;
         }
@@ -293,13 +295,11 @@ public class CCDSimulator extends INDICCDDriver {
     /**
      * standard constructor for the simulated ccd driver.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public CCDSimulator(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public CCDSimulator(INDIConnection connection) {
+        super(connection);
         primaryCCD.setCCDParams(camera.width, camera.heigth, BITS_PER_PIXEL_COLOR, SIMULATED_PIXEL_SIZE, SIMULATED_PIXEL_SIZE);
     }
 

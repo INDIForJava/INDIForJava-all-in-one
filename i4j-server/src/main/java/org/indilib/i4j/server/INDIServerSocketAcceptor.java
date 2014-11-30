@@ -27,6 +27,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.indilib.i4j.Constants;
+import org.indilib.i4j.protocol.io.INDISocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,9 +113,10 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
             }
 
             if (clientSocket != null) {
-                if (!acceptClient(clientSocket)) {
+                INDISocketConnection clientConnection = new INDISocketConnection(clientSocket);
+                if (!acceptClient(clientConnection)) {
                     try {
-                        clientSocket.close();
+                        clientConnection.close();
                     } catch (IOException e) {
                         LOG.warn("client close exception", e);
                     }

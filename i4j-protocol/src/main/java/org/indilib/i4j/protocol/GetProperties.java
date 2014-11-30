@@ -52,16 +52,6 @@ public class GetProperties extends INDIProtocol<GetProperties> {
     private String version;
 
     /**
-     * @return the device attribute of the element.
-     */
-    public String getDevice() {
-        if (device == null) {
-            return "";
-        }
-        return device.trim();
-    }
-
-    /**
      * @return the property attribute of the element.
      */
     public String getProperty() {
@@ -79,18 +69,6 @@ public class GetProperties extends INDIProtocol<GetProperties> {
             return "";
         }
         return version;
-    }
-
-    /**
-     * set the device attribute of the element.
-     * 
-     * @param newDevice
-     *            the new attibute device value
-     * @return this for builder pattern.
-     */
-    public GetProperties setDevice(String newDevice) {
-        this.device = newDevice;
-        return this;
     }
 
     /**
@@ -117,4 +95,11 @@ public class GetProperties extends INDIProtocol<GetProperties> {
         return this;
     }
 
+    @Override
+    public GetProperties trim() {
+        this.device = trim(this.device);
+        this.property = trim(this.property);
+        this.version = trim(this.version);
+        return super.trim();
+    }
 }

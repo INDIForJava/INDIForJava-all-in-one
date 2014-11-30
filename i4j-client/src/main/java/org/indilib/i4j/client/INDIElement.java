@@ -25,6 +25,8 @@ package org.indilib.i4j.client;
 import java.util.ArrayList;
 
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.OneElement;
 import org.w3c.dom.Element;
 
 /**
@@ -74,16 +76,16 @@ public abstract class INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which this Element belongs.
      */
-    protected INDIElement(Element xml, INDIProperty property) {
+    protected INDIElement(DefElement<?> xml, INDIProperty property) {
         this.property = property;
 
-        name = xml.getAttribute("name").trim();
+        name = xml.getName().trim();
 
         if (name.length() == 0) {
             throw new IllegalArgumentException("No name for Element");
         }
 
-        label = xml.getAttribute("label");
+        label = xml.getLabel();
 
         if (label.length() == 0) { // If empty we use the name
             label = name;
@@ -176,7 +178,7 @@ public abstract class INDIElement {
      * @param xml
      *            A XML Element &lt;oneXXX&gt; describing the Element.
      */
-    protected abstract void setValue(Element xml);
+    protected abstract void setValue(OneElement<?> xml);
 
     /**
      * Gets the desired value of the Element.
@@ -244,7 +246,7 @@ public abstract class INDIElement {
      *         with a new value.
      * @see #setDesiredValue
      */
-    protected abstract String getXMLOneElementNewValue();
+    protected abstract OneElement<?> getXMLOneElementNewValue();
 
     /**
      * Gets the name of the element and its current value.

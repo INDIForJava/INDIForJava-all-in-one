@@ -22,6 +22,8 @@ package org.indilib.i4j.protocol.io;
  * #L%
  */
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,6 +85,11 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
  * @author Richard van Nieuwenhoven
  */
 public final class INDIProtocolFactory {
+
+    /**
+     * Buffer to use for the core in and output streams.
+     */
+    private static final int BUFFER_SIZE = 16 * 1024;
 
     /**
      * bytes for a dummy root close tag.
@@ -168,7 +175,7 @@ public final class INDIProtocolFactory {
      *             when something went wrong with the underlaying intput stream.
      */
     public static INDIInputStream createINDIInputStream(InputStream in) throws IOException {
-        return new INDIInputStreamImpl(XSTREAM.createObjectInputStream(inputStreamWithRootTag(in)));
+        return new INDIInputStreamImpl(XSTREAM.createObjectInputStream(inputStreamWithRootTag(new BufferedInputStream(in, BUFFER_SIZE))));
     }
 
     /**
@@ -181,7 +188,7 @@ public final class INDIProtocolFactory {
      *             when something went wrong with the underlaying output stream.
      */
     public static INDIOutputStream createINDIOutputStream(OutputStream out) throws IOException {
-        final StatefulWriter statefulWriter = new StatefulWriter(STREAM_DRIVER.createWriter(out));
+        final StatefulWriter statefulWriter = new StatefulWriter(STREAM_DRIVER.createWriter(new BufferedOutputStream(out, BUFFER_SIZE)));
         return new INDIOutputStreamImpl(new CustomObjectOutputStream(new CustomObjectOutputStream.StreamCallback() {
 
             public void close() {

@@ -29,12 +29,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public abstract class DefVector<T> extends INDIProtocol<T> {
 
     /**
-     * the device element attribute.
-     */
-    @XStreamAsAttribute
-    private String device;
-
-    /**
      * the group element attribute.
      */
     @XStreamAsAttribute
@@ -45,12 +39,6 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
      */
     @XStreamAsAttribute
     private String label;
-
-    /**
-     * the message element attribute.
-     */
-    @XStreamAsAttribute
-    private String message;
 
     /**
      * the perm element attribute.
@@ -71,23 +59,10 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
     private String timeout;
 
     /**
-     * the timestamp element attribute.
-     */
-    @XStreamAsAttribute
-    private String timestamp;
-
-    /**
      * the child elements of the vector.
      */
     @XStreamImplicit
     private List<DefElement<?>> elements;
-
-    /**
-     * @return the device element attribute.
-     */
-    public String getDevice() {
-        return device;
-    }
 
     /**
      * @return the group element attribute.
@@ -101,13 +76,6 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
      */
     public String getLabel() {
         return label;
-    }
-
-    /**
-     * @return the message element attribute.
-     */
-    public String getMessage() {
-        return message;
     }
 
     /**
@@ -131,13 +99,6 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
         return timeout;
     }
 
-    /**
-     * @return the timestamp element attribute.
-     */
-    public String getTimestamp() {
-        return timestamp;
-    }
-
     @Override
     public boolean isDef() {
         return true;
@@ -146,19 +107,6 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
     @Override
     public boolean isVector() {
         return true;
-    }
-
-    /**
-     * set the device element atttribute.
-     * 
-     * @param newDevice
-     *            the new device value
-     * @return this for builder pattern.
-     */
-    @SuppressWarnings("unchecked")
-    public T setDevice(String newDevice) {
-        this.device = newDevice;
-        return (T) this;
     }
 
     /**
@@ -184,20 +132,6 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
     @SuppressWarnings("unchecked")
     public T setLabel(String newLabel) {
         this.label = newLabel;
-        return (T) this;
-    }
-
-    /**
-     * set the max message atttribute.
-     * 
-     * @param newMessage
-     *            the new message value
-     * @return this for builder pattern.
-     */
-
-    @SuppressWarnings("unchecked")
-    public T setMessage(String newMessage) {
-        this.message = newMessage;
         return (T) this;
     }
 
@@ -241,19 +175,6 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
     }
 
     /**
-     * set the timestamp element atttribute.
-     * 
-     * @param newTimestamp
-     *            the new timestamp value
-     * @return this for builder pattern.
-     */
-    @SuppressWarnings("unchecked")
-    public T setTimestamp(String newTimestamp) {
-        this.timestamp = newTimestamp;
-        return (T) this;
-    }
-
-    /**
      * @return the list of element children of this element.
      */
     public List<DefElement<?>> getElements() {
@@ -261,5 +182,18 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
             elements = new ArrayList<>();
         }
         return elements;
+    }
+
+    @Override
+    public T trim() {
+        this.group = trim(this.group);
+        this.label = trim(this.label);
+        this.perm = trim(this.perm);
+        this.state = trim(this.state);
+        this.timeout = trim(this.timeout);
+        for (DefElement<?> element : getElements()) {
+            element.trim();
+        }
+        return super.trim();
     }
 }

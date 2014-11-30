@@ -28,6 +28,10 @@ import java.util.Locale;
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDISexagesimalFormatter;
+import org.indilib.i4j.protocol.DefNumber;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneNumber;
 import org.w3c.dom.Element;
 
 /**
@@ -92,16 +96,16 @@ public class INDINumberElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDINumberElement(Element xml, INDIProperty property) {
+    protected INDINumberElement(DefNumber xml, INDIProperty property) {
         super(xml, property);
 
         desiredValue = null;
 
         String valueS = xml.getTextContent().trim();
-        String minS = xml.getAttribute("min").trim();
-        String maxS = xml.getAttribute("max").trim();
-        String stepS = xml.getAttribute("step").trim();
-        String nf = xml.getAttribute("format").trim();
+        String minS = xml.getMin().trim();
+        String maxS = xml.getMax().trim();
+        String stepS = xml.getStep().trim();
+        String nf = xml.getFormat().trim();
 
         setNumberFormat(nf);
 
@@ -262,7 +266,7 @@ public class INDINumberElement extends INDIElement {
      *            A XML Element &lt;oneNumber&gt; describing the Element.
      */
     @Override
-    protected void setValue(Element xml) {
+    protected void setValue(OneElement<?> xml) {
         String valueS = xml.getTextContent().trim();
 
         setValue(valueS);
@@ -493,8 +497,8 @@ public class INDINumberElement extends INDIElement {
      * @see #setDesiredValue
      */
     @Override
-    protected String getXMLOneElementNewValue() {
-        String xml = "<oneNumber name=\"" + this.getName() + "\">" + desiredValue.doubleValue() + "</oneNumber>";
+    protected OneNumber getXMLOneElementNewValue() {
+        OneNumber xml = new OneNumber().setName(getName()).setTextContent(Double.toString(desiredValue.doubleValue()));
 
         desiredValue = null;
 

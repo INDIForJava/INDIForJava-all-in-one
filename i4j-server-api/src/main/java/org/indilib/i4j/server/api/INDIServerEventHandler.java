@@ -24,6 +24,8 @@ package org.indilib.i4j.server.api;
 
 import java.net.Socket;
 
+import org.indilib.i4j.protocol.api.INDIConnection;
+
 /**
  * This interface is allows others to monitor server events. as soon as one of
  * the events happen the apropriate event method is called.
@@ -42,7 +44,7 @@ public interface INDIServerEventHandler {
      * @return <code>true</code> if the Client is allowed to connect to the
      *         server. <code>false</code> otherwise.
      */
-    boolean acceptClient(Socket clientSocket);
+    boolean acceptClient(INDIConnection clientSocket);
 
     /**
      * Used to notify extending Servers that a Client connection has been

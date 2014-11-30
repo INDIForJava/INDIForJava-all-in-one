@@ -24,7 +24,10 @@ package org.indilib.i4j.driver;
 
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.driver.util.INDIElementBuilder;
-import org.w3c.dom.Element;
+import org.indilib.i4j.protocol.DefBlob;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.OneBlob;
+import org.indilib.i4j.protocol.OneElement;
 
 /**
  * A class representing a INDI BLOB Element.
@@ -79,14 +82,8 @@ public class INDIBLOBElement extends INDIElement {
     }
 
     @Override
-    public String getXMLOneElement(boolean includeMinMaxStep) {
-        int size = value.getSize();
-
-        String data = value.getBase64BLOBData();
-
-        String xml = "<oneBLOB name=\"" + this.getName() + "\" size=\"" + size + "\" format=\"" + value.getFormat() + "\">" + data + "</oneBLOB>";
-
-        return xml;
+    public OneElement<?> getXMLOneElement(boolean includeMinMaxStep) {
+        return new OneBlob().setByteContent(value.getBlobData()).setFormat(value.getFormat());
     }
 
     @Override
@@ -95,14 +92,12 @@ public class INDIBLOBElement extends INDIElement {
     }
 
     @Override
-    protected String getXMLDefElement() {
-        String xml = "<defBLOB name=\"" + this.getName() + "\" label=\"" + getLabel() + "\" />";
-
-        return xml;
+    protected DefElement<?> getXMLDefElement() {
+        return new DefBlob().setName(this.getName()).setLabel(getLabel());
     }
 
     @Override
-    public Object parseOneValue(Element xml) {
-        return new INDIBLOBValue(xml);
+    public Object parseOneValue(OneElement<?> xml) {
+        return new INDIBLOBValue((OneBlob) xml);
     }
 }

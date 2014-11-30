@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.indilib.i4j.Constants.BLOBEnables;
+import org.indilib.i4j.protocol.GetProperties;
+import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.XMLToString;
 import org.w3c.dom.Document;
@@ -83,34 +85,8 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     }
 
     @Override
-    public final void parseXML(Document doc) {
-        Element el = doc.getDocumentElement();
-
-        if (el.getNodeName().compareTo("INDI") != 0) {
-            return;
-        }
-
-        NodeList nodes = el.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node n = nodes.item(i);
-
-            if (n instanceof Element) {
-                parseXMLElement((Element) n);
-            }
-        }
-    }
-
-    /**
-     * Sends a XML message to the listener.
-     * 
-     * @param xml
-     *            The message to be sent.
-     */
-    public void sendXMLMessage(Element xml) {
-        String message = XMLToString.transform(xml);
-
-        sendXMLMessage(message);
+    public final void parseXML(INDIProtocol<?> doc) {
+        parseXMLElement(doc);
     }
 
     /**
@@ -293,7 +269,7 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      * @param child
      *            the element child of the message.
      */
-    protected abstract void parseXMLElement(Element child);
+    protected abstract void parseXMLElement(INDIProtocol<?> child);
 
     /**
      * Processes the <code>getProperties</code> XML message.
@@ -301,17 +277,14 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      * @param xml
      *            The <code>getProperties</code> XML message
      */
-    protected void processGetProperties(Element xml) {
-        String device = xml.getAttribute("device").trim();
-        String property = xml.getAttribute("name").trim();
-
-        if (device.isEmpty()) {
+    protected void processGetProperties(GetProperties xml) {
+        if (!xml.hasDevice()) {
             setListenToAllDevices(true);
         } else {
-            if (property.isEmpty()) {
-                addDeviceToListen(device);
+            if (!xml.hasName()) {
+                addDeviceToListen(xml.getDevice());
             } else {
-                addPropertyToListen(device, property);
+                addPropertyToListen(xml.getDevice(), xml.getName());
             }
         }
     }
@@ -319,10 +292,10 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     /**
      * Sends a String (usually containing some XML) to the listener.
      * 
-     * @param xml
-     *            The string to be sent.
+     * @param message
+     *            The message to be sent.
      */
-    protected abstract void sendXMLMessage(String xml);
+    protected abstract void sendXMLMessage(INDIProtocol<?> message);
 
     /**
      * Sets the listenToAllDevices flag.

@@ -23,17 +23,21 @@ package org.indilib.i4j.server;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
-import org.apache.commons.codec.Charsets;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDIProtocolReader;
+import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.DelProperty;
+import org.indilib.i4j.protocol.GetProperties;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.Message;
+import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.api.INDIOutputStream;
 import org.indilib.i4j.server.api.INDIDeviceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 /**
  * A class that represents a generic INDI Device to which the server connects
@@ -94,14 +98,14 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
     }
 
     @Override
-    public abstract InputStream getInputStream();
+    public abstract INDIInputStream getInputStream();
 
     /**
-     * Gets the <code>OutputStream</code> of the Device.
+     * Gets the <code>INDIOutputStream</code> of the Device.
      * 
-     * @return The <code>OutputStream</code> of the Device.
+     * @return The <code>INDIOutputStream</code> of the Device.
      */
-    public abstract OutputStream getOutputStream();
+    public abstract INDIOutputStream getOutputStream();
 
     /**
      * Notify drivers that they are being destroyed.
@@ -140,54 +144,32 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
     protected abstract boolean hasName(String name);
 
     @Override
-    protected void parseXMLElement(Element child) {
-        String nodeName = child.getNodeName();
+    protected void parseXMLElement(INDIProtocol<?> child) {
 
-        if (nodeName.equals("getProperties")) {
-            processGetProperties(child);
-        } else if (nodeName.equals("defTextVector")) {
+        if (child instanceof GetProperties) {
+            processGetProperties((GetProperties) child);
+        } else if (child instanceof DefVector<?>) {
             checkName(child);
-            processDefXXXVector(child);
-        } else if (nodeName.equals("defNumberVector")) {
-            checkName(child);
-            processDefXXXVector(child);
-        } else if (nodeName.equals("defSwitchVector")) {
-            checkName(child);
-            processDefXXXVector(child);
-        } else if (nodeName.equals("defLightVector")) {
-            checkName(child);
-            processDefXXXVector(child);
-        } else if (nodeName.equals("defBLOBVector")) {
-            checkName(child);
-            processDefXXXVector(child);
-        } else if (nodeName.equals("setTextVector")) {
-            processSetXXXVector(child);
-        } else if (nodeName.equals("setNumberVector")) {
-            processSetXXXVector(child);
-        } else if (nodeName.equals("setSwitchVector")) {
-            processSetXXXVector(child);
-        } else if (nodeName.equals("setLightVector")) {
-            processSetXXXVector(child);
-        } else if (nodeName.equals("setBLOBVector")) {
-            processSetXXXVector(child);
-        } else if (nodeName.equals("message")) {
-            processMessage(child);
-        } else if (nodeName.equals("delProperty")) {
-            processDelProperty(child);
+            processDefXXXVector((DefVector<?>) child);
+        } else if (child instanceof SetVector<?>) {
+            processSetXXXVector((SetVector<?>) child);
+        } else if (child instanceof Message) {
+            processMessage((Message) child);
+        } else if (child instanceof DelProperty) {
+            processDelProperty((DelProperty) child);
         }
     }
 
     @Override
-    protected void processGetProperties(Element xml) {
+    protected void processGetProperties(GetProperties xml) {
         super.processGetProperties(xml);
         server.notifyClientListenersGetProperties(this, xml);
     }
 
     @Override
-    protected void sendXMLMessage(String xml) {
+    protected final void sendXMLMessage(INDIProtocol<?> message) {
         try {
-            getOutputStream().write(xml.getBytes(Charsets.UTF_8));
-            getOutputStream().flush();
+            getOutputStream().writeObject(message);
         } catch (IOException e) {
             destroy();
         }
@@ -209,8 +191,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * @param elem
      *            The XML element from which to extract the name of the Device.
      */
-    private void checkName(Element elem) {
-        String newName = elem.getAttribute("device").trim();
+    private void checkName(INDIProtocol<?> elem) {
+        String newName = elem.getDevice();
 
         if (!(newName.isEmpty())) {
             dealWithPossibleNewDeviceName(newName);
@@ -223,20 +205,20 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * @param xml
      *            The <code>defXXXVector</code> XML message
      */
-    private void processDefXXXVector(Element xml) {
-        String device = xml.getAttribute("device");
+    private void processDefXXXVector(DefVector<?> xml) {
+        String device = xml.getDevice();
 
         if (device.isEmpty()) {
             return;
         }
 
-        String property = xml.getAttribute("name").trim();
+        String property = xml.getName().trim();
 
         if (property.isEmpty()) {
             return;
         }
 
-        String state = xml.getAttribute("state").trim();
+        String state = xml.getState().trim();
 
         if (!Constants.isValidPropertyState(state)) {
             return;
@@ -251,8 +233,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * @param xml
      *            The <code>delProperty</code> XML message
      */
-    private void processDelProperty(Element xml) {
-        String device = xml.getAttribute("device");
+    private void processDelProperty(DelProperty xml) {
+        String device = xml.getDevice();
 
         if (!hasName(device)) { // Some conditions to ignore the messages
             return;
@@ -267,7 +249,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * @param xml
      *            The <code>message</code> XML message
      */
-    private void processMessage(Element xml) {
+    private void processMessage(Message xml) {
         server.notifyDeviceListenersMessage(this, xml);
     }
 
@@ -277,14 +259,14 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * @param xml
      *            The <code>setXXXVector</code> XML message
      */
-    private void processSetXXXVector(Element xml) {
-        String device = xml.getAttribute("device");
+    private void processSetXXXVector(SetVector xml) {
+        String device = xml.getDevice();
 
         if (!hasName(device)) { // Some conditions to ignore the messages
             return;
         }
 
-        String property = xml.getAttribute("name").trim();
+        String property = xml.getName().trim();
 
         if (property.isEmpty()) {
             return;

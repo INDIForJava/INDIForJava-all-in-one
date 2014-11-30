@@ -22,8 +22,6 @@ package org.indilib.i4j.driver.filterwheel;
  * #L%
  */
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants;
@@ -36,6 +34,7 @@ import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,13 +103,11 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
      * clients) and a <code>outputStream</code> to write the messages to the
      * clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages
-     * @param outputStream
-     *            The stream to which to write the messages
+     * @param connection
+     *            the indi connection to the server.
      */
-    public INDIFilterWheelDriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public INDIFilterWheelDriver(INDIConnection connection) {
+        super(connection);
     }
 
     /**

@@ -22,9 +22,6 @@ package org.indilib.i4j.driver.examples;
  * #L%
  */
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDIDriver;
@@ -32,6 +29,7 @@ import org.indilib.i4j.driver.INDINumberElement;
 import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,13 +68,11 @@ public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable 
     /**
      * Initializes the driver. It creates the Proerties and its Elements.
      * 
-     * @param inputStream
-     *            The input stream from which the Driver will read.
-     * @param outputStream
-     *            The output stream to which the Driver will write.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public RandomNumberGeneratorDriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public RandomNumberGeneratorDriver(INDIConnection connection) {
+        super(connection);
 
         this.addProperty(randomP);
 

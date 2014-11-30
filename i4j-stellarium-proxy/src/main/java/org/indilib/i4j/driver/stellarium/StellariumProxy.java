@@ -39,6 +39,7 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,13 +122,11 @@ public class StellariumProxy extends INDIDriver {
     /**
      * Initializes the driver. It creates the Proerties and its Elements.
      * 
-     * @param inputStream
-     *            The input stream from which the Driver will read.
-     * @param outputStream
-     *            The output stream to which the Driver will write.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public StellariumProxy(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public StellariumProxy(INDIConnection connection) {
+        super(connection);
         indiUrlP.setEventHandler(new TextEvent() {
 
             @Override

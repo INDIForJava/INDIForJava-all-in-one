@@ -32,10 +32,69 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
+     * the device element attribute.
+     */
+    @XStreamAsAttribute
+    private String device;
+
+    /**
      * the name element attribute.
      */
     @XStreamAsAttribute
     private String name;
+
+    /**
+     * the message element attribute.
+     */
+    @XStreamAsAttribute
+    private String message;
+
+    /**
+     * the timestamp attribute of the element.
+     */
+    @XStreamAsAttribute
+    private String timestamp;
+
+    /**
+     * @return the message element attribute.
+     */
+    public final String getMessage() {
+        return message;
+    }
+
+    /**
+     * @return the timestamp attribute of the element.
+     */
+    public final String getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * set the max message atttribute.
+     * 
+     * @param newMessage
+     *            the new message value
+     * @return this for builder pattern.
+     */
+
+    @SuppressWarnings("unchecked")
+    public T setMessage(String newMessage) {
+        this.message = newMessage;
+        return (T) this;
+    }
+
+    /**
+     * set the timestamp attribute of the element.
+     * 
+     * @param newTimestamp
+     *            the new attibute timestamp value
+     * @return this for builder pattern.
+     */
+    @SuppressWarnings("unchecked")
+    public T setTimestamp(String newTimestamp) {
+        this.timestamp = newTimestamp;
+        return (T) this;
+    }
 
     /**
      * @return the name element attribute.
@@ -344,8 +403,55 @@ public abstract class INDIProtocol<T> {
         return (T) this;
     }
 
+    /**
+     * set the device element atttribute.
+     * 
+     * @param newDevice
+     *            the new device value
+     * @return this for builder pattern.
+     */
+    @SuppressWarnings("unchecked")
+    public final T setDevice(String newDevice) {
+        this.device = newDevice;
+        return (T) this;
+    }
+
+    /**
+     * @return the device element attribute.
+     */
+    public final String getDevice() {
+        return device;
+    }
+
     @Override
     public String toString() {
         return INDIProtocolFactory.toString(this);
+    }
+
+    public boolean hasName() {
+        return getName() != null && !getName().trim().isEmpty();
+    }
+
+    public boolean hasDevice() {
+        return getDevice() != null && !getDevice().trim().isEmpty();
+    }
+
+    public boolean hasMessage() {
+        return getMessage() != null && !getMessage().trim().isEmpty();
+    }
+
+    public T trim() {
+        this.name = trim(this.name);
+        this.device = trim(this.device);
+        this.message = trim(this.message);
+        this.timestamp = trim(this.timestamp);
+        return (T) this;
+    }
+
+    protected String trim(String value) {
+        if (value != null) {
+            return value.trim();
+        }
+        return null;
     }
 }

@@ -23,8 +23,18 @@ package org.indilib.i4j.client;
  */
 
 import org.indilib.i4j.ClassInstantiator;
+
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
+
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefText;
+import org.indilib.i4j.protocol.DefTextVector;
+import org.indilib.i4j.protocol.NewTextVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneText;
+import org.indilib.i4j.protocol.SetTextVector;
+import org.indilib.i4j.protocol.SetVector;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -57,28 +67,24 @@ public class INDITextProperty extends INDIProperty {
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
      */
-    protected INDITextProperty(Element xml, INDIDevice device) {
+    protected INDITextProperty(DefTextVector xml, INDIDevice device) {
         super(xml, device);
-
-        NodeList list = xml.getElementsByTagName("defText");
-
-        for (int i = 0; i < list.getLength(); i++) {
-            Element child = (Element) list.item(i);
-
-            String name = child.getAttribute("name");
-
-            INDIElement iel = getElement(name);
-
-            if (iel == null) { // Does not exist
-                INDITextElement ite = new INDITextElement(child, this);
-                addElement(ite);
+        for (DefElement<?> element : xml.getElements()) {
+            if (element instanceof DefText) {
+                String name = element.getName();
+                INDIElement iel = getElement(name);
+                if (iel == null) { // Does not exist
+                    INDITextElement ite = new INDITextElement((DefText) element, this);
+                    addElement(ite);
+                }
             }
+
         }
     }
 
     @Override
-    protected void update(Element el) {
-        super.update(el, "oneText");
+    protected void update(SetVector<?> el) {
+        super.update(el, OneText.class);
     }
 
     /**
@@ -87,22 +93,8 @@ public class INDITextProperty extends INDIProperty {
      * @return the opening XML Element &lt;newTextVector&gt; for this Property.
      */
     @Override
-    protected String getXMLPropertyChangeInit() {
-        String xml = "<newTextVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
-
-        return xml;
-    }
-
-    /**
-     * Gets the closing XML Element &lt;/newTextVector&gt; for this Property.
-     * 
-     * @return the closing XML Element &lt;/newTextVector&gt; for this Property.
-     */
-    @Override
-    protected String getXMLPropertyChangeEnd() {
-        String xml = "</newTextVector>";
-
-        return xml;
+    protected NewVector<?> getXMLPropertyChangeInit() {
+        return new NewTextVector();
     }
 
     @Override

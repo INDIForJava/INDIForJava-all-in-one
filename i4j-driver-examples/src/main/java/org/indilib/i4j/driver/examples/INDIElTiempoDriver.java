@@ -30,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
@@ -49,6 +48,7 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.connection.INDIConnectionHandler;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,13 +178,11 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
     /**
      * Initializes the driver. It creates the Proerties and its Elements.
      * 
-     * @param inputStream
-     *            The input stream from which the Driver will read.
-     * @param outputStream
-     *            The output stream to which the Driver will write.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public INDIElTiempoDriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public INDIElTiempoDriver(INDIConnection connection) {
+        super(connection);
 
         // We create the Switch Property with only one Switch Element
         send = newSwitchProperty().name("SEND").label("Send Image").group(INDIDriver.GROUP_MAIN_CONTROL)//

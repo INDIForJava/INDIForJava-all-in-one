@@ -24,8 +24,6 @@ package org.indilib.i4j.driver.telescope.simulator;
 
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import net.sourceforge.novaforjava.JulianDay;
@@ -44,6 +42,7 @@ import org.indilib.i4j.driver.telescope.alignment.MountAlignment;
 import org.indilib.i4j.driver.telescope.alignment.TelescopeDirectionVector;
 import org.indilib.i4j.driver.telescope.mount.AxisWithEncoder;
 import org.indilib.i4j.driver.telescope.mount.Mount;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,13 +159,11 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
     /**
      * constructor for the altaz simulator.
      * 
-     * @param inputStream
-     *            the input stream.
-     * @param outputStream
-     *            the output stream
+     * @param connection
+     *            the indi connection to the server.
      */
-    public TelescopeAltAzSimulator(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public TelescopeAltAzSimulator(INDIConnection connection) {
+        super(connection);
         mathPluginManagement.setApproximateAlignment(MountAlignment.ZENITH);
         mathPluginManagement.forceActive();
         mathPluginManagement.initialise();

@@ -44,8 +44,6 @@ import static org.indilib.i4j.Constants.PropertyStates.BUSY;
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 import static org.indilib.i4j.Constants.PropertyStates.OK;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,6 +70,7 @@ import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.driver.serial.INDISerialPortExtension;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -457,13 +456,11 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * The Telescope driver constructor, all subclasses must call this. All
      * local event handlers are here attached to the properties.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public INDITelescope(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public INDITelescope(INDIConnection connection) {
+        super(connection);
         this.eqn.setEventHandler(new NumberEvent() {
 
             @Override

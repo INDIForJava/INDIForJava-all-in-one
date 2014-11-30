@@ -22,10 +22,11 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
-import org.indilib.i4j.Constants;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
+import org.indilib.i4j.protocol.DefLightVector;
+import org.indilib.i4j.protocol.DefVector;
+import org.indilib.i4j.protocol.SetLightVector;
+import org.indilib.i4j.protocol.SetVector;
 
 /**
  * A class representing a INDI Light Property.
@@ -57,53 +58,13 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
     }
 
     @Override
-    protected String getXMLPropertyDefinitionInit() {
-        String xml =
-                "<defLightVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
-                        + Constants.getPropertyStateAsString(getState()) + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
-
-        return xml;
+    protected DefVector<?> getXMLPropertyDefinitionInit() {
+        return new DefLightVector();
     }
 
     @Override
-    protected String getXMLPropertyDefinitionInit(String message) {
-        String xml =
-                "<defLightVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" label=\"" + getLabel() + "\" group=\"" + getGroup() + "\" state=\""
-                        + Constants.getPropertyStateAsString(getState()) + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertyDefinitionEnd() {
-        String xml = "</defLightVector>";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertySetInit() {
-        String xml =
-                "<setLightVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertySetInit(String message) {
-        String xml =
-                "<setLightVector device=\"" + getDriver().getName() + "\" name=\"" + getName() + "\" state=\"" + Constants.getPropertyStateAsString(getState())
-                        + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\" message=\"" + message + "\">";
-
-        return xml;
-    }
-
-    @Override
-    protected String getXMLPropertySetEnd() {
-        String xml = "</setLightVector>";
-
-        return xml;
+    protected SetVector<?> getXMLPropertySetInit() {
+        return new SetLightVector();
     }
 
     @Override

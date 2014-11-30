@@ -33,26 +33,13 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("delProperty")
-public class DelProperty<T> extends INDIProtocol<T> {
-
-    /**
-     * the device attribute of the element.
-     */
-    @XStreamAsAttribute
-    private String device;
+public class DelProperty extends INDIProtocol<DelProperty> {
 
     /**
      * the version attribute of the element.
      */
     @XStreamAsAttribute
     private String version;
-
-    /**
-     * @return the device attribute of the element.
-     */
-    public String getDevice() {
-        return device;
-    }
 
     /**
      * @return the version attribute of the element.
@@ -62,28 +49,20 @@ public class DelProperty<T> extends INDIProtocol<T> {
     }
 
     /**
-     * set the device attribute of the element.
-     * 
-     * @param newDevice
-     *            the new attibute device value
-     * @return this for builder pattern.
-     */
-    @SuppressWarnings("unchecked")
-    public T setDevice(String newDevice) {
-        this.device = newDevice;
-        return (T) this;
-    }
-
-    /**
      * set the version attribute of the element.
      * 
      * @param newVersion
      *            the new attibute version value
      * @return this for builder pattern.
      */
-    @SuppressWarnings("unchecked")
-    public T setVersion(String newVersion) {
+    public DelProperty setVersion(String newVersion) {
         this.version = newVersion;
-        return (T) this;
+        return this;
+    }
+
+    @Override
+    public DelProperty trim() {
+        this.version = trim(this.version);
+        return super.trim();
     }
 }

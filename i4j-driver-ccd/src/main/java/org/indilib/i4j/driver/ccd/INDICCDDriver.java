@@ -24,8 +24,6 @@ package org.indilib.i4j.driver.ccd;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
@@ -50,6 +48,7 @@ import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,13 +170,11 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * The CCD driver constructor, all subclasses must call this. All local
      * event handlers are here attached to the properties.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public INDICCDDriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public INDICCDDriver(INDIConnection connection) {
+        super(connection);
         primaryCCD.setDriverInterface(this);
         guiderCCD.setDriverInterface(createGuiderDriverHandler());
         this.temperature.setEventHandler(new NumberEvent() {

@@ -116,4 +116,11 @@ public class OneBlob extends OneElement<OneBlob> {
         this.format = newFormat;
         return this;
     }
+
+    @Override
+    public OneBlob trim() {
+        this.format = trim(this.format);
+        this.size = trim(this.size);
+        return super.trim();
+    }
 }

@@ -23,10 +23,14 @@ package org.indilib.i4j.client;
  */
 
 import org.indilib.i4j.ClassInstantiator;
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
 import org.indilib.i4j.INDIException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.indilib.i4j.protocol.DefBlob;
+import org.indilib.i4j.protocol.DefBlobVector;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.NewBlobVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneBlob;
+import org.indilib.i4j.protocol.SetVector;
 
 /**
  * A class representing a INDI BLOB Property.
@@ -55,28 +59,27 @@ public class INDIBLOBProperty extends INDIProperty {
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
      */
-    protected INDIBLOBProperty(Element xml, INDIDevice device) {
+    protected INDIBLOBProperty(DefBlobVector xml, INDIDevice device) {
         super(xml, device);
 
-        NodeList list = xml.getElementsByTagName("defBLOB");
+        for (DefElement<?> element : xml.getElements()) {
+            if (element instanceof DefBlob) {
+                String name = element.getName();
 
-        for (int i = 0; i < list.getLength(); i++) {
-            Element child = (Element) list.item(i);
+                INDIElement iel = getElement(name);
 
-            String name = child.getAttribute("name");
-
-            INDIElement iel = getElement(name);
-
-            if (iel == null) { // Does not exist
-                INDIBLOBElement ite = new INDIBLOBElement(child, this);
-                addElement(ite);
+                if (iel == null) { // Does not exist
+                    INDIBLOBElement ite = new INDIBLOBElement((DefBlob) element, this);
+                    addElement(ite);
+                }
             }
+
         }
     }
 
     @Override
-    protected void update(Element el) {
-        super.update(el, "oneBLOB");
+    protected void update(SetVector<?> xml) {
+        super.update(xml, OneBlob.class);
     }
 
     /**
@@ -85,22 +88,9 @@ public class INDIBLOBProperty extends INDIProperty {
      * @return the opening XML Element &lt;newBLOBVector&gt; for this Property.
      */
     @Override
-    protected String getXMLPropertyChangeInit() {
-        String xml = "<newBLOBVector device=\"" + getDevice().getName() + "\" name=\"" + getName() + "\" timestamp=\"" + dateFormat().getCurrentTimestamp() + "\">";
+    protected NewVector<?> getXMLPropertyChangeInit() {
+        return new NewBlobVector();
 
-        return xml;
-    }
-
-    /**
-     * Gets the closing XML Element &lt;/newBLOBVector&gt; for this Property.
-     * 
-     * @return the closing XML Element &lt;/newBLOBVector&gt; for this Property.
-     */
-    @Override
-    protected String getXMLPropertyChangeEnd() {
-        String xml = "</newBLOBVector>";
-
-        return xml;
     }
 
     @Override

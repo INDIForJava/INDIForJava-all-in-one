@@ -31,7 +31,6 @@ import gnu.io.UnsupportedCommOperationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Date;
@@ -50,6 +49,7 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.connection.INDIConnectionHandler;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,13 +207,11 @@ public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
      * clients) and a <code>outputStream</code> to write the messages to the
      * clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public I4JSQMDriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public I4JSQMDriver(INDIConnection connection) {
+        super(connection);
 
         serialPort = null;
 

@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("newLightVector")
-public class NewLightVector extends SetVector<NewLightVector> {
+public class NewLightVector extends NewVector<NewLightVector> {
 
     @Override
     public boolean isLight() {

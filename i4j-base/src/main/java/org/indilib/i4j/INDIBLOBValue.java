@@ -31,6 +31,8 @@ import java.util.zip.Inflater;
 
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
+import org.indilib.i4j.protocol.OneBlob;
+import org.indilib.i4j.protocol.OneElement;
 import org.w3c.dom.Element;
 
 /**
@@ -57,11 +59,6 @@ public class INDIBLOBValue implements Serializable {
     private final String format;
 
     /**
-     * The encoded data.
-     */
-    private String base64EncodedData;
-
-    /**
      * Constructs a new BLOB Value from its coresponding bytes and format.
      * 
      * @param blobData
@@ -72,7 +69,6 @@ public class INDIBLOBValue implements Serializable {
     public INDIBLOBValue(final byte[] blobData, final String format) {
         this.format = format;
         this.blobData = blobData;
-        this.base64EncodedData = null;
     }
 
     /**
@@ -81,28 +77,24 @@ public class INDIBLOBValue implements Serializable {
      * @param xml
      *            the &lt;oneBLOB&gt; XML element
      */
-    public INDIBLOBValue(final Element xml) {
+    public INDIBLOBValue(final OneBlob xml) {
         int size = 0;
         String f;
 
         try {
-            String s = xml.getAttribute("size").trim();
+            String s = xml.getSize().trim();
             size = Integer.parseInt(s);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Size number not correct");
         }
 
-        if (!xml.hasAttribute("format")) {
+        if (xml.getFormat() == null) {
             throw new IllegalArgumentException("No format attribute");
         }
 
-        f = xml.getAttribute("format").trim();
+        f = xml.getFormat().trim();
 
-        byte[] val;
-
-        base64EncodedData = xml.getTextContent().trim();
-
-        val = Base64.decodeBase64(base64EncodedData);
+        byte[] val = xml.getByteContent();
 
         if (f.endsWith(".z")) { // gzipped. Decompress
             Inflater decompresser = new Inflater();
@@ -138,18 +130,6 @@ public class INDIBLOBValue implements Serializable {
      */
     public final byte[] getBlobData() {
         return blobData;
-    }
-
-    /**
-     * Gets the BLOB data in base64.
-     * 
-     * @return the BLOB data
-     */
-    public final String getBase64BLOBData() {
-        if (base64EncodedData == null) {
-            base64EncodedData = new String(Base64.encodeBase64(getBlobData()), Charsets.UTF_8);
-        }
-        return base64EncodedData;
     }
 
     /**

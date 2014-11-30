@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
@@ -44,6 +43,7 @@ import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.indilib.i4j.driver.event.SwitchEvent;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,13 +95,11 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
      * messages (from clients) and a <code>outputStream</code> to write the
      * messages to the clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages.
-     * @param outputStream
-     *            The stream to which to write the messages.
+     * @param connection
+     *            the indi connection to the server.
      */
-    public INDIDriverExample(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public INDIDriverExample(INDIConnection connection) {
+        super(connection);
 
         // Define the BLOB Property with this Driver as its owner, name "image",
         // label "Image", group "Image Properties", initial state IDLE and Read

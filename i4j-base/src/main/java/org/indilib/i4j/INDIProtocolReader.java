@@ -30,6 +30,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.Charsets;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -77,77 +79,18 @@ public class INDIProtocolReader extends Thread {
      */
     @Override
     public final void run() {
-        DocumentBuilderFactory docBuilderFactory;
-
-        DocumentBuilder docBuilder;
+        INDIInputStream inputStream = parser.getInputStream();
         try {
-            docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilder = docBuilderFactory.newDocumentBuilder();
-            docBuilder.setErrorHandler(new ErrorHandler() {
-
-                @Override
-                public void warning(final SAXParseException e) throws SAXException {
-                }
-
-                @Override
-                public void fatalError(final SAXParseException e) throws SAXException {
-                }
-
-                @Override
-                public void error(final SAXParseException e) throws SAXException {
-                }
-            });
-        } catch (Exception e) {
-            LOG.error("Could not parse doc", e);
-            return;
-        }
-
-        StringBuffer bufferedInput = new StringBuffer();
-
-        char[] buffer = new char[Constants.BUFFER_SIZE];
-
-        stop = false;
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(parser.getInputStream(), Charsets.UTF_8));
-
-        try {
-            while (!stop) {
-                int nReaded = in.read(buffer, 0, Constants.BUFFER_SIZE);
-
-                if (nReaded != -1) {
-                    bufferedInput.append(buffer, 0, nReaded); // Appending to
-                    // the buffer
-
-                    boolean errorParsing = false;
-
-                    try {
-                        String d = "<INDI>" + bufferedInput + "</INDI>";
-                        // System.err.println(d);
-                        d = d.replaceAll("\\<\\?xml version='...'\\?\\>", "");
-                        d = d.replaceAll("\\<\\?xml version=\"...\"\\?\\>", "");
-                        // System.err.println(d);
-
-                        Document doc = docBuilder.parse(new InputSource(new StringReader(d)));
-
-                        parser.parseXML(doc);
-                    } catch (SAXException e) {
-                        errorParsing = true;
-                    }
-
-                    if (!errorParsing) {
-                        bufferedInput.setLength(0); // Empty the buffer because
-                                                    // it has been already
-                                                    // parsed
-                    }
-                } else { // If -1 readed, end
-                    stop = true;
-                }
+            INDIProtocol<?> readObject = inputStream.readObject();
+            while (!stop && readObject != null) {
+                parser.parseXML(readObject);
+                readObject = inputStream.readObject();
             }
         } catch (IOException e) {
-            LOG.error("could not parse doc", e);
+            LOG.error("could not parse indi stream", e);
         } finally {
             try {
-                in.close();
+                inputStream.close();
             } catch (IOException e) {
                 LOG.error("Could not close Doc", e);
             }

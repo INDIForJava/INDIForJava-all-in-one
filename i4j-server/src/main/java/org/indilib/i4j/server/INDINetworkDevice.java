@@ -25,13 +25,15 @@ package org.indilib.i4j.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.api.INDIOutputStream;
+import org.indilib.i4j.protocol.io.INDISocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +73,7 @@ public class INDINetworkDevice extends INDIDevice {
     /**
      * The socket to connect for the INDI Server.
      */
-    private Socket socket;
+    private INDIConnection socketConnection;
 
     /**
      * Constructs a new Network Device and connects to it.
@@ -94,9 +96,8 @@ public class INDINetworkDevice extends INDIDevice {
         this.port = port;
 
         try {
-            socket = new Socket();
 
-            socket.connect(new InetSocketAddress(host, port), CONNECT_TIMEOUT);
+            socketConnection = new INDISocketConnection(host, port);
         } catch (IOException e) {
             throw new INDIException("Problem connecting to " + host + ":" + port);
         }
@@ -105,7 +106,7 @@ public class INDINetworkDevice extends INDIDevice {
     @Override
     public void closeConnections() {
         try {
-            socket.close();
+            socketConnection.close();
         } catch (IOException e) {
             LOG.warn("close connection error", e);
         }
@@ -117,9 +118,9 @@ public class INDINetworkDevice extends INDIDevice {
     }
 
     @Override
-    public InputStream getInputStream() {
+    public INDIInputStream getInputStream() {
         try {
-            return socket.getInputStream();
+            return socketConnection.getINDIInputStream();
         } catch (IOException e) {
             LOG.warn("could not open input stream", e);
         }
@@ -132,9 +133,9 @@ public class INDINetworkDevice extends INDIDevice {
     }
 
     @Override
-    public OutputStream getOutputStream() {
+    public INDIOutputStream getOutputStream() {
         try {
-            return socket.getOutputStream();
+            return socketConnection.getINDIOutputStream();
         } catch (IOException e) {
             LOG.warn("could not open output stream", e);
         }

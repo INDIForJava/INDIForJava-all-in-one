@@ -38,12 +38,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public abstract class NewVector<T> extends INDIProtocol<T> {
 
     /**
-     * the device attribute of the element.
-     */
-    @XStreamAsAttribute
-    private String device;
-
-    /**
      * the child elements of the vector.
      */
     @XStreamImplicit
@@ -62,12 +56,6 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
     private String timeout;
 
     /**
-     * the timestamp attribute of the element.
-     */
-    @XStreamAsAttribute
-    private String timestamp;
-
-    /**
      * add one element to the list.
      * 
      * @param element
@@ -78,13 +66,6 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
     public T addElement(OneElement<?> element) {
         getElements().add(element);
         return (T) this;
-    }
-
-    /**
-     * @return the device attribute of the element.
-     */
-    public String getDevice() {
-        return device;
     }
 
     /**
@@ -111,13 +92,6 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
         return timeout;
     }
 
-    /**
-     * @return the timestamp attribute of the element.
-     */
-    public String getTimestamp() {
-        return timestamp;
-    }
-
     @Override
     public boolean isNew() {
         return true;
@@ -126,19 +100,6 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
     @Override
     public boolean isNewVector() {
         return true;
-    }
-
-    /**
-     * set the device attribute of the element.
-     * 
-     * @param newDevice
-     *            the new attibute device value
-     * @return this for builder pattern.
-     */
-    @SuppressWarnings("unchecked")
-    public T setDevice(String newDevice) {
-        this.device = newDevice;
-        return (T) this;
     }
 
     /**
@@ -167,16 +128,13 @@ public abstract class NewVector<T> extends INDIProtocol<T> {
         return (T) this;
     }
 
-    /**
-     * set the timestamp attribute of the element.
-     * 
-     * @param newTimestamp
-     *            the new attibute timestamp value
-     * @return this for builder pattern.
-     */
-    @SuppressWarnings("unchecked")
-    public T setTimestamp(String newTimestamp) {
-        this.timestamp = newTimestamp;
-        return (T) this;
+    @Override
+    public T trim() {
+        this.state = trim(this.state);
+        this.timeout = trim(this.timeout);
+        for (OneElement<?> element : getElements()) {
+            element.trim();
+        }
+        return super.trim();
     }
 }

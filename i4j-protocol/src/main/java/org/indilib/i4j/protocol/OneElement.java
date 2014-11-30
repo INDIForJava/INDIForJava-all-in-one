@@ -69,4 +69,9 @@ public abstract class OneElement<T> extends INDIProtocol<T> {
         return (T) this;
     }
 
+    @Override
+    public T trim() {
+        this.textContent = trim(this.textContent);
+        return super.trim();
+    }
 }

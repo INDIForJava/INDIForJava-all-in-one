@@ -31,6 +31,11 @@ import java.util.List;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
+import org.indilib.i4j.protocol.DelProperty;
+import org.indilib.i4j.protocol.GetProperties;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.SetBlobVector;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.server.api.INDIDeviceInterface;
 import org.indilib.i4j.server.api.INDIServerEventHandler;
 import org.indilib.i4j.server.api.INDIServerInterface;
@@ -104,7 +109,7 @@ public final class INDIServer implements INDIServerInterface {
         baseAcceptor = new INDIServerSocketAcceptor(listeningPort == null ? 0 : listeningPort) {
 
             @Override
-            public boolean acceptClient(Socket clientSocket) {
+            public boolean acceptClient(INDIConnection clientSocket) {
                 if (INDIServer.this.acceptClient(clientSocket)) {
                     INDIClient client = new INDIClient(clientSocket, INDIServer.this);
 
@@ -407,7 +412,7 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message
      */
-    protected void notifyClientListenersEnableBLOB(INDIClient client, Element xml) {
+    protected void notifyClientListenersEnableBLOB(INDIClient client, INDIProtocol<?> xml) {
         /*
          * String device = xml.getAttribute("device").trim(); INDIDevice d =
          * this.getDevice(device); if (d != null) { d.sendXMLMessage(xml); }
@@ -422,8 +427,8 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message
      */
-    protected void notifyClientListenersGetProperties(INDIDeviceListener client, Element xml) {
-        String device = xml.getAttribute("device").trim();
+    protected void notifyClientListenersGetProperties(INDIDeviceListener client, INDIProtocol<?> xml) {
+        String device = xml.getDevice();
 
         INDIDevice d = this.getDevice(device);
 
@@ -442,8 +447,8 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message
      */
-    protected void notifyClientListenersNewXXXVector(INDIClient client, Element xml) {
-        String device = xml.getAttribute("device").trim();
+    protected void notifyClientListenersNewXXXVector(INDIClient client, INDIProtocol<?> xml) {
+        String device = xml.getDevice();
         INDIDevice d = this.getDevice(device);
 
         if (d != null) {
@@ -459,9 +464,9 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message
      */
-    protected void notifyDeviceListenersDefXXXVector(INDIDevice device, Element xml) {
-        String deviceName = xml.getAttribute("device").trim();
-        String propertyName = xml.getAttribute("name").trim();
+    protected void notifyDeviceListenersDefXXXVector(INDIDevice device, INDIProtocol<?> xml) {
+        String deviceName = xml.getDevice();
+        String propertyName = xml.getName().trim();
         for (INDIDeviceListener c : getClientsListeningToProperty(deviceName, propertyName)) {
             c.sendXMLMessage(xml);
         }
@@ -475,8 +480,8 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message
      */
-    protected void notifyDeviceListenersDelProperty(INDIDevice device, Element xml) {
-        String deviceName = xml.getAttribute("device").trim();
+    protected void notifyDeviceListenersDelProperty(INDIDevice device, INDIProtocol<?> xml) {
+        String deviceName = xml.getDevice();
         for (INDIDeviceListener c : getClientsListeningToDevice(deviceName)) {
             c.sendXMLMessage(xml);
         }
@@ -490,8 +495,8 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message
      */
-    protected void notifyDeviceListenersMessage(INDIDevice device, Element xml) {
-        String deviceName = xml.getAttribute("device").trim();
+    protected void notifyDeviceListenersMessage(INDIDevice device, INDIProtocol<?> xml) {
+        String deviceName = xml.getDevice();
 
         if (deviceName.isEmpty()) {
             sendXMLMessageToAllClients(xml);
@@ -510,14 +515,13 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message
      */
-    protected void notifyDeviceListenersSetXXXVector(INDIDevice device, Element xml) {
-        String deviceName = xml.getAttribute("device").trim();
-        String propertyName = xml.getAttribute("name").trim();
+    protected void notifyDeviceListenersSetXXXVector(INDIDevice device, INDIProtocol<?> xml) {
+        String deviceName = xml.getDevice();
+        String propertyName = xml.getName().trim();
 
-        String messageType = xml.getTagName();
         boolean isBLOB = false;
 
-        if (messageType.equals("setBLOBVector")) {
+        if (xml instanceof SetBlobVector) {
             isBLOB = true;
         }
         for (INDIDeviceListener c : getClientsListeningToPropertyUpdates(deviceName, propertyName, isBLOB)) {
@@ -562,7 +566,7 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message to send.
      */
-    protected void sendXMLMessageToAllClients(Element xml) {
+    protected void sendXMLMessageToAllClients(INDIProtocol<?> xml) {
         for (INDIDeviceListener c : clients) {
             if (c instanceof INDIClient) {
                 c.sendXMLMessage(xml);
@@ -576,7 +580,7 @@ public final class INDIServer implements INDIServerInterface {
      * @param xml
      *            The message to send.
      */
-    protected void sendXMLMessageToAllDevices(Element xml) {
+    protected void sendXMLMessageToAllDevices(INDIProtocol<?> xml) {
         for (int i = 0; i < devices.size(); i++) {
             INDIDevice d = devices.get(i);
 
@@ -594,7 +598,7 @@ public final class INDIServer implements INDIServerInterface {
      * @return <code>true</code> if the Client is allowed to connect to the
      *         server. <code>false</code> otherwise.
      */
-    private boolean acceptClient(Socket clientSocket) {
+    private boolean acceptClient(INDIConnection clientSocket) {
         for (INDIServerEventHandler handler : eventHandlers) {
             if (!handler.acceptClient(clientSocket)) {
                 return false;
@@ -616,7 +620,7 @@ public final class INDIServer implements INDIServerInterface {
 
         device.startReading();
         // Force the device to send its properties for already connected clients
-        String message = "<getProperties version=\"1.7\" />";
+        GetProperties message = new GetProperties().setVersion("1.7");
 
         device.sendXMLMessage(message);
     }
@@ -756,7 +760,7 @@ public final class INDIServer implements INDIServerInterface {
      */
     private void notifyClientsDeviceRemoved(String[] deviceNames) {
         for (String deviceName : deviceNames) {
-            String message = "<delProperty device=\"" + deviceName + "\" />";
+            DelProperty message = new DelProperty().setDevice(deviceName);
             for (INDIDeviceListener c : this.getClientsListeningToDevice(deviceName)) {
                 c.sendXMLMessage(message);
             }

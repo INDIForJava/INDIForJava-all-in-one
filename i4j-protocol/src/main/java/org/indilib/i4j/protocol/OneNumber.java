@@ -100,4 +100,10 @@ public class OneNumber extends OneElement<OneNumber> {
         return this;
     }
 
+    @Override
+    public OneNumber trim() {
+        this.min = trim(this.min);
+        this.max = trim(this.max);
+        return super.trim();
+    }
 }

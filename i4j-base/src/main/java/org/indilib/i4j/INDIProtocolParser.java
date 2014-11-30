@@ -24,6 +24,8 @@ package org.indilib.i4j;
 
 import java.io.InputStream;
 
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.w3c.dom.Document;
 
 /**
@@ -41,14 +43,14 @@ public interface INDIProtocolParser {
      *            The XML document to parse. It presumably consists on INDI
      *            Protocol messages.
      */
-    void parseXML(Document doc);
+    void parseXML(INDIProtocol<?> doc);
 
     /**
      * Gets the input stream from where the messages will be read.
      * 
      * @return The input stream from where the messages will be read.
      */
-    InputStream getInputStream();
+    INDIInputStream getInputStream();
 
     /**
      * Called when the reader finishes the readings (communications broken /

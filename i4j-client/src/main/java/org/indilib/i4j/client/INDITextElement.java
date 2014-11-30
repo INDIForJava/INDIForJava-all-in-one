@@ -24,6 +24,10 @@ package org.indilib.i4j.client;
 
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.DefText;
+import org.indilib.i4j.protocol.OneElement;
+import org.indilib.i4j.protocol.OneText;
+import org.indilib.i4j.protocol.SetVector;
 import org.w3c.dom.Element;
 
 /**
@@ -60,7 +64,7 @@ public class INDITextElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDITextElement(Element xml, INDIProperty property) {
+    protected INDITextElement(DefText xml, INDIProperty property) {
         super(xml, property);
 
         desiredValue = null;
@@ -84,7 +88,7 @@ public class INDITextElement extends INDIElement {
      *            A XML Element &lt;oneText&gt; describing the Element.
      */
     @Override
-    protected void setValue(Element xml) {
+    protected void setValue(OneElement<?> xml) {
         value = xml.getTextContent().trim();
 
         notifyListeners();
@@ -177,8 +181,8 @@ public class INDITextElement extends INDIElement {
      * @see #setDesiredValue
      */
     @Override
-    protected String getXMLOneElementNewValue() {
-        String xml = "<oneText name=\"" + this.getName() + "\">" + desiredValue + "</oneText>";
+    protected OneElement<?> getXMLOneElementNewValue() {
+        OneText xml = new OneText().setName(getName()).setTextContent(desiredValue);
 
         desiredValue = null;
 

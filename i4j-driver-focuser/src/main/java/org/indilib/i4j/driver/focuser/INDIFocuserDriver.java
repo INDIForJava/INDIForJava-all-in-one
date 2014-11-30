@@ -22,8 +22,6 @@ package org.indilib.i4j.driver.focuser;
  * #L%
  */
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
@@ -33,6 +31,7 @@ import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.protocol.api.INDIConnection;
 
 /**
  * A class representing a Focuser Driver in the INDI Protocol. INDI Focuser
@@ -92,13 +91,11 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * from which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages
-     * @param outputStream
-     *            The stream to which to write the messages
+     * @param connection
+     *            the indi connection to the server.
      */
-    public INDIFocuserDriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public INDIFocuserDriver(INDIConnection connection) {
+        super(connection);
     }
 
     /**

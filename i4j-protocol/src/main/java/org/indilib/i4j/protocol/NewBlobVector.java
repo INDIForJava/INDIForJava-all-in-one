@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("newBLOBVector")
-public class NewBlobVector extends SetVector<NewBlobVector> {
+public class NewBlobVector extends NewVector<NewBlobVector> {
 
     @Override
     public boolean isBlob() {

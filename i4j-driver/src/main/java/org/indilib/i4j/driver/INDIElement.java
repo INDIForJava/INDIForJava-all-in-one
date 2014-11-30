@@ -25,7 +25,8 @@ package org.indilib.i4j.driver;
 import java.io.Serializable;
 
 import org.indilib.i4j.driver.util.INDIElementBuilder;
-import org.w3c.dom.Element;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.OneElement;
 
 /**
  * A class representing a INDI Element. The subclasses
@@ -114,7 +115,7 @@ public abstract class INDIElement implements Serializable {
      * @return The value of the element described in the <code>XML</code>
      *         element.
      */
-    public abstract Object parseOneValue(Element xml);
+    public abstract Object parseOneValue(OneElement<?> xml);
 
     /**
      * Sets the value of the Element to <code>newValue</code>.
@@ -134,7 +135,7 @@ public abstract class INDIElement implements Serializable {
      * @return the &lt;oneXXX&gt; XML string describing the current value of the
      *         Element.
      */
-    protected abstract String getXMLOneElement(boolean includeMinMaxStep);
+    protected abstract OneElement<?> getXMLOneElement(boolean includeMinMaxStep);
 
     /**
      * Gets a &lt;defXXX&gt; XML string describing the current value and
@@ -143,7 +144,7 @@ public abstract class INDIElement implements Serializable {
      * @return The &lt;defXXX&gt; XML string describing the current value and
      *         properties of the Element.
      */
-    protected abstract String getXMLDefElement();
+    protected abstract DefElement<?> getXMLDefElement();
 
     /**
      * Gets the name of the element and its current value.

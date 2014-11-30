@@ -24,6 +24,8 @@ package org.indilib.i4j.protocol;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
  * This class represents an INDI XML protocol element.
@@ -31,6 +33,11 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("defNumber")
+@XStreamConverter(value = ToAttributedValueConverter.class, strings = {
+    "textContent"
+}, types = {
+    DefElement.class
+})
 public class DefNumber extends DefElement<DefNumber> {
 
     /**
@@ -142,4 +149,14 @@ public class DefNumber extends DefElement<DefNumber> {
         this.step = newLeft;
         return this;
     }
+
+    @Override
+    public DefNumber trim() {
+        this.min = trim(this.min);
+        this.max = trim(this.max);
+        this.format = trim(this.format);
+        this.step = trim(this.step);
+        return super.trim();
+    }
+
 }

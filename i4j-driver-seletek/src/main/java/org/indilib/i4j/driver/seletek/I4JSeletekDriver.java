@@ -29,8 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.indilib.i4j.Constants.LightStates;
@@ -50,6 +48,7 @@ import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.connection.INDIConnectionHandler;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -238,13 +237,11 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
      * messages (from clients) and a <code>outputStream</code> to write the
      * messages to the clients.
      * 
-     * @param inputStream
-     *            The stream from which to read messages
-     * @param outputStream
-     *            The stream to which to write the messages
+     * @param connection
+     *            the indi connection to the server.
      */
-    public I4JSeletekDriver(InputStream inputStream, OutputStream outputStream) {
-        super(inputStream, outputStream);
+    public I4JSeletekDriver(INDIConnection connection) {
+        super(connection);
 
         internalTemperatures = new double[SeletekSensorStatusRequesterThread.TEMPERATURE_READINGS];
         externalTemperatures = new double[SeletekSensorStatusRequesterThread.TEMPERATURE_READINGS];
@@ -320,7 +317,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
                 mainDeviceP.setSelectedIndex(elementsAndValues);
 
                 if (mainDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
-                    mainSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 0, this);
+                    mainSubdriver = new SeletekFocuser(super.getINDIConnection(), 0, this);
                     registerSubdriver(mainSubdriver);
                 }
             }
@@ -339,7 +336,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
                 expDeviceP.setSelectedIndex(elementsAndValues);
 
                 if (expDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
-                    expSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 1, this);
+                    expSubdriver = new SeletekFocuser(super.getINDIConnection(), 1, this);
                     registerSubdriver(expSubdriver);
                 }
             }
@@ -358,7 +355,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
                 thirdDeviceP.setSelectedIndex(elementsAndValues);
 
                 if (thirdDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
-                    thirdSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 2, this);
+                    thirdSubdriver = new SeletekFocuser(super.getINDIConnection(), 2, this);
                     registerSubdriver(thirdSubdriver);
                 }
             }
@@ -431,12 +428,12 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
         this.addProperty(powerOkP);
 
         if (mainDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
-            mainSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 0, this);
+            mainSubdriver = new SeletekFocuser(super.getINDIConnection(), 0, this);
             registerSubdriver(mainSubdriver);
         }
 
         if (expDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
-            expSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 1, this);
+            expSubdriver = new SeletekFocuser(super.getINDIConnection(), 1, this);
             registerSubdriver(expSubdriver);
         }
 
@@ -901,7 +898,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
 
             this.addProperty(thirdDeviceP);
             if (thirdDeviceP.getSelectedValue().compareTo("Focuser") == 0) {
-                thirdSubdriver = new SeletekFocuser(super.getInputStream(), super.getOutputStream(), 2, this);
+                thirdSubdriver = new SeletekFocuser(super.getINDIConnection(), 2, this);
                 registerSubdriver(thirdSubdriver);
             }
         } else {

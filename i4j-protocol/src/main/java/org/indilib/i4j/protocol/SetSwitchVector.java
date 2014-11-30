@@ -67,4 +67,10 @@ public class SetSwitchVector extends SetVector<SetSwitchVector> {
         this.rule = newRule;
         return this;
     }
+
+    @Override
+    public SetSwitchVector trim() {
+        this.rule = trim(this.rule);
+        return super.trim();
+    }
 }

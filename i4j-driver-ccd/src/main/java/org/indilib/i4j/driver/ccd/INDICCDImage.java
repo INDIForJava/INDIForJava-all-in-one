@@ -254,7 +254,7 @@ public abstract class INDICCDImage {
      * If the image has less or equal 8 bit per pixel the data fits in a byte
      * array.
      */
-    private static class INDI8BitCCDImage extends INDICCDImage {
+    public static class INDI8BitCCDImage extends INDICCDImage {
 
         /**
          * the max bit per pixel supported by this class.
@@ -273,7 +273,7 @@ public abstract class INDICCDImage {
          * @param type
          *            type of the image.
          */
-        private INDI8BitCCDImage(int width, int height, int bpp, ImageType type) {
+        public INDI8BitCCDImage(int width, int height, int bpp, ImageType type) {
             super(width, height, bpp, type);
         }
 

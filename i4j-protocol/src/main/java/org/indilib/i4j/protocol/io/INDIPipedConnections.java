@@ -147,6 +147,7 @@ public final class INDIPipedConnections {
                 if (readObject instanceof INDIProtokolEndMarker) {
                     return null;
                 }
+                readObject.trim();
                 return readObject;
             } catch (InterruptedException e) {
                 connection.close();

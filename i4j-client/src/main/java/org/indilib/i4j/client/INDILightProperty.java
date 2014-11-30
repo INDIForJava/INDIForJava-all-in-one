@@ -25,8 +25,14 @@ package org.indilib.i4j.client;
 import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.INDIException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.indilib.i4j.protocol.DefElement;
+import org.indilib.i4j.protocol.DefLight;
+import org.indilib.i4j.protocol.DefLightVector;
+import org.indilib.i4j.protocol.NewVector;
+import org.indilib.i4j.protocol.OneLight;
+import org.indilib.i4j.protocol.SetVector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class representing a INDI Light Property.
@@ -37,6 +43,11 @@ import org.w3c.dom.NodeList;
  * @version 1.36, November 17, 2013
  */
 public class INDILightProperty extends INDIProperty {
+
+    /**
+     * A logger for the errors.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDILightProperty.class);
 
     /**
      * A UI component that can be used in graphical interfaces for this Light
@@ -55,28 +66,25 @@ public class INDILightProperty extends INDIProperty {
      * @param device
      *            The <code>INDIDevice</code> to which this Property belongs.
      */
-    protected INDILightProperty(Element xml, INDIDevice device) {
+    protected INDILightProperty(DefLightVector xml, INDIDevice device) {
         super(xml, device);
+        for (DefElement<?> element : xml.getElements()) {
+            if (element instanceof DefLight) {
+                String name = element.getName();
 
-        NodeList list = xml.getElementsByTagName("defLight");
+                INDIElement iel = getElement(name);
 
-        for (int i = 0; i < list.getLength(); i++) {
-            Element child = (Element) list.item(i);
-
-            String name = child.getAttribute("name");
-
-            INDIElement iel = getElement(name);
-
-            if (iel == null) { // Does not exist
-                INDILightElement ite = new INDILightElement(child, this);
-                addElement(ite);
+                if (iel == null) { // Does not exist
+                    INDILightElement ite = new INDILightElement((DefLight) element, this);
+                    addElement(ite);
+                }
             }
         }
     }
 
     @Override
-    protected void update(Element el) {
-        super.update(el, "oneLight");
+    protected void update(SetVector<?> el) {
+        super.update(el, OneLight.class);
     }
 
     /**
@@ -108,19 +116,10 @@ public class INDILightProperty extends INDIProperty {
      * @return "" a empty <code>String</code>
      */
     @Override
-    protected String getXMLPropertyChangeInit() {
-        return ""; // A light cannot change
-    }
-
-    /**
-     * Gets an empty <code>String</code> as Light Properties cannot be changed
-     * by clients.
-     * 
-     * @return "" a empty <code>String</code>
-     */
-    @Override
-    protected String getXMLPropertyChangeEnd() {
-        return ""; // A light cannot change
+    protected NewVector<?> getXMLPropertyChangeInit() {
+        LOG.error("changed but not possible, it should not be possible to change a light!");
+        // A light cannot change
+        return null;
     }
 
     @Override

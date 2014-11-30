@@ -27,6 +27,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.api.INDIInputStream;
+import org.indilib.i4j.protocol.api.INDIOutputStream;
+import org.indilib.i4j.protocol.io.INDIProcessConnection;
 
 /**
  * A class that represent a Native Device (created with the usual INDI library).
@@ -52,6 +56,8 @@ public class INDINativeDevice extends INDIDevice {
      */
     private Process process;
 
+    private INDIConnection processConnection;
+
     /**
      * Constructs a new Native Device and launches it as a external process.
      * 
@@ -72,6 +78,7 @@ public class INDINativeDevice extends INDIDevice {
 
         try {
             process = Runtime.getRuntime().exec(driverPath);
+            processConnection = new INDIProcessConnection(process);
         } catch (IOException e) {
             throw new INDIException("Problem executing " + driverPath);
         }
@@ -97,8 +104,12 @@ public class INDINativeDevice extends INDIDevice {
     }
 
     @Override
-    public InputStream getInputStream() {
-        return process.getInputStream();
+    public INDIInputStream getInputStream() {
+        try {
+            return processConnection.getINDIInputStream();
+        } catch (IOException e) {
+            throw new IllegalStateException("could not get output stream from driver");
+        }
     }
 
     @Override
@@ -109,8 +120,12 @@ public class INDINativeDevice extends INDIDevice {
     }
 
     @Override
-    public OutputStream getOutputStream() {
-        return process.getOutputStream();
+    public INDIOutputStream getOutputStream() {
+        try {
+            return processConnection.getINDIOutputStream();
+        } catch (IOException e) {
+            throw new IllegalStateException("could not get output stream from driver");
+        }
     }
 
     @Override

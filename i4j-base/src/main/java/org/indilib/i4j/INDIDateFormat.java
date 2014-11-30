@@ -79,23 +79,21 @@ public final class INDIDateFormat {
      *         the <code>time</code> is not correct.
      */
     public Date parseTimestamp(final String time) {
-        Date timestamp = new Date();
-
-        String newTime = time.trim();
-
-        if (!(newTime.isEmpty())) {
+        Date timestamp;
+        if (time != null && !time.isEmpty()) {
             try {
-                timestamp = dateFormat.parse(newTime);
+                timestamp = dateFormat.parse(time);
             } catch (ParseException e) {
                 try {
-                    timestamp = dateFormat2.parse(newTime);
+                    timestamp = dateFormat2.parse(time);
                 } catch (ParseException ee) {
                     timestamp = new Date(); // Not correct format, returning
                                             // current timestamp.
                 }
             }
+        } else {
+            timestamp = new Date();
         }
-
         return timestamp;
     }
 

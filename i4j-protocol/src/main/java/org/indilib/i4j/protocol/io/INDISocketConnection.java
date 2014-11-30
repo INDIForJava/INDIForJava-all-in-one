@@ -106,9 +106,14 @@ public class INDISocketConnection implements INDIConnection {
 
     @Override
     public void close() throws IOException {
+        socket.shutdownInput();
         inputStream.close();
         ouputStream.close();
         socket.close();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getName() + "(" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort() + ")";
+    }
 }
