@@ -13,11 +13,11 @@ package org.indilib.i4j.server;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -34,7 +34,7 @@ import org.indilib.i4j.protocol.io.INDIProcessConnection;
  * A class that represent a Native Device (created with the usual INDI library).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, January 13, 2013
+ * @author Richard van Nieuwenhoven
  */
 public class INDINativeDevice extends INDIDevice {
 
@@ -54,6 +54,9 @@ public class INDINativeDevice extends INDIDevice {
      */
     private Process process;
 
+    /**
+     * the connection streams to the process.
+     */
     private INDIConnection processConnection;
 
     /**

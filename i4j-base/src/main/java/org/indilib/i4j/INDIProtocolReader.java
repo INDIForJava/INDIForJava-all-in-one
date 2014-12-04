@@ -13,11 +13,11 @@ package org.indilib.i4j;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -57,8 +57,11 @@ public class INDIProtocolReader extends Thread {
      * 
      * @param parser
      *            The parser to which the readed messages will be sent.
+     * @param name
+     *            the thread name to use.
      */
-    public INDIProtocolReader(final INDIProtocolParser parser) {
+    public INDIProtocolReader(final INDIProtocolParser parser, String name) {
+        super(name);
         this.parser = parser;
     }
 
@@ -71,7 +74,7 @@ public class INDIProtocolReader extends Thread {
         try {
             INDIProtocol<?> readObject = inputStream.readObject();
             while (!stop && readObject != null) {
-                parser.parseXML(readObject);
+                parser.processProtokolMessage(readObject);
                 readObject = inputStream.readObject();
             }
         } catch (IOException e) {

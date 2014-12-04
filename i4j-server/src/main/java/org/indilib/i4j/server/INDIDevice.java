@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
  * and parses its messages.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author Richard van Nieuwenhoven
  * @version 1.32, January 13, 2013
  */
 public abstract class INDIDevice extends INDIDeviceListener implements INDIDeviceInterface {
@@ -144,7 +145,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
     protected abstract boolean hasName(String name);
 
     @Override
-    protected void parseXMLElement(INDIProtocol<?> child) {
+    public void processProtokolMessage(INDIProtocol<?> child) {
 
         if (child instanceof GetProperties) {
             processGetProperties((GetProperties) child);
@@ -180,7 +181,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * implementations.
      */
     protected void startReading() {
-        reader = new INDIProtocolReader(this);
+        reader = new INDIProtocolReader(this, "device reader");
         reader.start();
     }
 

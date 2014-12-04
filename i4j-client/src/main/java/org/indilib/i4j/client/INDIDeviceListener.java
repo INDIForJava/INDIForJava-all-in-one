@@ -38,7 +38,7 @@ public interface INDIDeviceListener {
      * @param property
      *            The Property that has been added.
      */
-    void newProperty(INDIDevice device, INDIProperty property);
+    void newProperty(INDIDevice device, INDIProperty<?> property);
 
     /**
      * Called when a Property is removed from a Device.
@@ -48,7 +48,7 @@ public interface INDIDeviceListener {
      * @param property
      *            The Property that has been removed.
      */
-    void removeProperty(INDIDevice device, INDIProperty property);
+    void removeProperty(INDIDevice device, INDIProperty<?> property);
 
     /**
      * Called when the message for a Device has changed.

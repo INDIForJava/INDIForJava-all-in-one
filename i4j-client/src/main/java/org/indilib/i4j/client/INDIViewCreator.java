@@ -13,11 +13,11 @@ package org.indilib.i4j.client;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -28,8 +28,18 @@ import java.util.ServiceLoader;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.INDIException;
 
-public class INDIViewCreator {
+/**
+ * The view createtion factory, uses the service loader pattern to get the
+ * correct implementor for the current situation.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+public final class INDIViewCreator {
 
+    /**
+     * The dummy creator when nothing was found, this one is used that does
+     * "nothing".
+     */
     private static final class DummyViewCreator implements INDIViewCreatorInterface {
 
         @Override
@@ -86,16 +96,24 @@ public class INDIViewCreator {
         public INDIElementListener createBlobElementView(INDIBLOBElement indiblobElement, PropertyPermissions permission) throws INDIException {
             return DUMMY_ELEMENT_LISTENER;
         }
+
+        @Override
+        public INDIDeviceListener createDeviceView(INDIDevice indiDevice) throws INDIException {
+            return DUMMY_DEVICE_LISTENER;
+        }
     }
 
+    /**
+     * Dummy device listener, that does nothing.
+     */
     private static final class DummyDeviceListener implements INDIDeviceListener {
 
         @Override
-        public void removeProperty(INDIDevice device, INDIProperty property) {
+        public void removeProperty(INDIDevice device, INDIProperty<?> property) {
         }
 
         @Override
-        public void newProperty(INDIDevice device, INDIProperty property) {
+        public void newProperty(INDIDevice device, INDIProperty<?> property) {
         }
 
         @Override
@@ -103,6 +121,9 @@ public class INDIViewCreator {
         }
     }
 
+    /**
+     * Dummy element listener, that does nothing.
+     */
     private static final class DummyElementListener implements INDIElementListener {
 
         @Override
@@ -110,21 +131,47 @@ public class INDIViewCreator {
         }
     }
 
+    /**
+     * Dummy property listener, that does nothing.
+     */
     private static final class DummyPropertyListener implements INDIPropertyListener {
 
         @Override
-        public void propertyChanged(INDIProperty property) {
+        public void propertyChanged(INDIProperty<?> property) {
         }
     }
 
+    /**
+     * static cached dummy device listener.
+     */
     private static final DummyDeviceListener DUMMY_DEVICE_LISTENER = new DummyDeviceListener();
 
+    /**
+     * static cached dummy property listener.
+     */
     private static final DummyPropertyListener DUMMY_PROPERTY_LISTENER = new DummyPropertyListener();
 
+    /**
+     * static cached dummy element listener.
+     */
     private static final DummyElementListener DUMMY_ELEMENT_LISTENER = new DummyElementListener();
 
+    /**
+     * the staticaly cached creator interface resolved using the serviceloader
+     * pattern.
+     */
     private static INDIViewCreatorInterface creatorInterface;
 
+    /**
+     * utility class should never be instanciated.
+     */
+    private INDIViewCreator() {
+    }
+
+    /**
+     * @return the default implementation dependeing on what is first available
+     *         in the classpath.
+     */
     public static INDIViewCreatorInterface getDefault() {
         if (creatorInterface == null) {
             ServiceLoader<INDIViewCreatorInterface> loader = ServiceLoader.load(INDIViewCreatorInterface.class);

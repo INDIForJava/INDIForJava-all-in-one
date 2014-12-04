@@ -17,11 +17,6 @@
 			<artifactId>i4j-protocol</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.9</version>
-		</dependency>
 	</dependencies>
 	<properties>
 		<site.basedir>${project.parent.basedir}</site.basedir>

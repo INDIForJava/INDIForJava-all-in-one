@@ -13,11 +13,11 @@ package org.indilib.i4j.server;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -30,6 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import com.netiq.websockify.WebsockifyServer;
 
+/**
+ * Web socket acceptor for the indi server.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDIWebsocketAcceptor implements INDIServerAcceptor {
 
     /**
@@ -37,8 +42,14 @@ public class INDIWebsocketAcceptor implements INDIServerAcceptor {
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIWebsocketAcceptor.class);
 
+    /**
+     * the local port to listen to.
+     */
     private int localPort;
 
+    /**
+     * the websocket server.
+     */
     private WebsockifyServer wss = new WebsockifyServer();
 
     @Override

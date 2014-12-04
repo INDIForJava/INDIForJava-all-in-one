@@ -64,12 +64,9 @@ public class INDILightElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDILightElement(DefLight xml, INDIProperty property) {
+    protected INDILightElement(DefLight xml, INDILightProperty property) {
         super(xml, property);
-
-        String sta = xml.getTextContent().trim();
-
-        setValue(sta);
+        setValue(xml.getTextContent());
     }
 
     @Override
@@ -90,10 +87,7 @@ public class INDILightElement extends INDIElement {
      */
     @Override
     protected void setValue(OneElement<?> xml) {
-        String sta = xml.getTextContent().trim();
-
-        setValue(sta);
-
+        setValue(xml.getTextContent());
         notifyListeners();
     }
 

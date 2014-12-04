@@ -1,4 +1,4 @@
-package org.indilib.i4j.protocol;
+package org.indilib.i4j.protocol.url.websocket;
 
 /*
  * #%L
@@ -22,45 +22,40 @@ package org.indilib.i4j.protocol;
  * #L%
  */
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 
 /**
- * This class represents an INDI XML protocol element.
+ * The webseocket url handler.
  * 
  * @author Richard van Nieuwenhoven
  */
-@XStreamAlias("delProperty")
-public class DelProperty extends INDIProtocol<DelProperty> {
+public class INDIWebSocketStreamHandler extends URLStreamHandler {
 
     /**
-     * the version attribute of the element.
+     * The indi default port number.
      */
-    @XStreamAsAttribute
-    private String version;
+    private static final int WEBSOCKET_DEFAULT_PORT = 8080;
 
     /**
-     * @return the version attribute of the element.
+     * The protokol name for indi over websockets.
      */
-    public String getVersion() {
-        return version;
-    }
+    public static final String PROTOCOL = "windi";
 
-    /**
-     * set the version attribute of the element.
-     * 
-     * @param newVersion
-     *            the new attibute version value
-     * @return this for builder pattern.
-     */
-    public DelProperty setVersion(String newVersion) {
-        this.version = newVersion;
-        return this;
+    @Override
+    protected final int getDefaultPort() {
+        return WEBSOCKET_DEFAULT_PORT;
     }
 
     @Override
-    public DelProperty trim() {
-        this.version = trim(this.version);
-        return super.trim();
+    protected final URLConnection openConnection(final URL url) throws IOException {
+        return new INDIWebSocketConnection(url);
+    }
+
+    @Override
+    protected final void parseURL(final URL u, final String spec, final int start, final int end) {
+        super.parseURL(u, spec, start, end);
     }
 }

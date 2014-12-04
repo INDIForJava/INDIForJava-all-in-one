@@ -195,7 +195,7 @@ public final class INDIPipedConnections {
         }
 
         @Override
-        public void writeObject(INDIProtocol<?> element) throws IOException {
+        public synchronized void writeObject(INDIProtocol<?> element) throws IOException {
             if (connection.isClosed()) {
                 throw new IOException("stream closed");
             }

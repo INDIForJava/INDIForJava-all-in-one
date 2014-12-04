@@ -77,7 +77,7 @@ public class INDIOutputStreamImpl extends OutputStream implements INDIOutputStre
     }
 
     @Override
-    public void writeObject(INDIProtocol<?> element) throws IOException {
+    public synchronized void writeObject(INDIProtocol<?> element) throws IOException {
         if (LOG.isTraceEnabled()) {
             LOG.trace("sending indi object " + element);
         }

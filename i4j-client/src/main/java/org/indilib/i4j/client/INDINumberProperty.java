@@ -39,7 +39,7 @@ import org.indilib.i4j.protocol.SetVector;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.36, November 17, 2013
  */
-public class INDINumberProperty extends INDIProperty {
+public class INDINumberProperty extends INDIProperty<INDINumberElement> {
 
     /**
      * A UI component that can be used in graphical interfaces for this Number

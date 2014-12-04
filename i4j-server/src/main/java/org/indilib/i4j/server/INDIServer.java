@@ -37,6 +37,7 @@ import org.indilib.i4j.protocol.GetProperties;
 import org.indilib.i4j.protocol.INDIProtocol;
 import org.indilib.i4j.protocol.SetBlobVector;
 import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.io.INDIPipedConnections;
 import org.indilib.i4j.server.api.INDIDeviceInterface;
 import org.indilib.i4j.server.api.INDIServerEventHandler;
 import org.indilib.i4j.server.api.INDIServerInterface;
@@ -806,5 +807,14 @@ public final class INDIServer implements INDIServerInterface {
             }
         }
 
+    }
+
+    @Override
+    public INDIConnection createConnection() {
+        INDIPipedConnections connectionPair = new INDIPipedConnections();
+        INDIClient client = new INDIClient(connectionPair.first(), this);
+        clients.add(client);
+        connectionWithClientEstablished(client);
+        return connectionPair.second();
     }
 }

@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * A class that represent a Java Device (created with the INDI Driver library).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, July 23, 2013
+ * @author Richard van Nieuwenhoven
  * @see org.indilib.i4j.driver
  */
 public class INDIJavaDevice extends INDIDevice {

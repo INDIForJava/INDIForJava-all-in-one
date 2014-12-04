@@ -200,7 +200,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
         driver.setStepperMovePower(seletekPort, movePowerE.getValue().intValue());
         driver.setStepperStopPower(seletekPort, stopPowerE.getValue().intValue());
 
-        Thread readerThread = new Thread(this);
+        Thread readerThread = new Thread(this, getName());
         readerThread.start();
     }
 

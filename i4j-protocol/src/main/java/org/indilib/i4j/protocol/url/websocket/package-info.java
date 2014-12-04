@@ -1,10 +1,8 @@
-package org.indilib.i4j.protocol;
-
 /*
  * #%L
- * INDI Protocol implementation
+ * INDI for Java Base Library
  * %%
- * Copyright (C) 2012 - 2014 indiforjava
+ * Copyright (C) 2013 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,14 +20,11 @@ package org.indilib.i4j.protocol;
  * #L%
  */
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
- * This class represents an INDI XML protocol element.
- * 
- * @author Richard van Nieuwenhoven
+ * Provides some classes for handling connections via INDI Urls over websockets. This is still a work in progress.
+ * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
+ * @version 1.39, October 11, 2014
  */
-@XStreamAlias("message")
-public class Message extends INDIProtocol<Message> {
 
-}
+package org.indilib.i4j.protocol.url.websocket;
+

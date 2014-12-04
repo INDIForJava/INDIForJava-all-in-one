@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.stellarium;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -63,7 +63,7 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
     /**
      * the pointing direction property of the telescope.
      */
-    private INDIProperty indiEqnProperty;
+    private INDIProperty<?> indiEqnProperty;
 
     /**
      * the server connection to the telescope.
@@ -85,21 +85,23 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
      */
     public TelescopeConnecor(String indiUrl, boolean autoDetect) {
         INDIURI url = null;
-
         String host;
         int port;
+        INDIServerInterface currentServer = INDIServerAccessLookup.indiServerAccess().get();
         if (!indiUrl.trim().isEmpty()) {
             url = new INDIURI(indiUrl);
             host = url.getHost();
-            port = url.getPort();
+            if (host.isEmpty() || host.equalsIgnoreCase("localhost") || currentServer.getHost().equalsIgnoreCase(host)) {
+                // TODO chek the port also
+                serverConnection = new INDIServerConnection(currentServer.createConnection());
+            } else {
+                port = url.getPort();
+                serverConnection = new INDIServerConnection(host, port);
+                indiDeviceName = url.getDevice();
+            }
         } else {
-            INDIServerInterface currentServer = INDIServerAccessLookup.indiServerAccess().get();
-            host = currentServer.getHost();
-            port = currentServer.getPort();
-            url = new INDIURI("indi://" + host + ":" + port);
+            serverConnection = new INDIServerConnection(currentServer.createConnection());
         }
-        serverConnection = new INDIServerConnection(host, port);
-        indiDeviceName = url.getDevice();
         if (this.indiDeviceName == null || this.indiDeviceName.isEmpty()) {
             autoDetect = true;
         }
@@ -167,7 +169,7 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
     }
 
     @Override
-    public void newProperty(INDIDevice device, INDIProperty property) {
+    public void newProperty(INDIDevice device, INDIProperty<?> property) {
         if (indiDevice == null && "EQUATORIAL_EOD_COORD".equals(property.getName())) {
             indiDevice = device;
             indiEqnProperty = property;
@@ -177,7 +179,7 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
     }
 
     @Override
-    public void propertyChanged(INDIProperty property) {
+    public void propertyChanged(INDIProperty<?> property) {
         Object ra = property.getElement("RA").getValue();
         Object dec = property.getElement("DEC").getValue();
         if (ra instanceof Double && dec instanceof Double) {
@@ -204,7 +206,7 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
     }
 
     @Override
-    public void removeProperty(INDIDevice device, INDIProperty property) {
+    public void removeProperty(INDIDevice device, INDIProperty<?> property) {
         if (device == indiDevice && "EQUATORIAL_EOD_COORD".equals(property.getName())) {
             indiDevice = null;
             indiEqnProperty = null;
@@ -221,11 +223,15 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
      */
     public void sendVectorToINDI(double ra, double dec) {
         try {
-            indiEqnProperty.getElement("RA").setDesiredValue(Double.valueOf(ra));
-            indiEqnProperty.getElement("DEC").setDesiredValue(Double.valueOf(dec));
-            indiEqnProperty.sendChangesToDriver();
+            if (indiEqnProperty != null) {
+                indiEqnProperty.getElement("RA").setDesiredValue(Double.valueOf(ra));
+                indiEqnProperty.getElement("DEC").setDesiredValue(Double.valueOf(dec));
+                indiEqnProperty.sendChangesToDriver();
+            } else {
+                LOG.warn("telescope eqn property not jet detected");
+            }
         } catch (Exception e) {
-            LOG.warn("could not send vector to INDI");
+            LOG.warn("could not send vector to INDI", e);
         }
     }
 }

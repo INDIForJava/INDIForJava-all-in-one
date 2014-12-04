@@ -1,20 +1,3 @@
-/*
- *  This file is part of INDI for Java Client UI.
- * 
- *  INDI for Java Client UI is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Client UI is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Client UI.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
 package org.indilib.i4j.client.ui;
 
 /*
@@ -30,11 +13,11 @@ package org.indilib.i4j.client.ui;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -42,6 +25,7 @@ package org.indilib.i4j.client.ui;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.filechooser.FileFilter;
 
@@ -64,19 +48,9 @@ import org.indilib.i4j.FileUtils;
 public class FileFilterByExtension extends FileFilter {
 
     /**
-     * String for unknown file types.
-     */
-    private static final String TYPE_UNKNOWN = "Type Unknown";
-
-    /**
-     * String for hidden files.
-     */
-    private static final String HIDDEN_FILE = "Hidden File";
-
-    /**
      * A hashmap for every filter.
      */
-    private LinkedHashMap filters = null;
+    private Map<String, FileFilter> filters = null;
 
     /**
      * The human readable description of the file filter.
@@ -100,7 +74,7 @@ public class FileFilterByExtension extends FileFilter {
      * @see #addExtension
      */
     public FileFilterByExtension() {
-        this.filters = new LinkedHashMap();
+        this.filters = new LinkedHashMap<>();
     }
 
     /**
@@ -192,7 +166,7 @@ public class FileFilterByExtension extends FileFilter {
                 return true;
             }
             String extension = FileUtils.getExtensionOfFile(file).toLowerCase();
-            if (extension != null && filters.get(extension) != null) {
+            if (filters.get(extension) != null) {
                 return true;
             }
         }
@@ -212,7 +186,7 @@ public class FileFilterByExtension extends FileFilter {
      */
     public void addExtension(String extension) {
         if (filters == null) {
-            filters = new LinkedHashMap();
+            filters = new LinkedHashMap<>();
         }
         filters.put(extension.toLowerCase(), this);
         fullDescription = null;
@@ -233,7 +207,7 @@ public class FileFilterByExtension extends FileFilter {
             if (description == null || isExtensionListInDescription()) {
                 fullDescription = description == null ? "(" : description + " (";
                 // build the description from the extension list
-                Iterator extensions = filters.keySet().iterator();
+                Iterator<String> extensions = filters.keySet().iterator();
                 if (extensions != null) {
                     fullDescription += "." + (String) extensions.next();
                     while (extensions.hasNext()) {

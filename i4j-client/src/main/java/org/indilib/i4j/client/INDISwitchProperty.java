@@ -13,17 +13,14 @@ package org.indilib.i4j.client;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
@@ -46,7 +43,7 @@ import org.indilib.i4j.protocol.SetVector;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.36, November 18, 2013
  */
-public class INDISwitchProperty extends INDIProperty {
+public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
     /**
      * A UI component that can be used in graphical interfaces for this Switch
@@ -74,7 +71,7 @@ public class INDISwitchProperty extends INDIProperty {
      */
     protected INDISwitchProperty(DefSwitchVector xml, INDIDevice device) {
         super(xml, device);
-        String rul = xml.getRule().trim();
+        String rul = xml.getRule();
         if (rul.compareTo("OneOfMany") == 0) {
             rule = SwitchRules.ONE_OF_MANY;
         } else if (rul.compareTo("AtMostOne") == 0) {
@@ -169,16 +166,11 @@ public class INDISwitchProperty extends INDIProperty {
      */
     private int getSelectedCount() {
         int selectedCount = 0;
-
-        List<INDIElement> list = getElementsAsList();
-
-        for (int i = 0; i < list.size(); i++) {
-            INDISwitchElement el = (INDISwitchElement) list.get(i);
+        for (INDISwitchElement el : this) {
             if (el.getValue() == SwitchStatus.ON) {
                 selectedCount++;
             }
         }
-
         return selectedCount;
     }
 
@@ -225,27 +217,21 @@ public class INDISwitchProperty extends INDIProperty {
      */
     @Override
     public String getValuesAsString() {
-        String aux = "";
-
-        ArrayList<INDIElement> l = this.getElementsAsList();
+        StringBuffer aux = new StringBuffer();
         int n = 0;
-
-        for (int i = 0; i < l.size(); i++) {
-            if (l.get(i).getValue() == SwitchStatus.ON) {
-                if (n == 0) {
-                    aux += l.get(i).getLabel();
-                    n++;
-                } else {
-                    aux += ", " + l.get(i).getLabel();
-                    n++;
+        for (INDISwitchElement element : this) {
+            if (element.getValue() == SwitchStatus.ON) {
+                if (n != 0) {
+                    aux.append(", ");
                 }
+                n++;
+                aux.append(element.getLabel());
             }
         }
-
         if (n > 1) {
-            return "[" + aux + "]";
+            aux.insert(0, "[");
+            aux.append("]");
         }
-
-        return aux;
+        return aux.toString();
     }
 }

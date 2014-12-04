@@ -131,7 +131,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
         }
     }
 
-    public void newProperty(INDIDevice device, final INDIProperty property) {
+    public void newProperty(INDIDevice device, final INDIProperty<?> property) {
         if (device == this.device) {
 
             try {
@@ -162,7 +162,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
         properties.addView(pv);
     }
 
-    public void removeProperty(INDIDevice device, final INDIProperty property) {
+    public void removeProperty(INDIDevice device, final INDIProperty<?> property) {
         if (device == this.device) {
             try {
                 I4JAndroidConfig.postHandler(new Runnable() {

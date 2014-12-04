@@ -13,11 +13,11 @@ package org.indilib.i4j.driver;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * clients and parsing / formating any incoming / leaving messages.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 6, 2013
+ * @author Richard van Nieuwenhoven
  */
 public abstract class INDIDriver implements INDIProtocolParser {
 
@@ -193,7 +193,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     public void startListening() {
         started = true;
 
-        reader = new INDIProtocolReader(this);
+        reader = new INDIProtocolReader(this, "driver reader");
         reader.start();
     }
 
@@ -216,28 +216,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
         }
     }
 
-    /**
-     * Parses the XML messages. Should not be called by particular Drivers.
-     * 
-     * @param doc
-     *            the messages to be parsed.
-     */
     @Override
-    public void parseXML(INDIProtocol<?> doc) {
-        parseXMLElement(doc);
-    }
-
-    /**
-     * Parses a particular XML Element.
-     * 
-     * @param xml
-     *            The XML element to be parsed.
-     */
-    private void parseXMLElement(INDIProtocol<?> xml) {
+    public void processProtokolMessage(INDIProtocol<?> xml) {
         INDIDriver subd = getSubdriver(xml);
 
         if (subd != null) {
-            subd.parseXMLElement(xml);
+            subd.processProtokolMessage(xml);
         } else {
 
             if (xml instanceof GetProperties) {

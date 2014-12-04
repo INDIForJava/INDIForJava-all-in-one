@@ -311,7 +311,7 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
             fwInput = new FileInputStream(portP.getPort());
             fwOutput = new FileOutputStream(portP.getPort());
 
-            readingThread = new Thread(this);
+            readingThread = new Thread(this, getName());
             readingThread.start();
         } catch (IOException e) {
             throw new INDIException("Connection to the QHY Filter Wheel failed. Check port permissions");

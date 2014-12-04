@@ -13,11 +13,11 @@ package org.indilib.i4j.client;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -31,6 +31,11 @@ import org.indilib.i4j.INDIException;
  * @version 1.11, March 26, 2012
  */
 public class INDIValueException extends INDIException {
+
+    /**
+     * serialisation version.
+     */
+    private static final long serialVersionUID = -3338903931160160408L;
 
     /**
      * The element that produced the exception.

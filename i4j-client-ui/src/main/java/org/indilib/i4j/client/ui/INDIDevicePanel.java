@@ -1,20 +1,3 @@
-/*
- *  This file is part of INDI for Java Client UI.
- * 
- *  INDI for Java Client UI is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
- * 
- *  INDI for Java Client UI is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Client UI.  If not, see 
- *  <http://www.gnu.org/licenses/>.
- */
 package org.indilib.i4j.client.ui;
 
 /*
@@ -30,11 +13,11 @@ package org.indilib.i4j.client.ui;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -57,10 +40,26 @@ import org.indilib.i4j.client.INDIProperty;
  */
 public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceListener {
 
+    /**
+     * Maximum number of lines to show.
+     */
+    private static final int MAX_NUMBER_OF_MESSAGE_LINES = 100;
+
+    /**
+     * serial Version UID.
+     */
+    private static final long serialVersionUID = -3939587968343767607L;
+
+    /**
+     * the device behind this pannel.
+     */
     private INDIDevice device;
 
     /**
-     * Creates new form INDIDevicePanel
+     * Creates new form INDIDevicePanel.
+     * 
+     * @param device
+     *            the device behind this pannel.
      */
     public INDIDevicePanel(INDIDevice device) {
         initComponents();
@@ -68,7 +67,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
 
         this.device = device;
 
-        List<INDIProperty> props = device.getPropertiesAsList();
+        List<INDIProperty<?>> props = device.getPropertiesAsList();
 
         for (int i = 0; i < props.size(); i++) {
             newProperty(device, props.get(i));
@@ -76,8 +75,8 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
     }
 
     @Override
-    public final void newProperty(INDIDevice device, INDIProperty ip) {
-        if (this.device == device) {
+    public final void newProperty(INDIDevice aDevice, INDIProperty<?> ip) {
+        if (this.device == aDevice) {
             String group = ip.getGroup();
 
             int pos = tabs.indexOfTab(group);
@@ -94,15 +93,15 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
 
             panel.addProperty(ip);
 
-            if (device.getBLOBCount() > 0) {
+            if (aDevice.getBLOBCount() > 0) {
                 blobsPanel.setVisible(true);
             }
         }
     }
 
     @Override
-    public void removeProperty(INDIDevice device, INDIProperty ip) {
-        if (this.device == device) {
+    public void removeProperty(INDIDevice aDevice, INDIProperty<?> ip) {
+        if (this.device == aDevice) {
 
             String group = ip.getGroup();
 
@@ -118,31 +117,37 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
                 }
             }
 
-            if (device.getBLOBCount() > 0) {
+            if (aDevice.getBLOBCount() > 0) {
                 blobsPanel.setVisible(false);
             }
         }
     }
 
     @Override
-    public void messageChanged(INDIDevice device) {
-        if (this.device == device) {
-            addMessage(device.getLastMessage());
+    public void messageChanged(INDIDevice aDevice) {
+        if (this.device == aDevice) {
+            addMessage(aDevice.getLastMessage());
         }
     }
 
+    /**
+     * add a message to the view.
+     * 
+     * @param message
+     *            the message to add.
+     */
     private void addMessage(String message) {
         message = message.trim();
 
         String m = messages.getText();
         int count = m.length() - m.replace("\n", "").length();
 
-        count -= 100; // Maximum number of lines to show
+        count -= MAX_NUMBER_OF_MESSAGE_LINES;
         int pos = 0;
 
         if (count > 0) {
             for (int i = 0; i < count; i++) {
-                pos = m.indexOf("\n", pos + 1);
+                pos = m.indexOf('\n', pos + 1);
             }
 
             m = m.substring(pos + 1);
@@ -162,7 +167,6 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed"
     // desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -231,35 +235,53 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
         jPanel2.add(blobsPanel, java.awt.BorderLayout.EAST);
 
         add(jPanel2, java.awt.BorderLayout.SOUTH);
-    }// </editor-fold>//GEN-END:initComponents
+    } // </editor-fold>//GEN-END:initComponents
 
-    private void blobsNeverActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_blobsNeverActionPerformed
+    /**
+     * Setting BLOBs Never.
+     * 
+     * @param evt
+     *            the event tat triggered this action.
+     */
+    private void blobsNeverActionPerformed(java.awt.event.ActionEvent evt) { // GEN-FIRST:event_blobsNeverActionPerformed
         try {
             addMessage("Setting BLOBs Never");
             device.blobsEnable(BLOBEnables.NEVER);
         } catch (IOException e) {
             addMessage("Problem setting BLOBs Never");
         }
-    }// GEN-LAST:event_blobsNeverActionPerformed
+    } // GEN-LAST:event_blobsNeverActionPerformed
 
-    private void blobsOnlyActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_blobsOnlyActionPerformed
+    /**
+     * Setting BLOBs Only.
+     * 
+     * @param evt
+     *            the event tat triggered this action.
+     */
+    private void blobsOnlyActionPerformed(java.awt.event.ActionEvent evt) { // GEN-FIRST:event_blobsOnlyActionPerformed
         try {
             addMessage("Setting BLOBs Only");
             device.blobsEnable(BLOBEnables.ONLY);
         } catch (IOException e) {
             addMessage("Problem setting BLOBs Only");
         }
-    }// GEN-LAST:event_blobsOnlyActionPerformed
+    } // GEN-LAST:event_blobsOnlyActionPerformed
 
-    private void blobsAlsoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_blobsAlsoActionPerformed
+    /**
+     * Setting BLOBs Also.
+     * 
+     * @param evt
+     *            the event tat triggered this action.
+     */
+    private void blobsAlsoActionPerformed(java.awt.event.ActionEvent evt) { // GEN-FIRST:event_blobsAlsoActionPerformed
         try {
             addMessage("Setting BLOBs Also");
             device.blobsEnable(BLOBEnables.ALSO);
         } catch (IOException e) {
             addMessage("Problem setting BLOBs Also");
         }
-    }// GEN-LAST:event_blobsAlsoActionPerformed
-     // Variables declaration - do not modify//GEN-BEGIN:variables
+    } // GEN-LAST:event_blobsAlsoActionPerformed
+      // Variables declaration - do not modify//GEN-BEGIN:variables
 
     private javax.swing.ButtonGroup blobButtonGroup;
 

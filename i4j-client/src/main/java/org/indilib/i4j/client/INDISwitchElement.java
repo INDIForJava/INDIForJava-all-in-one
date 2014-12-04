@@ -64,14 +64,10 @@ public class INDISwitchElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDISwitchElement(DefSwitch xml, INDIProperty property) {
+    protected INDISwitchElement(DefSwitch xml, INDISwitchProperty property) {
         super(xml, property);
-
         desiredStatus = null;
-
-        String sta = xml.getTextContent().trim();
-
-        setValue(sta);
+        setValue(xml.getTextContent());
     }
 
     @Override
@@ -91,9 +87,7 @@ public class INDISwitchElement extends INDIElement {
      */
     @Override
     protected void setValue(OneElement<?> xml) {
-        String sta = xml.getTextContent().trim();
-
-        setValue(sta);
+        setValue(xml.getTextContent());
 
         notifyListeners();
     }

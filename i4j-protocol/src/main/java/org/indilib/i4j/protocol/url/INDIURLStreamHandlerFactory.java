@@ -26,6 +26,8 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 
+import org.indilib.i4j.protocol.url.websocket.INDIWebSocketStreamHandler;
+
 /**
  * A class to handle INDI Streams.
  * 
@@ -51,8 +53,11 @@ public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
     @Override
     public final URLStreamHandler createURLStreamHandler(final String protocol) {
-        if ("indi".equals(protocol)) {
+        if (INDIURLStreamHandler.PROTOCOL.equals(protocol)) {
             return new INDIURLStreamHandler();
+        }
+        if (INDIWebSocketStreamHandler.PROTOCOL.equals(protocol)) {
+            return new INDIWebSocketStreamHandler();
         }
         return null;
     }

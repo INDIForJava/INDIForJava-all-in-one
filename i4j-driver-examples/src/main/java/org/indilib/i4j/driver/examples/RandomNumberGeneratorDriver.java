@@ -76,7 +76,7 @@ public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable 
 
         this.addProperty(randomP);
 
-        Thread t = new Thread(this);
+        Thread t = new Thread(this, getName());
         t.start();
     }
 

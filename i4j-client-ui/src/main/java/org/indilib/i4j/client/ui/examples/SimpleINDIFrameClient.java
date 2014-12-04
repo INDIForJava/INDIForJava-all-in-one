@@ -1,19 +1,19 @@
 /*
- *  This file is part of INDI for Java Client UI.
+ * This file is part of INDI for Java Client UI.
  * 
- *  INDI for Java Client UI is free software: you can redistribute it
- *  and/or modify it under the terms of the GNU General Public License 
- *  as published by the Free Software Foundation, either version 3 of 
- *  the License, or (at your option) any later version.
+ * INDI for Java Client UI is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  * 
- *  INDI for Java Client UI is distributed in the hope that it will be
- *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * INDI for Java Client UI is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  * 
- *  You should have received a copy of the GNU General Public License
- *  along with INDI for Java Client UI.  If not, see 
- *  <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with INDI for Java Client UI. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package org.indilib.i4j.client.ui.examples;
 
@@ -30,11 +30,11 @@ package org.indilib.i4j.client.ui.examples;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -42,6 +42,9 @@ package org.indilib.i4j.client.ui.examples;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Date;
 
 import org.indilib.i4j.Constants;
@@ -49,6 +52,10 @@ import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
 import org.indilib.i4j.client.ui.INDIDevicePanel;
+import org.indilib.i4j.protocol.GetProperties;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.url.INDIURLConnection;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +83,16 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
         setBounds((dim.width - width) / 2, (dim.height - height) / 2, width, height);
 
         connection = new INDIServerConnection(host, port);
+    }
+
+    public SimpleINDIFrameClient(INDIConnection connection) {
+        initComponents();
+
+        int width = 800;
+        int height = 600;
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds((dim.width - width) / 2, (dim.height - height) / 2, width, height);
+        this.connection = new INDIServerConnection(connection);
     }
 
     public void connect() {
@@ -152,6 +169,20 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
      *            the command line arguments
      */
     public static void main(String args[]) {
+        INDIURLStreamHandlerFactory.init();
+
+        if (args.length == 1) {
+            try {
+                INDIURLConnection connection = (INDIURLConnection) new URL(args[0]).openConnection();
+                SimpleINDIFrameClient f = new SimpleINDIFrameClient(connection);
+                f.setVisible(true);
+                f.connect();
+                return;
+            } catch (Exception e) {
+                LOG.info(args[0] + " was no url, trying host and port");
+                // ok no url lets try it the old fascion way
+            }
+        }
 
         if ((args.length < 1) || (args.length > 2)) {
             printErrorMessageAndExit();

@@ -109,14 +109,14 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
     }
 
     @Override
-    public void newProperty(INDIDevice device, INDIProperty property) {
+    public void newProperty(INDIDevice device, INDIProperty<?> property) {
         // We just simply listen to this Property
         System.out.println("New Property (" + property.getName() + ") added to device " + device.getName());
         property.addINDIPropertyListener(this);
     }
 
     @Override
-    public void removeProperty(INDIDevice device, INDIProperty property) {
+    public void removeProperty(INDIDevice device, INDIProperty<?> property) {
         // We just remove ourselves as a listener of the removed property
         System.out.println("Property (" + property.getName() + ") removed from device " + device.getName());
         property.removeINDIPropertyListener(this);
@@ -128,7 +128,7 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
     }
 
     @Override
-    public void propertyChanged(INDIProperty property) {
+    public void propertyChanged(INDIProperty<?> property) {
         System.out.println("Property Changed: " + property.getNameStateAndValuesAsString());
     }
 

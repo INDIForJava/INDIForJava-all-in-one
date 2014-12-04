@@ -1,5 +1,3 @@
-package org.indilib.i4j;
-
 /*
  * #%L
  * INDI for Java Base Library
@@ -22,36 +20,24 @@ package org.indilib.i4j;
  * #L%
  */
 
-import org.indilib.i4j.protocol.INDIProtocol;
-import org.indilib.i4j.protocol.api.INDIInputStream;
-
 /**
- * A interface representing a generic INDI Protocol Parser.
+ * 
+ * Provides the classes to produce a simple but effective Swing interface for
+ * all INDI Devices, Properties and Elements. This classes are usually
+ * instantiated from the corresponding client classes through the method
+ * <code>getDefaultUIComponent()</code> in various Client classes. <br/>
+ * Some examples are provided: a simple application example
+ * <code>laazotea.indi.client.ui.examples.SimpleINDIFrameClient</code> and a
+ * JApplet example (
+ * <code>laazotea.indi.client.ui.examples.SimpleINDIAppletClient</code>) is
+ * provided to show the possibilities of developing INDI Clients to be used in
+ * Java enabled Web Browsers.
+ * 
+ * 
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @author Richard van Nieuwenhoven
- * @version 1.39, October 11, 2014
+ * @version 1.39, October 14, 2014
  */
-public interface INDIProtocolParser {
 
-    /**
-     * Parses a protocol message.
-     * 
-     * @param message
-     *            The protocol message to parse.
-     */
-    void processProtokolMessage(INDIProtocol<?> message);
+package org.indilib.i4j.client.ui;
 
-    /**
-     * Gets the input stream from where the messages will be read.
-     * 
-     * @return The input stream from where the messages will be read.
-     */
-    INDIInputStream getInputStream();
-
-    /**
-     * Called when the reader finishes the readings (communications broken /
-     * stopped).
-     */
-    void finishReader();
-}

@@ -1,33 +1,26 @@
 package org.indilib.i4j.client;
 
 /*
- * #%L
- * INDI for Java Client Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Client Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
@@ -37,7 +30,6 @@ import org.indilib.i4j.protocol.DefVector;
 import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.SetVector;
-import org.w3c.dom.Element;
 
 /**
  * A class representing a INDI Property. The subclasses
@@ -48,10 +40,12 @@ import org.w3c.dom.Element;
  * <p>
  * It implements a listener mechanism to notify changes in its Elements.
  * 
+ * @param <Element>
+ *            the elements that occure in the property.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.32, January 27, 2013
  */
-public abstract class INDIProperty {
+public abstract class INDIProperty<Element extends INDIElement> implements Iterable<Element> {
 
     /**
      * The INDI Device to which this property belongs.
@@ -91,12 +85,12 @@ public abstract class INDIProperty {
     /**
      * A list of elements for this Property.
      */
-    private LinkedHashMap<String, INDIElement> elements;
+    private Map<String, Element> elements;
 
     /**
      * The list of listeners of this Property.
      */
-    private ArrayList<INDIPropertyListener> listeners;
+    private List<INDIPropertyListener> listeners;
 
     /**
      * Constructs an instance of <code>INDIProperty</code>. Called by its
@@ -115,38 +109,28 @@ public abstract class INDIProperty {
     protected INDIProperty(DefVector<?> xml, INDIDevice device) {
 
         this.device = device;
-
-        name = xml.getName().trim();
-
-        if (name.compareTo("") == 0) { // If no name, ignore
+        name = xml.getName();
+        if (name.isEmpty()) { // If no name, ignore
             throw new IllegalArgumentException("No name for the Property");
         }
-
-        label = xml.getLabel().trim();
-
-        if (label.compareTo("") == 0) { // If no label copy from name
+        label = xml.getLabel();
+        if (label.isEmpty()) { // If no label copy from name
             this.label = name;
         }
-
-        group = xml.getGroup().trim();
-
-        if (group.compareTo("") == 0) { // If no group, create default group
+        group = xml.getGroup();
+        if (group.isEmpty()) { // If no group, create default group
             group = "Unsorted";
         }
-
-        String sta = xml.getState().trim();
-
+        String sta = xml.getState();
         setState(sta);
+        if (this instanceof INDITextProperty || this instanceof INDINumberProperty //
+                || this instanceof INDISwitchProperty || this instanceof INDIBLOBProperty) {
 
-        if ((this instanceof INDITextProperty) || (this instanceof INDINumberProperty) || (this instanceof INDISwitchProperty) || (this instanceof INDIBLOBProperty)) {
+            permission = Constants.parsePropertyPermission(xml.getPerm());
 
-            String per = xml.getPerm().trim();
+            String to = xml.getTimeout();
 
-            permission = Constants.parsePropertyPermission(per);
-
-            String to = xml.getTimeout().trim();
-
-            if (!(to.length() == 0)) {
+            if (!to.isEmpty()) {
                 setTimeout(to);
             } else {
                 timeout = 0;
@@ -158,7 +142,7 @@ public abstract class INDIProperty {
             permission = PropertyPermissions.RO;
         }
 
-        this.elements = new LinkedHashMap<String, INDIElement>();
+        this.elements = new LinkedHashMap<String, Element>();
 
         this.listeners = new ArrayList<INDIPropertyListener>();
     }
@@ -195,18 +179,18 @@ public abstract class INDIProperty {
      */
     protected void update(SetVector<?> xml, Class<?> childNodesType) {
         try {
-            String sta = xml.getState().trim();
+            String sta = xml.getState();
             if (!(sta.length() == 0)) {
                 setState(sta);
             }
-            String to = xml.getTimeout().trim();
+            String to = xml.getTimeout();
             if (!(to.length() == 0)) {
                 setTimeout(to);
             }
             for (OneElement<?> element : xml.getElements()) {
                 if (childNodesType.isAssignableFrom(element.getClass())) {
                     String ename = element.getName();
-                    INDIElement iel = getElement(ename);
+                    Element iel = getElement(ename);
                     if (iel != null) {
                         // It already exists else ignore
                         iel.setValue(element);
@@ -363,7 +347,7 @@ public abstract class INDIProperty {
      * @param element
      *            the Element to be added.
      */
-    protected void addElement(INDIElement element) {
+    protected void addElement(Element element) {
         elements.put(element.getName(), element);
     }
 
@@ -376,7 +360,7 @@ public abstract class INDIProperty {
      *         <code>elementName</code>. <code>null</code> if there is no
      *         Element with that <code>elementName</code>.
      */
-    public INDIElement getElement(String elementName) {
+    public Element getElement(String elementName) {
         return elements.get(elementName);
     }
 
@@ -386,8 +370,8 @@ public abstract class INDIProperty {
      * @return the <code>ArrayList</code> of Elements belonging to this
      *         Property.
      */
-    public ArrayList<INDIElement> getElementsAsList() {
-        return new ArrayList<INDIElement>(elements.values());
+    public List<Element> getElementsAsList() {
+        return new ArrayList<Element>(elements.values());
     }
 
     /**
@@ -407,26 +391,19 @@ public abstract class INDIProperty {
         if (permission == PropertyPermissions.RO) {
             throw new INDIValueException(null, "The property is read only");
         }
-
-        ArrayList<INDIElement> elems = getElementsAsList();
-
         int changedElements = 0;
         NewVector<?> xml = getXMLPropertyChangeInit();
-        for (int i = 0; i < elems.size(); i++) {
-            INDIElement el = elems.get(i);
+        for (Element el : this) {
             if (el.isChanged()) {
                 changedElements++;
                 xml.getElements().add(el.getXMLOneElementNewValue());
             }
         }
-
         if (changedElements > 0) {
             setState(PropertyStates.BUSY);
-
             xml.setDevice(getDevice().getName());
             xml.setName(getName());
             xml.setTimestamp(dateFormat().getCurrentTimestamp());
-
             device.sendMessageToServer(xml);
         }
     }
@@ -455,11 +432,7 @@ public abstract class INDIProperty {
      * Notifies all the listeners about the changes in the Property.
      */
     private void notifyListeners() {
-        ArrayList<INDIPropertyListener> lCopy = (ArrayList<INDIPropertyListener>) listeners.clone();
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIPropertyListener l = lCopy.get(i);
-
+        for (INDIPropertyListener l : new ArrayList<INDIPropertyListener>(listeners)) {
             l.propertyChanged(this);
         }
     }
@@ -494,15 +467,11 @@ public abstract class INDIProperty {
      * @return the names of the Elements of this Property.
      */
     public String[] getElementNames() {
-        List<INDIElement> l = getElementsAsList();
-
-        String[] names = new String[l.size()];
-
-        for (int i = 0; i < l.size(); i++) {
-            names[i] = l.get(i).getName();
+        List<String> names = new ArrayList<>();
+        for (Element l : this) {
+            names.add(l.getName());
         }
-
-        return names;
+        return names.toArray(new String[names.size()]);
     }
 
     /**
@@ -512,14 +481,11 @@ public abstract class INDIProperty {
      * @return a String representation of the property and its values.
      */
     public String getNameStateAndValuesAsString() {
-        String aux = getName() + " - " + getState() + "\n";
-        List<INDIElement> l = getElementsAsList();
-
-        for (int i = 0; i < l.size(); i++) {
-            aux += "  " + l.get(i).getNameAndValueAsString() + "\n";
+        StringBuffer aux = new StringBuffer(getName()).append(" - ").append(getState()).append("\n");
+        for (Element l : this) {
+            aux.append("  ").append(l.getNameAndValueAsString()).append("\n");
         }
-
-        return aux;
+        return aux.toString();
     }
 
     /**
@@ -528,18 +494,18 @@ public abstract class INDIProperty {
      * @return A String representation of the value of the Property.
      */
     public String getValuesAsString() {
-        String aux = "[";
-
-        ArrayList<INDIElement> l = this.getElementsAsList();
-
-        for (int i = 0; i < l.size(); i++) {
-            if (i == 0) {
-                aux += l.get(i).toString();
-            } else {
-                aux += ", " + l.get(i).toString();
+        StringBuffer aux = new StringBuffer("[");
+        for (Element l : this) {
+            if (aux.length() > 1) {
+                aux.append(',');
             }
+            aux.append(l);
         }
+        return aux.append("]").toString();
+    }
 
-        return aux + "]";
+    @Override
+    public Iterator<Element> iterator() {
+        return elements.values().iterator();
     }
 }

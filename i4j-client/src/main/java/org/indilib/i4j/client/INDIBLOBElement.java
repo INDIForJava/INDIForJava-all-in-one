@@ -62,7 +62,7 @@ public class INDIBLOBElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDIBLOBElement(DefBlob xml, INDIProperty property) {
+    protected INDIBLOBElement(DefBlob xml, INDIBLOBProperty property) {
         super(xml, property);
 
         desiredValue = null;
@@ -121,11 +121,9 @@ public class INDIBLOBElement extends INDIElement {
         if (valueToCheck == null) {
             throw new IllegalArgumentException("null value");
         }
-
         if (!(valueToCheck instanceof INDIBLOBValue)) {
             return false;
         }
-
         return true;
     }
 

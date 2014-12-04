@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * A class that represent a Network Device (another INDI server).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, January 19, 2013
+ * @author Richard van Nieuwenhoven
  */
 public class INDINetworkDevice extends INDIDevice {
 

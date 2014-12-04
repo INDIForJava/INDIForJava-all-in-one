@@ -197,7 +197,7 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
     }
 
     @Override
-    public void propertyChanged(INDIProperty property) {
+    public void propertyChanged(INDIProperty<?> property) {
         if (property == getProperty()) {
             try {
                 I4JAndroidConfig.postHandler(new Runnable() {

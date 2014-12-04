@@ -137,7 +137,7 @@ public class INDIBasicServer implements INDIServerEventHandler {
             LOG.error("could not start server, exiting!");
             return;
         }
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Runtime.getRuntime().addShutdownHook(new Thread("server stop hook") {
 
             @Override
             public void run() {

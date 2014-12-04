@@ -13,11 +13,11 @@ package org.indilib.i4j.client.ui;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -42,6 +42,11 @@ import org.indilib.i4j.client.INDITextElement;
 import org.indilib.i4j.client.INDITextProperty;
 import org.indilib.i4j.client.INDIViewCreatorInterface;
 
+/**
+ * The swing view creator factory.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDISwingViewCreator implements INDIViewCreatorInterface {
 
     @Override
@@ -74,7 +79,16 @@ public class INDISwingViewCreator implements INDIViewCreatorInterface {
         return new INDITextElementPanel(indiTextElement, permission);
     }
 
-    public INDIPropertyListener createDefaultPropertyView(INDIProperty indiProperty) throws INDIException {
+    /**
+     * create a generic property pannel.
+     * 
+     * @param indiProperty
+     *            the property for with to create the pannel.
+     * @return the property listener for the created pannel.
+     * @throws INDIException
+     *             if something unexpected happend.
+     */
+    public INDIPropertyListener createDefaultPropertyView(INDIProperty<?> indiProperty) throws INDIException {
         return new INDIDefaultPropertyPanel(indiProperty);
     }
 
@@ -107,5 +121,10 @@ public class INDISwingViewCreator implements INDIViewCreatorInterface {
     @Override
     public INDIPropertyListener createLightPropertyView(INDILightProperty indiProperty) throws INDIException {
         return createDefaultPropertyView(indiProperty);
+    }
+
+    @Override
+    public INDIDeviceListener createDeviceView(INDIDevice indiDevice) {
+        return new org.indilib.i4j.client.ui.INDIDevicePanel(indiDevice);
     }
 }

@@ -25,6 +25,7 @@ package org.indilib.i4j.server.api;
 import java.util.List;
 
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.protocol.api.INDIConnection;
 
 /**
  * The core indi server interface. over this interface the server can be
@@ -172,4 +173,10 @@ public interface INDIServerInterface {
      *            the arguments for the acceptor.
      */
     void activateAcceptor(String name, Object... arguments);
+
+    /**
+     * @return a new connection to the server. the caller is responsible to
+     *         close it.
+     */
+    INDIConnection createConnection();
 }

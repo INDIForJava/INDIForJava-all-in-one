@@ -36,6 +36,7 @@ import org.indilib.i4j.protocol.INDIProtocol;
  * Devices according to the INDI protocol.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author Richard van Nieuwenhoven
  * @version 1.31, April 12, 2012
  */
 public abstract class INDIDeviceListener implements INDIProtocolParser {
@@ -77,11 +78,6 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
      */
     public boolean listensToAllDevices() {
         return listenToAllDevices;
-    }
-
-    @Override
-    public final void parseXML(INDIProtocol<?> doc) {
-        parseXMLElement(doc);
     }
 
     /**
@@ -257,14 +253,6 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
         }
         return false;
     }
-
-    /**
-     * parse an element of the xml message.
-     * 
-     * @param child
-     *            the element child of the message.
-     */
-    protected abstract void parseXMLElement(INDIProtocol<?> child);
 
     /**
      * Processes the <code>getProperties</code> XML message.

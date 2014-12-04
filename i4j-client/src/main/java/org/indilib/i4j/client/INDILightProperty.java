@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @version 1.36, November 17, 2013
  */
-public class INDILightProperty extends INDIProperty {
+public class INDILightProperty extends INDIProperty<INDILightElement> {
 
     /**
      * A logger for the errors.

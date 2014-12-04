@@ -36,7 +36,12 @@ import java.net.URLStreamHandler;
 public class INDIURLStreamHandler extends URLStreamHandler {
 
     /**
-     * Th indi default port number.
+     * The protocol name for the normal indi tcp protocol.
+     */
+    public static final String PROTOCOL = "indi";
+
+    /**
+     * The indi default port number.
      */
     private static final int INDI_DEFAULT_PORT = 7624;
 

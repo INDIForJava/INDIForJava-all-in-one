@@ -428,18 +428,33 @@ public abstract class INDIProtocol<T> {
         return INDIProtocolFactory.toString(this);
     }
 
+    /**
+     * @return true when a non empty name is available.
+     */
     public boolean hasName() {
         return getName() != null && !getName().trim().isEmpty();
     }
 
+    /**
+     * @return true when a non empty device is available.
+     */
     public boolean hasDevice() {
         return getDevice() != null && !getDevice().trim().isEmpty();
     }
 
+    /**
+     * @return true when a non empty message is available.
+     */
     public boolean hasMessage() {
         return getMessage() != null && !getMessage().trim().isEmpty();
     }
 
+    /**
+     * thrim all strings in the structure so all places working with the object
+     * do not have to trim any stings.
+     * 
+     * @return myself
+     */
     public T trim() {
         this.name = trim(this.name);
         this.device = trim(this.device);
@@ -448,6 +463,13 @@ public abstract class INDIProtocol<T> {
         return (T) this;
     }
 
+    /**
+     * Trim one value but keep it null when it was null.
+     * 
+     * @param value
+     *            the value to trim
+     * @return the trimmed string or null.
+     */
     protected String trim(String value) {
         if (value != null) {
             return value.trim();

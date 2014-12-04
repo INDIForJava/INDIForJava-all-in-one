@@ -1,38 +1,27 @@
 package org.indilib.i4j.client;
 
 /*
- * #%L
- * INDI for Java Client Library
- * %%
- * Copyright (C) 2013 - 2014 indiforjava
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
+ * #%L INDI for Java Client Library %% Copyright (C) 2013 - 2014 indiforjava %%
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version. This program is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Lesser Public License for more details. You should have received a copy of
+ * the GNU General Lesser Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.indilib.i4j.ClassInstantiator;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIException;
@@ -58,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * A class representing a INDI Device.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author Richard van Nieuwenhoven
  * @version 1.32, January 27, 2013
  */
 public class INDIDevice {
@@ -80,12 +70,12 @@ public class INDIDevice {
     /**
      * The collection of properties for this Device.
      */
-    private LinkedHashMap<String, INDIProperty> properties;
+    private Map<String, INDIProperty<?>> properties;
 
     /**
      * The list of Listeners of this Device.
      */
-    private ArrayList<INDIDeviceListener> listeners;
+    private List<INDIDeviceListener> listeners;
 
     /**
      * A UI component that can be used in graphical interfaces for this Device.
@@ -121,7 +111,7 @@ public class INDIDevice {
         this.name = name;
         this.server = server;
 
-        this.properties = new LinkedHashMap<String, INDIProperty>();
+        this.properties = new LinkedHashMap<String, INDIProperty<?>>();
 
         this.listeners = new ArrayList<INDIDeviceListener>();
 
@@ -156,12 +146,8 @@ public class INDIDevice {
      * @param property
      *            The new property
      */
-    private void notifyListenersNewProperty(INDIProperty property) {
-        ArrayList<INDIDeviceListener> lCopy = (ArrayList<INDIDeviceListener>) listeners.clone();
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIDeviceListener l = lCopy.get(i);
-
+    private void notifyListenersNewProperty(INDIProperty<?> property) {
+        for (INDIDeviceListener l : new ArrayList<>(listeners)) {
             l.newProperty(this, property);
         }
     }
@@ -172,11 +158,8 @@ public class INDIDevice {
      * @param property
      *            The removed property
      */
-    private void notifyListenersDeleteProperty(INDIProperty property) {
-        ArrayList<INDIDeviceListener> lCopy = (ArrayList<INDIDeviceListener>) listeners.clone();
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIDeviceListener l = lCopy.get(i);
+    private void notifyListenersDeleteProperty(INDIProperty<?> property) {
+        for (INDIDeviceListener l : new ArrayList<>(listeners)) {
 
             l.removeProperty(this, property);
         }
@@ -186,11 +169,7 @@ public class INDIDevice {
      * Notifies the listeners that the message of this Device has changed.
      */
     private void notifyListenersMessageChanged() {
-        ArrayList<INDIDeviceListener> lCopy = (ArrayList<INDIDeviceListener>) listeners.clone();
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIDeviceListener l = lCopy.get(i);
-
+        for (INDIDeviceListener l : new ArrayList<>(listeners)) {
             l.messageChanged(this);
         }
     }
@@ -219,7 +198,7 @@ public class INDIDevice {
      * @throws IOException
      *             if there is some problem sending the message.
      */
-    public void blobsEnable(BLOBEnables enable, INDIProperty property) throws IOException {
+    public void blobsEnable(BLOBEnables enable, INDIProperty<?> property) throws IOException {
         if ((properties.containsValue(property)) && (property instanceof INDIBLOBProperty)) {
             sendMessageToServer(new EnableBLOB().setDevice(getName()).setName(property.getName()).setTextContent(Constants.getBLOBEnableAsString(enable)));
         }
@@ -351,11 +330,11 @@ public class INDIDevice {
      */
     protected void messageReceived(INDIProtocol<?> xml) {
         if (xml.hasMessage()) {
-            String time = xml.getTimestamp().trim();
+            String time = xml.getTimestamp();
 
             timestamp = dateFormat().parseTimestamp(time);
 
-            message = xml.getMessage().trim();
+            message = xml.getMessage();
 
             notifyListenersMessageChanged();
         }
@@ -369,12 +348,12 @@ public class INDIDevice {
      *            the XML message to be processed.
      */
     protected void deleteProperty(DelProperty xml) {
-        String propertyName = xml.getName().trim();
+        String propertyName = xml.getName();
 
         if (!(propertyName.length() == 0)) {
             messageReceived(xml);
 
-            INDIProperty p = getProperty(propertyName);
+            INDIProperty<?> p = getProperty(propertyName);
 
             if (p != null) {
                 removeProperty(p);
@@ -392,7 +371,7 @@ public class INDIDevice {
      *            The propertyName of the Property to wait for.
      * @return The Property once it exists in this device.
      */
-    public INDIProperty waitForProperty(String propertyName) {
+    public INDIProperty<?> waitForProperty(String propertyName) {
         return waitForProperty(propertyName, Integer.MAX_VALUE);
     }
 
@@ -410,8 +389,8 @@ public class INDIDevice {
      * @return The Property once it exists in this Device or <code>null</code>
      *         if the maximum wait is achieved.
      */
-    public INDIProperty waitForProperty(String propertyName, int maxWait) {
-        INDIProperty p = null;
+    public INDIProperty<?> waitForProperty(String propertyName, int maxWait) {
+        INDIProperty<?> p = null;
 
         long startTime = (new Date()).getTime();
         boolean timeElapsed = false;
@@ -423,6 +402,7 @@ public class INDIDevice {
                 try {
                     Thread.sleep(Constants.WAITING_INTERVAL);
                 } catch (InterruptedException e) {
+                    LOG.warn("sleep interrupted", e);
                 }
             }
 
@@ -443,13 +423,13 @@ public class INDIDevice {
      *            the XML message to be processed.
      */
     protected void updateProperty(SetVector<?> xml) {
-        String propertyName = xml.getName().trim();
+        String propertyName = xml.getName();
 
-        if (!(propertyName.length() == 0)) {
+        if (!(propertyName.isEmpty())) {
             // check message
             messageReceived(xml);
 
-            INDIProperty p = getProperty(propertyName);
+            INDIProperty<?> p = getProperty(propertyName);
 
             if (p != null) { // If it does not exist else ignore
                 if ((p instanceof INDITextProperty) && (xml instanceof SetTextVector)) {
@@ -475,44 +455,34 @@ public class INDIDevice {
      *            The XML message to be processed.
      */
     protected void addProperty(DefVector<?> xml) {
-        String propertyName = xml.getName().trim();
+        String propertyName = xml.getName();
 
-        if (!(propertyName.length() == 0)) {
+        if (!(propertyName.isEmpty())) {
             messageReceived(xml);
 
-            INDIProperty p = getProperty(propertyName);
+            INDIProperty<?> p = getProperty(propertyName);
 
             if (p == null) { // If it does not exist
                 try {
                     if (xml instanceof DefSwitchVector) {
                         INDISwitchProperty sp = new INDISwitchProperty((DefSwitchVector) xml, this);
-
                         addProperty(sp);
-
                         notifyListenersNewProperty(sp);
                     } else if (xml instanceof DefTextVector) {
                         INDITextProperty tp = new INDITextProperty((DefTextVector) xml, this);
-
                         addProperty(tp);
-
                         notifyListenersNewProperty(tp);
                     } else if (xml instanceof DefNumberVector) {
                         INDINumberProperty np = new INDINumberProperty((DefNumberVector) xml, this);
-
                         addProperty(np);
-
                         notifyListenersNewProperty(np);
                     } else if (xml instanceof DefLightVector) {
                         INDILightProperty lp = new INDILightProperty((DefLightVector) xml, this);
-
                         addProperty(lp);
-
                         notifyListenersNewProperty(lp);
                     } else if (xml instanceof DefBlobVector) {
                         INDIBLOBProperty bp = new INDIBLOBProperty((DefBlobVector) xml, this);
-
                         addProperty(bp);
-
                         notifyListenersNewProperty(bp);
                     }
                 } catch (IllegalArgumentException e) {
@@ -538,7 +508,7 @@ public class INDIDevice {
      * @param property
      *            The property to be added.
      */
-    private void addProperty(INDIProperty property) {
+    private void addProperty(INDIProperty<?> property) {
         properties.put(property.getName(), property);
 
         if (property instanceof INDIBLOBProperty) {
@@ -553,7 +523,7 @@ public class INDIDevice {
      * @param property
      *            The property to be removed.
      */
-    private void removeProperty(INDIProperty property) {
+    private void removeProperty(INDIProperty<?> property) {
         properties.remove(property.getName());
 
         if (property instanceof INDIBLOBProperty) {
@@ -580,7 +550,7 @@ public class INDIDevice {
      * @return the Property with the <code>propertyName</code> or
      *         <code>null</code> if there is no Property with that propertyName.
      */
-    public INDIProperty getProperty(String propertyName) {
+    public INDIProperty<?> getProperty(String propertyName) {
         return properties.get(propertyName);
     }
 
@@ -589,22 +559,15 @@ public class INDIDevice {
      * 
      * @return the list of group names for all the properties of the device.
      */
-    public ArrayList<String> getGroupNames() {
+    public List<String> getGroupNames() {
         ArrayList<String> groupNames = new ArrayList<String>();
-
-        Collection c = properties.values();
-        Iterator itr = c.iterator();
-
-        while (itr.hasNext()) {
-            INDIProperty p = (INDIProperty) itr.next();
-
+        for (INDIProperty<?> p : properties.values()) {
             String groupName = p.getGroup();
 
             if (!groupNames.contains(groupName)) {
                 groupNames.add(groupName);
             }
         }
-
         return groupNames;
     }
 
@@ -613,19 +576,8 @@ public class INDIDevice {
      * 
      * @return the list of Properties belonging to the device
      */
-    public ArrayList<INDIProperty> getAllProperties() {
-        ArrayList<INDIProperty> props = new ArrayList<INDIProperty>();
-
-        Collection c = properties.values();
-        Iterator itr = c.iterator();
-
-        while (itr.hasNext()) {
-            INDIProperty p = (INDIProperty) itr.next();
-
-            props.add(p);
-        }
-
-        return props;
+    public List<INDIProperty<?>> getAllProperties() {
+        return new ArrayList<INDIProperty<?>>(properties.values());
     }
 
     /**
@@ -635,19 +587,14 @@ public class INDIDevice {
      *            the name of the group
      * @return the list of Properties belonging to the group
      */
-    public ArrayList<INDIProperty> getPropertiesOfGroup(String groupName) {
-        ArrayList<INDIProperty> props = new ArrayList<INDIProperty>();
+    public List<INDIProperty<?>> getPropertiesOfGroup(String groupName) {
+        ArrayList<INDIProperty<?>> props = new ArrayList<INDIProperty<?>>();
 
-        Collection c = properties.values();
-        Iterator itr = c.iterator();
-
-        while (itr.hasNext()) {
-            INDIProperty p = (INDIProperty) itr.next();
+        for (INDIProperty<?> p : props) {
             if (p.getGroup().compareTo(groupName) == 0) {
                 props.add(p);
             }
         }
-
         return props;
     }
 
@@ -663,7 +610,7 @@ public class INDIDevice {
      *         with <code>propertyName</code> as name.
      */
     public INDIElement getElement(String propertyName, String elementName) {
-        INDIProperty p = getProperty(propertyName);
+        INDIProperty<?> p = getProperty(propertyName);
 
         if (p == null) {
             return null;
@@ -701,22 +648,8 @@ public class INDIDevice {
         if (uiComponent != null) {
             removeINDIDeviceListener(uiComponent);
         }
-
-        Object[] arguments = new Object[]{
-            this
-        };
-        String[] possibleUIClassNames = new String[]{
-            "org.indilib.i4j.client.ui.INDIDevicePanel",
-            "org.indilib.i4j.androidui.INDIDeviceView"
-        };
-        try {
-            uiComponent = (INDIDeviceListener) ClassInstantiator.instantiate(possibleUIClassNames, arguments);
-        } catch (ClassCastException e) {
-            throw new INDIException("The UI component is not a valid INDIDeviceListener. Probably a incorrect library in the classpath.");
-        }
-
+        uiComponent = INDIViewCreator.getDefault().createDeviceView(this);
         addINDIDeviceListener(uiComponent);
-
         return uiComponent;
     }
 
@@ -725,8 +658,8 @@ public class INDIDevice {
      * 
      * @return the <code>List</code> of Properties belonging to this Device.
      */
-    public List<INDIProperty> getPropertiesAsList() {
-        return new ArrayList<INDIProperty>(properties.values());
+    public List<INDIProperty<?>> getPropertiesAsList() {
+        return new ArrayList<INDIProperty<?>>(properties.values());
     }
 
     /**
@@ -735,14 +668,10 @@ public class INDIDevice {
      * @return the names of the Properties of this Device.
      */
     public String[] getPropertyNames() {
-        List<INDIProperty> l = getPropertiesAsList();
-
-        String[] names = new String[l.size()];
-
-        for (int i = 0; i < l.size(); i++) {
-            names[i] = l.get(i).getName();
+        List<String> names = new ArrayList<>();
+        for (INDIProperty<?> indiProperty : properties.values()) {
+            names.add(indiProperty.getName());
         }
-
-        return names;
+        return names.toArray(new String[names.size()]);
     }
 }

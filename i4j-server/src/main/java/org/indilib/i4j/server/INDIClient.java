@@ -13,11 +13,11 @@ package org.indilib.i4j.server;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -78,7 +78,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
         this.socket = socket;
         this.server = server;
 
-        reader = new INDIProtocolReader(this);
+        reader = new INDIProtocolReader(this, "client reader");
         reader.start();
     }
 
@@ -122,13 +122,13 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     }
 
     @Override
-    protected void parseXMLElement(INDIProtocol<?> child) {
-        if (child instanceof GetProperties) {
-            processGetProperties((GetProperties) child);
-        } else if (child instanceof NewVector) {
-            processNewXXXVector((NewVector<?>) child);
-        } else if (child instanceof EnableBLOB) {
-            processEnableBLOB((EnableBLOB) child);
+    public void processProtokolMessage(INDIProtocol<?> message) {
+        if (message instanceof GetProperties) {
+            processGetProperties((GetProperties) message);
+        } else if (message instanceof NewVector) {
+            processNewXXXVector((NewVector<?>) message);
+        } else if (message instanceof EnableBLOB) {
+            processEnableBLOB((EnableBLOB) message);
         }
     }
 

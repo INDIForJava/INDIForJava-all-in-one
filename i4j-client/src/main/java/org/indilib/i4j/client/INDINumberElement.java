@@ -13,11 +13,11 @@ package org.indilib.i4j.client;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -30,6 +30,8 @@ import org.indilib.i4j.INDISexagesimalFormatter;
 import org.indilib.i4j.protocol.DefNumber;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.OneNumber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class representing a INDI Number Element.
@@ -38,6 +40,11 @@ import org.indilib.i4j.protocol.OneNumber;
  * @version 1.38, July 22, 2014
  */
 public class INDINumberElement extends INDIElement {
+
+    /**
+     * A logger for the errors.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDINumberElement.class);
 
     /**
      * The current value of this Number Element.
@@ -93,26 +100,14 @@ public class INDINumberElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDINumberElement(DefNumber xml, INDIProperty property) {
+    protected INDINumberElement(DefNumber xml, INDINumberProperty property) {
         super(xml, property);
-
         desiredValue = null;
-
-        String valueS = xml.getTextContent().trim();
-        String minS = xml.getMin().trim();
-        String maxS = xml.getMax().trim();
-        String stepS = xml.getStep().trim();
-        String nf = xml.getFormat().trim();
-
-        setNumberFormat(nf);
-
-        setMin(minS);
-
-        setMax(maxS);
-
-        setStep(stepS);
-
-        setValue(valueS);
+        setNumberFormat(xml.getFormat());
+        setMin(xml.getMin());
+        setMax(xml.getMax());
+        setStep(xml.getStep());
+        setValue(xml.getTextContent());
     }
 
     /**
@@ -122,7 +117,6 @@ public class INDINumberElement extends INDIElement {
      *            The new number format.
      */
     private void setNumberFormat(String newNumberFormat) {
-        newNumberFormat = newNumberFormat.trim();
 
         if (!newNumberFormat.startsWith("%")) {
             throw new IllegalArgumentException("Number format not starting with %\n");
@@ -238,6 +232,7 @@ public class INDINumberElement extends INDIElement {
         } else {
             Formatter formatter = new Formatter(Locale.US);
             aux = formatter.format(getNumberFormat(), number).toString();
+            formatter.close();
         }
 
         return aux;
@@ -264,10 +259,7 @@ public class INDINumberElement extends INDIElement {
      */
     @Override
     protected void setValue(OneElement<?> xml) {
-        String valueS = xml.getTextContent().trim();
-
-        setValue(valueS);
-
+        setValue(xml.getTextContent());
         notifyListeners();
     }
 
@@ -316,9 +308,9 @@ public class INDINumberElement extends INDIElement {
         value = parseNumber(valueS);
 
         if ((value < min) || (value > max)) {
-            // throw new IllegalArgumentException(this.getProperty().getName() +
-            // " ; " + getName() + " ; " + "Number (" + valueS +
-            // ") not in range [" + min + ", " + max + "]");
+            String message = this.getProperty().getName() + " ; " + getName() + " ; " + "Number (" + valueS + ") not in range [" + min + ", " + max + "]";
+            LOG.error(message);
+            // throw new IllegalArgumentException();
         }
     }
 
@@ -384,9 +376,7 @@ public class INDINumberElement extends INDIElement {
             d = ((Double) valueToCheck).doubleValue();
         } else {
             if (valueToCheck instanceof String) {
-                String val;
-
-                val = ((String) valueToCheck).trim();
+                String val = (String) valueToCheck;
                 try {
                     d = parseNumber(val);
                 } catch (IllegalArgumentException e) {

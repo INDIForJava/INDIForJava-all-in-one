@@ -258,4 +258,15 @@ public final class INDIProtocolFactory {
     public static String toString(INDIProtocol<?> protocol) {
         return protocol.getClass().getSimpleName() + " " + XSTREAM.toXML(protocol);
     }
+
+    /**
+     * simple toXml for the protocol objects.
+     * 
+     * @param protocol
+     *            the protocol object.
+     * @return the toString.
+     */
+    public static String toXml(INDIProtocol<?> protocol) {
+        return XSTREAM.toXML(protocol);
+    }
 }

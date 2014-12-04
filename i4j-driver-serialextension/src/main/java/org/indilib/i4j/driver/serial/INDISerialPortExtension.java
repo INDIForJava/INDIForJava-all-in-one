@@ -154,7 +154,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
                     LOG.error("exception during close of the seiral port", e);
                 }
             }
-        });
+        }, "serial port close hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);
         addProperty(port);
     }

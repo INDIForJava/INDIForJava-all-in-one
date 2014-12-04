@@ -526,7 +526,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
         if (stop) {
             LOG.info("Starting El Tiempo Driver");
             stop = false;
-            runningThread = new Thread(this);
+            runningThread = new Thread(this, getName());
             runningThread.start();
         }
     }

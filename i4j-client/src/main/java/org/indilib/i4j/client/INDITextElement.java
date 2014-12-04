@@ -61,12 +61,10 @@ public class INDITextElement extends INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which the Element belongs.
      */
-    protected INDITextElement(DefText xml, INDIProperty property) {
+    protected INDITextElement(DefText xml, INDITextProperty property) {
         super(xml, property);
-
         desiredValue = null;
-
-        value = xml.getTextContent().trim();
+        value = xml.getTextContent();
     }
 
     @Override
@@ -86,8 +84,7 @@ public class INDITextElement extends INDIElement {
      */
     @Override
     protected void setValue(OneElement<?> xml) {
-        value = xml.getTextContent().trim();
-
+        value = xml.getTextContent();
         notifyListeners();
     }
 

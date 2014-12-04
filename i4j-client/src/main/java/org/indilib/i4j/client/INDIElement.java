@@ -13,11 +13,11 @@ package org.indilib.i4j.client;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -45,7 +45,7 @@ public abstract class INDIElement {
     /**
      * The property to which this Element belongs.
      */
-    private INDIProperty property;
+    private INDIProperty<?> property;
 
     /**
      * The name of the Element.
@@ -75,10 +75,10 @@ public abstract class INDIElement {
      * @param property
      *            The <code>INDIProperty</code> to which this Element belongs.
      */
-    protected INDIElement(DefElement<?> xml, INDIProperty property) {
+    protected INDIElement(DefElement<?> xml, INDIProperty<?> property) {
         this.property = property;
 
-        name = xml.getName().trim();
+        name = xml.getName();
 
         if (name.length() == 0) {
             throw new IllegalArgumentException("No name for Element");
@@ -118,11 +118,7 @@ public abstract class INDIElement {
      * Notifies the listeners about changes of the value of the Element.
      */
     protected void notifyListeners() {
-        ArrayList<INDIElementListener> lCopy = (ArrayList<INDIElementListener>) listeners.clone();
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIElementListener l = lCopy.get(i);
-
+        for (INDIElementListener l : new ArrayList<>(listeners)) {
             l.elementChanged(this);
         }
     }
@@ -150,7 +146,7 @@ public abstract class INDIElement {
      * 
      * @return The property to which this Element belongs.
      */
-    public INDIProperty getProperty() {
+    public INDIProperty<?> getProperty() {
         return property;
     }
 

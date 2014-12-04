@@ -1,10 +1,3 @@
-/**
- * THIS PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES (OR CONDITIONS),
- * EXPRESS OR IMPLIED WITH RESPECT TO THE PROGRAM, INCLUDING THE IMPLIED
- * WARRANTIES (OR CONDITIONS) OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE. THE ENTIRE RISK ARISING OUT OF USE OR PERFORMANCE OF THE PROGRAM AND
- * DOCUMENTATION REMAINS WITH THE USER.
- */
 package org.indilib.i4j.client.ui;
 
 /*
@@ -20,11 +13,11 @@ package org.indilib.i4j.client.ui;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -51,46 +44,59 @@ import java.awt.LayoutManager;
 public class VerticalLayout implements LayoutManager {
 
     /**
+     * standard vertical vgap of 5.
+     */
+    private static final int STD_VGAP_OF_5 = 5;
+
+    /**
      * The horizontal alignment constant that designates centering. Also used to
      * designate center anchoring.
      */
-    public final static int CENTER = 0;
+    public static final int CENTER = 0;
 
     /**
      * The horizontal alignment constant that designates right justification.
      */
-    public final static int RIGHT = 1;
+    public static final int RIGHT = 1;
 
     /**
      * The horizontal alignment constant that designates left justification.
      */
-    public final static int LEFT = 2;
+    public static final int LEFT = 2;
 
     /**
      * The horizontal alignment constant that designates stretching the
      * component horizontally.
      */
-    public final static int BOTH = 3;
+    public static final int BOTH = 3;
 
     /**
      * The anchoring constant that designates anchoring to the top of the
-     * display area
+     * display area.
      */
-    public final static int TOP = 1;
+    public static final int TOP = 1;
 
     /**
      * The anchoring constant that designates anchoring to the bottom of the
-     * display area
+     * display area.
      */
-    public final static int BOTTOM = 2;
+    public static final int BOTTOM = 2;
 
-    private int vgap; // the vertical vgap between components...defaults to 5
+    /**
+     * the vertical vgap between components...defaults to 5.
+     */
+    private int vgap;
 
-    private int alignment; // LEFT, RIGHT, CENTER or BOTH...how the components
-                           // are justified
+    /**
+     * LEFT, RIGHT, CENTER or BOTH...how the components are justified.
+     */
+    private int alignment;
 
-    private int anchor; // TOP, BOTTOM or CENTER ...where are the components
-                        // positioned in an overlarge space
+    /**
+     * TOP, BOTTOM or CENTER ...where are the components positioned in an
+     * overlarge space.
+     */
+    private int anchor;
 
     // Constructors
     /**
@@ -98,12 +104,12 @@ public class VerticalLayout implements LayoutManager {
      * pixels, horizontal centering and anchored to the top of the display area.
      */
     public VerticalLayout() {
-        this(5, CENTER, TOP);
+        this(STD_VGAP_OF_5, CENTER, TOP);
     }
 
     /**
      * Constructs a VerticalLayout instance with horizontal centering, anchored
-     * to the top with the specified vgap
+     * to the top with the specified vgap.
      * 
      * @param vgap
      *            An int value indicating the vertical seperation of the
@@ -115,7 +121,7 @@ public class VerticalLayout implements LayoutManager {
 
     /**
      * Constructs a VerticalLayout instance anchored to the top with the
-     * specified vgap and horizontal alignment
+     * specified vgap and horizontal alignment.
      * 
      * @param vgap
      *            An int value indicating the vertical seperation of the
@@ -131,7 +137,7 @@ public class VerticalLayout implements LayoutManager {
 
     /**
      * Constructs a VerticalLayout instance with the specified vgap, horizontal
-     * alignment and anchoring
+     * alignment and anchoring.
      * 
      * @param vgap
      *            An int value indicating the vertical seperation of the
@@ -151,6 +157,15 @@ public class VerticalLayout implements LayoutManager {
         this.anchor = anchor;
     }
 
+    /**
+     * calculate the layout size.
+     * 
+     * @param parent
+     *            the parent container
+     * @param minimum
+     *            reduce to the minimum?
+     * @return the diamentions calculated.
+     */
     private Dimension layoutSize(Container parent, boolean minimum) {
         Dimension dim = new Dimension(0, 0);
         Dimension d;
@@ -174,9 +189,6 @@ public class VerticalLayout implements LayoutManager {
         return dim;
     }
 
-    /**
-     * Lays out the container.
-     */
     @Override
     public void layoutContainer(Container parent) {
         Insets insets = parent.getInsets();
@@ -228,18 +240,14 @@ public class VerticalLayout implements LayoutManager {
         return layoutSize(parent, false);
     }
 
-    /**
-     * Not used by this class
-     */
     @Override
     public void addLayoutComponent(String name, Component comp) {
+        // not used
     }
 
-    /**
-     * Not used by this class
-     */
     @Override
     public void removeLayoutComponent(Component comp) {
+        // not used
     }
 
 }
