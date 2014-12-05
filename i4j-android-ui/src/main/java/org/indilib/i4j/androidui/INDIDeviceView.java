@@ -124,7 +124,7 @@ public class INDIDeviceView extends LinearLayout implements INDIDeviceListener {
 
         addView(scroll);
 
-        List<INDIProperty> props = device.getPropertiesAsList();
+        List<INDIProperty<?>> props = device.getPropertiesAsList();
 
         for (int i = 0; i < props.size(); i++) {
             newProperty(device, props.get(i));
