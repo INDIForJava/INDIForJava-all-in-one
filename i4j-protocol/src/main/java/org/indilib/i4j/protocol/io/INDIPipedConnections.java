@@ -23,6 +23,8 @@ package org.indilib.i4j.protocol.io;
  */
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.indilib.i4j.protocol.INDIProtocol;
@@ -101,6 +103,16 @@ public final class INDIPipedConnections {
          */
         public boolean isClosed() {
             return closed;
+        }
+
+        @Override
+        public URL getURL() {
+            try {
+                return new URL("indi:///?pipe");
+            } catch (MalformedURLException e) {
+                LOG.error("illegal std url, should never happen!", e);
+                return null;
+            }
         }
     }
 

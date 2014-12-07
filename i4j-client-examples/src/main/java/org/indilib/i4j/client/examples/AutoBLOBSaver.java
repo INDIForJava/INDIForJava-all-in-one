@@ -127,7 +127,7 @@ public class AutoBLOBSaver implements INDIElementListener {
             connection.connect();
             connection.askForDevices(); // Ask for all the devices.
         } catch (IOException e) {
-            LOG.error("Problem with the connection: " + connection.getHost() + ":" + connection.getPort(), e);
+            LOG.error("Problem with the connection: " + connection.toString(), e);
         }
 
         INDIBLOBElement el = null;

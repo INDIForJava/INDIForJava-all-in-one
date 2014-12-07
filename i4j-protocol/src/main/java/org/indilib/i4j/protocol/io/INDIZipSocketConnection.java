@@ -29,6 +29,8 @@ import java.net.Socket;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
+import org.indilib.i4j.protocol.url.INDIURLZipStreamHandler;
+
 /**
  * Create a socket connection that communicates with a zipped data streams. And
  * by that vastly reducing the xml overhead.
@@ -86,5 +88,10 @@ public class INDIZipSocketConnection extends INDISocketConnection {
     @Override
     protected OutputStream wrap(OutputStream coreOutputStream) {
         return new DeflaterOutputStream(coreOutputStream, true);
+    }
+
+    @Override
+    protected String getProtocol() {
+        return INDIURLZipStreamHandler.PROTOCOL;
     }
 }

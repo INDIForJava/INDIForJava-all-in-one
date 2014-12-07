@@ -26,12 +26,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandler;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Indi protocol connection around a tcp/ip socket.
@@ -43,6 +48,11 @@ public class INDISocketConnection implements INDIConnection {
     static {
         INDIURLStreamHandlerFactory.init();
     }
+
+    /**
+     * the logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDISocketConnection.class);
 
     /**
      * timeout to use with tcp connections.
@@ -138,6 +148,23 @@ public class INDISocketConnection implements INDIConnection {
 
     @Override
     public String toString() {
-        return getClass().getName() + "(" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort() + ")";
+        return getClass().getName() + "(" + getURL().toString() + ")";
+    }
+
+    @Override
+    public URL getURL() {
+        try {
+            return new URL(getProtocol(), socket.getInetAddress().getHostAddress(), socket.getPort(), "/");
+        } catch (MalformedURLException e) {
+            LOG.error("illegal std url, should never happen!", e);
+            return null;
+        }
+    }
+
+    /**
+     * @return the protokol for this connection.
+     */
+    protected String getProtocol() {
+        return INDIURLStreamHandler.PROTOCOL;
     }
 }

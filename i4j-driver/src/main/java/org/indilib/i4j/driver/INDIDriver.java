@@ -193,7 +193,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     public void startListening() {
         started = true;
 
-        reader = new INDIProtocolReader(this, "driver reader");
+        reader = new INDIProtocolReader(this, "driver reader " + connection.getURL());
         reader.start();
     }
 

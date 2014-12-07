@@ -23,6 +23,7 @@ package org.indilib.i4j.protocol.api;
  */
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Abstract interface that defines a indi protocol connection. The different
@@ -54,4 +55,9 @@ public interface INDIConnection {
      *             if there was a connection problem.
      */
     void close() throws IOException;
+
+    /**
+     * @return the url representing this connection.
+     */
+    URL getURL();
 }

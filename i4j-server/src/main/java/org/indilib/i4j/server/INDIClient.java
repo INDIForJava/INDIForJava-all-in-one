@@ -63,22 +63,22 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     /**
      * The socket to communicate with the Client.
      */
-    private INDIConnection socket;
+    private INDIConnection connection;
 
     /**
      * Constructs a new INDIClient that connects to the server and starts
      * listening to it.
      * 
-     * @param socket
+     * @param connection
      *            The socket to communicate with the Client.
      * @param server
      *            The Server to which the Client is connected.
      */
-    public INDIClient(INDIConnection socket, INDIServer server) {
-        this.socket = socket;
+    public INDIClient(INDIConnection connection, INDIServer server) {
+        this.connection = connection;
         this.server = server;
 
-        reader = new INDIProtocolReader(this, "client reader");
+        reader = new INDIProtocolReader(this, "client reader " + connection.getURL());
         reader.start();
     }
 
@@ -93,13 +93,13 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @return A String representation of the host and port of the Client.
      */
     public String getInetAddress() {
-        return socket.toString();
+        return connection.toString();
     }
 
     @Override
     public INDIInputStream getInputStream() {
         try {
-            return socket.getINDIInputStream();
+            return connection.getINDIInputStream();
         } catch (IOException e) {
             LOG.error("could not open input stream to indi-connection", e);
             return null;
@@ -110,11 +110,11 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * Explicitly disconnects the Client.
      */
     protected void disconnect() {
-        if (socket != null) {
+        if (connection != null) {
             try {
                 reader.setStop(true);
-                socket.close();
-                socket = null;
+                connection.close();
+                connection = null;
             } catch (IOException e) {
                 LOG.error("disconnect exception", e);
             }
@@ -150,7 +150,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     @Override
     protected void sendXMLMessage(INDIProtocol<?> message) {
         try {
-            socket.getINDIOutputStream().writeObject(message);
+            connection.getINDIOutputStream().writeObject(message);
         } catch (IOException e) {
             disconnect();
         }

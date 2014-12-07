@@ -24,6 +24,7 @@ package org.indilib.i4j.client;
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +44,7 @@ import org.indilib.i4j.protocol.Message;
 import org.indilib.i4j.protocol.SetVector;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
-import org.indilib.i4j.protocol.io.INDISocketConnection;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,19 +64,9 @@ public class INDIServerConnection implements INDIProtocolParser {
     private static final Logger LOG = LoggerFactory.getLogger(INDIServerConnection.class);
 
     /**
-     * The elementName of the Connection.
+     * The url of the Connection.
      */
-    private String name;
-
-    /**
-     * The host of the Connection.
-     */
-    private String host;
-
-    /**
-     * The port of the Connection.
-     */
-    private int port;
+    private final URL indiUrl;
 
     /**
      * The socket used in the Connection.
@@ -85,17 +76,17 @@ public class INDIServerConnection implements INDIProtocolParser {
     /**
      * A reader to read from the Connection.
      */
-    private INDIProtocolReader reader;
+    private INDIProtocolReader reader = null;
 
     /**
      * The set of the devices associated to this Connection.
      */
-    private Map<String, INDIDevice> devices;
+    private final Map<String, INDIDevice> devices = new LinkedHashMap<String, INDIDevice>();
 
     /**
      * The list of Listeners of this Connection.
      */
-    private List<INDIServerConnectionListener> listeners;
+    private List<INDIServerConnectionListener> listeners = new ArrayList<INDIServerConnectionListener>();
 
     /**
      * Constructs an instance of <code>INDIServerConnection</code>. The
@@ -109,7 +100,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      *            The port of the Connection.
      */
     public INDIServerConnection(String name, String host, int port) {
-        init(name, host, port);
+        this(host, port);
     }
 
     /**
@@ -122,7 +113,11 @@ public class INDIServerConnection implements INDIProtocolParser {
      *            The port of the Connection.
      */
     public INDIServerConnection(String host, int port) {
-        init("", host, port);
+        try {
+            this.indiUrl = new URL(INDIURLStreamHandler.PROTOCOL, host, port, "/");
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("illegal indi url", e);
+        }
     }
 
     /**
@@ -162,30 +157,8 @@ public class INDIServerConnection implements INDIProtocolParser {
      *            the indi connection to base on.
      */
     public INDIServerConnection(INDIConnection connection) {
-        init("", "x", 0);
+        this.indiUrl = connection.getURL();
         this.connection = connection;
-    }
-
-    /**
-     * Initilizes the Connection.
-     * 
-     * @param connectionName
-     *            The connectionName of the Connection.
-     * @param connectionHost
-     *            The connectionHost of the Connection.
-     * @param connectionPort
-     *            The connectionPort of the Connection.
-     */
-    private void init(String connectionName, String connectionHost, int connectionPort) {
-        this.name = connectionName;
-        this.host = connectionHost;
-        this.port = connectionPort;
-        this.connection = null;
-        this.reader = null;
-
-        devices = new LinkedHashMap<String, INDIDevice>();
-
-        listeners = new ArrayList<INDIServerConnectionListener>();
     }
 
     /**
@@ -243,52 +216,6 @@ public class INDIServerConnection implements INDIProtocolParser {
     }
 
     /**
-     * Changes the elementName, host and port of the Connection if it is not
-     * connected.
-     * 
-     * @param connectionName
-     *            The new connectionName of the Connection.
-     * @param connectionHost
-     *            The new connectionHost of the Connection.
-     * @param connectionPort
-     *            The new connectionPort of the Connection.
-     */
-    public void setData(String connectionName, String connectionHost, int connectionPort) {
-        if (!isConnected()) {
-            this.name = connectionName;
-            this.host = connectionHost;
-            this.port = connectionPort;
-        }
-    }
-
-    /**
-     * Gets the host of the Connection.
-     * 
-     * @return the host of the Connection.
-     */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * Gets the elementName of the Connection.
-     * 
-     * @return the elementName of the Connection.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Gets the port of the Connection.
-     * 
-     * @return the port of the Connection.
-     */
-    public int getPort() {
-        return port;
-    }
-
-    /**
      * Connects to the INDI Server.
      * 
      * @throws IOException
@@ -296,10 +223,10 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     public void connect() throws IOException {
         if (connection == null) {
-            connection = new INDISocketConnection(host, port);
+            connection = (INDIConnection) indiUrl.openConnection();
         }
         if (reader == null) {
-            reader = new INDIProtocolReader(this, "client reader");
+            reader = new INDIProtocolReader(this, "client reader " + connection.getURL());
             reader.start();
         }
     }
@@ -309,7 +236,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      * listeners.
      */
     public void disconnect() {
-        if (connection == null) {
+        if (connection != null) {
             try {
                 connection.close();
             } catch (IOException e) {
@@ -318,6 +245,7 @@ public class INDIServerConnection implements INDIProtocolParser {
 
             devices.clear();
             notifyListenersConnectionLost();
+            connection = null;
         }
     }
 
@@ -768,5 +696,17 @@ public class INDIServerConnection implements INDIProtocolParser {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + indiUrl + ")";
+    }
+
+    /**
+     * @return the url behind the server connection.
+     */
+    public URL getURL() {
+        return indiUrl;
     }
 }

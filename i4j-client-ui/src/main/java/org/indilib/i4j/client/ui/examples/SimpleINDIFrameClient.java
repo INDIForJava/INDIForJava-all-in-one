@@ -42,8 +42,6 @@ package org.indilib.i4j.client.ui.examples;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 
@@ -52,9 +50,7 @@ import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
 import org.indilib.i4j.client.ui.INDIDevicePanel;
-import org.indilib.i4j.protocol.GetProperties;
 import org.indilib.i4j.protocol.api.INDIConnection;
-import org.indilib.i4j.protocol.url.INDIURLConnection;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +98,7 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
             connection.connect();
             connection.askForDevices();
         } catch (IOException e) {
-            LOG.error("Problem connecting to " + connection.getHost() + ":" + connection.getPort(), e);
+            LOG.error("Problem connecting to " + connection.toString(), e);
         }
     }
 

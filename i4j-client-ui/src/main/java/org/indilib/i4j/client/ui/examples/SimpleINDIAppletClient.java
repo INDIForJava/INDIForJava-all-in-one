@@ -102,7 +102,7 @@ public class SimpleINDIAppletClient extends javax.swing.JApplet implements INDIS
             connection.connect();
             connection.askForDevices();
         } catch (IOException e) {
-            LOG.error("Problem connecting to " + connection.getHost() + ":" + connection.getPort(), e);
+            LOG.error("Problem connecting to " + connection.toString(), e);
         }
     }
 

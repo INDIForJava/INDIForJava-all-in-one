@@ -93,8 +93,11 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
         INDIServerConnection conn = app.getConnection();
 
         if (conn != null) { // Update the interface
-            String h = conn.getHost();
-            int p = conn.getPort();
+            String h = conn.getURL().getHost();
+            int p = conn.getURL().getPort();
+            if (p <= 0) {
+                p = conn.getURL().getDefaultPort();
+            }
 
             host.setText(h); // We update the connection tab interface
             port.setText("" + p);

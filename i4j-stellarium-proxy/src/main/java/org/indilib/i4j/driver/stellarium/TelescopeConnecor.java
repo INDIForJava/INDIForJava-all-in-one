@@ -189,7 +189,11 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
             indiDevice = device;
             indiEqnProperty = property;
             indiEqnProperty.addINDIPropertyListener(this);
-            indiUrlIdentified("indi://" + serverConnection.getHost() + ":" + serverConnection.getPort() + "/" + indiDevice.getName());
+            try {
+                indiUrlIdentified(new URL(serverConnection.getURL(), "/?device=" + indiDevice.getName()).toString());
+            } catch (MalformedURLException e) {
+                LOG.warn("could not construct a legal telescope url", e);
+            }
         }
     }
 

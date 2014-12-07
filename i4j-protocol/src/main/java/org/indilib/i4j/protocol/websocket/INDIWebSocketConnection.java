@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 import javax.websocket.MessageHandler;
@@ -176,6 +178,16 @@ public class INDIWebSocketConnection implements INDIConnection {
     @Override
     public String toString() {
         return getClass().getName() + "(" + session.getRequestURI() + ")";
+    }
+
+    @Override
+    public URL getURL() {
+        try {
+            return session.getRequestURI().toURL();
+        } catch (MalformedURLException e) {
+            LOG.error("illegal std url, should never happen!", e);
+            return null;
+        }
     }
 
 }

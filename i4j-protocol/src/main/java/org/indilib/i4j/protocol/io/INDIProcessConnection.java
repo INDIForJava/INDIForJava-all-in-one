@@ -23,11 +23,15 @@ package org.indilib.i4j.protocol.io;
  */
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements an indi protocol connector to an other process. the in
@@ -41,6 +45,11 @@ public class INDIProcessConnection implements INDIConnection {
     static {
         INDIURLStreamHandlerFactory.init();
     }
+
+    /**
+     * the logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIProcessConnection.class);
 
     /**
      * the input stream from the process deserialized as indi protocol objects.
@@ -86,5 +95,15 @@ public class INDIProcessConnection implements INDIConnection {
     @Override
     public void close() throws IOException {
 
+    }
+
+    @Override
+    public URL getURL() {
+        try {
+            return new URL("indi:///?process=" + process.toString());
+        } catch (MalformedURLException e) {
+            LOG.error("illegal std url, should never happen!", e);
+            return null;
+        }
     }
 }
