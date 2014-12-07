@@ -23,8 +23,11 @@ package org.indilib.i4j.server;
  */
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.protocol.api.INDIConnection;
@@ -194,6 +197,30 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
                 LOG.error("argument was not port integer", e);
             }
         }
+    }
+
+    @Override
+    public boolean isLocalURL(URL url) {
+        boolean hostEqual = false;
+        boolean portEqual;
+        String hostName = url.getHost();
+        if (hostName == null || hostName.isEmpty()) {
+            hostEqual = true;
+        } else {
+            try {
+                InetAddress inetAdress = InetAddress.getByName(hostName);
+                hostEqual = inetAdress.isAnyLocalAddress() || inetAdress.isLoopbackAddress();
+            } catch (UnknownHostException e) {
+                LOG.warn("host name lookup failed " + hostName, e);
+                hostEqual = false;
+            }
+        }
+        int port = url.getPort();
+        if (port <= 0) {
+            port = url.getDefaultPort();
+        }
+        portEqual = getListeningPort() == port;
+        return portEqual && hostEqual;
     }
 
 }

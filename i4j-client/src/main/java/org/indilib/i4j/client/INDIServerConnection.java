@@ -24,6 +24,7 @@ package org.indilib.i4j.client;
 import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -34,7 +35,6 @@ import java.util.Map;
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
-import org.indilib.i4j.INDIURI;
 import org.indilib.i4j.protocol.DefVector;
 import org.indilib.i4j.protocol.DelProperty;
 import org.indilib.i4j.protocol.GetProperties;
@@ -127,23 +127,31 @@ public class INDIServerConnection implements INDIProtocolParser {
 
     /**
      * Constructs an instance of <code>INDIServerConnection</code> with no
-     * elementName. The parameter can take the form of an <code>INDIURI</code>.
-     * If the URI is not correct it will be used as the host of the connection.
-     * The Connection is NOT stablished.
+     * elementName. The parameter can take the form of an indi uri. If the URI
+     * is not correct it will be used as the host of the connection. The
+     * Connection is NOT stablished.
      * 
      * @param uri
      *            The INDIURI that specifies the parameters of the Connection.
      *            If the URI is not correct it will be used as the host of the
      *            connection and the default port will be used.
-     * @see INDIURI
      */
     public INDIServerConnection(String uri) {
-        INDIURI iuri = new INDIURI(uri);
+        this(openConnection(uri));
+    }
 
-        if (iuri.isCorrect()) {
-            init("", iuri.getHost(), iuri.getPort());
-        } else {
-            init("", uri, Constants.INDI_DEFAULT_PORT);
+    /**
+     * open a indi connection to the specified uri.
+     * 
+     * @param uri
+     *            the uri to parse and connect to
+     * @return the initalized connection.
+     */
+    private static INDIConnection openConnection(String uri) {
+        try {
+            return (INDIConnection) new URL(uri).openConnection();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("the specified uri is not a legal indi url", e);
         }
     }
 

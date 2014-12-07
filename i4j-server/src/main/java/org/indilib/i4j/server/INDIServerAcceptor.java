@@ -22,6 +22,8 @@ package org.indilib.i4j.server;
  * #L%
  */
 
+import java.net.URL;
+
 import org.indilib.i4j.protocol.api.INDIConnection;
 
 /**
@@ -79,4 +81,13 @@ public interface INDIServerAcceptor extends Runnable {
      *            the array of arguments.
      */
     void setArguments(Object... arguments);
+
+    /**
+     * is the specified url pointing to this acceptor?
+     * 
+     * @param url
+     *            the url to check
+     * @return true if the acceptor is listening there.
+     */
+    boolean isLocalURL(URL url);
 }

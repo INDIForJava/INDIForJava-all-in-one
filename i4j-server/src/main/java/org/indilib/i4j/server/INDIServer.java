@@ -24,6 +24,7 @@ package org.indilib.i4j.server;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -831,5 +832,18 @@ public final class INDIServer implements INDIServerInterface {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean isLocalURL(URL url) {
+        if (baseAcceptor.isLocalURL(url)) {
+            return true;
+        }
+        for (INDIServerAcceptor acceptor : additionalAcceptors) {
+            if (acceptor.isLocalURL(url)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

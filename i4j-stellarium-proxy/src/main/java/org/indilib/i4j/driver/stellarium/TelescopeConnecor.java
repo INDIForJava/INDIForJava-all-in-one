@@ -23,15 +23,20 @@ package org.indilib.i4j.driver.stellarium;
  */
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-import org.indilib.i4j.INDIURI;
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIDeviceListener;
 import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDIPropertyListener;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.url.INDIURLConnection;
 import org.indilib.i4j.server.api.INDIServerAccessLookup;
 import org.indilib.i4j.server.api.INDIServerInterface;
 import org.slf4j.Logger;
@@ -48,7 +53,7 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
     /**
      * logger to log to.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(StellariumServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TelescopeConnecor.class);
 
     /**
      * The telescope indi device.
@@ -84,21 +89,31 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
      *            should the connector try to find any telescope?
      */
     public TelescopeConnecor(String indiUrl, boolean autoDetect) {
-        INDIURI url = null;
-        String host;
-        int port;
         INDIServerInterface currentServer = INDIServerAccessLookup.indiServerAccess().get();
+
         if (!indiUrl.trim().isEmpty()) {
-            url = new INDIURI(indiUrl);
-            host = url.getHost();
-            if (host.isEmpty() || host.equalsIgnoreCase("localhost") || currentServer.getHost().equalsIgnoreCase(host)) {
-                // TODO chek the port also
+            try {
+                URL parsedUrl = new URL(indiUrl.trim());
+                if (currentServer.isLocalURL(parsedUrl)) {
+                    serverConnection = new INDIServerConnection(currentServer.createConnection());
+                } else {
+                    serverConnection = new INDIServerConnection((INDIConnection) parsedUrl.openConnection());
+                    Map<String, List<String>> params = INDIURLConnection.splitQuery(parsedUrl);
+                    if (params != null) {
+                        List<String> device = params.get("device");
+                        if (device != null && !device.isEmpty()) {
+                            indiDeviceName = device.get(0);
+                        }
+                    }
+                }
+            } catch (MalformedURLException e) {
+                LOG.error("not a legal url \"" + indiUrl.trim() + "\" using the current server.");
                 serverConnection = new INDIServerConnection(currentServer.createConnection());
-            } else {
-                port = url.getPort();
-                serverConnection = new INDIServerConnection(host, port);
-                indiDeviceName = url.getDevice();
+            } catch (IOException e) {
+                LOG.error("could not connect \"" + indiUrl.trim() + "\" using the current server.");
+                serverConnection = new INDIServerConnection(currentServer.createConnection());
             }
+
         } else {
             serverConnection = new INDIServerConnection(currentServer.createConnection());
         }

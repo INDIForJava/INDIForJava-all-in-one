@@ -22,6 +22,10 @@ package org.indilib.i4j.server.websocket;
  * #L%
  */
 
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+
 import org.glassfish.tyrus.server.Server;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.websocket.INDIWebSocketStreamHandler;
@@ -114,4 +118,27 @@ public class INDIWebsocketAcceptor implements INDIServerAcceptor {
         }
     }
 
+    @Override
+    public boolean isLocalURL(URL url) {
+        boolean hostEqual = false;
+        boolean portEqual;
+        String hostName = url.getHost();
+        if (hostName == null || hostName.isEmpty()) {
+            hostEqual = true;
+        } else {
+            try {
+                InetAddress inetAdress = InetAddress.getByName(hostName);
+                hostEqual = inetAdress.isAnyLocalAddress() || inetAdress.isLoopbackAddress();
+            } catch (UnknownHostException e) {
+                LOG.warn("host name lookup failed " + hostName, e);
+                hostEqual = false;
+            }
+        }
+        int port = url.getPort();
+        if (port <= 0) {
+            port = url.getDefaultPort();
+        }
+        portEqual = localPort == port;
+        return portEqual && hostEqual;
+    }
 }

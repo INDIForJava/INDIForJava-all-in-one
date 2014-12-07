@@ -22,6 +22,7 @@ package org.indilib.i4j.server.api;
  * #L%
  */
 
+import java.net.URL;
 import java.util.List;
 
 import org.indilib.i4j.INDIException;
@@ -189,4 +190,13 @@ public interface INDIServerInterface {
      * @return true if the connection was accepted by the server.
      */
     boolean addConnection(INDIConnection indiConnection);
+
+    /**
+     * is the specified url pointing to this local server?
+     * 
+     * @param url
+     *            the url to check
+     * @return true if the local server is listening there.
+     */
+    boolean isLocalURL(URL url);
 }
