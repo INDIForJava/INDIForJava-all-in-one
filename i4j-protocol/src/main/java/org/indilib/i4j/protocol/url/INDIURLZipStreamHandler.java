@@ -22,45 +22,41 @@ package org.indilib.i4j.protocol.url;
  * #L%
  */
 
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
-
-import org.indilib.i4j.protocol.websocket.INDIWebSocketStreamHandler;
 
 /**
- * A class to handle INDI Streams.
+ * A handler for INDI connections. This is still a work in progress
  * 
  * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
  * @version 1.39, October 11, 2014
  */
-public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
+public class INDIURLZipStreamHandler extends URLStreamHandler {
 
     /**
-     * is the handler already initialized.
+     * The protocol name for the normal indi tcp protocol.
      */
-    private static boolean initialized = false;
+    public static final String PROTOCOL = "indiz";
 
     /**
-     * initialize the indi protokol.
+     * The indi default port number.
      */
-    public static void init() {
-        if (!initialized) {
-            initialized = true;
-            URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
-        }
+    public static final int INDI_DEFAULT_PORT = 7625;
+
+    @Override
+    protected final int getDefaultPort() {
+        return INDI_DEFAULT_PORT;
     }
 
     @Override
-    public final URLStreamHandler createURLStreamHandler(final String protocol) {
-        if (INDIURLStreamHandler.PROTOCOL.equals(protocol)) {
-            return new INDIURLStreamHandler();
-        } else if (INDIURLZipStreamHandler.PROTOCOL.equals(protocol)) {
-            return new INDIURLZipStreamHandler();
-        } else if (INDIWebSocketStreamHandler.PROTOCOL.equals(protocol)) {
-            return new INDIWebSocketStreamHandler();
-        }
-        return null;
+    protected final URLConnection openConnection(final URL url) throws IOException {
+        return new INDIURLConnection(url);
     }
 
+    @Override
+    protected final void parseURL(final URL u, final String spec, final int start, final int end) {
+        super.parseURL(u, spec, start, end);
+    }
 }

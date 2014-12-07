@@ -115,17 +115,8 @@ public final class INDIServer implements INDIServerInterface {
         baseAcceptor = new INDIServerSocketAcceptor() {
 
             @Override
-            public boolean acceptClient(INDIConnection clientSocket) {
-                if (INDIServer.this.acceptClient(clientSocket)) {
-                    INDIClient client = new INDIClient(clientSocket, INDIServer.this);
-
-                    clients.add(client);
-
-                    connectionWithClientEstablished(client);
-                    return true;
-                } else {
-                    return false;
-                }
+            public boolean acceptClient(INDIConnection clientConnection) {
+                return acceptINDIConnection(clientConnection);
             }
         };
         baseAcceptor.setArguments(listeningPort);
@@ -817,9 +808,28 @@ public final class INDIServer implements INDIServerInterface {
     }
 
     @Override
-    public void addConnection(INDIConnection indiConnection) {
-        INDIClient client = new INDIClient(indiConnection, this);
-        clients.add(client);
-        connectionWithClientEstablished(client);
+    public boolean addConnection(INDIConnection indiConnection) {
+        return acceptINDIConnection(indiConnection);
+    }
+
+    /**
+     * test if the server accepts the connection and when it does, wrap a client
+     * around it and add it to the clients.
+     * 
+     * @param clientConnection
+     *            the client connection to check
+     * @return true if the client was accepted.
+     */
+    protected boolean acceptINDIConnection(INDIConnection clientConnection) {
+        if (INDIServer.this.acceptClient(clientConnection)) {
+            INDIClient client = new INDIClient(clientConnection, INDIServer.this);
+
+            clients.add(client);
+
+            connectionWithClientEstablished(client);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

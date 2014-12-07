@@ -32,6 +32,7 @@ import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.api.INDIOutputStream;
 import org.indilib.i4j.protocol.io.INDISocketConnection;
+import org.indilib.i4j.protocol.io.INDIZipSocketConnection;
 
 /**
  * This class represents a indi connection to a server over an url referense.
@@ -62,7 +63,7 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
     }
 
     @Override
-    public void connect() throws IOException {
+    public synchronized void connect() throws IOException {
         if (socketConnection == null) {
             int port = getURL().getPort();
             if (port <= 0) {
@@ -73,7 +74,11 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
                 host = "localhost";
             }
             try {
-                socketConnection = new INDISocketConnection(host, port);
+                if (INDIURLZipStreamHandler.PROTOCOL.equals(getURL().getProtocol())) {
+                    socketConnection = new INDIZipSocketConnection(host, port);
+                } else {
+                    socketConnection = new INDISocketConnection(host, port);
+                }
             } catch (IOException e) {
                 throw new IOException("Problem connecting to " + host + ":" + port);
             }

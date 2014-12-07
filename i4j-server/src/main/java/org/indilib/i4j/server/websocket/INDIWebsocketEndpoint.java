@@ -70,7 +70,14 @@ public class INDIWebsocketEndpoint {
         if (connection == null) {
             connection = new INDIWebSocketConnection(session);
             connections.put(session, connection);
-            INDIServerAccessLookup.indiServerAccess().get().addConnection(connection);
+            if (!INDIServerAccessLookup.indiServerAccess().get().addConnection(connection)) {
+                onClose(session);
+                try {
+                    session.close();
+                } catch (IOException e) {
+                    LOG.warn("exception during close");
+                }
+            }
         }
     }
 

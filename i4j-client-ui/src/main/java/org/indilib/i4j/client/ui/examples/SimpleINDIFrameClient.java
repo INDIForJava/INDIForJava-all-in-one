@@ -179,7 +179,8 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
                 f.connect();
                 return;
             } catch (Exception e) {
-                LOG.info(args[0] + " was no url, trying host and port");
+                LOG.error(args[0] + " was no url, trying host and port");
+                return;
                 // ok no url lets try it the old fascion way
             }
         }

@@ -27,6 +27,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.indilib.i4j.Constants;
+import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.io.INDISocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,9 +75,16 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
      */
     private int getListeningPort() {
         if (listeningPort <= 0) {
-            this.listeningPort = Constants.INDI_DEFAULT_PORT;
+            this.listeningPort = getDefaultPort();
         }
         return listeningPort;
+    }
+
+    /**
+     * @return the default port the server listens to.
+     */
+    protected int getDefaultPort() {
+        return Constants.INDI_DEFAULT_PORT;
     }
 
     /**
@@ -85,14 +93,19 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
      */
     @Override
     public void run() {
+        Class<?> loggerClass = getClass();
+        while (loggerClass.getName().indexOf('$') >= 0) {
+            loggerClass = loggerClass.getSuperclass();
+        }
+        final Logger acceptorLog = LoggerFactory.getLogger(loggerClass);
         try {
             socket = new ServerSocket(getListeningPort());
         } catch (IOException e) {
-            LOG.error("Could not listen on port: " + listeningPort + " (maybe busy)");
+            acceptorLog.error("Could not listen on port: " + listeningPort + " (maybe busy)");
             return; // The thread will stop
         }
 
-        LOG.info("Listening to port " + listeningPort);
+        acceptorLog.info("Listening to port " + listeningPort);
 
         mainThreadRunning = true;
 
@@ -104,23 +117,35 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
             } catch (IOException e) {
                 // This is usually the escape point of the thread when the
                 // server is stopped.
-                LOG.error("Server has stopped listening to new Client connections", e);
+                acceptorLog.error("Server has stopped listening to new Client connections", e);
                 mainThreadRunning = false;
                 return; // The thread will stop
             }
 
             if (clientSocket != null) {
-                INDISocketConnection clientConnection = new INDISocketConnection(clientSocket);
+                INDIConnection clientConnection = createINDIConnection(clientSocket);
                 if (!acceptClient(clientConnection)) {
                     try {
                         clientConnection.close();
                     } catch (IOException e) {
-                        LOG.warn("client close exception", e);
+                        acceptorLog.warn("client close exception", e);
                     }
-                    LOG.info("Client " + clientSocket.getInetAddress() + " rejected");
+                    acceptorLog.info("Client " + clientSocket.getInetAddress() + " rejected");
                 }
             }
         }
+    }
+
+    /**
+     * create an indiconnection around the socket. other protocols may overwrite
+     * this method in subclasses.
+     * 
+     * @param clientSocket
+     *            the client socket to connect to.
+     * @return the indi connection
+     */
+    protected INDIConnection createINDIConnection(Socket clientSocket) {
+        return new INDISocketConnection(clientSocket);
     }
 
     @Override
@@ -170,4 +195,5 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
             }
         }
     }
+
 }

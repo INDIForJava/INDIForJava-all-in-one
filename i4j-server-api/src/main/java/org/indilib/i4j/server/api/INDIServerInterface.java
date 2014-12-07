@@ -186,6 +186,7 @@ public interface INDIServerInterface {
      * 
      * @param indiConnection
      *            the connection to add.
+     * @return true if the connection was accepted by the server.
      */
-    void addConnection(INDIConnection indiConnection);
+    boolean addConnection(INDIConnection indiConnection);
 }

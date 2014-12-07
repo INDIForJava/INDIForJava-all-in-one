@@ -23,6 +23,8 @@ package org.indilib.i4j.protocol.io;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -91,15 +93,37 @@ public class INDISocketConnection implements INDIConnection {
     @Override
     public INDIInputStream getINDIInputStream() throws IOException {
         if (inputStream == null) {
-            inputStream = INDIProtocolFactory.createINDIInputStream(socket.getInputStream());
+            inputStream = INDIProtocolFactory.createINDIInputStream(wrap(socket.getInputStream()));
         }
         return inputStream;
+    }
+
+    /**
+     * possibility for subclasses to wrap the input stream.
+     * 
+     * @param coreInputStream
+     *            the input stream.
+     * @return the inputstream itself or a wrapped version of it
+     */
+    protected InputStream wrap(InputStream coreInputStream) {
+        return coreInputStream;
+    }
+
+    /**
+     * possibility for subclasses to wrap the output stream.
+     * 
+     * @param coreOutputStream
+     *            the output stream.
+     * @return the outputStream itself or a wrapped version of it
+     */
+    protected OutputStream wrap(OutputStream coreOutputStream) {
+        return coreOutputStream;
     }
 
     @Override
     public INDIOutputStream getINDIOutputStream() throws IOException {
         if (ouputStream == null) {
-            ouputStream = INDIProtocolFactory.createINDIOutputStream(socket.getOutputStream());
+            ouputStream = INDIProtocolFactory.createINDIOutputStream(wrap(socket.getOutputStream()));
         }
         return ouputStream;
     }
