@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIDeviceListener;
@@ -98,13 +97,10 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
                     serverConnection = new INDIServerConnection(currentServer.createConnection());
                 } else {
                     serverConnection = new INDIServerConnection((INDIConnection) parsedUrl.openConnection());
-                    Map<String, List<String>> params = INDIURLConnection.splitQuery(parsedUrl);
-                    if (params != null) {
-                        List<String> device = params.get("device");
-                        if (device != null && !device.isEmpty()) {
-                            indiDeviceName = device.get(0);
-                        }
-                    }
+                }
+                List<String> device = INDIURLConnection.splitQuery(parsedUrl).get("device");
+                if (device != null && !device.isEmpty()) {
+                    indiDeviceName = device.get(0);
                 }
             } catch (MalformedURLException e) {
                 LOG.error("not a legal url \"" + indiUrl.trim() + "\" using the current server.");

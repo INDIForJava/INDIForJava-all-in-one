@@ -136,25 +136,26 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
      * 
      * @param url
      *            the url to parse the query
-     * @return the map with query keys and there list with values. or null is
-     *         the query could not ne paresed
+     * @return the map with query keys and there list with values.(never null)
      */
     public static Map<String, List<String>> splitQuery(URL url) {
+        final Map<String, List<String>> queryPairs = new LinkedHashMap<String, List<String>>();
         try {
-            final Map<String, List<String>> queryPairs = new LinkedHashMap<String, List<String>>();
-            final String[] pairs = url.getQuery().split("&");
-            for (String pair : pairs) {
-                final int idx = pair.indexOf("=");
-                final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
-                if (!queryPairs.containsKey(key)) {
-                    queryPairs.put(key, new LinkedList<String>());
+            if (url != null && url.getQuery() != null) {
+                final String[] pairs = url.getQuery().split("&");
+                for (String pair : pairs) {
+                    final int idx = pair.indexOf("=");
+                    final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+                    if (!queryPairs.containsKey(key)) {
+                        queryPairs.put(key, new LinkedList<String>());
+                    }
+                    final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
+                    queryPairs.get(key).add(value);
                 }
-                final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
-                queryPairs.get(key).add(value);
             }
             return queryPairs;
         } catch (UnsupportedEncodingException e) {
-            return null;
+            return queryPairs;
         }
     }
 
