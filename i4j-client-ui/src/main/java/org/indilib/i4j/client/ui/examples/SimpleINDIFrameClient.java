@@ -173,7 +173,7 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
 
         if (args.length == 1) {
             try {
-                INDIURLConnection connection = (INDIURLConnection) new URL(args[0]).openConnection();
+                INDIConnection connection = (INDIConnection) new URL(args[0]).openConnection();
                 SimpleINDIFrameClient f = new SimpleINDIFrameClient(connection);
                 f.setVisible(true);
                 f.connect();

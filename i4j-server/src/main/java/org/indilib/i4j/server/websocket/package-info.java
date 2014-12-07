@@ -1,8 +1,15 @@
+/**
+ * Provides the classes necessary to create an INDI Server acceptor 
+ * that accepts websocket connections.
+ */
+
+package org.indilib.i4j.server.websocket;
+
 /*
  * #%L
- * INDI for Java Base Library
+ * INDI for Java Server Library
  * %%
- * Copyright (C) 2013 - 2014 indiforjava
+ * Copyright (C) 2012 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,12 +26,4 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-/**
- * Provides some classes for handling connections via INDI Urls over websockets. This is still a work in progress.
- * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
- * @version 1.39, October 11, 2014
- */
-
-package org.indilib.i4j.protocol.url.websocket;
 

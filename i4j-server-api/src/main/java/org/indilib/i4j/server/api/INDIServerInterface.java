@@ -179,4 +179,13 @@ public interface INDIServerInterface {
      *         close it.
      */
     INDIConnection createConnection();
+
+    /**
+     * integrate this server connection in the server. threat it as a client
+     * connection.
+     * 
+     * @param indiConnection
+     *            the connection to add.
+     */
+    void addConnection(INDIConnection indiConnection);
 }

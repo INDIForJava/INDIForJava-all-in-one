@@ -1,4 +1,4 @@
-package org.indilib.i4j.protocol.url.websocket;
+package org.indilib.i4j.protocol.websocket;
 
 /*
  * #%L
@@ -27,6 +27,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The webseocket url handler.
  * 
@@ -35,14 +38,19 @@ import java.net.URLStreamHandler;
 public class INDIWebSocketStreamHandler extends URLStreamHandler {
 
     /**
+     * Logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIWebSocketStreamHandler.class);
+
+    /**
      * The indi default port number.
      */
-    private static final int WEBSOCKET_DEFAULT_PORT = 8080;
+    public static final int WEBSOCKET_DEFAULT_PORT = 8080;
 
     /**
      * The protokol name for indi over websockets.
      */
-    public static final String PROTOCOL = "windi";
+    public static final String PROTOCOL = "indiw";
 
     @Override
     protected final int getDefaultPort() {
@@ -51,7 +59,7 @@ public class INDIWebSocketStreamHandler extends URLStreamHandler {
 
     @Override
     protected final URLConnection openConnection(final URL url) throws IOException {
-        return new INDIWebSocketConnection(url);
+        return new INDIWebsocketURLConnection(url);
     }
 
     @Override

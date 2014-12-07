@@ -812,9 +812,14 @@ public final class INDIServer implements INDIServerInterface {
     @Override
     public INDIConnection createConnection() {
         INDIPipedConnections connectionPair = new INDIPipedConnections();
-        INDIClient client = new INDIClient(connectionPair.first(), this);
+        addConnection(connectionPair.first());
+        return connectionPair.second();
+    }
+
+    @Override
+    public void addConnection(INDIConnection indiConnection) {
+        INDIClient client = new INDIClient(indiConnection, this);
         clients.add(client);
         connectionWithClientEstablished(client);
-        return connectionPair.second();
     }
 }

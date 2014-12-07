@@ -1,4 +1,4 @@
-package org.indilib.i4j.server;
+package org.indilib.i4j.server.websocket;
 
 /*
  * #%L
@@ -22,13 +22,14 @@ package org.indilib.i4j.server;
  * #L%
  */
 
+import org.glassfish.tyrus.server.Server;
 import org.indilib.i4j.protocol.api.INDIConnection;
+import org.indilib.i4j.protocol.websocket.INDIWebSocketStreamHandler;
+import org.indilib.i4j.server.INDIServerAcceptor;
 import org.indilib.i4j.server.api.INDIServerAccessLookup;
 import org.indilib.i4j.server.api.INDIServerInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.netiq.websockify.WebsockifyServer;
 
 /**
  * Web socket acceptor for the indi server.
@@ -50,18 +51,15 @@ public class INDIWebsocketAcceptor implements INDIServerAcceptor {
     /**
      * the websocket server.
      */
-    private WebsockifyServer wss = new WebsockifyServer();
+    private Server wss;
 
     @Override
     public void run() {
-        INDIServerInterface server = INDIServerAccessLookup.indiServerAccess().get();
-        wss.connect(localPort, server.getHost(), server.getPort());
     }
 
     @Override
     public boolean acceptClient(INDIConnection clientSocket) {
-        // FOR NOW no clients to accept
-        return false;
+        return true;
     }
 
     @Override
@@ -71,12 +69,22 @@ public class INDIWebsocketAcceptor implements INDIServerAcceptor {
 
     @Override
     public void start() {
-        new Thread(this).start();
+        INDIServerInterface server = INDIServerAccessLookup.indiServerAccess().get();
+        if (localPort <= 0) {
+            localPort = INDIWebSocketStreamHandler.WEBSOCKET_DEFAULT_PORT;
+        }
+        wss = new Server(server.getHost(), localPort, "/", null, INDIWebsocketEndpoint.class);
+        try {
+            wss.start();
+        } catch (Exception e) {
+            wss = null;
+            LOG.error("could not start websocket server", e);
+        }
     }
 
     @Override
     public void close() {
-        wss.close();
+        wss.stop();
         wss = null;
     }
 

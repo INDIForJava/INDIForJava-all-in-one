@@ -88,6 +88,18 @@
 					<groupId>xpp3</groupId>
 					<artifactId>xpp3_min</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.glassfish.tyrus.bundles</groupId>
+					<artifactId>tyrus-standalone-client-jdk</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.glassfish.tyrus</groupId>
+					<artifactId>tyrus-container-grizzly-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.websocket</groupId>
+					<artifactId>javax.websocket-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -95,6 +107,11 @@
 			<artifactId>android</artifactId>
 			<version>4.1.1.4</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus.bundles</groupId>
+			<artifactId>tyrus-standalone-client</artifactId>
+			<version>1.9</version>
 		</dependency>
 	</dependencies>
 	<properties>

@@ -28,15 +28,14 @@
 			<version>1.2.2.Final</version>
 		</dependency>
 		<dependency>
-			<groupId>com.netiq</groupId>
-			<artifactId>websockify</artifactId>
-			<version>1.5</version>
-			<exclusions>
-				<exclusion>
-					<groupId>args4j</groupId>
-					<artifactId>args4j</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-server</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-container-grizzly-server</artifactId>
+			<version>1.9</version>
 		</dependency>
 	</dependencies>
 	<properties>

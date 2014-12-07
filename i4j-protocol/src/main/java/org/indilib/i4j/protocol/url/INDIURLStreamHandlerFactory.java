@@ -26,7 +26,7 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 
-import org.indilib.i4j.protocol.url.websocket.INDIWebSocketStreamHandler;
+import org.indilib.i4j.protocol.websocket.INDIWebSocketStreamHandler;
 
 /**
  * A class to handle INDI Streams.
