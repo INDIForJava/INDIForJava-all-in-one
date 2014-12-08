@@ -1023,4 +1023,18 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     public int getBinningY() {
         return binningY;
     }
+
+    /**
+     * set the auto loop property.
+     * 
+     * @param value
+     *            is the autoloop is on or off.
+     */
+    public void setAutoLoop(boolean value) {
+        if (value) {
+            autoLoop.setOn();
+        } else {
+            autoLoop.setOff();
+        }
+    }
 }

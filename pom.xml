@@ -389,6 +389,7 @@
 		<module>i4j-driver-guider</module>
 		<module>i4j-driver-nexstar-gt</module>
 		<module>i4j-stellarium-proxy</module>
+		<module>i4j-driver-raspberry-camera</module>
 		<module>i4j-protocol</module>
 		<module>i4j-all-in-one</module>
 		<module>gsl</module>

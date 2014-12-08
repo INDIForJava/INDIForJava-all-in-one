@@ -31,7 +31,15 @@ import net.sourceforge.novaforjava.api.LnDate;
 import net.sourceforge.novaforjava.api.LnHrzPosn;
 
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.driver.INDIDriver;
+import org.indilib.i4j.driver.INDISwitchElement;
+import org.indilib.i4j.driver.INDISwitchElementAndValue;
+import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectExtension;
+import org.indilib.i4j.driver.annotation.InjectProperty;
+import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.serial.INDISerialPortExtension;
 import org.indilib.i4j.driver.serial.INDISerialPortInterface;
 import org.indilib.i4j.driver.telescope.INDIDirection;
@@ -74,6 +82,18 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     private static final Logger LOG = LoggerFactory.getLogger(NexStarGt.class);
 
     /**
+     * Initialize the scope with north leveling.
+     */
+    @InjectProperty(name = "LEVEL_NORTH", label = "Initialize North and level", group = INDIDriver.GROUP_MAIN_CONTROL)
+    protected INDISwitchProperty levelNorthP;
+
+    /**
+     * Initialize the scope with north leveling.
+     */
+    @InjectElement(name = "LEVEL_NORTH", label = "Initialize North and level")
+    protected INDISwitchElement levelNorth;
+
+    /**
      * the nexstar gt mount interface.
      */
     private NexStarGtMount mount;
@@ -90,6 +110,16 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
         mathPluginManagement.setApproximateAlignment(MountAlignment.ZENITH);
         mathPluginManagement.forceActive();
         mathPluginManagement.initialise();
+        levelNorthP.setEventHandler(new SwitchEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
+                mount.levelNorth();
+                levelNorth.setOff();
+                levelNorthP.setState(PropertyStates.OK);
+                updateProperty(levelNorthP);
+            }
+        });
     }
 
     protected INDISerialPortExtension getSerial() {

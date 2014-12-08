@@ -23,6 +23,9 @@ package org.indilib.i4j.driver.ccd;
  */
 
 import java.io.DataOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
@@ -148,6 +151,11 @@ public abstract class INDICCDImage {
         }
 
         /**
+         * max value of of a pixel.
+         */
+        private int maxPixelValue = 0;
+
+        /**
          * set the pixel value of the first layer.
          * 
          * @param value
@@ -224,6 +232,42 @@ public abstract class INDICCDImage {
             indexLayer2 = ((indexLayer2 + 1) % width) * width + width;
             indexLayer3 = ((indexLayer3 + 1) % width) * width + width;
         }
+
+        /**
+         * check the max pixel value, an record the new max value.
+         * 
+         * @param value
+         *            the value to check
+         * @return the unchanged original value
+         */
+        protected final int max(int value) {
+            maxPixelValue = Math.max(maxPixelValue, value);
+            return value;
+        }
+
+        /**
+         * check the max pixel value, an record the new max value.
+         * 
+         * @param value
+         *            the value to check
+         * @return the unchanged original value
+         */
+        protected final short max(short value) {
+            maxPixelValue = Math.max(maxPixelValue & UNSIGNED_SHORT, value);
+            return value;
+        }
+
+        /**
+         * check the max pixel value, an record the new max value.
+         * 
+         * @param value
+         *            the value to check
+         * @return the unchanged original value
+         */
+        protected final byte max(byte value) {
+            maxPixelValue = Math.max(maxPixelValue & UNSIGNED_BYTE, value);
+            return value;
+        }
     }
 
     /**
@@ -294,41 +338,38 @@ public abstract class INDICCDImage {
 
                 @Override
                 public void setPixel(int value) {
-                    imageData[index++] = (byte) (value & UNSIGNED_BYTE);
+                    imageData[index++] = (byte) (max(value) & UNSIGNED_BYTE);
                 }
 
                 @Override
                 public void setPixel(int red, int green, int blue) {
-                    imageData[index++] = (byte) (red & UNSIGNED_BYTE);
-                    imageData[indexLayer2++] = (byte) (green & UNSIGNED_BYTE);
-                    imageData[indexLayer3++] = (byte) (blue & UNSIGNED_BYTE);
-
+                    imageData[index++] = (byte) (max(red) & UNSIGNED_BYTE);
+                    imageData[indexLayer2++] = (byte) (max(green) & UNSIGNED_BYTE);
+                    imageData[indexLayer3++] = (byte) (max(blue) & UNSIGNED_BYTE);
                 }
 
                 @Override
                 public void setPixel(short value) {
-                    imageData[index++] = (byte) (value & UNSIGNED_BYTE);
+                    imageData[index++] = (byte) (max(value) & UNSIGNED_BYTE);
                 }
 
                 @Override
                 public void setPixel(short red, short green, short blue) {
-                    imageData[index++] = (byte) (red & UNSIGNED_BYTE);
-                    imageData[indexLayer2++] = (byte) (green & UNSIGNED_BYTE);
-                    imageData[indexLayer3++] = (byte) (blue & UNSIGNED_BYTE);
-
+                    imageData[index++] = (byte) (max(red) & UNSIGNED_BYTE);
+                    imageData[indexLayer2++] = (byte) (max(green) & UNSIGNED_BYTE);
+                    imageData[indexLayer3++] = (byte) (max(blue) & UNSIGNED_BYTE);
                 }
 
                 @Override
                 public void setPixel(byte value) {
-                    imageData[index++] = value;
+                    imageData[index++] = max(value);
                 }
 
                 @Override
                 public void setPixel(byte red, byte green, byte blue) {
-                    imageData[index++] = red;
-                    imageData[indexLayer2++] = green;
-                    imageData[indexLayer3++] = blue;
-
+                    imageData[index++] = max(red);
+                    imageData[indexLayer2++] = max(green);
+                    imageData[indexLayer3++] = max(blue);
                 }
 
             };
@@ -379,41 +420,38 @@ public abstract class INDICCDImage {
 
                 @Override
                 public void setPixel(int value) {
-                    imageData[index++] = value;
+                    imageData[index++] = max(value);
                 }
 
                 @Override
                 public void setPixel(int red, int green, int blue) {
-                    imageData[index++] = red;
-                    imageData[indexLayer2++] = green;
-                    imageData[indexLayer3++] = blue;
-
+                    imageData[index++] = max(red);
+                    imageData[indexLayer2++] = max(green);
+                    imageData[indexLayer3++] = max(blue);
                 }
 
                 @Override
                 public void setPixel(short value) {
-                    imageData[index++] = value;
+                    imageData[index++] = max(value);
                 }
 
                 @Override
                 public void setPixel(short red, short green, short blue) {
-                    imageData[index++] = red;
-                    imageData[indexLayer2++] = green;
-                    imageData[indexLayer3++] = blue;
-
+                    imageData[index++] = max(red);
+                    imageData[indexLayer2++] = max(green);
+                    imageData[indexLayer3++] = max(blue);
                 }
 
                 @Override
                 public void setPixel(byte value) {
-                    imageData[index++] = (value & UNSIGNED_BYTE);
+                    imageData[index++] = max(value & UNSIGNED_BYTE);
                 }
 
                 @Override
                 public void setPixel(byte red, byte green, byte blue) {
-                    imageData[index++] = (red & UNSIGNED_BYTE);
-                    imageData[indexLayer2++] = (green & UNSIGNED_BYTE);
-                    imageData[indexLayer3++] = (blue & UNSIGNED_BYTE);
-
+                    imageData[index++] = max(red & UNSIGNED_BYTE);
+                    imageData[indexLayer2++] = max(green & UNSIGNED_BYTE);
+                    imageData[indexLayer3++] = max(blue & UNSIGNED_BYTE);
                 }
             };
         }
@@ -463,41 +501,38 @@ public abstract class INDICCDImage {
 
                 @Override
                 public void setPixel(int value) {
-                    imageData[index++] = value;
+                    imageData[index++] = max(value);
                 }
 
                 @Override
                 public void setPixel(int red, int green, int blue) {
-                    imageData[index++] = red;
-                    imageData[indexLayer2++] = green;
-                    imageData[indexLayer3++] = blue;
-
+                    imageData[index++] = max(red);
+                    imageData[indexLayer2++] = max(green);
+                    imageData[indexLayer3++] = max(blue);
                 }
 
                 @Override
                 public void setPixel(short value) {
-                    imageData[index++] = value & UNSIGNED_SHORT;
+                    imageData[index++] = max(value & UNSIGNED_SHORT);
                 }
 
                 @Override
                 public void setPixel(short red, short green, short blue) {
-                    imageData[index++] = red & UNSIGNED_SHORT;
-                    imageData[indexLayer2++] = green & UNSIGNED_SHORT;
-                    imageData[indexLayer3++] = blue & UNSIGNED_SHORT;
-
+                    imageData[index++] = max(red & UNSIGNED_SHORT);
+                    imageData[indexLayer2++] = max(green & UNSIGNED_SHORT);
+                    imageData[indexLayer3++] = max(blue & UNSIGNED_SHORT);
                 }
 
                 @Override
                 public void setPixel(byte value) {
-                    imageData[index++] = value & UNSIGNED_BYTE;
+                    imageData[index++] = max(value & UNSIGNED_BYTE);
                 }
 
                 @Override
                 public void setPixel(byte red, byte green, byte blue) {
-                    imageData[index++] = red & UNSIGNED_BYTE;
-                    imageData[indexLayer2++] = green & UNSIGNED_BYTE;
-                    imageData[indexLayer3++] = blue & UNSIGNED_BYTE;
-
+                    imageData[index++] = max(red & UNSIGNED_BYTE);
+                    imageData[indexLayer2++] = max(green & UNSIGNED_BYTE);
+                    imageData[indexLayer3++] = max(blue & UNSIGNED_BYTE);
                 }
             };
         }
@@ -523,6 +558,16 @@ public abstract class INDICCDImage {
      * the fits representation.
      */
     private Fits f;
+
+    /**
+     * the maximum value of a pixel. -1 means unknown
+     */
+    private int maxPixelValue = -1;
+
+    /**
+     * extra fits headers to include.
+     */
+    private Map<String, Object> extraFitsHeaders;
 
     /**
      * convert the current imageData to a fits image.
@@ -556,14 +601,41 @@ public abstract class INDICCDImage {
             imageFits.addValue("NAXIS3", COLOR_AXIS3, "");
         }
         imageFits.addValue("DATAMIN", 0, "");
-        if (bpp == INDI8BitCCDImage.MAX_BPP) {
-            imageFits.addValue("DATAMAX", MAX_BYTE_VALUE, "");
-        } else if (bpp == INDI16BitCCDImage.MAX_BPP) {
-            imageFits.addValue("DATAMAX", MAX_SHORT_VALUE, "");
+        if (maxPixelValue >= 0) {
+            imageFits.addValue("DATAMAX", maxPixelValue, "");
         } else {
-            throw new IllegalArgumentException("unknown bits per pixel");
+            if (bpp == INDI8BitCCDImage.MAX_BPP) {
+                imageFits.addValue("DATAMAX", MAX_BYTE_VALUE, "");
+            } else if (bpp == INDI16BitCCDImage.MAX_BPP) {
+                imageFits.addValue("DATAMAX", MAX_SHORT_VALUE, "");
+            } else {
+                imageFits.addValue("DATAMAX", Math.round(Math.pow(2, bpp) - 1d), "");
+            }
         }
+        if (extraFitsHeaders != null) {
+            for (Entry<String, Object> header : extraFitsHeaders.entrySet()) {
+                if (header.getValue() instanceof Double) {
+                    imageFits.addValue(header.getKey(), ((Double) header.getValue()).doubleValue(), "");
+                } else if (header.getValue() instanceof Boolean) {
+                    imageFits.addValue(header.getKey(), ((Boolean) header.getValue()).booleanValue(), "");
+                } else if (header.getValue() instanceof Integer) {
+                    imageFits.addValue(header.getKey(), ((Integer) header.getValue()).intValue(), "");
+                } else if (header.getValue() != null) {
+                    imageFits.addValue(header.getKey(), header.getValue().toString(), "");
+                }
+            }
+        }
+    }
 
+    /**
+     * @return an initalized map of values for fits headers. please only use
+     *         this for image headers directly from the chip.
+     */
+    public Map<String, Object> getExtraFitsHeaders() {
+        if (extraFitsHeaders == null) {
+            extraFitsHeaders = new HashMap<String, Object>();
+        }
+        return extraFitsHeaders;
     }
 
     /**
@@ -640,4 +712,14 @@ public abstract class INDICCDImage {
      * @return an iterator to iterate over the pixels.
      */
     public abstract PixelIterator iteratePixel();
+
+    /**
+     * Iterator reached its end, we can take some statistics.
+     * 
+     * @param iterator
+     *            the iterator.
+     */
+    public void iteratorComplete(PixelIterator iterator) {
+        maxPixelValue = iterator.maxPixelValue;
+    }
 }

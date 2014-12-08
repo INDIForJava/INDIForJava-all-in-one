@@ -84,14 +84,20 @@ public class NexStarGtMount extends Mount<NexStarGtAxisWithEncoder> {
 
     private static final int MOVE_RIGHT_AZIMUTH = 0x06;
 
-    // whats' the best scale, experimenting now
-    public static final int MAX_ENCODER_VALUE = 0x100000;
+    /**
+     * used the manual control test to detect the max value of the encoders.
+     */
+    public static final int MAX_ENCODER_VALUE = 0x0B161E;
 
     public boolean isBusy() {
         synchronized (this) {
             serialExt.sendByte(GET_STATUS, true);
             return serialExt.readByte() == 0x00;
         }
+    }
+
+    public void levelNorth() {
+        resetCounters();
     }
 
     protected int read3ByteInt() {
