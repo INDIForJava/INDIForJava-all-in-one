@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+
+
+<StackPane fx:id="group" xmlns:fx="http://javafx.com/fxml" fx:controller="org.indilib.i4j.client.fx.INDIGroupController"  styleClass="group" >
+	<VBox fx:id="box" StackPane.alignment="TOP_LEFT" styleClass="groupBox"/>
+	<Label fx:id="label" text="group header" StackPane.alignment="TOP_CENTER" styleClass="groupLabel"/>
+</StackPane>

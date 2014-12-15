@@ -24,7 +24,6 @@ package org.indilib.i4j.client.ui;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.client.INDIDevice;
@@ -67,10 +66,8 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
 
         this.device = device;
 
-        List<INDIProperty<?>> props = device.getPropertiesAsList();
-
-        for (int i = 0; i < props.size(); i++) {
-            newProperty(device, props.get(i));
+        for (INDIProperty<?> property : device.getPropertiesAsList()) {
+            newProperty(device, property);
         }
     }
 

@@ -48,7 +48,7 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
 
     private Button setButton;
 
-    public INDIDefaultPropertyView(INDIProperty property) throws INDIException {
+    public INDIDefaultPropertyView(INDIProperty<?> property) throws INDIException {
         super(property);
 
         Context context = I4JAndroidConfig.getContext();
@@ -90,13 +90,11 @@ public class INDIDefaultPropertyView extends INDIPropertyView {
         pse.setMargins(15, 0, 0, 0);
         elements.setLayoutParams(pse);
 
-        List<INDIElement> elems = property.getElementsAsList();
-
-        for (int i = 0; i < elems.size(); i++) {
+        for (INDIElement element : property) {
             INDIElementView ev = null;
 
             try {
-                ev = (INDIElementView) elems.get(i).getDefaultUIComponent();
+                ev = (INDIElementView) element.getDefaultUIComponent();
             } catch (Exception e) { // Problem with library. Should not happen
                                     // unless errors in Client library
                 e.printStackTrace();

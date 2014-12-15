@@ -509,5 +509,14 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>jdk1.8</id>
+			<activation>
+				<jdk>1.8</jdk>
+			</activation>
+			<modules>
+				<module>i4j-client-fx</module>
+			</modules>
+		</profile>
 	</profiles>
 </project>

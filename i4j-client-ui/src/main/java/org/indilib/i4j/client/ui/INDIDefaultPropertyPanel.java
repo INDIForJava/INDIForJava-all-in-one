@@ -91,8 +91,6 @@ public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
             buttons.revalidate();
         }
 
-        List<INDIElement> elems = (List<INDIElement>) ip.getElementsAsList();
-
         // In case that we have a switch property we may need a button group
         ButtonGroup bg = null;
 
@@ -106,11 +104,11 @@ public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
             }
         }
 
-        for (int i = 0; i < elems.size(); i++) {
+        for (INDIElement element : ip) {
             INDIElementPanel ep = null;
 
             try {
-                ep = (INDIElementPanel) elems.get(i).getDefaultUIComponent();
+                ep = (INDIElementPanel) element.getDefaultUIComponent();
             } catch (Exception e) {
                 LOG.error("Problem with library. Should not happen unless errors in Client library", e);
                 System.exit(-1);

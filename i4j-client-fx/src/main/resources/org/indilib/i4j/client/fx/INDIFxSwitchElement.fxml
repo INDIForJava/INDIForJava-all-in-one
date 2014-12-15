@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
+
+
+
+<ToggleButton fx:id="element" fx:controller="org.indilib.i4j.client.fx.INDISwitchElementController" onAction="#click" xmlns:fx="http://javafx.com/fxml"
+	styleClass="element">
+	<graphic>
+		<ImageView fx:id="buttonImage" styleClass="icIdle">
+		</ImageView>
+	</graphic>
+</ToggleButton>

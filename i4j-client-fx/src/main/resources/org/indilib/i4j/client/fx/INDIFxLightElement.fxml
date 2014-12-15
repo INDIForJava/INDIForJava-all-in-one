@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
+
+
+
+<GridPane fx:id="element" fx:controller="org.indilib.i4j.client.fx.INDILightElementController" xmlns:fx="http://javafx.com/fxml"
+	styleClass="element">
+	<ImageView fx:id="value" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER" styleClass="icIdle"/>
+	<Label fx:id="label" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER" GridPane.columnIndex="1" GridPane.rowIndex="0" text="propertyName" />
+</GridPane>
