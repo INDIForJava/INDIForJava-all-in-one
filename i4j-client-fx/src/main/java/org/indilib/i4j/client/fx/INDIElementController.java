@@ -33,7 +33,7 @@ import org.indilib.i4j.client.INDIElementListener;
 public abstract class INDIElementController<ELEMENTCLASS> extends INDIController<ELEMENTCLASS> implements INDIElementListener {
 
     @FXML
-    private Node element;
+    protected Node element;
 
     @Override
     public void elementChanged(INDIElement element) {

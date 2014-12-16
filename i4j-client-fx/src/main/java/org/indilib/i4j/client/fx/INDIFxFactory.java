@@ -13,11 +13,11 @@ package org.indilib.i4j.client.fx;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -25,9 +25,9 @@ package org.indilib.i4j.client.fx;
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Tab;
 
 import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.Constants.SwitchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,11 +80,20 @@ public class INDIFxFactory {
 
     public static final String STYLE_STATE_OK = "okLight";
 
+    public static final String STYLE_SWITCH_STATE_IDLE = "icIdle";
+
+    public static final String STYLE_SWITCH_STATE_OK = "icOk";
+
     public static final String[] STYLE_STATES = {
         STYLE_STATE_IDLE,
         STYLE_STATE_ALERT,
         STYLE_STATE_BUSY,
         STYLE_STATE_OK
+    };
+
+    public static final String[] STYLE_SWITCH_STATES = {
+        STYLE_SWITCH_STATE_IDLE,
+        STYLE_SWITCH_STATE_OK
     };
 
     public static <T> T newINDIFxBlobElement() {
@@ -167,6 +176,17 @@ public class INDIFxFactory {
                 return STYLE_STATE_OK;
             default:
                 return STYLE_STATE_IDLE;
+        }
+    }
+
+    public static String switchStatusToStyle(SwitchStatus value) {
+        switch (value) {
+            case OFF:
+                return STYLE_SWITCH_STATE_IDLE;
+            case ON:
+                return STYLE_SWITCH_STATE_OK;
+            default:
+                return STYLE_SWITCH_STATE_IDLE;
         }
     }
 }

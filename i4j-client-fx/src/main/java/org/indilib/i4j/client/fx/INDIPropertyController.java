@@ -33,22 +33,23 @@ import javafx.scene.layout.Pane;
 
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.client.INDIElement;
+import org.indilib.i4j.client.INDIElementListener;
 import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDIPropertyListener;
 
 public abstract class INDIPropertyController<PROPERTYCLASS extends INDIProperty<?>> extends INDIController<PROPERTYCLASS> implements INDIPropertyListener {
 
     @FXML
-    private ImageView state;
+    protected ImageView state;
 
     @FXML
-    private Label label;
+    protected Label label;
 
     @FXML
-    private Pane elements;
+    protected Pane elements;
 
     @FXML
-    private Pane property;
+    protected Pane property;
 
     @Override
     public <T> T getGui(Class<T> clazz) {
@@ -60,7 +61,9 @@ public abstract class INDIPropertyController<PROPERTYCLASS extends INDIProperty<
         super.indiConnected();
         for (INDIElement element : indi) {
             try {
-                addElement(((INDIFxAccess) element.getDefaultUIComponent()).getGui(Node.class));
+                INDIElementListener defaultUIComponent = element.getDefaultUIComponent();
+                addElement(((INDIFxAccess) defaultUIComponent).getGui(Node.class));
+                defaultUIComponent.elementChanged(element);
             } catch (INDIException e) {
                 e.printStackTrace();
             }

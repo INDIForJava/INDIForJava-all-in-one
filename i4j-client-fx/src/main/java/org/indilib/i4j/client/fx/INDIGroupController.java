@@ -25,6 +25,7 @@ package org.indilib.i4j.client.fx;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIProperty;
+import org.indilib.i4j.client.INDIPropertyListener;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -51,7 +52,9 @@ public class INDIGroupController extends INDIController<String> {
 
     public void newProperty(INDIDevice device, INDIProperty<?> property) {
         try {
-            box.getChildren().add(((INDIFxAccess) property.getDefaultUIComponent()).getGui(Node.class));
+            INDIPropertyListener defaultUIComponent = property.getDefaultUIComponent();
+            box.getChildren().add(((INDIFxAccess) defaultUIComponent).getGui(Node.class));
+            defaultUIComponent.propertyChanged(property);
         } catch (INDIException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

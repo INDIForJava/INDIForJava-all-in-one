@@ -23,6 +23,7 @@ package org.indilib.i4j.client.fx;
  */
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
@@ -37,7 +38,12 @@ public class INDISwitchElementController extends INDIElementController<INDISwitc
     @Override
     public void elementChanged(INDIElement element) {
         super.elementChanged(element);
-        System.out.println(element.getValue());
+        ((ToggleButton)this.element).setText(element.getLabel());
+        String switchStatusToStyle = INDIFxFactory.switchStatusToStyle(((INDISwitchElement)element).getValue());
+        if (!buttonImage.getStyleClass().contains(switchStatusToStyle)) {
+            buttonImage.getStyleClass().removeAll(INDIFxFactory.STYLE_SWITCH_STATES);
+            buttonImage.getStyleClass().add(switchStatusToStyle);
+        }
     }
 
     @FXML
