@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  * file whenever it is updated.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.31, April 11, 2012
  */
 public class AutoBLOBSaver implements INDIElementListener {
 

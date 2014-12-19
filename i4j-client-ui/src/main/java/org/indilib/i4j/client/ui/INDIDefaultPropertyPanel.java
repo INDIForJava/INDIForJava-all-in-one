@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  * A default panel to represent a <code>INDIProperty</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  * @see INDIProperty
  */
 public class INDIDefaultPropertyPanel extends INDIPropertyPanel {

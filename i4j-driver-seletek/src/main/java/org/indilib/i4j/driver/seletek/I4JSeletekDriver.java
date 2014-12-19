@@ -57,7 +57,6 @@ import org.slf4j.LoggerFactory;
  * [http://lunatico.es]).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.35, November 11, 2013
  */
 public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandler {
 

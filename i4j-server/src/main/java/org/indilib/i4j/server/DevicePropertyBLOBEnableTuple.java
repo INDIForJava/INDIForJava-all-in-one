@@ -29,7 +29,6 @@ import org.indilib.i4j.Constants.BLOBEnables;
  * BLOBEnable.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.31, April 12, 2012
  */
 public class DevicePropertyBLOBEnableTuple {
 

@@ -29,7 +29,6 @@ import org.indilib.i4j.client.INDIPropertyListener;
  * A panel to represent a <code>INDIProperty</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.3, April 9, 2012
  * @see INDIProperty
  */
 public abstract class INDIPropertyPanel extends javax.swing.JPanel implements INDIPropertyListener {

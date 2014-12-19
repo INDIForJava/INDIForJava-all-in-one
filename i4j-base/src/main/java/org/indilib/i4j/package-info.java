@@ -25,10 +25,7 @@
  * Driver and INDI for Java Server libraries.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
- * @see org.indilib.i4j.driver
- * @see org.indilib.i4j.client
- * @see org.indilib.i4j.server
+ * @author Richard van Nieuwenhoven
  */
 
 package org.indilib.i4j;

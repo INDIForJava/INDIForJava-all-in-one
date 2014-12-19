@@ -25,7 +25,6 @@ import org.indilib.i4j.client.INDILightElement;
 /**
  * An class representing a View of a Light Element.
  * 
- * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDILightElementView extends INDIElementView {

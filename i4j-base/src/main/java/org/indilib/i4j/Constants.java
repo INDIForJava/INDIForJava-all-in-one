@@ -27,7 +27,6 @@ package org.indilib.i4j;
  * them used in several parts of the INDI for Java libraries.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
  */
 public final class Constants {
 

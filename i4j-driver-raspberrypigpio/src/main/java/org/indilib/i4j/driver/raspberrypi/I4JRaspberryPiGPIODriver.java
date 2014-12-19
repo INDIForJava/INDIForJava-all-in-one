@@ -76,7 +76,6 @@ import com.pi4j.system.SystemInfo;
  * This driver makes use of the Pi4J library (http://pi4j.com/).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 23, 2013
  */
 public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnectionHandler, GpioPinListenerDigital {
 

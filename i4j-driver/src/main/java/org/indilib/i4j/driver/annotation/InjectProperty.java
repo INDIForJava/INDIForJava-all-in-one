@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.annotation;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -54,45 +54,45 @@ public @interface InjectProperty {
     int ONE_MINUTE_SECONDS = 60;
 
     /**
-     * the permissions for the property, defaults to RW.
+     * @return the permissions for the property, defaults to RW.
      */
     PropertyPermissions permission() default PropertyPermissions.RW;
 
     /**
-     * the timeout for the property defaults to 60.
+     * @return the timeout for the property defaults to 60.
      */
     int timeout() default ONE_MINUTE_SECONDS;
 
     /**
-     * name of the property (mandatory).
+     * @return name of the property (mandatory).
      */
     String name();
 
     /**
-     * label of the property (mandatory).
+     * @return label of the property (mandatory).
      */
     String label();
 
     /**
-     * the initial state of the property.
+     * @return the initial state of the property.
      */
     PropertyStates state() default PropertyStates.IDLE;
 
     /**
-     * the tab group to use for this property (mandatory if it is not in a
-     * group).
+     * @return the tab group to use for this property (mandatory if it is not in
+     *         a group).
      */
     String group() default UNSORTED_GROUP;
 
     /**
-     * should the value of this property be saved in a property file? defaults
-     * to false.
+     * @return should the value of this property be saved in a property file?
+     *         defaults to false.
      */
     boolean saveable() default false;
 
     /**
-     * if this property is a switch property what rule should apply? defaults to
-     * ONE_OF_MANY.
+     * @return if this property is a switch property what rule should apply?
+     *         defaults to ONE_OF_MANY.
      */
     SwitchRules switchRule() default SwitchRules.ONE_OF_MANY;
 

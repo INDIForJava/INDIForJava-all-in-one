@@ -250,16 +250,14 @@ public class BuiltInMathPlugin implements IMathPlugin {
     }
 
     /**
-     * See how many entries there are in the in memory database.<br/>
-     * - If just one use a hint to mounts approximate alignment, this can either
-     * be ZENITH,<br/>
+     * See how many entries there are in the in memory database. - If just one
+     * use a hint to mounts approximate alignment, this can either be ZENITH,
      * NORTH_CELESTIAL_POLE or SOUTH_CELESTIAL_POLE. The hint is used to make a
      * dummy second entry. A dummy third entry is computed from the cross
-     * product of the first two. A transform matrix is then computed.<br/>
-     * - If two make the dummy third entry and compute a transform matrix.<br/>
-     * - If three compute a transform matrix.<br/>
-     * - If four or more compute a convex hull, then matrices for each
-     * triangular facet of the hull.<br/>
+     * product of the first two. A transform matrix is then computed. - If two
+     * make the dummy third entry and compute a transform matrix. - If three
+     * compute a transform matrix. - If four or more compute a convex hull, then
+     * matrices for each triangular facet of the hull.
      * 
      * @param anInMemoryDatabase
      *            the database to use

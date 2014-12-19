@@ -27,7 +27,6 @@ import java.io.File;
  * A class to help dealing with Files and Directories.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
  */
 public final class FileUtils {
 

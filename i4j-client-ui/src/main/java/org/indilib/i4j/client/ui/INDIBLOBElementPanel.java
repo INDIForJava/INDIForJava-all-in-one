@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
  * A panel to represent a <code>INDIBLOBElement</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  * @see INDIBLOBElement
  */
 public class INDIBLOBElementPanel extends INDIElementPanel {

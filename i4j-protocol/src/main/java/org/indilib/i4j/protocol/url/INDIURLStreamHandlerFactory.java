@@ -32,7 +32,6 @@ import org.indilib.i4j.protocol.websocket.INDIWebSocketStreamHandler;
  * A class to handle INDI Streams.
  * 
  * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
- * @version 1.39, October 11, 2014
  */
 public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
 

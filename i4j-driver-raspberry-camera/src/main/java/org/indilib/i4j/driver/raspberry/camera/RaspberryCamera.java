@@ -230,6 +230,7 @@ public class RaspberryCamera extends INDICCDDriver {
             }
             newCcdImage.iteratorComplete(iterator);
             newCcdImage.getExtraFitsHeaders().putAll(capturedImage.getFitsAttributes());
+
         } catch (IOException e) {
             LOG.error("image incomplete because of exception", e);
         }

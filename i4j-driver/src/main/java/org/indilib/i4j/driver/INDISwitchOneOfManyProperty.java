@@ -31,7 +31,6 @@ import org.indilib.i4j.driver.util.INDIPropertyBuilder;
  * dealing with Switch elements and so on.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
  */
 public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
 

@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
- * @version 1.32, January 27, 2013
  */
 public class INDIDevice {
 

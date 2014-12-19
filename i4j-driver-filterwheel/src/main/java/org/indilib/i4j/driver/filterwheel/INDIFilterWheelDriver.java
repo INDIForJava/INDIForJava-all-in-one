@@ -43,9 +43,9 @@ import org.slf4j.LoggerFactory;
  * Wheel Drivers should extend this class. It is in charge of handling the
  * standard properties for Filter Wheels:
  * <ul>
- * <li>filter_names -> filter_name_1, filter_name_2, ..., filter_name_N (text)</li>
- * <li>FILTER_SLOT -> FILTER_SLOT_VALUE (number)</li>
- * <li>FILTER_NAME -> FILTER_NAME_VALUE (text)</li>
+ * <li>filter_names - filter_name_1, filter_name_2, ..., filter_name_N (text)</li>
+ * <li>FILTER_SLOT - FILTER_SLOT_VALUE (number)</li>
+ * <li>FILTER_NAME - FILTER_NAME_VALUE (text)</li>
  * </ul>
  * It is <strong>VERY IMPORTANT</strong> that any subclasses use
  * <code>super.processNewTextValue(property, timestamp, elementsAndValues);</code>
@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
  * properties correctly.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 7, 2013
  */
 public abstract class INDIFilterWheelDriver extends INDIDriver {
 

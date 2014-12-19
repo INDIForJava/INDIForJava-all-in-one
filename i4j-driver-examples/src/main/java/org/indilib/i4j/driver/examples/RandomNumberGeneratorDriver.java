@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  * second.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.3, April 4, 2012
  */
 public class RandomNumberGeneratorDriver extends INDIDriver implements Runnable {
 

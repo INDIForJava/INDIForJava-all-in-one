@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.serial;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -43,9 +43,9 @@ import org.slf4j.LoggerFactory;
  * Most astronomical devices are controlled by a serial connection, this
  * extension handles the connection for the driver so the driver does only have
  * to know the connection specification and then work with the input- and
- * output-streams.<br/>
- * TODO: reading and writing to the serial port should also be encapulated. This
- * will be done as soon as there are more drivers using this extension.
+ * output-streams. TODO: reading and writing to the serial port should also be
+ * encapulated. This will be done as soon as there are more drivers using this
+ * extension.
  */
 public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 

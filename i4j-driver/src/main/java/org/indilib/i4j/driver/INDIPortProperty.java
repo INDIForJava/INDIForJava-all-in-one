@@ -30,7 +30,6 @@ import org.indilib.i4j.driver.util.INDIPropertyBuilder;
  * the serial extention in furure.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 7, 2013
  */
 @Deprecated
 public class INDIPortProperty extends INDITextProperty {

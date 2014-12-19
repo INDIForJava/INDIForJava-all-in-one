@@ -41,7 +41,6 @@ import org.indilib.i4j.protocol.SetVector;
  * It implements a listener mechanism to notify changes in its Elements.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  */
 public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 

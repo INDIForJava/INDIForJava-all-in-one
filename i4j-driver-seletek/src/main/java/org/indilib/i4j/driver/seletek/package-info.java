@@ -1,13 +1,10 @@
 /**
  * Provides the classes necessary to control the seletek armadillo platypus.
  * @see <a href="http://lunatico.es/site/ourproducts/seletek-armadillo-platypus.html">Seletek</a> 
- * using the INDI for Java Library.<br/>
+ * using the INDI for Java Library.
  *
  *  Use it with the following command: 
  *  <code>&gt; java -jar pathToI4JServerJar/I4JServer.jar -add=pathToSeletekDriver/I4JSeletekDriver.jar</code>
- *  
- *  @see {@link org.indilib.i4j.server}
- *  @see {@link org.indilib.i4j.driver}
  * 
  */
 package org.indilib.i4j.driver.seletek;

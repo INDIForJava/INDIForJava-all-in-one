@@ -63,7 +63,6 @@ import org.indilib.i4j.protocol.api.INDIConnection;
  * to a Seletek.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.35, November 11, 2013
  */
 public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadableDriver, Runnable {
 

@@ -38,8 +38,8 @@ import org.indilib.i4j.protocol.api.INDIConnection;
  * Drivers should extend this class. It is in charge of handling the following
  * properties for Focusers:
  * <ul>
- * <li>FOCUS_SPEED -> FOCUS_SPEED_VALUE (number)</li>
- * <li>ABS_FOCUS_POSITION -> FOCUS_ABSOLUTE_POSITION (number)</li>
+ * <li>FOCUS_SPEED - FOCUS_SPEED_VALUE (number)</li>
+ * <li>ABS_FOCUS_POSITION - FOCUS_ABSOLUTE_POSITION (number)</li>
  * <li>stop_focusing (single switch)</li>
  * </ul>
  * It is <strong>VERY IMPORTANT</strong> that any subclasses use
@@ -51,7 +51,6 @@ import org.indilib.i4j.protocol.api.INDIConnection;
  * correctly.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.38, July 22, 2014
  */
 public abstract class INDIFocuserDriver extends INDIDriver {
 

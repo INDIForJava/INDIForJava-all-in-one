@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.annotation;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -40,22 +40,22 @@ import java.lang.annotation.Target;
 public @interface InjectExtension {
 
     /**
-     * a prefix that will be inserted before all fields in this extension
-     * (except the renamed ones). default is that the names stay as they are.
-     * This can be necessary if the extension in included multiple times in one
-     * driver.
+     * @return a prefix that will be inserted before all fields in this
+     *         extension (except the renamed ones). default is that the names
+     *         stay as they are. This can be necessary if the extension in
+     *         included multiple times in one driver.
      */
     String prefix() default "";
 
     /**
-     * if in an extension any property has no group the here specified group
-     * will be used.
+     * @return if in an extension any property has no group the here specified
+     *         group will be used.
      */
     String group() default "";
 
     /**
-     * is specific fields in the extension has to have specific names it can be
-     * done with these renamings.
+     * @return is specific fields in the extension has to have specific names it
+     *         can be done with these renamings.
      */
     Rename[] rename() default {
     // default no renaming

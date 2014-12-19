@@ -56,6 +56,7 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
+import org.indilib.i4j.fits.StandardFitsHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -476,19 +477,21 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      *             if the header becomes invalid.
      */
     private void addFITSKeywords(BasicHDU fitsHeader) throws HeaderCardException {
-        fitsHeader.addValue("EXPTIME", exposureDuration, "Total Exposure Time (s)");
+        fitsHeader.addValue(StandardFitsHeader.EXPTIME, exposureDuration, "Total Exposure Time (s)");
 
         if (currentFrameType == CcdFrame.DARK_FRAME) {
             fitsHeader.addValue("DARKTIME", exposureDuration, "Total Exposure Time (s)");
         }
-        fitsHeader.addValue("PIXSIZE1", pixelSizeX, "Pixel Size 1 (microns)");
-        fitsHeader.addValue("PIXSIZE2", pixelSizeY, "Pixel Size 2 (microns)");
-        fitsHeader.addValue("XBINNING", binningX, "Binning factor in width");
-        fitsHeader.addValue("YBINNING", binningY, "Binning factor in height");
+        fitsHeader.addValue(StandardFitsHeader.PIXSIZE1, pixelSizeX, "Pixel Size x axis (microns)");
+        fitsHeader.addValue(StandardFitsHeader.PIXSIZE2, pixelSizeY, "Pixel Size y axis (microns)");
+        fitsHeader.addValue(StandardFitsHeader.XPIXSZ, pixelSizeX, "Pixel Size x axis (microns)");
+        fitsHeader.addValue(StandardFitsHeader.YPIXSZ, pixelSizeY, "Pixel Size y axis (microns)");
+        fitsHeader.addValue(StandardFitsHeader.XBINNING, binningX, "Binning factor in width");
+        fitsHeader.addValue(StandardFitsHeader.YBINNING, binningY, "Binning factor in height");
         fitsHeader.addValue("FRAME", currentFrameType.fitsValue(), "Frame Type");
 
-        fitsHeader.addValue("INSTRUME", driver.getName(), "CCD Name");
-        fitsHeader.addValue("DATE-OBS", getExposureStartTime(), "UTC start date of observation");
+        fitsHeader.addValue(StandardFitsHeader.INSTRUME, driver.getName(), "CCD Name");
+        fitsHeader.addValue(StandardFitsHeader.DATE_OBS, getExposureStartTime(), "UTC start date of observation");
 
         Map<String, Object> attributes = driverInterface.getExtraFITSKeywords(fitsHeader);
         if (attributes != null) {

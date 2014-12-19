@@ -31,7 +31,7 @@ import java.util.Date;
  * SimpleDateFormat is not thread save thats why this is a per thread singleton.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
+ 
  */
 public final class INDIDateFormat {
 

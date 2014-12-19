@@ -36,7 +36,6 @@ import org.indilib.i4j.protocol.OneElement;
  * may contain according to the INDI protocol.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, July 23, 2013
  */
 public abstract class INDIElement implements Serializable {
 

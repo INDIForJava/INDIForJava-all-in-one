@@ -38,8 +38,8 @@ public class INDISwitchElementController extends INDIElementController<INDISwitc
     @Override
     public void elementChanged(INDIElement element) {
         super.elementChanged(element);
-        ((ToggleButton)this.element).setText(element.getLabel());
-        String switchStatusToStyle = INDIFxFactory.switchStatusToStyle(((INDISwitchElement)element).getValue());
+        ((ToggleButton) this.element).setText(element.getLabel());
+        String switchStatusToStyle = INDIFxFactory.switchStatusToStyle(((INDISwitchElement) element).getValue());
         if (!buttonImage.getStyleClass().contains(switchStatusToStyle)) {
             buttonImage.getStyleClass().removeAll(INDIFxFactory.STYLE_SWITCH_STATES);
             buttonImage.getStyleClass().add(switchStatusToStyle);

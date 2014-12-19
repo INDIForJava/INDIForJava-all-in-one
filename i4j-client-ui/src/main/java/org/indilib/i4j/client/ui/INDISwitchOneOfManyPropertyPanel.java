@@ -41,7 +41,6 @@ import org.indilib.i4j.client.INDIValueException;
  * A panel to represent a <code>INDISwitchProperty</code> with One of Many Rule.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  * @see INDISwitchProperty
  */
 public class INDISwitchOneOfManyPropertyPanel extends INDIPropertyPanel implements INDIElementListener {

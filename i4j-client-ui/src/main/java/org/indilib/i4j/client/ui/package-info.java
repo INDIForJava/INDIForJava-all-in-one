@@ -25,7 +25,7 @@
  * Provides the classes to produce a simple but effective Swing interface for
  * all INDI Devices, Properties and Elements. This classes are usually
  * instantiated from the corresponding client classes through the method
- * <code>getDefaultUIComponent()</code> in various Client classes. <br/>
+ * <code>getDefaultUIComponent()</code> in various Client classes. 
  * Some examples are provided: a simple application example
  * <code>laazotea.indi.client.ui.examples.SimpleINDIFrameClient</code> and a
  * JApplet example (
@@ -36,7 +36,7 @@
  * 
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 14, 2014
+
  */
 
 package org.indilib.i4j.client.ui;

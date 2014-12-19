@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  * Properties periodically.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 23, 2013
  */
 public class RaspberryPiSensorReaderThread extends Thread {
 

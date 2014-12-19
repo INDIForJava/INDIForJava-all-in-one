@@ -38,7 +38,6 @@ import org.indilib.i4j.protocol.OneElement;
  * It implements a listener mechanism to notify changes in its value.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, February 4, 2013
  */
 public abstract class INDIElement {
 

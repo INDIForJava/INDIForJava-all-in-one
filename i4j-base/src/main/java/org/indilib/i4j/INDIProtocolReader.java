@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * parser.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
  */
 public class INDIProtocolReader extends Thread {
 

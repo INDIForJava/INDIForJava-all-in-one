@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
  * A thread that asks for the readings of the sensors of the Seletek.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.35, November 11, 2013
  */
 public class SeletekSensorStatusRequesterThread extends Thread {
 

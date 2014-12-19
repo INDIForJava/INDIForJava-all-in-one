@@ -20,7 +20,6 @@ import org.indilib.i4j.INDIException;
 /**
  * A class to centralize a Handler and Context for all INDI Android Views.
  * 
- * @version 1.3, April 9, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class I4JAndroidConfig {

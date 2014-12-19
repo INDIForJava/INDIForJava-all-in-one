@@ -62,7 +62,6 @@ import org.slf4j.LoggerFactory;
  * once the client connects to the driver).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.3, April 5, 2012
  */
 public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConnectionHandler {
 

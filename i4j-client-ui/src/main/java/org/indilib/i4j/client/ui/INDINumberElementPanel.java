@@ -41,7 +41,6 @@ import org.indilib.i4j.client.INDIValueException;
  * A panel to represent a <code>INDINumberElement</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  * @see INDINumberElement
  */
 public class INDINumberElementPanel extends INDIElementPanel {

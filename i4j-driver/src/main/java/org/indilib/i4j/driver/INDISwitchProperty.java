@@ -37,7 +37,6 @@ import org.indilib.i4j.protocol.SetVector;
  * A class representing a INDI Switch Property.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 7, 2013
  */
 public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 

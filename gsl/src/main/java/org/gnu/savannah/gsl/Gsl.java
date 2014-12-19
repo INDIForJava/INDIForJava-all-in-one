@@ -13,11 +13,11 @@ package org.gnu.savannah.gsl;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -1052,8 +1052,15 @@ public class Gsl {
      * the permutation p. Column j of P is column k of the identity matrix,
      * where k = permutation.data[j] signum gives the sign of the permutation,
      * (-1)^n, where n is the number of interchanges in the permutation. See
-     * Golub & Van Loan, Matrix Computations, Algorithm 3.4.1 (Gauss Elimination
-     * with Partial Pivoting).
+     * Golub and Van Loan, Matrix Computations, Algorithm 3.4.1 (Gauss
+     * Elimination with Partial Pivoting).
+     * 
+     * @param A
+     *            a general N x N matrix
+     * @param p
+     *            permutation p
+     * @param signum
+     *            gives the sign of the permutation
      */
 
     public static GslErrno gsl_linalg_LU_decomp(GslMatrix A, GslPermutation p, IntegerRef signum) {

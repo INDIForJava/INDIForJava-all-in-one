@@ -33,7 +33,6 @@ import org.indilib.i4j.INDIException;
  * the Driver code to include or manage it.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.11, March 26, 2012
  */
 public interface INDIConnectionHandler {
 

@@ -30,7 +30,6 @@ import org.indilib.i4j.client.INDIElementListener;
  * A panel to represent a <code>INDIElement</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  * @see INDIElement
  */
 public abstract class INDIElementPanel extends javax.swing.JPanel implements INDIElementListener {

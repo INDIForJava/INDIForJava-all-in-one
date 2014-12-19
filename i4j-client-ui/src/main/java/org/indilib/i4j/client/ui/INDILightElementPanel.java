@@ -33,7 +33,6 @@ import org.indilib.i4j.client.INDILightElement;
  * A panel to represent a <code>INDILightElement</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  * @see INDILightElement
  */
 public class INDILightElementPanel extends INDIElementPanel {

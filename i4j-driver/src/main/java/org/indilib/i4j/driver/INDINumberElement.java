@@ -36,7 +36,6 @@ import org.indilib.i4j.protocol.OneNumber;
  * A class representing a INDI Number Element.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
  */
 public class INDINumberElement extends INDIElement {
 

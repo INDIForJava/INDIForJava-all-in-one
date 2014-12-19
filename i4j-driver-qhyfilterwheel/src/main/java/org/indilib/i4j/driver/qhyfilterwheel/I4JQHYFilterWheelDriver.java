@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory;
  * A class that acts as a INDI for Java Driver for the QHY Filter Wheel.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.35, November 11, 2013
  */
 public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements INDIConnectionHandler, Runnable {
 

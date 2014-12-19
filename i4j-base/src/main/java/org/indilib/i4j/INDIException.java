@@ -26,7 +26,6 @@ package org.indilib.i4j;
  * A class representing a generic INDI Exception.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
  */
 public class INDIException extends Exception {
 

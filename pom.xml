@@ -392,6 +392,7 @@
 		<module>i4j-driver-raspberry-camera</module>
 		<module>i4j-protocol</module>
 		<module>i4j-all-in-one</module>
+		<module>i4j-fits-utils</module>
 		<module>gsl</module>
 	</modules>
 	<dependencies>

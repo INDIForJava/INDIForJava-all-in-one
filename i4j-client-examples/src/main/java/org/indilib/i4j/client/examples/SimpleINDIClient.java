@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  * message received (listens to all possible events).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.31, April 11, 2012
  */
 public class SimpleINDIClient implements INDIServerConnectionListener, INDIDeviceListener, INDIPropertyListener {
 

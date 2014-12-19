@@ -45,7 +45,7 @@ public class INDIDeviceController extends INDIController<INDIDevice> implements 
     @FXML
     private VBox groups;
 
-    private Map<String, FxController<Parent, INDIGroupController>> groupMap = new HashMap<>();
+    private Map<String, FxController<Parent, String,INDIGroupController>> groupMap = new HashMap<>();
 
     @Override
     protected void indiConnected() {
@@ -57,7 +57,7 @@ public class INDIDeviceController extends INDIController<INDIDevice> implements 
 
     @Override
     public void newProperty(INDIDevice device, INDIProperty<?> property) {
-        FxController<Parent, INDIGroupController> fxGroup = groupMap.get(property.getGroup());
+        FxController<Parent, String,INDIGroupController> fxGroup = groupMap.get(property.getGroup());
         if (fxGroup == null) {
             fxGroup = INDIFxFactory.newINDIFxGroup();
             fxGroup.controller.setIndi(property.getGroup()); 
@@ -69,8 +69,14 @@ public class INDIDeviceController extends INDIController<INDIDevice> implements 
 
     @Override
     public void removeProperty(INDIDevice device, INDIProperty<?> property) {
-        // TODO Auto-generated method stub
-
+        FxController<Parent,String, INDIGroupController> fxGroup = groupMap.get(property.getGroup());
+        if (fxGroup != null) {
+            fxGroup.controller().removeProperty(device, property);
+            if (fxGroup.controller().isEmpty()) {
+                groupMap.remove(fxGroup);
+                groups.getChildren().remove(fxGroup.fx);
+            }
+        }
     }
 
     @Override

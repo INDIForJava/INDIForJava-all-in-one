@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
  * A thread that reads messages from the Seletek.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.35, November 11, 2013
  */
 public class SeletekReadingThread extends Thread {
 

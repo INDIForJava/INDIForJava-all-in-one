@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
- * @version 1.32, January 13, 2013
  */
 public abstract class INDIDevice extends INDIDeviceListener implements INDIDeviceInterface {
 

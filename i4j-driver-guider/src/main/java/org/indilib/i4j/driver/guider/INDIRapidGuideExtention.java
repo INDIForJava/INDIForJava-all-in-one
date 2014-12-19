@@ -176,8 +176,12 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
      * update the ccd image with the guider info
      * 
      * @param ccdImage
+     *            image
      * @param height
+     *            the heith inpixel
      * @param width
+     *            the width in pixel
+     * @return true if data was send
      */
     public boolean exposureComplete(boolean sendImage, INDICCDImage ccdImage, int width, int height) {
         boolean showMarker = false;

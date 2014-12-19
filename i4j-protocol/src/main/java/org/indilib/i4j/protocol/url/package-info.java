@@ -23,7 +23,7 @@
 /**
  * Provides some classes for handling connections via INDI Urls. This is still a work in progress.
  * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
- * @version 1.39, October 11, 2014
+
  */
 
 package org.indilib.i4j.protocol.url;

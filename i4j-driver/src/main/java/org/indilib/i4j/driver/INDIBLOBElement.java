@@ -33,7 +33,6 @@ import org.indilib.i4j.protocol.OneElement;
  * A class representing a INDI BLOB Element.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.11, March 26, 2012
  */
 public class INDIBLOBElement extends INDIElement {
 

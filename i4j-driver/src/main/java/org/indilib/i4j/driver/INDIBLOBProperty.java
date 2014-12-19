@@ -31,7 +31,6 @@ import org.indilib.i4j.protocol.SetBlobVector;
  * A class representing a INDI BLOB Property.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 7, 2013
  */
 public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
 

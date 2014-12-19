@@ -29,7 +29,6 @@ import org.indilib.i4j.INDIBLOBValue;
  * <code>INDIBLOBValue</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
  */
 public class INDIBLOBElementAndValue extends INDIElementAndValue<INDIBLOBElement, INDIBLOBValue> {
 

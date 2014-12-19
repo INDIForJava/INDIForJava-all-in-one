@@ -60,10 +60,8 @@ public class INDIGuiderExtension extends INDIDriverExtension<INDIDriver> {
      * Initilize guider properties. It is recommended to call this function
      * within initProperties() of your primary device
      * 
-     * @param deviceName
-     *            Name of the primary device
-     * @param groupName
-     *            Group or tab name to be used to define guider properties.
+     * @param parentDriver
+     *            parent driver
      */
     public INDIGuiderExtension(INDIDriver parentDriver) {
         super(parentDriver);

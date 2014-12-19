@@ -35,7 +35,6 @@ import org.indilib.i4j.protocol.OneBlob;
  * A class representing a INDI BLOB Value (some bytes and a format).
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
  */
 public class INDIBLOBValue implements Serializable {
 

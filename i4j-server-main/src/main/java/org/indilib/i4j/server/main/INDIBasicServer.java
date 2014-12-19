@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
  * allows to dinamically load / unload different kinds of Devices with simple
  * shell commands.
  * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es] & Richard van Nieuwenhoven
- * @version 1.32, July 23, 2013
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author Richard van Nieuwenhoven
  */
 public class INDIBasicServer implements INDIServerEventHandler {
 

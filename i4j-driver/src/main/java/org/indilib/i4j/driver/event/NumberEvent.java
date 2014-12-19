@@ -53,8 +53,8 @@ public abstract class NumberEvent implements IEventHandler<INDINumberProperty, I
     }
 
     /**
-     * the Simplified call without the property.<br/>
-     * TODO: should we also exclude the date? it is almoust never used.
+     * the Simplified call without the property. TODO: should we also exclude
+     * the date? it is almost never used.
      * 
      * @param date
      *            the time it was set

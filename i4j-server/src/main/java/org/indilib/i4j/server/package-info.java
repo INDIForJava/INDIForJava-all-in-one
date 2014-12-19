@@ -1,10 +1,10 @@
 /**
  * Provides the classes necessary to create INDI Servers and a basic but
- * functional Server.<br/>
+ * functional Server.
  * Usually a INDI Server inherits from <code>INDIServer</code> and implements
  * its abstract methods. In those methods additional filtering can be done to
  * avoid some messages arriving to some Devices or Clients. Thus, it is possible
- * to create filering and security mechanisms.<br/>
+ * to create filering and security mechanisms.
  * Please check <code>laazotea.indi.server.INDIBasicServer</code> for a
  * functional example of an INDI Server.
  */

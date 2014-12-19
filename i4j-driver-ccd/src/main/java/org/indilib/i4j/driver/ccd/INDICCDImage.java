@@ -32,6 +32,7 @@ import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
 import nom.tam.fits.FitsFactory;
 import nom.tam.fits.HeaderCardException;
+import static org.indilib.i4j.fits.StandardFitsHeader.*;
 
 /**
  * This class represends an captured ccd images. it will handle any needed
@@ -591,25 +592,25 @@ public abstract class INDICCDImage {
      *             if the header got illegal
      */
     private void addFitsAttributes(BasicHDU imageFits) throws HeaderCardException {
-        imageFits.addValue("HISTORY", "FITS image created by i4j", "");
-        imageFits.addValue("SIMPLE", "T", "");
-        imageFits.addValue("BITPIX", bpp, "");
-        imageFits.addValue("NAXIS", type == ImageType.COLOR ? COLOR_SCALE_NAXIS : GRAY_SCALE_NAXIS, "");
-        imageFits.addValue("NAXIS1", width, "");
-        imageFits.addValue("NAXIS2", height, "");
+        imageFits.addValue(HISTORY, "FITS image created by i4j", "");
+        imageFits.addValue(SIMPLE, "T", "");
+        imageFits.addValue(BITPIX, bpp, "");
+        imageFits.addValue(NAXIS, type == ImageType.COLOR ? COLOR_SCALE_NAXIS : GRAY_SCALE_NAXIS, "");
+        imageFits.addValue(NAXIS1, width, "");
+        imageFits.addValue(NAXIS2, height, "");
         if (type == ImageType.COLOR) {
-            imageFits.addValue("NAXIS3", COLOR_AXIS3, "");
+            imageFits.addValue(NAXIS3, COLOR_AXIS3, "");
         }
-        imageFits.addValue("DATAMIN", 0, "");
+        imageFits.addValue(DATAMIN, 0, "");
         if (maxPixelValue >= 0) {
-            imageFits.addValue("DATAMAX", maxPixelValue, "");
+            imageFits.addValue(DATAMAX, maxPixelValue, "");
         } else {
             if (bpp == INDI8BitCCDImage.MAX_BPP) {
-                imageFits.addValue("DATAMAX", MAX_BYTE_VALUE, "");
+                imageFits.addValue(DATAMAX, MAX_BYTE_VALUE, "");
             } else if (bpp == INDI16BitCCDImage.MAX_BPP) {
-                imageFits.addValue("DATAMAX", MAX_SHORT_VALUE, "");
+                imageFits.addValue(DATAMAX, MAX_SHORT_VALUE, "");
             } else {
-                imageFits.addValue("DATAMAX", Math.round(Math.pow(2, bpp) - 1d), "");
+                imageFits.addValue(DATAMAX, Math.round(Math.pow(2, bpp) - 1d), "");
             }
         }
         if (extraFitsHeaders != null) {

@@ -52,7 +52,7 @@ public class INDIClient extends Application implements INDIServerConnectionListe
 
     private INDIServerConnection connection;
 
-    private FxController<TabPane, INDIDevicesController> devices;
+    private FxController<TabPane, Object, INDIDevicesController> devices;
 
     @Override
     public void start(Stage stage) throws Exception {

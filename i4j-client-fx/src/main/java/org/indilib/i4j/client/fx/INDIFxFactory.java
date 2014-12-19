@@ -25,15 +25,22 @@ package org.indilib.i4j.client.fx;
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.Tab;
 
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.client.INDIDeviceListener;
+import org.indilib.i4j.client.INDIElementListener;
+import org.indilib.i4j.client.INDIPropertyListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class INDIFxFactory {
 
-    public static class FxController<FX, CONTROLLER extends INDIController<?>> {
+    private static final String FX_CONTROLLER_PROPERTY = "controller";
+
+    public static class FxController<FX, INDIType, CONTROLLER extends INDIController<INDIType>> {
 
         FX fx;
 
@@ -42,6 +49,17 @@ public class INDIFxFactory {
         public CONTROLLER controller() {
             return controller;
         }
+
+        <T> T initializeFx(INDIType indiObject) {
+            if (fx instanceof Node) {
+                ((Node) fx).getProperties().put(FX_CONTROLLER_PROPERTY, controller);
+            } else if (fx instanceof Tab) {
+                ((Tab) fx).getProperties().put(FX_CONTROLLER_PROPERTY, controller);
+            }
+            controller.setIndi(indiObject);
+            return (T) INDIFxPlatformThreadConnector.connect(controller, INDIDeviceListener.class, INDIElementListener.class, INDIPropertyListener.class, INDIFxAccess.class);
+        }
+
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(INDIFxFactory.class);
@@ -188,5 +206,13 @@ public class INDIFxFactory {
             default:
                 return STYLE_SWITCH_STATE_IDLE;
         }
+    }
+
+    public static <T> T controller(Tab tab) {
+        return (T) tab.getProperties().get(FX_CONTROLLER_PROPERTY);
+    }
+
+    public static <T> T controller(Node node) {
+        return (T) node.getProperties().get(FX_CONTROLLER_PROPERTY);
     }
 }

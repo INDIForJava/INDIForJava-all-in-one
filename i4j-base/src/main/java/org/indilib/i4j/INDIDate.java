@@ -28,7 +28,6 @@ package org.indilib.i4j;
  * 
  * @author Gerrit Viola [gerrit.viola at web.de] and S. Alonso (Zerjillo)
  *         [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
  */
 public class INDIDate {
 

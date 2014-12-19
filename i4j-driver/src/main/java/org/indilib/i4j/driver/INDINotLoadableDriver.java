@@ -28,7 +28,6 @@ package org.indilib.i4j.driver;
  * implement this interface.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
  */
 public interface INDINotLoadableDriver {
 }

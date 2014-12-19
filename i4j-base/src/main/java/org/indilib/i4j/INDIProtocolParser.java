@@ -30,7 +30,6 @@ import org.indilib.i4j.protocol.api.INDIInputStream;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
- * @version 1.39, October 11, 2014
  */
 public interface INDIProtocolParser {
 

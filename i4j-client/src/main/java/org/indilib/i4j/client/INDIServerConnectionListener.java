@@ -29,7 +29,6 @@ import java.util.Date;
  * <code>INDIServerConnection</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.10, March 19, 2012
  */
 public interface INDIServerConnectionListener {
 

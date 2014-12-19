@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.util;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -42,12 +42,11 @@ import org.slf4j.LoggerFactory;
  * This is the INDI field injector it is responsible for interpreting the
  * specified annotations on a field in a driver or in a driver extensions.
  * depending on the type of the field and the specified annotations it will
- * decide which property element or extension to instantiate.<br/>
- * <br/>
- * The injection is done field by field and top down. So first the superclass
- * fields are injected and then the subclass fields. The fields are injected in
- * the order defined in the class. The order is relevant because elements are
- * injected in the first preceding property
+ * decide which property element or extension to instantiate. The injection is
+ * done field by field and top down. So first the superclass fields are injected
+ * and then the subclass fields. The fields are injected in the order defined in
+ * the class. The order is relevant because elements are injected in the first
+ * preceding property
  * 
  * @author Richard van Nieuwenhoven
  */
@@ -108,8 +107,7 @@ public final class INDIPropertyInjector {
      * @param driver
      *            the current driver instance
      * @param object
-     *            the current injection object -> can be a driver or an
-     *            extension
+     *            the current injection object - can be a driver or an extension
      */
     public static void initialize(INDIDriver driver, Object object) {
         INDIPropertyInjector original = current.get();

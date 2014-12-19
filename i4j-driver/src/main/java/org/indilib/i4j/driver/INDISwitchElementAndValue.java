@@ -29,7 +29,6 @@ import org.indilib.i4j.Constants.SwitchStatus;
  * <code>SwitchStatus</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
  */
 public class INDISwitchElementAndValue extends INDIElementAndValue<INDISwitchElement, SwitchStatus> {
 

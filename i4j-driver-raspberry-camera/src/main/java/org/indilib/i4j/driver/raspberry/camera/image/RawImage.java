@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.apache.sanselan.formats.tiff.TiffField;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
+import org.indilib.i4j.fits.StandardFitsHeader;
 
 public class RawImage {
 
@@ -165,6 +166,7 @@ public class RawImage {
         result.put("PI-AV", apertureValue);
         result.put("PI-BV", brightnessValue);
         result.put("PI-MAV", maxApertureValue);
+        result.put(StandardFitsHeader.BAYERPAT, "BGGR");
         return result;
     }
 }

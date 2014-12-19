@@ -30,7 +30,6 @@ package org.indilib.i4j.driver;
  * @param <Type>
  *            the type for this element and value holder.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.10, March 19, 2012
  */
 public class INDIElementAndValue<Element extends INDIElement, Type> {
 

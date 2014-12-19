@@ -29,7 +29,6 @@ import org.indilib.i4j.client.INDISwitchElement;
 /**
  * An class representing a View of a Switch Element.
  * 
- * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDISwitchElementView extends INDIElementView {

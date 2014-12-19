@@ -31,7 +31,7 @@
  * INDI for Java Client UI library.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 14, 2014
+
  */
 
 package org.indilib.i4j.client;

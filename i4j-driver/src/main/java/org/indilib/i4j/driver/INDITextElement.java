@@ -32,7 +32,6 @@ import org.indilib.i4j.protocol.OneText;
  * A class representing a INDI Text Element.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 17, 2013
  */
 public class INDITextElement extends INDIElement {
 

@@ -31,7 +31,6 @@ import org.indilib.i4j.client.INDINumberElement;
  * A dialog to show information about a INDINumberElement.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.10, March 19, 2012
  * @see INDINumberElement
  */
 public class INDINumberElementInformationDialog extends javax.swing.JDialog {

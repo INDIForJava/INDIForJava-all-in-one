@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
- * @see org.indilib.i4j.driver
  */
 public class INDIJavaDevice extends INDIDevice {
 

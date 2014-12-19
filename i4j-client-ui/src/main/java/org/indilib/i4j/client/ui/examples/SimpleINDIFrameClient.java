@@ -59,7 +59,6 @@ import org.slf4j.LoggerFactory;
  * A simple GUI INDI Client using the library.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.21, April 4, 2012
  */
 public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDIServerConnectionListener {
 
@@ -69,6 +68,11 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
 
     /**
      * Creates new form SimpleINDIFrameClient
+     * 
+     * @param host
+     *            host to connect to
+     * @param port
+     *            port to connect to
      */
     public SimpleINDIFrameClient(String host, int port) {
         initComponents();

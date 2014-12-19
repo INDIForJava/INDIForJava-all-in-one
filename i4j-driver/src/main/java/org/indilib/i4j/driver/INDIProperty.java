@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory;
  * @param <Element>
  *            der element type in this property.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.35, November 11, 2013
  */
 public abstract class INDIProperty<Element extends INDIElement> implements Serializable, Iterable<Element> {
 
@@ -289,7 +288,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @param element
      *            the Element to be added.
-     * @return
      */
     protected void addElement(Element element) {
         if (this instanceof INDITextProperty && !(element instanceof INDITextElement)) {

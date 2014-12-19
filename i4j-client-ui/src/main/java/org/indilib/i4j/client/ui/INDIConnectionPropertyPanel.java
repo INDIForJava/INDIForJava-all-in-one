@@ -40,8 +40,6 @@ import org.slf4j.LoggerFactory;
  * A panel to represent a the standard CONNECTION Property.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.2, March 26, 2012
- * @see INDIProperty
  */
 public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements INDIElementListener {
 

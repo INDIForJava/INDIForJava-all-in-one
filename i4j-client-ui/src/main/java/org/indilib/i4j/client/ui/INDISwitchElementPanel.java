@@ -38,7 +38,6 @@ import org.indilib.i4j.client.INDISwitchElement;
  * A panel to represent a <code>INDISwitchElement</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.36, November 18, 2013
  * @see INDISwitchElement
  */
 public class INDISwitchElementPanel extends INDIElementPanel {

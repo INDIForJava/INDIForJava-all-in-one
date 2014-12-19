@@ -65,4 +65,13 @@ public class INDIGroupController extends INDIController<String> {
     public <T> T getGui(Class<T> clazz) {
         return clazz.cast(group);
     }
+
+    public void removeProperty(INDIDevice device, INDIProperty<?> property) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public boolean isEmpty() {
+        return box.getChildren().isEmpty();
+    }
 }

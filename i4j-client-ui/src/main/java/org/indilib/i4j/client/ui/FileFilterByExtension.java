@@ -38,10 +38,9 @@ import org.indilib.i4j.FileUtils;
  * Macinthosh. Case is ignored. Example - create a new filter that filerts out
  * all files but gif and jpg image files: JFileChooser chooser = new
  * JFileChooser(); FileFilterByExtension filter = new FileFilterByExtension( new
- * String{"gif", "jpg"}, "JPEG & GIF Images")
+ * String{"gif", "jpg"}, "JPEG and GIF Images")
  * chooser.addChoosableFileFilter(filter); chooser.showOpenDialog(this);
  * 
- * @version 1.9, March 19, 2012
  * @author Jeff Dinkins
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
@@ -157,7 +156,6 @@ public class FileFilterByExtension extends FileFilter {
      *            The file to be tested by the filter.
      * @return <code>true</code> if the file should be shown. <code>false</code>
      *         otherwise.
-     * @see #getExtension
      * @see FileFilter#accept
      */
     public boolean accept(File file) {

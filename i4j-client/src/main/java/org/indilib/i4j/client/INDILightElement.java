@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  * A class representing a INDI Light Element.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, February 4, 2012
  */
 public class INDILightElement extends INDIElement {
 

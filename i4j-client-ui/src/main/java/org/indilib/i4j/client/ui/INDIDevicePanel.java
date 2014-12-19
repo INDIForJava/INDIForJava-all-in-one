@@ -34,7 +34,6 @@ import org.indilib.i4j.client.INDIProperty;
  * A panel to represent a <code>INDIDevice</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.31, April 11, 2012
  * @see INDIDevice
  */
 public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceListener {

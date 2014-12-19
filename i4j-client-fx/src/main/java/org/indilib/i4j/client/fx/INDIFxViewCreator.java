@@ -13,11 +13,11 @@ package org.indilib.i4j.client.fx;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -61,49 +61,44 @@ public class INDIFxViewCreator implements org.indilib.i4j.client.INDIViewCreator
 
     @Override
     public INDIElementListener createNumberElementView(INDINumberElement indiNumberElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDINumberElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxNumberElement();
-        newINDIFxNumberElement.controller().setIndi(indiNumberElement);
-        return INDIFxPlatformThreadConnector.connect(newINDIFxNumberElement.controller(), INDIElementListener.class, INDIFxAccess.class);
+        FxController<Tab, INDINumberElement, INDINumberElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxNumberElement();
+        return newINDIFxNumberElement.initializeFx(indiNumberElement);
     }
 
     @Override
     public INDIElementListener createSwitchElementView(INDISwitchElement indiSwitchElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDISwitchElementController> newINDIFxSwitchElement = INDIFxFactory.newINDIFxSwitchElement();
-        newINDIFxSwitchElement.controller().setIndi(indiSwitchElement);
-        return INDIFxPlatformThreadConnector.connect(newINDIFxSwitchElement.controller(), INDIElementListener.class, INDIFxAccess.class);
+        FxController<Tab, INDISwitchElement, INDISwitchElementController> newINDIFxSwitchElement = INDIFxFactory.newINDIFxSwitchElement();
+        return newINDIFxSwitchElement.initializeFx(indiSwitchElement);
     }
 
     @Override
     public INDIElementListener createTextElementView(INDITextElement indiTextElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDITextElementController> newINDIFxTextElement = INDIFxFactory.newINDIFxTextElement();
-        newINDIFxTextElement.controller().setIndi(indiTextElement);
-        return INDIFxPlatformThreadConnector.connect(newINDIFxTextElement.controller(), INDIElementListener.class, INDIFxAccess.class);
+        FxController<Tab, INDITextElement, INDITextElementController> newINDIFxTextElement = INDIFxFactory.newINDIFxTextElement();
+        return newINDIFxTextElement.initializeFx(indiTextElement);
     }
 
     @Override
     public INDIPropertyListener createBlobPropertyView(INDIBLOBProperty indiProperty) throws INDIException {
-        return null;
+        FxController<Tab, INDIBLOBProperty, INDIBlobPropertyController> newFx = INDIFxFactory.newINDIFxBlobProperty();
+        return newFx.initializeFx(indiProperty);
     }
 
     @Override
     public INDIPropertyListener createNumberPropertyView(INDINumberProperty indiProperty) throws INDIException {
-        FxController<Tab, INDINumberPropertyController> newINDIFxNumberProperty = INDIFxFactory.newINDIFxNumberProperty();
-        newINDIFxNumberProperty.controller().setIndi(indiProperty);
-        return INDIFxPlatformThreadConnector.connect(newINDIFxNumberProperty.controller(), INDIPropertyListener.class, INDIFxAccess.class);
+        FxController<Tab, INDINumberProperty, INDINumberPropertyController> newINDIFxNumberProperty = INDIFxFactory.newINDIFxNumberProperty();
+        return newINDIFxNumberProperty.initializeFx(indiProperty);
     }
 
     @Override
     public INDIPropertyListener createTextPropertyView(INDITextProperty indiProperty) throws INDIException {
-        FxController<Tab, INDITextPropertyController> newINDIFxTextProperty = INDIFxFactory.newINDIFxTextProperty();
-        newINDIFxTextProperty.controller().setIndi(indiProperty);
-        return INDIFxPlatformThreadConnector.connect(newINDIFxTextProperty.controller(), INDIPropertyListener.class, INDIFxAccess.class);
+        FxController<Tab, INDITextProperty, INDITextPropertyController> newINDIFxTextProperty = INDIFxFactory.newINDIFxTextProperty();
+        return newINDIFxTextProperty.initializeFx(indiProperty);
     }
 
     @Override
     public INDIPropertyListener createSwitchPropertyView(INDISwitchProperty indiProperty) throws INDIException {
-        FxController<Tab, INDISwitchPropertyController> newINDIFxSwitchProperty = INDIFxFactory.newINDIFxSwitchProperty();
-        newINDIFxSwitchProperty.controller().setIndi(indiProperty);
-        return INDIFxPlatformThreadConnector.connect(newINDIFxSwitchProperty.controller(), INDIPropertyListener.class, INDIFxAccess.class);
+        FxController<Tab, INDISwitchProperty, INDISwitchPropertyController> newINDIFxSwitchProperty = INDIFxFactory.newINDIFxSwitchProperty();
+        return newINDIFxSwitchProperty.initializeFx(indiProperty);
     }
 
     @Override
@@ -113,9 +108,8 @@ public class INDIFxViewCreator implements org.indilib.i4j.client.INDIViewCreator
 
     @Override
     public INDIDeviceListener createDeviceView(INDIDevice indiDevice) throws INDIException {
-        FxController<Tab, INDIController<INDIDevice>> newINDIFxDevice = INDIFxFactory.newINDIFxDevice();
-        newINDIFxDevice.controller().setIndi(indiDevice);
-        return INDIFxPlatformThreadConnector.connect(newINDIFxDevice.controller(), INDIDeviceListener.class, INDIFxAccess.class);
+        FxController<Tab, INDIDevice, INDIController<INDIDevice>> newINDIFxDevice = INDIFxFactory.newINDIFxDevice();
+        return newINDIFxDevice.initializeFx(indiDevice);
     }
 
 }

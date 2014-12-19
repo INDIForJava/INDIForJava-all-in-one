@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
  * A class to transforms XML Elements into Strings.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 11, 2014
  */
 public final class XMLToString {
 

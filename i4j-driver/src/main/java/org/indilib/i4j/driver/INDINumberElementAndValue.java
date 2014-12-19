@@ -27,7 +27,6 @@ package org.indilib.i4j.driver;
  * <code>Double</code>.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, November 8, 2013
  */
 public class INDINumberElementAndValue extends INDIElementAndValue<INDINumberElement, Double> {
 

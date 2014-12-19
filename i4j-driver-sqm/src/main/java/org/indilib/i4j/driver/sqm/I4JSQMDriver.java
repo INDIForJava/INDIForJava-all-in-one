@@ -57,7 +57,6 @@ import org.slf4j.LoggerFactory;
  * A class that acts as a INDI for Java Driver for the Sky Quality Meter - LU.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.37, January 11, 2014
  */
 public class I4JSQMDriver extends INDIDriver implements INDIConnectionHandler {
 

@@ -31,7 +31,6 @@ import java.net.URLStreamHandler;
  * A handler for INDI connections. This is still a work in progress
  * 
  * @author Richard van Nieuwenhoven [ritchie [at] gmx.at]
- * @version 1.39, October 11, 2014
  */
 public class INDIURLStreamHandler extends URLStreamHandler {
 

@@ -57,8 +57,8 @@ import org.slf4j.LoggerFactory;
  * original INDI Library and launched as external processes) and Network Devices
  * (which consist on other INDI Servers).
  * 
- * @author S. Alonso (Zerjillo) [zerjioi at ugr.es] & Richard van Nieuwenhoven
- * @version 1.34, October 13, 2012
+ * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author Richard van Nieuwenhoven
  */
 public final class INDIServer implements INDIServerInterface {
 

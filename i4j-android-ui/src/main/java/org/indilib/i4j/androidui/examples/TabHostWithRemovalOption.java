@@ -22,7 +22,6 @@ import java.util.ArrayList;
 /**
  * A class to handle tabs more easily.
  * 
- * @version 1.32, April 20, 2012
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class TabHostWithRemovalOption extends TabHost {

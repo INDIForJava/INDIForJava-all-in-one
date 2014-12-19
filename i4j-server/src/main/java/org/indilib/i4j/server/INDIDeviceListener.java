@@ -37,7 +37,6 @@ import org.indilib.i4j.protocol.INDIProtocol;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
- * @version 1.31, April 12, 2012
  */
 public abstract class INDIDeviceListener implements INDIProtocolParser {
 

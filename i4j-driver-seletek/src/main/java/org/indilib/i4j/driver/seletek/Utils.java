@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
  * Some utility functions.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.35, November 11, 2013
  */
 public final class Utils {
 

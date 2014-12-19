@@ -17,9 +17,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.indilib.i4j</groupId>
-			<artifactId>nom.tam.fits</artifactId>
-			<version>1.11.1</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-fits-utils</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 	<properties>

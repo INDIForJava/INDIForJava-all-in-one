@@ -31,7 +31,6 @@ import org.indilib.i4j.driver.util.INDIPropertyBuilder;
  * button). It simplifies dealing with Switch elements and so on.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.34, January 11, 2014
  */
 public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
 

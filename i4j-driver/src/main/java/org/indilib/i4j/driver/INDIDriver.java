@@ -187,8 +187,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * readings. Thus, the normal execution of the code is not stopped. This
      * method is not usually called by the Driver itself but the encapsulating
      * class (for example <code>INDIDriverRunner</code>).
-     * 
-     * @see INDIDriverRunner
      */
     public void startListening() {
         started = true;

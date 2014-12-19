@@ -33,7 +33,6 @@ import org.indilib.i4j.protocol.OneSwitch;
  * A class representing a INDI Switch Element.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, February 4, 2012
  */
 public class INDISwitchElement extends INDIElement {
 

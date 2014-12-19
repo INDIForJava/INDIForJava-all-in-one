@@ -24,7 +24,7 @@
  * Some examples to test the INDI for Java Client library.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.39, October 14, 2014
+
  * @see org.indilib.i4j.client
  */
 

@@ -43,7 +43,6 @@ import org.indilib.i4j.protocol.SetVector;
  * @param <Element>
  *            the elements that occure in the property.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
- * @version 1.32, January 27, 2013
  */
 public abstract class INDIProperty<Element extends INDIElement> implements Iterable<Element> {
 
@@ -156,7 +155,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * @param xml
      *            A XML Element <code>&lt;setXXXVector&gt;</code> to which the
      *            property must be updated.
-     * @see #update(Element, String)
      */
     protected abstract void update(SetVector<?> xml);
 
@@ -175,7 +173,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      *            <code>&lt;setNumberVector&gt;</code>,
      *            <code>&lt;setSwitchVector&gt;</code> or
      *            <code>&lt;setTextVector&gt;</code>.
-     * @see #update(Element)
      */
     protected void update(SetVector<?> xml, Class<?> childNodesType) {
         try {
