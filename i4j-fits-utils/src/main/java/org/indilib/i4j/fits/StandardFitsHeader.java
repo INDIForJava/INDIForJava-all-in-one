@@ -153,12 +153,6 @@ public class StandardFitsHeader {
     public static String EXPTIME = "EXPTIME";
 
     /**
-     * dark current integration time, if recorded. May be longer than exposure
-     * time.
-     */
-    public static String DARKTIME = "DARKTIME";
-
-    /**
      * binning factor used on X axis.
      */
     public static String XBINNING = "XBINNING";
@@ -230,5 +224,13 @@ public class StandardFitsHeader {
      * Y offset of Bayer array on imaging sensor.
      */
     public static String YBAYROFF = "YBAYROFF";
+
+    /**
+     * Total dark time of the observation. This is the total time during which
+     * dark current is collected by the detector. If the times in the extension
+     * are different the primary HDU gives one of the extension times. real
+     * (sec)
+     */
+    public static String DARKTIME = "DARKTIME";
 
 }

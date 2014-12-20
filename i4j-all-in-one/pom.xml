@@ -262,6 +262,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-driver-raspberry-camera</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>i4j-driver-seletek</artifactId>
 			<version>${project.version}</version>
 		</dependency>

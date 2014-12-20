@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.raspberry.camera;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -29,6 +29,7 @@ import java.util.Map;
 
 import nom.tam.fits.BasicHDU;
 
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
@@ -123,10 +124,25 @@ public class RaspberryCamera extends INDICCDDriver {
     @InjectElement(name = "LOOP_COUNT_ELEMENT", label = "count", minimum = 1d, maximum = 1000d, numberFormat = "%3.0f", numberValue = 1d)
     protected INDINumberElement loopCount;
 
+    @Override
+    public void driverConnect(Date timestamp) throws INDIException {
+        super.driverConnect(timestamp);
+        addProperty(cameraOptions);
+        addProperty(loopCountP);
+    }
+
+    @Override
+    public void driverDisconnect(Date timestamp) throws INDIException {
+        super.driverDisconnect(timestamp);
+        removeProperty(cameraOptions);
+        removeProperty(loopCountP);
+    }
+
     private CameraControl control;
 
     public RaspberryCamera(INDIConnection connection) {
         super(connection);
+        primaryCCD.setCCDParams(2592, 1944, 10, 1.4f, 1.4f);
         cameraOptions.setEventHandler(new NumberEvent() {
 
             @Override
@@ -192,13 +208,13 @@ public class RaspberryCamera extends INDICCDDriver {
 
                 @Override
                 protected synchronized void imageCaptured(RawImage capturedImage) {
-                    loopCount.setValue(loopCount.getValue() - 1d);
-                    if (loopCount.getIntValue() == 0) {
+                    if (loopCount.getIntValue() == 1) {
                         stop();
                         control = null;
                         loopCount.setValue(originalLoopCount);
                         primaryCCD.setAutoLoop(true);
                     } else {
+                        loopCount.setValue(loopCount.getValue() - 1d);
                         primaryCCD.setAutoLoop(false);
                     }
                     updateProperty(loopCountP);

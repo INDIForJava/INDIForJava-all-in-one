@@ -622,7 +622,11 @@ public abstract class INDICCDImage {
                 } else if (header.getValue() instanceof Integer) {
                     imageFits.addValue(header.getKey(), ((Integer) header.getValue()).intValue(), "");
                 } else if (header.getValue() != null) {
-                    imageFits.addValue(header.getKey(), header.getValue().toString(), "");
+                    String stringValue = header.getValue().toString();
+                    if (stringValue.length() > 70) {
+
+                    }
+                    imageFits.addValue(header.getKey(), stringValue, "");
                 }
             }
         }

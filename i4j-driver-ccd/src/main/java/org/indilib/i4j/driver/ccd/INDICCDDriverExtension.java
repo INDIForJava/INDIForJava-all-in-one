@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.ccd;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -130,6 +130,12 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     protected INDISwitchElement frameTypeLight;
 
     /**
+     * It will be a nomal light frame.
+     */
+    @InjectElement(name = "FRAME_TRI_COLOR", label = "Tri color light")
+    protected INDISwitchElement frameTypeTriColorLight;
+
+    /**
      * It will be a bias frame {@link CcdFrame#BIAS_FRAME}.
      */
     @InjectElement(name = "FRAME_BIAS", label = "Bias")
@@ -214,19 +220,19 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * the size of one pixel in microns in the bothe axis.
      */
-    @InjectElement(name = "CCD_PIXEL_SIZE", label = "Pixel size (um)", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_PIXEL_SIZE", label = "Pixel size (um)", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.2f")
     protected INDINumberElement imagePixelSizePixelSize;
 
     /**
      * the size of one pixel in microns in the x axis.
      */
-    @InjectElement(name = "CCD_PIXEL_SIZE_X", label = "Pixel size X", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_PIXEL_SIZE_X", label = "Pixel size X", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.2f")
     protected INDINumberElement imagePixelSizePixelSizeX;
 
     /**
      * the size of one pixel in microns in the y axis.
      */
-    @InjectElement(name = "CCD_PIXEL_SIZE_Y", label = "Pixel size Y", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.0f")
+    @InjectElement(name = "CCD_PIXEL_SIZE_Y", label = "Pixel size Y", numberValue = 6.45, maximum = 40, minimum = 1, numberFormat = "%4.2f")
     protected INDINumberElement imagePixelSizePixelSizeY;
 
     /**
@@ -455,21 +461,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Add FITS keywords to a fits file. In additional to the standard FITS
-     * keywords, this function write the following keywords the FITS file:
-     * <ul>
-     * <li>EXPTIME: Total Exposure Time (s)</li>
-     * <li>DARKTIME (if applicable): Total Exposure Time (s)</li>
-     * <li>PIXSIZE1: Pixel Size 1 (microns)</li>
-     * <li>PIXSIZE2: Pixel Size 2 (microns)</li>
-     * <li>BINNING: Binning HOR x VER</li>
-     * <li>FRAME: Frame Type</li>
-     * <li>DATAMIN: Minimum value</li>
-     * <li>DATAMAX: Maximum value</li>
-     * <li>INSTRUME: CCD Name</li>
-     * <li>DATE-OBS: UTC start date of observation</li>
-     * </ul>
-     * To add additional information, override this function in the child class
-     * and ensure to call INDICCD::addFITSKeywords.
+     * keywords, this function write the a number of std keywords the FITS file
      * 
      * @param fitsHeader
      *            the fits header definition to extend the headers
@@ -480,7 +472,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         fitsHeader.addValue(StandardFitsHeader.EXPTIME, exposureDuration, "Total Exposure Time (s)");
 
         if (currentFrameType == CcdFrame.DARK_FRAME) {
-            fitsHeader.addValue("DARKTIME", exposureDuration, "Total Exposure Time (s)");
+            fitsHeader.addValue(StandardFitsHeader.DARKTIME, exposureDuration, "Total Exposure Time (s)");
         }
         fitsHeader.addValue(StandardFitsHeader.PIXSIZE1, pixelSizeX, "Pixel Size x axis (microns)");
         fitsHeader.addValue(StandardFitsHeader.PIXSIZE2, pixelSizeY, "Pixel Size y axis (microns)");
@@ -488,9 +480,11 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         fitsHeader.addValue(StandardFitsHeader.YPIXSZ, pixelSizeY, "Pixel Size y axis (microns)");
         fitsHeader.addValue(StandardFitsHeader.XBINNING, binningX, "Binning factor in width");
         fitsHeader.addValue(StandardFitsHeader.YBINNING, binningY, "Binning factor in height");
-        fitsHeader.addValue("FRAME", currentFrameType.fitsValue(), "Frame Type");
+        fitsHeader.addValue(StandardFitsHeader.IMAGETYP, currentFrameType.fitsValue(), "Frame Type");
 
         fitsHeader.addValue(StandardFitsHeader.INSTRUME, driver.getName(), "CCD Name");
+
+        fitsHeader.addValue(StandardFitsHeader.TIMESYS, "UTC approximate", "");
         fitsHeader.addValue(StandardFitsHeader.DATE_OBS, getExposureStartTime(), "UTC start date of observation");
 
         Map<String, Object> attributes = driverInterface.getExtraFITSKeywords(fitsHeader);
@@ -578,7 +572,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         frameType.setValues(elementsAndValues);
         frameType.setState(PropertyStates.OK);
         String message = null;
-        if (frameTypeLight.isOn()) {
+        if (frameTypeTriColorLight.isOn()) {
+            currentFrameType = CcdFrame.TRI_COLOR_FRAME;
+        } else if (frameTypeLight.isOn()) {
             currentFrameType = CcdFrame.LIGHT_FRAME;
         } else if (frameTypeBais.isOn()) {
             currentFrameType = CcdFrame.BIAS_FRAME;

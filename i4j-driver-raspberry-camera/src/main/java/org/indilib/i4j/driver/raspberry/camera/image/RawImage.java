@@ -158,9 +158,9 @@ public class RawImage {
 
     public Map<String, Object> getFitsAttributes() {
         Map<String, Object> result = new HashMap<>();
-        result.put("PI-INSTRUME", instrument);
-        result.put("PI-EXPTIME", expTime);
-        result.put("PI-DATE-OBS", observeDat);
+        result.put("PI-INSTR", instrument);
+        result.put("PI-EXPTI", expTime);
+        result.put("PI-D-OBS", observeDat);
         result.put("PI-ISO", iso);
         result.put("PI-SSV", shutterSpeedValue);
         result.put("PI-AV", apertureValue);

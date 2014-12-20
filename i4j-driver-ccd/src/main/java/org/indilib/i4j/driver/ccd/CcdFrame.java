@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.ccd;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -28,10 +28,16 @@ package org.indilib.i4j.driver.ccd;
  * @author Richard van Nieuwenhoven
  */
 public enum CcdFrame {
+
     /**
-     * This is a normal ccd image.
+     * This is a normal ccd image, when the ccd is a color model the result will
+     * be a raw image that must be debayered.
      */
-    LIGHT_FRAME("Light"),
+    LIGHT_FRAME("Light Frame"),
+    /**
+     * This is a normal ccd rgb color image.
+     */
+    TRI_COLOR_FRAME("Tricolor Image"),
     /**
      * This is a bias frame with is an image obtained from an opto-electronic
      * image sensor, with no actual exposure time. The image so obtained only
@@ -39,7 +45,7 @@ public enum CcdFrame {
      * not noise from charge accumulation (e.g. from dark current) within the
      * sensor itself.
      */
-    BIAS_FRAME("Bias"),
+    BIAS_FRAME("Bias Frame"),
     /**
      * This is a dark frame. A dark frame is an image captured with the sensor
      * in the dark, essentially just an image of noise in an image sensor. A
@@ -50,7 +56,7 @@ public enum CcdFrame {
      * as an option, or may do it automatically for exposures beyond a certain
      * time.
      */
-    DARK_FRAME("Dark"),
+    DARK_FRAME("Dark Frame"),
     /**
      * This is a flat field frame. In order for an astrophotographer to capture
      * a light frame, he or she must place a light source over the imaging
@@ -61,7 +67,7 @@ public enum CcdFrame {
      * (Maximum range of values for a changeable quantity. In this case its
      * pixel value) of the imaging device is seen.
      */
-    FLAT_FRAME("Flat Field");
+    FLAT_FRAME("Flat Frame");
 
     /**
      * The fits attribute name for this frame type.
