@@ -141,9 +141,27 @@ public class INDISocketConnection implements INDIConnection {
     @Override
     public void close() throws IOException {
         socket.shutdownInput();
-        inputStream.close();
-        ouputStream.close();
-        socket.close();
+        try {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        } catch (Exception e) {
+            LOG.warn("inputStream close problem", e);
+        }
+        try {
+            if (ouputStream != null) {
+                ouputStream.close();
+            }
+        } catch (Exception e) {
+            LOG.warn("ouputStream close problem", e);
+        }
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (Exception e) {
+            LOG.warn("socket close problem", e);
+        }
     }
 
     @Override

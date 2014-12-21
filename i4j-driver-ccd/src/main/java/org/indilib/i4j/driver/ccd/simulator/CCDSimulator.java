@@ -300,7 +300,9 @@ public class CCDSimulator extends INDICCDDriver {
      */
     public CCDSimulator(INDIConnection connection) {
         super(connection);
+        camera = new Camera();
         primaryCCD.setCCDParams(camera.width, camera.heigth, BITS_PER_PIXEL_COLOR, SIMULATED_PIXEL_SIZE, SIMULATED_PIXEL_SIZE);
+        camera = null;
     }
 
     @Override

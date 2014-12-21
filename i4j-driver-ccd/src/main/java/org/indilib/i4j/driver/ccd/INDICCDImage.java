@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.ccd;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -318,8 +318,8 @@ public abstract class INDICCDImage {
          * @param type
          *            type of the image.
          */
-        public INDI8BitCCDImage(int width, int height, int bpp, ImageType type) {
-            super(width, height, bpp, type);
+        public INDI8BitCCDImage(int width, int height, ImageType type) {
+            super(width, height, MAX_BPP, type);
         }
 
         /**
@@ -400,14 +400,14 @@ public abstract class INDICCDImage {
          * @param type
          *            the type of the image.
          */
-        public INDI16BitCCDImage(int width, int height, int bpp, ImageType type) {
-            super(width, height, bpp, type);
+        public INDI16BitCCDImage(int width, int height, ImageType type) {
+            super(width, height, MAX_BPP, type);
         }
 
         /**
          * the image data.
          */
-        protected int[] imageData;
+        protected short[] imageData;
 
         @Override
         Object getImageData() {
@@ -416,19 +416,19 @@ public abstract class INDICCDImage {
 
         @Override
         public PixelIterator iteratePixel() {
-            imageData = new int[width * height * type.axis3];
+            imageData = new short[width * height * type.axis3];
             return new PixelIterator(width, height) {
 
                 @Override
                 public void setPixel(int value) {
-                    imageData[index++] = max(value);
+                    imageData[index++] = (short) (max(value) & UNSIGNED_SHORT);
                 }
 
                 @Override
                 public void setPixel(int red, int green, int blue) {
-                    imageData[index++] = max(red);
-                    imageData[indexLayer2++] = max(green);
-                    imageData[indexLayer3++] = max(blue);
+                    imageData[index++] = (short) (max(red) & UNSIGNED_SHORT);
+                    imageData[indexLayer2++] = (short) (max(green) & UNSIGNED_SHORT);
+                    imageData[indexLayer3++] = (short) (max(blue) & UNSIGNED_SHORT);
                 }
 
                 @Override
@@ -445,14 +445,14 @@ public abstract class INDICCDImage {
 
                 @Override
                 public void setPixel(byte value) {
-                    imageData[index++] = max(value & UNSIGNED_BYTE);
+                    imageData[index++] = (short) max(value & UNSIGNED_BYTE);
                 }
 
                 @Override
                 public void setPixel(byte red, byte green, byte blue) {
-                    imageData[index++] = max(red & UNSIGNED_BYTE);
-                    imageData[indexLayer2++] = max(green & UNSIGNED_BYTE);
-                    imageData[indexLayer3++] = max(blue & UNSIGNED_BYTE);
+                    imageData[index++] = (short) max(red & UNSIGNED_BYTE);
+                    imageData[indexLayer2++] = (short) max(green & UNSIGNED_BYTE);
+                    imageData[indexLayer3++] = (short) max(blue & UNSIGNED_BYTE);
                 }
             };
         }
@@ -481,8 +481,8 @@ public abstract class INDICCDImage {
          * @param type
          *            type of the image.
          */
-        public INDI32BitCCDImage(int width, int height, int bpp, ImageType type) {
-            super(width, height, bpp, type);
+        public INDI32BitCCDImage(int width, int height, ImageType type) {
+            super(width, height, MAX_BPP, type);
         }
 
         /**
@@ -596,8 +596,8 @@ public abstract class INDICCDImage {
         imageFits.addValue(SIMPLE, "T", "");
         imageFits.addValue(BITPIX, bpp, "");
         imageFits.addValue(NAXIS, type == ImageType.COLOR ? COLOR_SCALE_NAXIS : GRAY_SCALE_NAXIS, "");
-        imageFits.addValue(NAXIS1, width, "");
-        imageFits.addValue(NAXIS2, height, "");
+        imageFits.addValue(NAXIS1, height, "");
+        imageFits.addValue(NAXIS2, width, "");
         if (type == ImageType.COLOR) {
             imageFits.addValue(NAXIS3, COLOR_AXIS3, "");
         }
@@ -663,11 +663,11 @@ public abstract class INDICCDImage {
      */
     public static INDICCDImage createImage(int width, int height, int bpp, ImageType type) {
         if (bpp <= INDI8BitCCDImage.MAX_BPP) {
-            return new INDI8BitCCDImage(width, height, bpp, type);
+            return new INDI8BitCCDImage(width, height, type);
         } else if (bpp <= INDI16BitCCDImage.MAX_BPP) {
-            return new INDI16BitCCDImage(width, height, bpp, type);
+            return new INDI16BitCCDImage(width, height, type);
         } else if (bpp <= INDI32BitCCDImage.MAX_BPP) {
-            return new INDI32BitCCDImage(width, height, bpp, type);
+            return new INDI32BitCCDImage(width, height, type);
         } else {
             throw new IllegalArgumentException("not supported bits per pixel " + bpp);
         }

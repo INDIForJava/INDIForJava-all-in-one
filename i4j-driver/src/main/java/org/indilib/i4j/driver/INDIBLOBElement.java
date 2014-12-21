@@ -82,7 +82,7 @@ public class INDIBLOBElement extends INDIElement {
 
     @Override
     public OneElement<?> getXMLOneElement(boolean includeMinMaxStep) {
-        return new OneBlob().setByteContent(value.getBlobData()).setFormat(value.getFormat());
+        return new OneBlob().setName(getName()).setByteContent(value.getBlobData()).setFormat(value.getFormat());
     }
 
     @Override

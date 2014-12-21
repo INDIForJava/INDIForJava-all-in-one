@@ -92,7 +92,11 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @return A String representation of the host and port of the Client.
      */
     public String getInetAddress() {
-        return connection.toString();
+        if (connection != null) {
+            return connection.toString();
+        } else {
+            return "closed";
+        }
     }
 
     @Override
@@ -162,7 +166,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      *            xml message
      */
     private void processEnableBLOB(EnableBLOB xml) {
-        if (xml.hasDevice()) {
+        if (!xml.hasDevice()) {
             return;
         }
         String rule = xml.getTextContent();

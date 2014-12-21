@@ -73,6 +73,7 @@
 				<version>1.9</version>
 				<configuration>
 					<configurationDirectory>etc</configurationDirectory>
+					<useWildcardClassPath>true</useWildcardClassPath>
 					<extraJvmArguments>-DI4J_HOME=@BASEDIR@ -Dlogback.configurationFile=@BASEDIR@/etc/logback.xml</extraJvmArguments>
 					<programs>
 						<program>
@@ -85,8 +86,19 @@
 							<commandLineArguments>
 								<commandLineArgument>-i</commandLineArgument>
 								<commandLineArgument>-indiHome</commandLineArgument>
-								<commandLineArgument>%I4J_HOME%</commandLineArgument>
+								<commandLineArgument>@BASEDIR@</commandLineArgument>
 							</commandLineArguments>
+							<jvmSettings>
+								<systemProperties>
+									<systemProperty>logback.configurationFile=%I4J_HOME%/etc/logback.xml</systemProperty>
+								</systemProperties>
+								<extraArguments>
+									<extraArgument>-Xdebug</extraArgument>
+									<extraArgument>-Xrunjdwp:server=y,suspend=n,transport=dt_socket,address=4000</extraArgument>
+								</extraArguments>
+								<initialMemorySize>128M</initialMemorySize>
+								<maxMemorySize>512M</maxMemorySize>
+							</jvmSettings>
 						</program>
 					</programs>
 					<daemons>
@@ -96,7 +108,7 @@
 							<mainClass>org.indilib.i4j.server.main.INDIBasicServer</mainClass>
 							<commandLineArguments>
 								<commandLineArgument>-indiHome</commandLineArgument>
-								<commandLineArgument>%I4J_HOME%</commandLineArgument>
+								<commandLineArgument>@BASEDIR@</commandLineArgument>
 							</commandLineArguments>
 							<platforms>
 								<platform>jsw</platform>
@@ -150,12 +162,11 @@
 									<systemProperty>logback.configurationFile=%I4J_HOME%/etc/logback.xml</systemProperty>
 								</systemProperties>
 								<extraArguments>
-									<extraArgument>-server</extraArgument>
 									<extraArgument>-Xdebug</extraArgument>
-									<extraArgument>-Xrunjdwp:server=y,suspend=y,transport=dt_socket,address=4000</extraArgument>
+									<extraArgument>-Xrunjdwp:server=y,suspend=n,transport=dt_socket,address=4000</extraArgument>
 								</extraArguments>
-								<initialMemorySize>128</initialMemorySize>
-								<maxMemorySize>512</maxMemorySize>
+								<initialMemorySize>128M</initialMemorySize>
+								<maxMemorySize>512M</maxMemorySize>
 							</jvmSettings>
 						</daemon>
 					</daemons>

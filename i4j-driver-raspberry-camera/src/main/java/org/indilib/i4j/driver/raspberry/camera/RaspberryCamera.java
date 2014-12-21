@@ -208,18 +208,21 @@ public class RaspberryCamera extends INDICCDDriver {
 
                 @Override
                 protected synchronized void imageCaptured(RawImage capturedImage) {
+                    primaryCCD.setAutoLoop(false);
                     if (loopCount.getIntValue() == 1) {
                         stop();
                         control = null;
-                        loopCount.setValue(originalLoopCount);
-                        primaryCCD.setAutoLoop(true);
                     } else {
                         loopCount.setValue(loopCount.getValue() - 1d);
-                        primaryCCD.setAutoLoop(false);
                     }
                     updateProperty(loopCountP);
                     primaryCCD.setFrameBuffer(convertRawImageToINDIImage(capturedImage));
                     exposureComplete(primaryCCD);
+                    // reinitialize the system
+                    if (control == null) {
+                        primaryCCD.setAutoLoop(true);
+                        loopCount.setValue(originalLoopCount);
+                    }
                 }
 
             };
