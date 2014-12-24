@@ -38,10 +38,10 @@ class AverageDebayerAlgorithm implements DebayerAlgorithm {
         int width = ip.getWidth();
         int height = ip.getHeight();
         // algorithm
-        int one = 0;
-        int two = 0;
-        int three = 0;
-        int four = 0;
+        double one = 0;
+        double two = 0;
+        double three = 0;
+        double four = 0;
         RGBImagePixels rgb = new RGBImagePixels();
         ImagePixels r = new ImagePixels(width, height);
         ImagePixels g = new ImagePixels(width, height);

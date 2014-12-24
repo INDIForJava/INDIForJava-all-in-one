@@ -13,18 +13,18 @@ package org.indilib.i4j.fits.debayer;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
 class ImagePixels {
 
-    private final int[] pixel;
+    private final double[] pixel;
 
     private final int width;
 
@@ -41,14 +41,55 @@ class ImagePixels {
     public ImagePixels(int width, int height) {
         this.width = width;
         this.height = height;
-        pixel = new int[width * height];
+        pixel = new double[width * height];
     }
 
-    public void putPixel(int x, int y, int value) {
-        pixel[y * height + x] = value;
+    public void putPixel(int x, int y, double value) {
+        if (value < 0) {
+            value = 0;
+        }
+        if (x < 0 || x >= width) {
+            return;
+        }
+        if (y < 0 || y >= height) {
+            return;
+        }
+        pixel[y * width + x] = value;
     }
 
-    public int getPixel(int x, int y) {
-        return pixel[y * height + x];
+    public double getPixel(int x, int y) {
+        if (x < 0 || x >= width) {
+            return 0;
+        }
+        if (y < 0 || y >= height) {
+            return 0;
+        }
+        return pixel[y * width + x];
+    }
+
+    public void setPixel(Object kernel, double datamax) {
+        if (kernel instanceof int[][]) {
+            double max = Math.min(Math.pow(2, 32), datamax > 1d ? datamax : Double.MAX_VALUE);
+            int pixelIndex = 0;
+            int[][] other = (int[][]) kernel;
+            for (int index1 = 0; index1 < other.length; index1++) {
+                for (int index2 = 0; index2 < other[index1].length; index2++) {
+                    pixel[pixelIndex++] = ((double) other[index1][index2]) / max;
+                }
+            }
+        } else if (kernel instanceof short[][]) {
+            double max = Math.min(Math.pow(2, 16), datamax > 1d ? datamax : Double.MAX_VALUE);
+            int pixelIndex = 0;
+            short[][] other = (short[][]) kernel;
+            for (int index1 = 0; index1 < other.length; index1++) {
+                for (int index2 = 0; index2 < other[index1].length; index2++) {
+                    pixel[pixelIndex++] = ((double) (other[index1][index2] & 0xFFFF)) / max;
+                }
+            }
+        }
+    }
+
+    public double[] pixel() {
+        return pixel;
     }
 }

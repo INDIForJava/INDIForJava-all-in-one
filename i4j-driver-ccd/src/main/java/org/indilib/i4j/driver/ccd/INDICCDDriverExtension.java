@@ -593,6 +593,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         }
         if (!driverInterface.updateCCDFrameType(currentFrameType)) {
             frameType.setState(PropertyStates.ALERT);
+            message = "The CCD does not support this frametype now.";
         }
         updateProperty(frameType, message);
     }

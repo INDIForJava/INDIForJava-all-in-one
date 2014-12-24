@@ -26,6 +26,15 @@ enum DebayerRowOrder {
     RGRG,
     BGBG,
     GRGR,
-    GBGB
+    GBGB;
+
+    public static DebayerRowOrder valueOfFits(String bayerpat) {
+        for (DebayerRowOrder value : values()) {
+            if (value.name().startsWith(bayerpat.substring(0,2))) {
+                return value;
+            }
+        }
+        return null;
+    }
 
 }

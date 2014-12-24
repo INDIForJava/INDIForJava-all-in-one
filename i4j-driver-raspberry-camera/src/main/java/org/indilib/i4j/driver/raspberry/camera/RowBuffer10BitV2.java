@@ -36,7 +36,7 @@ import org.indilib.i4j.driver.ccd.INDICCDImage.PixelIterator;
  * @author Richard van Nieuwenhoven
  *
  */
-public final class RowBuffer10Bit {
+public final class RowBuffer10BitV2 {
 
     /**
      * byte space for the pixels of one row.
@@ -46,10 +46,12 @@ public final class RowBuffer10Bit {
     /**
      * the integer pixel values.
      */
-    protected final int[] pixels = new int[CameraConstands.HPIXELS];
+    protected final short[] pixels = new short[CameraConstands.HPIXELS];
 
     /**
-     * read one row from the raw image.
+     * read one row from the raw image. and convert it to 16 bit values. move
+     * the values so that the least significant 6 bits are always 0 and not the
+     * high 6 bits.
      * 
      * @param from
      *            the stream of the raw image.
@@ -70,10 +72,10 @@ public final class RowBuffer10Bit {
             int byte3 = this.buffer[bindex++] & 0xFF;
             int split = this.buffer[bindex++] & 0xFF;
 
-            this.pixels[pix++] = byte0 << 8 | (split & 0b11000000) << 0;
-            this.pixels[pix++] = byte1 << 8 | (split & 0b00110000) << 2;
-            this.pixels[pix++] = byte2 << 8 | (split & 0b00001100) << 4;
-            this.pixels[pix++] = byte3 << 8 | (split & 0b00000011) << 6;
+            this.pixels[pix++] = (short) (byte0 << 8 | (split & 0b11000000) << 0);
+            this.pixels[pix++] = (short) (byte1 << 8 | (split & 0b00110000) << 2);
+            this.pixels[pix++] = (short) (byte2 << 8 | (split & 0b00001100) << 4);
+            this.pixels[pix++] = (short) (byte3 << 8 | (split & 0b00000011) << 6);
         }
     }
 

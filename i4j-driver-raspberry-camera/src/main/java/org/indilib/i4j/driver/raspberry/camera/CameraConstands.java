@@ -13,19 +13,30 @@ package org.indilib.i4j.driver.raspberry.camera;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+/**
+ * some constands for tha raspberry pi camera.
+ * 
+ * @author Richard van Nieuwenhoven
+ *
+ */
 public class CameraConstands {
 
+    /**
+     * the raw image size stored behind the dummy jpeg.
+     */
     public static final int RAWBLOCKSIZE = 6404097;
 
+    /**
+     * size of the raw image header informations.
+     */
     public static final int HEADERSIZE = 32769;
 
     /**
@@ -38,13 +49,9 @@ public class CameraConstands {
      */
     public static final int HPIXELS = 2592;
 
-    public static final int IMAGE_X_SIZE = CameraConstands.HPIXELS / 2;
-
     /**
      * number of vertical pixels on OV5647 sensor
      */
     public static final int VPIXELS = 1944;
-
-    public static final int IMAGE_Y_SIZE = CameraConstands.VPIXELS / 2;
 
 }

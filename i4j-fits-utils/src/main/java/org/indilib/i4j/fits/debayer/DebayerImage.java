@@ -1,5 +1,24 @@
 package org.indilib.i4j.fits.debayer;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import nom.tam.fits.BasicHDU;
+import nom.tam.fits.Fits;
+import nom.tam.fits.FitsException;
+import nom.tam.fits.FitsFactory;
+import nom.tam.fits.HeaderCard;
+import nom.tam.util.Cursor;
+
+import org.indilib.i4j.fits.StandardFitsHeader;
+
 /*
  * #%L
  * INDI for Java Utilities for the fits image format
@@ -13,16 +32,14 @@ package org.indilib.i4j.fits.debayer;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.*;
 
 /**
  * This class is a refactored class from a JImage plugin. originating:
@@ -33,26 +50,53 @@ import static org.indilib.i4j.fits.debayer.DebayerRowOrder.*;
  */
 public class DebayerImage {
 
-    ImagePixels ip;
+    public static void main(String[] args) throws FileNotFoundException, FitsException, IOException {
+        Fits result = new DebayerImage().decode(new FileInputStream("src/test/resources/raspberry2.fits"), new AverageDebayerAlgorithm());
 
-    private int width;
+        DataOutputStream os = new DataOutputStream(new FileOutputStream("target/result.fits"));
+        result.write(os);
+        os.close();
+    }
 
-    private int height;
+    public Fits decode(InputStream in, DebayerAlgorithm algorithm) throws FitsException, IOException {
 
-    public void run(ImagePixels ip) {
-        RGBImagePixels rgb;
+        Fits fitsImage = new Fits(in);
+        fitsImage.read();
+        Fits colorImage = new Fits();
 
-        DebayerRowOrder row_order = DebayerRowOrder.BGBG;
-        int algorithm = 0;
+        int count = fitsImage.getNumberOfHDUs();
+        for (int index = 0; index < count; index++) {
+            BasicHDU oneImage = fitsImage.getHDU(index);
+            String bayerpat = oneImage.getHeader().getStringValue(StandardFitsHeader.BAYERPAT);
+            int[] axis = oneImage.getAxes();
+            if (axis.length == 2 && bayerpat != null && !bayerpat.trim().isEmpty()) {
+               // DebayerRowOrder row_order = DebayerRowOrder.valueOfFits(bayerpat);
+                DebayerRowOrder row_order = DebayerRowOrder.GRGR;
+                
+                ImagePixels ip = new ImagePixels(axis[1], axis[0]);
+                ip.setPixel(oneImage.getKernel(),oneImage.getHeader().getDoubleValue(StandardFitsHeader.DATAMAX));
+                RGBImagePixels result = algorithm.decode(row_order, ip);
+                
+                ImageIO.write(result.asImage(), "png", new File("target/result.png"));
+                
+                
+                BasicHDU colorHDU = FitsFactory.HDUFactory(result.getColors(oneImage.getBitPix()));
+                colorImage.addHDU(colorHDU);
+                colorHDU.getHeader().setNaxes(3);
+                colorHDU.getHeader().setNaxis(3, 3);
+                Cursor iter = oneImage.getHeader().iterator();
+                while (iter.hasNext()) {
+                    HeaderCard headerCard = (HeaderCard) iter.next();
+                    if (headerCard.getKey().equals(StandardFitsHeader.BAYERPAT) || headerCard.getKey().equals(StandardFitsHeader.NAXIS)) {
+                        // ignore
+                    } else {
+                        colorHDU.getHeader().addLine(headerCard);
+                    }
+                }
+            }
+        }
 
-        if (algorithm == 0)
-            rgb = new ReplicateDebayerAlgorithm().decode(row_order, ip);
-        else if (algorithm == 1)
-            rgb = new AverageDebayerAlgorithm().decode(row_order, ip);
-        else if (algorithm == 2)
-            rgb = new SmoothDebayerAlgorithm().decode(row_order, ip);
-        else if (algorithm == 3)
-            rgb = new AdaptiveDebayerAlgorithm().decode(row_order, ip);
+        return colorImage;
 
     }
 }

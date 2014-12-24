@@ -237,6 +237,13 @@ public class RaspberryCamera extends INDICCDDriver {
         return true;
     }
 
+    /**
+     * convert the 10 bit raw raspberry image to a CCD image of shorts.
+     * 
+     * @param capturedImage
+     *            the raw raspberry image.
+     * @return the converted ccd image.
+     */
     protected INDICCDImage convertRawImageToINDIImage(RawImage capturedImage) {
         INDICCDImage newCcdImage = INDICCDImage.createImage(CameraConstands.VPIXELS, CameraConstands.HPIXELS, 10, ImageType.RAW);
         try {
@@ -249,7 +256,6 @@ public class RaspberryCamera extends INDICCDDriver {
             }
             newCcdImage.iteratorComplete(iterator);
             newCcdImage.getExtraFitsHeaders().putAll(capturedImage.getFitsAttributes());
-
         } catch (IOException e) {
             LOG.error("image incomplete because of exception", e);
         }
@@ -258,6 +264,9 @@ public class RaspberryCamera extends INDICCDDriver {
 
     @Override
     public boolean updateCCDFrameType(CcdFrame frameType) {
+        if (frameType == CcdFrame.TRI_COLOR_FRAME) {
+            return false;
+        }
         // ready for all frame types
         return true;
     }

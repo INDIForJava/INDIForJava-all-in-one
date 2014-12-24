@@ -38,7 +38,7 @@ class ReplicateDebayerAlgorithm implements DebayerAlgorithm {
         int width = ip.getWidth();
         int height = ip.getHeight();
         // algorithm
-        int one = 0;
+        double one = 0;
         RGBImagePixels rgb = new RGBImagePixels();
         ImagePixels r = new ImagePixels(width, height);
         ImagePixels g = new ImagePixels(width, height);
