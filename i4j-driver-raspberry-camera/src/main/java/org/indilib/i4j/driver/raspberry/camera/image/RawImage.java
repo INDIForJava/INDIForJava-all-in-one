@@ -166,7 +166,8 @@ public class RawImage {
         result.put("PI-AV", apertureValue);
         result.put("PI-BV", brightnessValue);
         result.put("PI-MAV", maxApertureValue);
-        result.put(StandardFitsHeader.BAYERPAT, "BGGR");
+        // BGGR states the doku reality proves different..
+        result.put(StandardFitsHeader.BAYERPAT, "GRBG");
         return result;
     }
 }

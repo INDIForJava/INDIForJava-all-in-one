@@ -22,12 +22,12 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.BGBG;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GBGB;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GRGR;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.RGRG;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.BGGR;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GBGR;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GRBG;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.RGGB;
 
-class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
+public class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
 
     @Override
     public String getName() {
@@ -70,7 +70,7 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
         ImagePixels b = new ImagePixels(width, height);
         // Short[] pixels = ip.getPixels();
 
-        if (row_order == RGRG || row_order == BGBG) {
+        if (row_order == RGGB || row_order == BGGR) {
             // Solve for green pixels first
             for (int y = 0; y < height; y += 2) {
                 for (int x = 1; x < width; x += 2) {
@@ -90,22 +90,22 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     W = Math.abs(R1 - R5) * 2 + Math.abs(G1 - G2);
 
                     if (N < S && N < E && N < W) {
-                        g.putPixel(x + 1, y,  ((G4 * 3 + R5 + G3 - R4) / 4));
+                        g.putPixel(x + 1, y, ((G4 * 3 + R5 + G3 - R4) / 4));
                     }
 
                     else if (S < N && S < E && S < W) {
-                        g.putPixel(x + 1, y,  ((G3 * 3 + R5 + G4 - R3) / 4));
+                        g.putPixel(x + 1, y, ((G3 * 3 + R5 + G4 - R3) / 4));
                     }
 
                     else if (W < N && W < E && W < S) {
-                        g.putPixel(x + 1, y,  ((G1 * 3 + R5 + G2 - R1) / 4));
+                        g.putPixel(x + 1, y, ((G1 * 3 + R5 + G2 - R1) / 4));
                     }
 
                     else if (E < N && E < S && E < W) {
                         g.putPixel(x + 1, y, ((G2 * 3 + R5 + G1 - R2) / 4));
                     }
 
-                    g.putPixel(x, y,  G1);
+                    g.putPixel(x, y, G1);
 
                     if (y == 0)
                         g.putPixel(x + 1, y, ((G1 + G2 + G3) / 3));
@@ -134,24 +134,24 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     W = Math.abs(R1 - R5) * 2 + Math.abs(G1 - G2);
 
                     if (N < S && N < E && N < W) {
-                        g.putPixel(x + 1, y,  ((G4 * 3 + R5 + G3 - R4) / 4));
+                        g.putPixel(x + 1, y, ((G4 * 3 + R5 + G3 - R4) / 4));
                     }
 
                     else if (S < N && S < E && S < W) {
-                        g.putPixel(x + 1, y,  ((G3 * 3 + R5 + G4 - R3) / 4));
+                        g.putPixel(x + 1, y, ((G3 * 3 + R5 + G4 - R3) / 4));
                     }
 
                     else if (W < N && W < E && W < S) {
-                        g.putPixel(x + 1, y,  ((G1 * 3 + R5 + G2 - R1) / 4));
+                        g.putPixel(x + 1, y, ((G1 * 3 + R5 + G2 - R1) / 4));
                     }
 
                     else if (E < N && E < S && E < W) {
-                        g.putPixel(x + 1, y,  ((G2 * 3 + R5 + G1 - R2) / 4));
+                        g.putPixel(x + 1, y, ((G2 * 3 + R5 + G1 - R2) / 4));
                     }
 
-                    g.putPixel(x, y,  G1);
+                    g.putPixel(x, y, G1);
                     if (x == 0)
-                        g.putPixel(x + 1, y,  ((G1 + G2 + G3) / 3));
+                        g.putPixel(x + 1, y, ((G1 + G2 + G3) / 3));
                     else
                         g.putPixel(x + 1, y, ((G1 + G2 + G3 + G4) / 4));
                 }
@@ -181,10 +181,10 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     if (G4 == 0)
                         G4 = 1;
 
-                    b.putPixel(x, y,  (B1));
-                    b.putPixel(x + 1, y,  ((G5 / 2 * ((B1 / G1) + (B2 / G2)))));
-                    b.putPixel(x, y + 1,  ((G6 / 2 * ((B1 / G1) + (B3 / G3)))));
-                    b.putPixel(x + 1, y + 1,  ((G9 / 4 * ((B1 / G1) + (B3 / G3) + (B2 / G2) + (B4 / G4)))));
+                    b.putPixel(x, y, (B1));
+                    b.putPixel(x + 1, y, ((G5 / 2 * ((B1 / G1) + (B2 / G2)))));
+                    b.putPixel(x, y + 1, ((G6 / 2 * ((B1 / G1) + (B3 / G3)))));
+                    b.putPixel(x + 1, y + 1, ((G9 / 4 * ((B1 / G1) + (B3 / G3) + (B2 / G2) + (B4 / G4)))));
 
                 }
             }
@@ -211,25 +211,25 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     if (G4 == 0)
                         G4 = 1;
 
-                    r.putPixel(x, y,  (R1));
-                    r.putPixel(x + 1, y,  ((G5 / 2 * ((R1 / G1) + (R2 / G2)))));
-                    r.putPixel(x, y + 1,  ((G6 / 2 * ((R1 / G1) + (R3 / G3)))));
-                    r.putPixel(x + 1, y + 1,  ((G9 / 4 * ((R1 / G1) + (R3 / G3) + (R2 / G2) + (R4 / G4)))));
+                    r.putPixel(x, y, (R1));
+                    r.putPixel(x + 1, y, ((G5 / 2 * ((R1 / G1) + (R2 / G2)))));
+                    r.putPixel(x, y + 1, ((G6 / 2 * ((R1 / G1) + (R3 / G3)))));
+                    r.putPixel(x + 1, y + 1, ((G9 / 4 * ((R1 / G1) + (R3 / G3) + (R2 / G2) + (R4 / G4)))));
                 }
             }
 
-            if (row_order == RGRG) {
+            if (row_order == RGGB) {
                 rgb.setRed(b);
                 rgb.setGreen(g);
                 rgb.setBlue(r);
-            } else if (row_order == BGBG) {
+            } else if (row_order == BGGR) {
                 rgb.setRed(r);
                 rgb.setGreen(g);
                 rgb.setBlue(b);
             }
         }
 
-        else if (row_order == GRGR || row_order == GBGB) {
+        else if (row_order == GRBG || row_order == GBGR) {
 
             for (int y = 0; y < height; y += 2) {
                 for (int x = 0; x < width; x += 2) {
@@ -249,28 +249,28 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     W = Math.abs(R1 - R5) * 2 + Math.abs(G1 - G2);
 
                     if (N < S && N < E && N < W) {
-                        g.putPixel(x + 1, y,  ((G4 * 3 + R5 + G3 - R4) / 4));
+                        g.putPixel(x + 1, y, ((G4 * 3 + R5 + G3 - R4) / 4));
                     }
 
                     else if (S < N && S < E && S < W) {
-                        g.putPixel(x + 1, y,  ((G3 * 3 + R5 + G4 - R3) / 4));
+                        g.putPixel(x + 1, y, ((G3 * 3 + R5 + G4 - R3) / 4));
                     }
 
                     else if (W < N && W < E && W < S) {
-                        g.putPixel(x + 1, y,  ((G1 * 3 + R5 + G2 - R1) / 4));
+                        g.putPixel(x + 1, y, ((G1 * 3 + R5 + G2 - R1) / 4));
                     }
 
                     else if (E < N && E < S && E < W) {
-                        g.putPixel(x + 1, y,  ((G2 * 3 + R5 + G1 - R2) / 4));
+                        g.putPixel(x + 1, y, ((G2 * 3 + R5 + G1 - R2) / 4));
                     }
 
-                    g.putPixel(x, y,  G1);
+                    g.putPixel(x, y, G1);
                     if (y == 0)
-                        g.putPixel(x + 1, y,  ((G1 + G2 + G3) / 3));
+                        g.putPixel(x + 1, y, ((G1 + G2 + G3) / 3));
                     else
-                        g.putPixel(x + 1, y,  ((G1 + G2 + G3 + G4) / 4));
+                        g.putPixel(x + 1, y, ((G1 + G2 + G3 + G4) / 4));
                     if (x == 1)
-                        g.putPixel(x - 1, y,  ((G1 + G4 + ip.getPixel(x - 1, y + 1)) / 3));
+                        g.putPixel(x - 1, y, ((G1 + G4 + ip.getPixel(x - 1, y + 1)) / 3));
                 }
             }
 
@@ -292,30 +292,30 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     W = Math.abs(R1 - R5) * 2 + Math.abs(G1 - G2);
 
                     if (N < S && N < E && N < W) {
-                        g.putPixel(x + 1, y,  ((G4 * 3 + R5 + G3 - R4) / 4));
+                        g.putPixel(x + 1, y, ((G4 * 3 + R5 + G3 - R4) / 4));
                     }
 
                     else if (S < N && S < E && S < W) {
-                        g.putPixel(x + 1, y,  ((G3 * 3 + R5 + G4 - R3) / 4));
+                        g.putPixel(x + 1, y, ((G3 * 3 + R5 + G4 - R3) / 4));
                     }
 
                     else if (W < N && W < E && W < S) {
-                        g.putPixel(x + 1, y,  ((G1 * 3 + R5 + G2 - R1) / 4));
+                        g.putPixel(x + 1, y, ((G1 * 3 + R5 + G2 - R1) / 4));
                     }
 
                     else if (E < N && E < S && E < W) {
-                        g.putPixel(x + 1, y,  ((G2 * 3 + R5 + G1 - R2) / 4));
+                        g.putPixel(x + 1, y, ((G2 * 3 + R5 + G1 - R2) / 4));
                     }
 
-                    g.putPixel(x, y,  G1);
+                    g.putPixel(x, y, G1);
                     if (x == 0)
-                        g.putPixel(x + 1, y,  ((G1 + G2 + G3) / 3));
+                        g.putPixel(x + 1, y, ((G1 + G2 + G3) / 3));
                     else
-                        g.putPixel(x + 1, y,  ((G1 + G2 + G3 + G4) / 4));
+                        g.putPixel(x + 1, y, ((G1 + G2 + G3 + G4) / 4));
                 }
             }
 
-            g.putPixel(0, 0,  ((ip.getPixel(0, 1) + ip.getPixel(1, 0)) / 2));
+            g.putPixel(0, 0, ((ip.getPixel(0, 1) + ip.getPixel(1, 0)) / 2));
 
             for (int y = 1; y < height; y += 2) {
                 for (int x = 0; x < width; x += 2) {
@@ -339,10 +339,10 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     if (G4 == 0)
                         G4 = 1;
 
-                    b.putPixel(x, y,  (B1));
-                    b.putPixel(x + 1, y,  ((G5 / 2 * ((B1 / G1) + (B2 / G2)))));
-                    b.putPixel(x, y + 1,  ((G6 / 2 * ((B1 / G1) + (B3 / G3)))));
-                    b.putPixel(x + 1, y + 1,  ((G9 / 4 * ((B1 / G1) + (B3 / G3) + (B2 / G2) + (B4 / G4)))));
+                    b.putPixel(x, y, (B1));
+                    b.putPixel(x + 1, y, ((G5 / 2 * ((B1 / G1) + (B2 / G2)))));
+                    b.putPixel(x, y + 1, ((G6 / 2 * ((B1 / G1) + (B3 / G3)))));
+                    b.putPixel(x + 1, y + 1, ((G9 / 4 * ((B1 / G1) + (B3 / G3) + (B2 / G2) + (B4 / G4)))));
 
                 }
             }
@@ -369,18 +369,18 @@ class AdaptiveDebayerAlgorithm implements DebayerAlgorithm {
                     if (G4 == 0)
                         G4 = 1;
 
-                    r.putPixel(x, y,  (R1));
-                    r.putPixel(x + 1, y,  ((G5 / 2 * ((R1 / G1) + (R2 / G2)))));
-                    r.putPixel(x, y + 1,  ((G6 / 2 * ((R1 / G1) + (R3 / G3)))));
-                    r.putPixel(x + 1, y + 1,  ((G9 / 4 * ((R1 / G1) + (R3 / G3) + (R2 / G2) + (R4 / G4)))));
+                    r.putPixel(x, y, (R1));
+                    r.putPixel(x + 1, y, ((G5 / 2 * ((R1 / G1) + (R2 / G2)))));
+                    r.putPixel(x, y + 1, ((G6 / 2 * ((R1 / G1) + (R3 / G3)))));
+                    r.putPixel(x + 1, y + 1, ((G9 / 4 * ((R1 / G1) + (R3 / G3) + (R2 / G2) + (R4 / G4)))));
                 }
             }
 
-            if (row_order == GRGR) {
+            if (row_order == GRBG) {
                 rgb.setRed(b);
                 rgb.setGreen(g);
                 rgb.setBlue(r);
-            } else if (row_order == GBGB) {
+            } else if (row_order == GBGR) {
                 rgb.setRed(r);
                 rgb.setGreen(g);
                 rgb.setBlue(b);

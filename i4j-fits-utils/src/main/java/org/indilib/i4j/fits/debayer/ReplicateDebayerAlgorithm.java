@@ -22,10 +22,10 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.BGBG;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GBGB;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GRGR;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.RGRG;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.BGGR;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GBGR;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GRBG;
+import static org.indilib.i4j.fits.debayer.DebayerRowOrder.RGGB;
 
 class ReplicateDebayerAlgorithm implements DebayerAlgorithm {
 
@@ -45,7 +45,7 @@ class ReplicateDebayerAlgorithm implements DebayerAlgorithm {
         ImagePixels b = new ImagePixels(width, height);
         // Short[] pixels = ip.getPixels();
 
-        if (row_order == RGRG || row_order == BGBG) {
+        if (row_order == RGGB || row_order == BGGR) {
             for (int y = 0; y < height; y += 2) {
                 for (int x = 0; x < width; x += 2) {
                     one = ip.getPixel(x, y);
@@ -82,18 +82,18 @@ class ReplicateDebayerAlgorithm implements DebayerAlgorithm {
                 }
             }
 
-            if (row_order == RGRG) {
+            if (row_order == RGGB) {
                 rgb.setRed(b);
                 rgb.setGreen(g);
                 rgb.setBlue(r);
-            } else if (row_order == BGBG) {
+            } else if (row_order == BGGR) {
                 rgb.setRed(r);
                 rgb.setGreen(g);
                 rgb.setBlue(b);
             }
         }
 
-        else if (row_order == GRGR || row_order == GBGB) {
+        else if (row_order == GRBG || row_order == GBGR) {
             for (int y = 1; y < height; y += 2) {
                 for (int x = 0; x < width; x += 2) {
                     one = ip.getPixel(x, y);
@@ -126,11 +126,11 @@ class ReplicateDebayerAlgorithm implements DebayerAlgorithm {
                     g.putPixel(x + 1, y, one);
                 }
             }
-            if (row_order == GRGR) {
+            if (row_order == GRBG) {
                 rgb.setRed(b);
                 rgb.setGreen(g);
                 rgb.setBlue(r);
-            } else if (row_order == GBGB) {
+            } else if (row_order == GBGR) {
                 rgb.setRed(r);
                 rgb.setGreen(g);
                 rgb.setBlue(b);

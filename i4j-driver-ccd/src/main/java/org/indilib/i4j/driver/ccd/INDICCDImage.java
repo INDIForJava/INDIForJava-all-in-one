@@ -22,6 +22,16 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
+import static org.indilib.i4j.fits.StandardFitsHeader.BITPIX;
+import static org.indilib.i4j.fits.StandardFitsHeader.DATAMAX;
+import static org.indilib.i4j.fits.StandardFitsHeader.DATAMIN;
+import static org.indilib.i4j.fits.StandardFitsHeader.HISTORY;
+import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS;
+import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS1;
+import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS2;
+import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS3;
+import static org.indilib.i4j.fits.StandardFitsHeader.SIMPLE;
+
 import java.io.DataOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +42,6 @@ import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
 import nom.tam.fits.FitsFactory;
 import nom.tam.fits.HeaderCardException;
-import static org.indilib.i4j.fits.StandardFitsHeader.*;
 
 /**
  * This class represends an captured ccd images. it will handle any needed
@@ -43,6 +52,11 @@ import static org.indilib.i4j.fits.StandardFitsHeader.*;
  * @author Richard van Nieuwenhoven
  */
 public abstract class INDICCDImage {
+
+    /**
+     * the maximum length of a fits header card.
+     */
+    private static final int MAX_FITS_HEADERCARD_VALUE_LENGTH = 70;
 
     /**
      * axis value for the third layer.
@@ -313,8 +327,6 @@ public abstract class INDICCDImage {
          *            the width of the image
          * @param height
          *            the height of the image
-         * @param bpp
-         *            the bits per pixel of the image.
          * @param type
          *            type of the image.
          */
@@ -395,8 +407,6 @@ public abstract class INDICCDImage {
          *            the width of the image
          * @param height
          *            the height of the image
-         * @param bpp
-         *            the bits per pixel of the image.
          * @param type
          *            the type of the image.
          */
@@ -476,8 +486,6 @@ public abstract class INDICCDImage {
          *            the width of the image
          * @param height
          *            the height of the image
-         * @param bpp
-         *            the bits per pixel of the image.
          * @param type
          *            type of the image.
          */
@@ -623,10 +631,11 @@ public abstract class INDICCDImage {
                     imageFits.addValue(header.getKey(), ((Integer) header.getValue()).intValue(), "");
                 } else if (header.getValue() != null) {
                     String stringValue = header.getValue().toString();
-                    if (stringValue.length() > 70) {
-
+                    if (stringValue.length() > MAX_FITS_HEADERCARD_VALUE_LENGTH) {
+                        imageFits.addValue(header.getKey(), stringValue.substring(0, MAX_FITS_HEADERCARD_VALUE_LENGTH), stringValue);
+                    } else {
+                        imageFits.addValue(header.getKey(), stringValue, "");
                     }
-                    imageFits.addValue(header.getKey(), stringValue, "");
                 }
             }
         }

@@ -251,8 +251,7 @@ public class RaspberryCamera extends INDICCDDriver {
             PixelIterator iterator = newCcdImage.iteratePixel();
             ByteArrayInputStream inData = new ByteArrayInputStream(capturedImage.getRawData());
             for (int y = 0; y < CameraConstands.VPIXELS; y++) {
-                row.read(inData);
-                row.writeTo(iterator);
+                row.copy10BitPixelRowToIterator(inData, iterator);
             }
             newCcdImage.iteratorComplete(iterator);
             newCcdImage.getExtraFitsHeaders().putAll(capturedImage.getFitsAttributes());

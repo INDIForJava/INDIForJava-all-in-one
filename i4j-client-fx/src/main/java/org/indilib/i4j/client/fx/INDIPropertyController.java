@@ -22,9 +22,6 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;

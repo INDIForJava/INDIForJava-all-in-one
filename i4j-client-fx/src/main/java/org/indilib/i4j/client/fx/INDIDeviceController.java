@@ -22,10 +22,8 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.scene.Parent;

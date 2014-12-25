@@ -95,8 +95,9 @@ public class INDIClient extends Application implements INDIServerConnectionListe
     public void newDevice(INDIServerConnection connection, INDIDevice device) {
         try {
             Tab tab = ((INDIFxAccess) device.getDefaultUIComponent()).getGui(Tab.class);
+            device.blobsEnableAlso();
             devices.fx.getTabs().add(tab);
-        } catch (INDIException e) {
+        } catch (Exception e) {
             throw new RuntimeException("?", e);
         }
     }

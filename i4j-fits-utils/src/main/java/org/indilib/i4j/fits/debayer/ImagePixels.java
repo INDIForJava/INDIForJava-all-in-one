@@ -22,7 +22,7 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
-class ImagePixels {
+public class ImagePixels {
 
     private final double[] pixel;
 

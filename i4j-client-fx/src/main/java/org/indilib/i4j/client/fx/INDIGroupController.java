@@ -22,16 +22,16 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
-import org.indilib.i4j.INDIException;
-import org.indilib.i4j.client.INDIDevice;
-import org.indilib.i4j.client.INDIProperty;
-import org.indilib.i4j.client.INDIPropertyListener;
-
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.client.INDIDevice;
+import org.indilib.i4j.client.INDIProperty;
+import org.indilib.i4j.client.INDIPropertyListener;
 
 public class INDIGroupController extends INDIController<String> {
 

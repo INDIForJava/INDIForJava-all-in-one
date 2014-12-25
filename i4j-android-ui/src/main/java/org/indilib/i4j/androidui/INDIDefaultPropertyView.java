@@ -30,7 +30,7 @@ import org.indilib.i4j.client.INDIValueException;
 
 /**
  * An class representing a View of a Property.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjio at zerjio.com]
  */
 public class INDIDefaultPropertyView extends INDIPropertyView {

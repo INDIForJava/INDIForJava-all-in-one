@@ -22,15 +22,15 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
-enum DebayerRowOrder {
-    RGRG,
-    BGBG,
-    GRGR,
-    GBGB;
+public enum DebayerRowOrder {
+    RGGB,
+    BGGR,
+    GRBG,
+    GBGR;
 
     public static DebayerRowOrder valueOfFits(String bayerpat) {
         for (DebayerRowOrder value : values()) {
-            if (value.name().startsWith(bayerpat.substring(0,2))) {
+            if (value.name().startsWith(bayerpat.substring(0, 2))) {
                 return value;
             }
         }

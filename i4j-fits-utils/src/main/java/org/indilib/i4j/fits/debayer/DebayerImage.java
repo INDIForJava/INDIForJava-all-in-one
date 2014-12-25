@@ -51,7 +51,7 @@ import org.indilib.i4j.fits.StandardFitsHeader;
 public class DebayerImage {
 
     public static void main(String[] args) throws FileNotFoundException, FitsException, IOException {
-        Fits result = new DebayerImage().decode(new FileInputStream("src/test/resources/raspberry2.fits"), new AverageDebayerAlgorithm());
+        Fits result = new DebayerImage().decode(new FileInputStream("/home/nir/Arbeitsfläche/test2.fits"), new AverageDebayerAlgorithm());
 
         DataOutputStream os = new DataOutputStream(new FileOutputStream("target/result.fits"));
         result.write(os);
@@ -70,16 +70,16 @@ public class DebayerImage {
             String bayerpat = oneImage.getHeader().getStringValue(StandardFitsHeader.BAYERPAT);
             int[] axis = oneImage.getAxes();
             if (axis.length == 2 && bayerpat != null && !bayerpat.trim().isEmpty()) {
-               // DebayerRowOrder row_order = DebayerRowOrder.valueOfFits(bayerpat);
-                DebayerRowOrder row_order = DebayerRowOrder.GRGR;
-                
+                // DebayerRowOrder row_order =
+                // DebayerRowOrder.valueOfFits(bayerpat);
+                DebayerRowOrder row_order = DebayerRowOrder.GRBG;
+
                 ImagePixels ip = new ImagePixels(axis[1], axis[0]);
-                ip.setPixel(oneImage.getKernel(),oneImage.getHeader().getDoubleValue(StandardFitsHeader.DATAMAX));
+                ip.setPixel(oneImage.getKernel(), oneImage.getHeader().getDoubleValue(StandardFitsHeader.DATAMAX));
                 RGBImagePixels result = algorithm.decode(row_order, ip);
-                
+
                 ImageIO.write(result.asImage(), "png", new File("target/result.png"));
-                
-                
+
                 BasicHDU colorHDU = FitsFactory.HDUFactory(result.getColors(oneImage.getBitPix()));
                 colorImage.addHDU(colorHDU);
                 colorHDU.getHeader().setNaxes(3);

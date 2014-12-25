@@ -25,7 +25,6 @@ package org.indilib.i4j.client.fx;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDIElementListener;

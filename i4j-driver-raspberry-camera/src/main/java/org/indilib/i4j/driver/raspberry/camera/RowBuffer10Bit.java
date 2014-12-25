@@ -34,7 +34,6 @@ import org.indilib.i4j.driver.ccd.INDICCDImage.PixelIterator;
  * that contains the low level two bis per byte preceeding.
  * 
  * @author Richard van Nieuwenhoven
- *
  */
 public final class RowBuffer10Bit {
 
@@ -44,19 +43,15 @@ public final class RowBuffer10Bit {
     private final byte[] buffer = new byte[CameraConstands.ROWSIZE + 1];
 
     /**
-     * the integer pixel values.
-     */
-    protected final int[] pixels = new int[CameraConstands.HPIXELS];
-
-    /**
      * read one row from the raw image.
      * 
      * @param from
      *            the stream of the raw image.
+     * @param iterator
      * @throws IOException
      *             if something went wrong.
      */
-    public void read(InputStream from) throws IOException {
+    public void copy10BitPixelRowToIterator(InputStream from, PixelIterator iterator) throws IOException {
         from.read(this.buffer, 0, CameraConstands.ROWSIZE);
         int pix = 0;
         int bindex = 0;
@@ -70,23 +65,11 @@ public final class RowBuffer10Bit {
             int byte3 = this.buffer[bindex++] & 0xFF;
             int split = this.buffer[bindex++] & 0xFF;
 
-            this.pixels[pix++] = byte0 << 8 | (split & 0b11000000) << 0;
-            this.pixels[pix++] = byte1 << 8 | (split & 0b00110000) << 2;
-            this.pixels[pix++] = byte2 << 8 | (split & 0b00001100) << 4;
-            this.pixels[pix++] = byte3 << 8 | (split & 0b00000011) << 6;
+            iterator.setPixel(byte0 << 8 | (split & 0b11000000) << 0);
+            iterator.setPixel(byte1 << 8 | (split & 0b00110000) << 2);
+            iterator.setPixel(byte2 << 8 | (split & 0b00001100) << 4);
+            iterator.setPixel(byte3 << 8 | (split & 0b00000011) << 6);
+            pix += 4;
         }
     }
-
-    /**
-     * write the pixels to the pixel iterator.
-     * 
-     * @param iterator
-     *            the iterator to write the pixel to.
-     */
-    public void writeTo(PixelIterator iterator) {
-        for (int x = 0; x < CameraConstands.HPIXELS; x++) {
-            iterator.setPixel(pixels[x]);
-        }
-    }
-
 }

@@ -22,14 +22,10 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import javafx.fxml.FXML;
+import javafx.scene.layout.VBox;
 
 import org.indilib.i4j.client.INDIBLOBProperty;
-
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.VBox;
 
 public class INDIBlobPropertyController extends INDIPropertyController<INDIBLOBProperty> {
 

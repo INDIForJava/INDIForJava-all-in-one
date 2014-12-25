@@ -51,12 +51,14 @@ public class INDIFxViewCreator implements org.indilib.i4j.client.INDIViewCreator
 
     @Override
     public INDIElementListener createBlobElementView(INDIBLOBElement indiblobElement, PropertyPermissions permission) throws INDIException {
-        return null;
+        FxController<Tab, INDIBLOBElement, INDIBlobElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxBlobElement();
+        return newINDIFxNumberElement.initializeFx(indiblobElement);
     }
 
     @Override
     public INDIElementListener createLightElementView(INDILightElement indiLightElement, PropertyPermissions permission) throws INDIException {
-        return null;
+        FxController<Tab, INDILightElement, INDILightElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxLightElement();
+        return newINDIFxNumberElement.initializeFx(indiLightElement);
     }
 
     @Override
@@ -103,7 +105,8 @@ public class INDIFxViewCreator implements org.indilib.i4j.client.INDIViewCreator
 
     @Override
     public INDIPropertyListener createLightPropertyView(INDILightProperty indiProperty) throws INDIException {
-        return null;
+        FxController<Tab, INDILightProperty, INDILightPropertyController> newFx = INDIFxFactory.newINDIFxLightProperty();
+        return newFx.initializeFx(indiProperty);
     }
 
     @Override

@@ -24,7 +24,6 @@ package org.indilib.i4j.client.fx;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
 import org.indilib.i4j.client.INDIElement;

@@ -25,7 +25,7 @@ import java.awt.image.BufferedImage;
  * #L%
  */
 
-class RGBImagePixels {
+public class RGBImagePixels {
 
     private ImagePixels red;
 

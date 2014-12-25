@@ -25,7 +25,6 @@ package org.indilib.i4j.driver.raspberry.camera;
  * some constands for tha raspberry pi camera.
  * 
  * @author Richard van Nieuwenhoven
- *
  */
 public class CameraConstands {
 

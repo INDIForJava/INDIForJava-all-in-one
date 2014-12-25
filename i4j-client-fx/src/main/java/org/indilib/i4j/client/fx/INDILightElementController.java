@@ -22,26 +22,19 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 
-public class INDILightElementController implements Initializable {
+import org.indilib.i4j.client.INDILightElement;
+
+public class INDILightElementController extends INDIElementController<INDILightElement> {
 
     @FXML
     private Label label;
 
     @FXML
     private ImageView value;
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        label.setText("hallo");
-    }
 
     public void click() {
         value.getStyleClass().remove("icIdle");

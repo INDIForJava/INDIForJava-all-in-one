@@ -22,27 +22,31 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 
-public class INDIBlobElementController implements Initializable {
+import javax.imageio.ImageIO;
+
+import nom.tam.fits.Fits;
+
+import org.indilib.i4j.INDIBLOBValue;
+import org.indilib.i4j.client.INDIBLOBElement;
+import org.indilib.i4j.client.INDIElement;
+import org.indilib.i4j.fits.FitsImage;
+
+public class INDIBlobElementController extends INDIElementController<INDIBLOBElement> {
 
     @FXML
     Label label;
 
     @FXML
     ImageView image;
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        label.setText("hallo");
-        label.getParent().layout();
-    }
 
     @FXML
     private void show() {
@@ -53,5 +57,30 @@ public class INDIBlobElementController implements Initializable {
     @FXML
     private void save() {
 
+    }
+
+    @Override
+    public void elementChanged(INDIElement element) {
+        super.elementChanged(element);
+        INDIBLOBValue value = ((INDIBLOBElement) element).getValue();
+
+        BufferedImage bufferedImage = null;
+        if (value.getFormat().toLowerCase().endsWith("fits")) {
+            Fits fitsImage = FitsImage.asImage(value.getBlobData());
+            if (fitsImage != null) {
+                bufferedImage = FitsImage.asJavaImage(fitsImage);
+            }
+        } else {
+            try {
+                bufferedImage = ImageIO.read(new ByteArrayInputStream(value.getBlobData()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (bufferedImage != null) {
+            image.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+        } else {
+            image.setImage(null);
+        }
     }
 }
