@@ -30,84 +30,83 @@ import java.util.Map;
 
 import org.apache.sanselan.formats.tiff.TiffField;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
-import org.indilib.i4j.fits.StandardFitsHeader;
 
+/**
+ * This class represents a raw image of the raspberry pi camera together with
+ * the recorded exif informations.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class RawImage {
 
-    private final SimpleDateFormat EXIF_DATE_FORMAT = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+    /**
+     * date format for exif dates.
+     */
+    private final SimpleDateFormat exifDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 
-    public String getInstrument() {
-        return instrument;
-    }
+    /**
+     * the instrument that took the image. ;-) cam of cource.
+     */
+    private String instrument = "";
 
-    public void setInstrument(String instrument) {
-        this.instrument = instrument;
-    }
+    /**
+     * date time when the picture was taken..
+     */
+    private double expTime = -1d;
 
-    public double getExpTime() {
-        return expTime;
-    }
+    /**
+     * the exposure time used to take the picure.
+     */
+    private double shutterSpeedValue = -1d;
 
-    public void setExpTime(double expTime) {
-        this.expTime = expTime;
-    }
+    /**
+     * the eperture used to take the picure.
+     */
+    private double apertureValue = -1d;
 
-    public double getShutterSpeedValue() {
-        return shutterSpeedValue;
-    }
+    /**
+     * the brightness used to take the picure.
+     */
+    private double brightnessValue = -1d;
 
-    public void setShutterSpeedValue(double shutterSpeedValue) {
-        this.shutterSpeedValue = shutterSpeedValue;
-    }
+    /**
+     * the max aperture used to take the picure.
+     */
+    private double maxApertureValue = -1d;
 
-    public double getApertureValue() {
-        return apertureValue;
-    }
+    /**
+     * the iso used to take the picure.
+     */
+    private Integer iso = -1;
 
-    public void setApertureValue(double apertureValue) {
-        this.apertureValue = apertureValue;
-    }
+    /**
+     * date time when the picture was taken..
+     */
+    private Date observeDat = new Date();
 
-    public double getBrightnessValue() {
-        return brightnessValue;
-    }
+    /**
+     * the raw image data.
+     */
+    private byte[] rawData;
 
-    public void setBrightnessValue(double brightnessValue) {
-        this.brightnessValue = brightnessValue;
-    }
-
-    public double getMaxApertureValue() {
-        return maxApertureValue;
-    }
-
-    public void setMaxApertureValue(double maxApertureValue) {
-        this.maxApertureValue = maxApertureValue;
-    }
-
-    public Integer getIso() {
-        return iso;
-    }
-
-    public void setIso(Integer iso) {
-        this.iso = iso;
-    }
-
-    public Date getObserveDat() {
-        return observeDat;
-    }
-
-    public void setObserveDat(Date observeDat) {
-        this.observeDat = observeDat;
-    }
-
+    /**
+     * @return the raw image data.
+     */
     public byte[] getRawData() {
         return rawData;
     }
 
-    public void setRawData(byte[] rawData) {
-        this.rawData = rawData;
-    }
-
+    /**
+     * Constructor for the raw image. store the raw data and extract the exif
+     * informations.
+     * 
+     * @param metadata
+     *            the exif data
+     * @param rawData
+     *            the raw image data
+     * @throws Exception
+     *             if something goes worng , not expected.
+     */
     protected RawImage(TiffImageMetadata metadata, byte[] rawData) throws Exception {
         this.rawData = rawData;
         @SuppressWarnings("unchecked")
@@ -124,7 +123,7 @@ public class RawImage {
             } else if ("ISO".equals(tiffField.getTagName())) {
                 iso = tiffField.getIntValue();
             } else if ("Create Date".equals(tiffField.getTagName())) {
-                observeDat = EXIF_DATE_FORMAT.parse(tiffField.getStringValue());
+                observeDat = exifDateFormat.parse(tiffField.getStringValue());
             } else if ("Shutter Speed Value".equals(tiffField.getTagName())) {
                 shutterSpeedValue = tiffField.getDoubleValue();
             } else if ("Aperture Value".equals(tiffField.getTagName())) {
@@ -138,24 +137,9 @@ public class RawImage {
         }
     }
 
-    private String instrument = "";
-
-    private double expTime = -1d;
-
-    private double shutterSpeedValue = -1d;
-
-    private double apertureValue = -1d;
-
-    private double brightnessValue = -1d;
-
-    private double maxApertureValue = -1d;
-
-    private Integer iso = -1;
-
-    private Date observeDat = new Date();
-
-    private byte[] rawData;
-
+    /**
+     * @return the exif data as fits header infos.
+     */
     public Map<String, Object> getFitsAttributes() {
         Map<String, Object> result = new HashMap<>();
         result.put("PI-INSTR", instrument);
@@ -166,8 +150,6 @@ public class RawImage {
         result.put("PI-AV", apertureValue);
         result.put("PI-BV", brightnessValue);
         result.put("PI-MAV", maxApertureValue);
-        // BGGR states the doku reality proves different..
-        result.put(StandardFitsHeader.BAYERPAT, "GRBG");
         return result;
     }
 }

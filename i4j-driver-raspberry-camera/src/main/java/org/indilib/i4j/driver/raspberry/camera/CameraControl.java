@@ -49,23 +49,72 @@ import org.slf4j.LoggerFactory;
 public class CameraControl {
 
     /**
+     * default sleep time between loops. To reduce buzzy waiting impact.
+     */
+    private static final long THREAD_SLEEP_TIME = 100L;
+
+    /**
+     * how many nano second are in a second.
+     */
+    private static final double SECOND_IN_NANO_SECONDS = 1000000d;
+
+    /**
      * The logger to log the messages to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(CameraControl.class);
 
+    /**
+     * indicator value that an option is off.
+     */
     private static final String OPTION_OFF = "_OPTION_IS_OFF_";
+
+    /**
+     * indicator value that an option is on.
+     */
 
     private static final String OPTION_ON = "_OPTION_IS_ON_";
 
+    /**
+     * the raspberry command to take a picture.
+     */
     private static final String COMMAND = "raspistill";
 
+    /**
+     * the arguments for the raspistill command.
+     */
     private final Map<CameraOption, String> arguments = new HashMap<CameraOption, String>();
 
-    private final Map<String, Object> imageAttributes = new HashMap<String, Object>();
-
+    /**
+     * ist this command still running?
+     */
     private boolean stoped = false;
 
-    public void start() {
+    /**
+     * the current captured image.
+     */
+    private RawImage currentImage;
+
+    /**
+     * the error protocolling thread.
+     */
+    private Thread errorThread;
+
+    /**
+     * the image processing thread.
+     */
+    private Thread converterThread;
+
+    /**
+     * the rapstill process started.
+     */
+    private Process process;
+
+    /**
+     * start the thread that reads an processes the captures of rapstill.
+     * 
+     * @return this (builder pattern)
+     */
+    public CameraControl start() {
         new Thread(new Runnable() {
 
             @Override
@@ -80,14 +129,15 @@ public class CameraControl {
                     } else {
                         try {
                             waiting();
-                            Thread.sleep(100L);
+                            Thread.sleep(THREAD_SLEEP_TIME);
                         } catch (InterruptedException e) {
-                            // ignore
+                            LOG.warn("sleep interupted");
                         }
                     }
                 }
             }
         }, "Raspberry pi camera, image reporter").start();
+        return this;
     }
 
     /**
@@ -95,40 +145,80 @@ public class CameraControl {
      * as the image is ready.
      * 
      * @param capturedImage
+     *            the raw image that was captured.
      */
     protected synchronized void imageCaptured(RawImage capturedImage) {
-
     }
 
+    /**
+     * will be called just before the image reporter thread will go to sleep.
+     */
     protected void waiting() {
-
     }
 
+    /**
+     * activate the option of rapstill.
+     * 
+     * @param key
+     *            the option to activate
+     * @return this (builder pattern)
+     */
     public CameraControl addOption(CameraOption key) {
         addOption(key, OPTION_ON);
         return this;
     }
 
+    /**
+     * deactivate the option of rapstill.
+     * 
+     * @param key
+     *            the option to deactivate
+     * @return this (builder pattern)
+     */
     public CameraControl removeOption(CameraOption key) {
         addOption(key, OPTION_OFF);
         return this;
     }
 
-    public CameraControl removeDefaultOption(CameraOption key) {
-        addDefaultOption(key, OPTION_OFF);
-        return this;
-    }
-
+    /**
+     * activate a default option of rapstill. (if a value was already given it
+     * is not changed).
+     * 
+     * @param key
+     *            the option to set
+     * @return this (builder pattern)
+     */
     public CameraControl addDefaultOption(CameraOption key) {
         addDefaultOption(key, OPTION_ON);
         return this;
     }
 
+    /**
+     * activate a option of rapstill.
+     * 
+     * @param key
+     *            the option to set
+     * @param value
+     *            the parameter of the option
+     * @return this (builder pattern)
+     */
     public CameraControl addOption(CameraOption key, String value) {
-        this.arguments.put(key, value);
+        if (value != null && !value.trim().isEmpty()) {
+            this.arguments.put(key, value);
+        }
         return this;
     }
 
+    /**
+     * activate a default option of rapstill. (if a value was already given it
+     * is not changed).
+     * 
+     * @param key
+     *            the option to set
+     * @param value
+     *            the parameter of the option
+     * @return this (builder pattern)
+     */
     public CameraControl addDefaultOption(CameraOption key, String value) {
         if (!this.arguments.containsKey(key)) {
             this.arguments.put(key, value);
@@ -136,12 +226,24 @@ public class CameraControl {
         return this;
     }
 
+    /**
+     * stop the capturing and the connected processes.
+     */
     public synchronized void stop() {
         stoped = true;
         currentImage = null;
         stopCommandProcesses();
     }
 
+    /**
+     * capture a image with the given exporsure. Do it as a loop because the
+     * start up time for the raw imageing with long exposure times is very big.
+     * 
+     * @param shutterSeconds
+     *            the exposure time in seconds.
+     * @throws Exception
+     *             if the command could not be executed.
+     */
     public synchronized void capture(double shutterSeconds) throws Exception {
         addDefaultOption(CameraOption.output, "-");
         addDefaultOption(CameraOption.width, "128");
@@ -154,15 +256,16 @@ public class CameraControl {
         addDefaultOption(CameraOption.awb, "off");
         addDefaultOption(CameraOption.awbgains, "1,1");
         addDefaultOption(CameraOption.ISO, "800");
-        addDefaultOption(CameraOption.shutter, Integer.toString(Double.valueOf(shutterSeconds * 1000000d).intValue()));
+        addDefaultOption(CameraOption.shutter, Integer.toString(Double.valueOf(shutterSeconds * SECOND_IN_NANO_SECONDS).intValue()));
         currentImage = null;
         if (converterThread == null || !converterThread.isAlive()) {
             startCommandProcesses();
         }
     }
 
-    private Process process;
-
+    /**
+     * stop the running rapstill command nicely.
+     */
     private void stopCommandProcesses() {
         if (process != null) {
             int pid = getPidOfProcess();
@@ -175,14 +278,17 @@ public class CameraControl {
             // wait for the threads to end nicely
             while ((errorThread != null && errorThread.isAlive()) || (converterThread != null && converterThread.isAlive())) {
                 try {
-                    Thread.sleep(100L);
+                    Thread.sleep(THREAD_SLEEP_TIME);
                 } catch (InterruptedException e) {
-                    // ignore
+                    LOG.warn("sleep interupted");
                 }
             }
         }
     }
 
+    /**
+     * @return the pid of the rapstill command.
+     */
     private int getPidOfProcess() {
         try {
             Field declaredField = process.getClass().getDeclaredField("pid");
@@ -193,10 +299,12 @@ public class CameraControl {
         }
     }
 
-    private Thread errorThread;
-
-    private Thread converterThread;
-
+    /**
+     * start the rapstill command an the processing threads.
+     * 
+     * @throws IOException
+     *             if something went wrong durring the start, not ecpected.
+     */
     private void startCommandProcesses() throws IOException {
         List<String> command = new ArrayList<String>();
         StringBuffer commandString = new StringBuffer("Command used to capture image: ");
@@ -204,9 +312,9 @@ public class CameraControl {
         commandString.append(CameraControl.COMMAND);
         for (Entry<CameraOption, String> argument : this.arguments.entrySet()) {
             if (argument.getValue() != OPTION_OFF) {
-                command.add(argument.getKey().longArg);
+                command.add(argument.getKey().getLongArg());
                 commandString.append(' ');
-                commandString.append(argument.getKey().longArg);
+                commandString.append(argument.getKey().getLongArg());
                 if (argument.getValue() != OPTION_ON) {
                     command.add(argument.getValue());
                     commandString.append(' ');
@@ -229,11 +337,11 @@ public class CameraControl {
                     while ((line = errorReader.readLine()) != null) {
                         if (line.isEmpty()) {
                             try {
-                                Thread.sleep(100L);
+                                Thread.sleep(THREAD_SLEEP_TIME);
                                 process.exitValue();
                                 return;
                             } catch (Exception x) {
-                                // ok not yet exited
+                                LOG.warn("sleep interupted");
                             }
                         } else {
                             LOG.error(line);
@@ -249,7 +357,7 @@ public class CameraControl {
         converterThread = new Thread(new JpegStreamScanner(new BufferedInputStream(is)) {
 
             @Override
-            protected void rawImage(RawImage rawImage) throws Exception {
+            protected void rawImage(RawImage rawImage) {
                 currentImage = rawImage;
             }
 
@@ -261,10 +369,4 @@ public class CameraControl {
         converterThread.start();
     }
 
-    private RawImage currentImage;
-
-    public CameraControl setAttribute(String name, Object value) {
-        this.imageAttributes.put(name, value);
-        return this;
-    }
 }

@@ -26,7 +26,7 @@ package org.indilib.i4j.driver.raspberry.camera;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class CameraConstands {
+public final class CameraConstands {
 
     /**
      * the raw image size stored behind the dummy jpeg.
@@ -39,18 +39,38 @@ public class CameraConstands {
     public static final int HEADERSIZE = 32769;
 
     /**
-     * number of bytes per row of pixels, including 24 'other' bytes at end
+     * number of bytes per row of pixels, including 24 'other' bytes at end.
      */
     public static final int ROWSIZE = 3264;
 
     /**
-     * number of horizontal pixels on OV5647
+     * number of horizontal pixels on OV5647.
      */
     public static final int HPIXELS = 2592;
 
     /**
-     * number of vertical pixels on OV5647 sensor
+     * number of vertical pixels on OV5647 sensor.
      */
     public static final int VPIXELS = 1944;
 
+    /**
+     * bayer pattern for the OV5647 sensor.
+     */
+    public static final String RASPBERRY_CAM_BAYER_PATTERN = "GRBG";
+
+    /**
+     * bits per pixel for the OV5647 sensor.
+     */
+    public static final int RASPBERRY_CAM_BITS_PER_PIXEL = 10;
+
+    /**
+     * the size of one pixel in microns.
+     */
+    public static final float PIXEL_SIZE = 1.4f;
+
+    /**
+     * private constructor for utility class.
+     */
+    private CameraConstands() {
+    }
 }
