@@ -79,22 +79,22 @@ public abstract class JpegStreamScanner implements Runnable {
     /**
      * marker for a fexible size block.
      */
-    private static final int FLEX_SIZE_MARKER = 0xFFDA;
+    private static final int MARKER_FFDA = 0xFFDA;
 
     /**
      * marker for a fixed size block.
      */
-    private static final int FIXED_SIZE_MARKER = 0xFFD9;
+    private static final int MARKER_FFD9 = 0xFFD9;
 
     /**
      * unexpected marker with length info.
      */
-    private static final int ILLEGAL_MARKER = 0xff00;
+    private static final int MARKER_FF00 = 0xff00;
 
     /**
      * marker for the raw image block.
      */
-    private static final int RAW_IMAGE_DATA_MARKER = 0x4000;
+    private static final int MARKER_4000 = 0x4000;
 
     /**
      * first byte if the raw image marker.
@@ -104,17 +104,17 @@ public abstract class JpegStreamScanner implements Runnable {
     /**
      * first marker that has length information.
      */
-    private static final int FIRST_MARKER_WITH_LENGTH = 0xFFD0;
+    private static final int MARKER_FFD0 = 0xFFD0;
 
     /**
      * marker for the exif block.
      */
-    private static final int EXIF_BLOCK_MARKER = 0xffe1;
+    private static final int MARKER_FFE1 = 0xffe1;
 
     /**
      * another maker with length informations.
      */
-    private static final int SPECIAL_MARKER_WITH_LENGTH = 0xFF01;
+    private static final int MARKER_FF01 = 0xFF01;
 
     /**
      * the size of the marker for the BRCM block with raw data.
@@ -253,15 +253,15 @@ public abstract class JpegStreamScanner implements Runnable {
                 throw new EOFException();
             }
             int baseMarker = (headerBytes[0] & BYTE_MASK) << BITS_IN_BYTE;
-            if (baseMarker == RAW_IMAGE_DATA_MARKER) {
+            if (baseMarker == MARKER_4000) {
                 readRawImageData(in);
                 return;
             }
-            if (baseMarker != ILLEGAL_MARKER) {
+            if (baseMarker != MARKER_FF00) {
                 throw new IllegalArgumentException("basemarker wrong!");
             }
             marker = (baseMarker + (headerBytes[1] & BYTE_MASK) << 0);
-            if (marker == FIXED_SIZE_MARKER) {
+            if (marker == MARKER_FFD9) {
                 return;
             }
             if (hasLength()) {
@@ -272,7 +272,7 @@ public abstract class JpegStreamScanner implements Runnable {
                     readFully(in, data);
                 }
             }
-            if (marker == FLEX_SIZE_MARKER) {
+            if (marker == MARKER_FFDA) {
                 readJpegFlexData(in);
             }
         }
@@ -327,7 +327,7 @@ public abstract class JpegStreamScanner implements Runnable {
             if (!new String(brcmMarker, "UTF-8").equals("@BRCM")) {
                 throw new IllegalArgumentException("raspberry raw marker wrong!");
             }
-            marker = FIXED_SIZE_MARKER;
+            marker = MARKER_FFD9;
             // skip over the header
             skip(in, CameraConstands.HEADERSIZE - brcmMarker.length);
             data = new byte[CameraConstands.RAWBLOCKSIZE - CameraConstands.HEADERSIZE];
@@ -340,7 +340,7 @@ public abstract class JpegStreamScanner implements Runnable {
          * @return true if this block has a length value.
          */
         private boolean hasLength() {
-            if ((marker >= FIRST_MARKER_WITH_LENGTH && marker < FIXED_SIZE_MARKER) || marker == SPECIAL_MARKER_WITH_LENGTH || marker == ILLEGAL_MARKER) {
+            if ((marker >= MARKER_FFD0 && marker < MARKER_FFD9) || marker == MARKER_FF01 || marker == MARKER_FF00) {
                 return false;
             }
             return true;
@@ -392,7 +392,7 @@ public abstract class JpegStreamScanner implements Runnable {
          * @return true if this is the last block.
          */
         protected boolean isLastBlock() {
-            return marker == FIXED_SIZE_MARKER;
+            return marker == MARKER_FFD9;
         }
 
         /**
@@ -406,7 +406,7 @@ public abstract class JpegStreamScanner implements Runnable {
          * @return true if this is the exif block
          */
         protected boolean isExifBlock() {
-            return marker == EXIF_BLOCK_MARKER;
+            return marker == MARKER_FFE1;
         }
     }
 

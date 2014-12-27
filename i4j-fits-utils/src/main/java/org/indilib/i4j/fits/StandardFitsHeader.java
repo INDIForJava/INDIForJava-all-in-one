@@ -28,13 +28,13 @@ package org.indilib.i4j.fits;
  * 
  * @author Richard van Nieuwenhoven
  */
-public class StandardFitsHeader {
+public final class StandardFitsHeader {
 
     /**
      * indicates the processing history of the image. This keyword may be
      * repeated as many times as necessary.
      */
-    public static String HISTORY = "HISTORY";
+    public static final String HISTORY = "HISTORY";
 
     /**
      * The value field shall contain a logical constant with the value T if the
@@ -42,7 +42,7 @@ public class StandardFitsHeader {
      * header and must not appear in extension headers. A value of F signifies
      * that the file does not conform to this standard.
      */
-    public static String SIMPLE = "SIMPLE";
+    public static final String SIMPLE = "SIMPLE";
 
     /**
      * The value field shall contain an integer. The absolute value is used in
@@ -56,14 +56,14 @@ public class StandardFitsHeader {
      * = 64-bit two’s complement binary integer -32 = IEEE single precision
      * floating point -64 = IEEE double precision floating point
      */
-    public static String BITPIX = "BITPIX";
+    public static final String BITPIX = "BITPIX";
 
     /**
      * The value field shall contain a non-negative integer no greater than 999
      * representing the number of axes in the associated data array. A value of
      * zero signifies that no data follow the header in the HDU.
      */
-    public static String NAXIS = "NAXIS";
+    public static final String NAXIS = "NAXIS";
 
     /**
      * The NAXISn keywords must be present for all values n = 1, ..., NAXIS, in
@@ -76,18 +76,18 @@ public class StandardFitsHeader {
      * are non-zero). If NAXIS is equal to 0, there shall not be any NAXISn
      * keywords.
      */
-    public static String NAXIS1 = "NAXIS1";
+    public static final String NAXIS1 = "NAXIS1";
 
     /**
      * 2 axis {@link #NAXIS1} .
      */
-    public static String NAXIS2 = "NAXIS2";
+    public static final String NAXIS2 = "NAXIS2";
 
     /**
      * 3 axis. resent only for color images; value is always 3 (red, green, blue
      * color planes are present in that order). {@link #NAXIS1}
      */
-    public static String NAXIS3 = "NAXIS3";
+    public static final String NAXIS3 = "NAXIS3";
 
     /**
      * The value field shall always contain a floating-point number, regardless
@@ -95,7 +95,7 @@ public class StandardFitsHeader {
      * physical value represented by the array, exclusive of any IEEE special
      * values.
      */
-    public static String DATAMAX = "DATAMAX";
+    public static final String DATAMAX = "DATAMAX";
 
     /**
      * The value field shall always contain a floating-point number, regardless
@@ -103,12 +103,12 @@ public class StandardFitsHeader {
      * value represented by the array (from Eq. 3), exclusive of any IEEE
      * special values.
      */
-    public static String DATAMIN = "DATAMIN";
+    public static final String DATAMIN = "DATAMIN";
 
     /**
      * if present the image has a valid Bayer color pattern.
      */
-    public static String BAYERPAT = "BAYERPAT";
+    public static final String BAYERPAT = "BAYERPAT";
 
     /**
      * The value of DATE-OBS shall be assumed to refer to the start of an
@@ -121,109 +121,109 @@ public class StandardFitsHeader {
      * to the associated spatial origin, namely the geocenter for TCG and the
      * solar-system barycenter for the other two.
      */
-    public static String DATE_OBS = "DATE-OBS";
+    public static final String DATE_OBS = "DATE-OBS";
 
     /**
      * The value field shall contain a character string identifying the
      * telescope used to acquire the data associated with the header.
      */
-    public static String TELESCOP = "TELESCOP";
+    public static final String TELESCOP = "TELESCOP";
 
     /**
      * The value field shall contain a character string identifying the
      * instrument used to acquire the data associated with the header.
      */
-    public static String INSTRUME = "INSTRUME";
+    public static final String INSTRUME = "INSTRUME";
 
     /**
      * The value field shall contain a character string identifying who acquired
      * the data associated with the header.
      */
-    public static String OBSERVER = "OBSERVER";
+    public static final String OBSERVER = "OBSERVER";
 
     /**
      * The value field shall contain a character string giving a name for the
      * object observed.
      */
-    public static String OBJECT = "OBJECT";
+    public static final String OBJECT = "OBJECT";
 
     /**
      * duration of exposure in seconds.
      */
-    public static String EXPTIME = "EXPTIME";
+    public static final String EXPTIME = "EXPTIME";
 
     /**
      * binning factor used on X axis.
      */
-    public static String XBINNING = "XBINNING";
+    public static final String XBINNING = "XBINNING";
 
     /**
      * binning factor used on Y axis.
      */
-    public static String YBINNING = "YBINNING";
+    public static final String YBINNING = "YBINNING";
 
     /**
      * physical X dimension of the sensor's pixels in microns (present only if
      * the information is provided by the camera driver). Includes binning.
      */
-    public static String XPIXSZ = "XPIXSZ";
+    public static final String XPIXSZ = "XPIXSZ";
 
     /**
      * physical Y dimension of the sensor's pixels in microns (present only if
      * the information is provided by the camera driver). Includes binning.
      */
-    public static String YPIXSZ = "YPIXSZ";
+    public static final String YPIXSZ = "YPIXSZ";
 
     /**
      * synonym for {@link #XPIXSZ}.
      */
-    public static String PIXSIZE1 = "PIXSIZE1";
+    public static final String PIXSIZE1 = "PIXSIZE1";
 
     /**
      * synonym for {@link #YPIXSZ}.
      */
-    public static String PIXSIZE2 = "PIXSIZE2";
+    public static final String PIXSIZE2 = "PIXSIZE2";
 
     /**
      * Time system default: 'UTC approximate'.
      */
-    public static String TIMESYS = "TIMESYS";
+    public static final String TIMESYS = "TIMESYS";
 
     /**
      * Time of observation start. format '23:57:44.0'
      */
-    public static String TIME_OBS = "TIME-OBS";
+    public static final String TIME_OBS = "TIME-OBS";
 
     /**
-     * MJD of observation start.(float)
+     * MJD of observation start (float).
      */
-    public static String MJD_OBS = "MJD-OBS";
+    public static final String MJD_OBS = "MJD-OBS";
 
     /**
      * type of image: Light Frame, Bias Frame, Dark Frame, Flat Frame, or
      * Tricolor Image.
      */
-    public static String IMAGETYP = "IMAGETYP";
+    public static final String IMAGETYP = "IMAGETYP";
 
     /**
-     * subframe origin on X axis
+     * subframe origin on X axis.
      */
-    public static String XORGSUBF = "XORGSUBF";
+    public static final String XORGSUBF = "XORGSUBF";
 
     /**
-     * subframe origin on Y axis
+     * subframe origin on Y axis.
      */
-    public static String YORGSUBF = "YORGSUBF";
+    public static final String YORGSUBF = "YORGSUBF";
 
     /**
      * X offset of Bayer array on imaging sensor.
      */
-    public static String XBAYROFF = "XBAYROFF";
+    public static final String XBAYROFF = "XBAYROFF";
 
     /**
      * Y offset of Bayer array on imaging sensor.
      */
-    public static String YBAYROFF = "YBAYROFF";
+    public static final String YBAYROFF = "YBAYROFF";
 
     /**
      * Total dark time of the observation. This is the total time during which
@@ -231,6 +231,12 @@ public class StandardFitsHeader {
      * are different the primary HDU gives one of the extension times. real
      * (sec)
      */
-    public static String DARKTIME = "DARKTIME";
+    public static final String DARKTIME = "DARKTIME";
 
+    /**
+     * utility class.
+     */
+    private StandardFitsHeader() {
+        // TODO Auto-generated constructor stub
+    }
 }

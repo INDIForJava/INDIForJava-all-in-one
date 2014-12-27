@@ -51,9 +51,27 @@ import org.indilib.i4j.fits.StandardFitsHeader;
 public class DebayerImage {
 
     public static void main(String[] args) throws FileNotFoundException, FitsException, IOException {
-        Fits result = new DebayerImage().decode(new FileInputStream("/home/nir/Arbeitsfläche/test2.fits"), new AverageDebayerAlgorithm());
+        Fits result = new DebayerImage().decode(new FileInputStream("src/test/resources/raspberry2.fits"), new AverageDebayerAlgorithm());
 
-        DataOutputStream os = new DataOutputStream(new FileOutputStream("target/result.fits"));
+        DataOutputStream os = new DataOutputStream(new FileOutputStream("target/result1.fits"));
+        result.write(os);
+        os.close();
+
+        result = new DebayerImage().decode(new FileInputStream("src/test/resources/raspberry2.fits"), new AdaptiveDebayerAlgorithm());
+
+        os = new DataOutputStream(new FileOutputStream("target/result2.fits"));
+        result.write(os);
+        os.close();
+
+        result = new DebayerImage().decode(new FileInputStream("src/test/resources/raspberry2.fits"), new ReplicateDebayerAlgorithm());
+
+        os = new DataOutputStream(new FileOutputStream("target/result3.fits"));
+        result.write(os);
+        os.close();
+
+        result = new DebayerImage().decode(new FileInputStream("src/test/resources/raspberry2.fits"), new SmoothDebayerAlgorithm());
+
+        os = new DataOutputStream(new FileOutputStream("target/result4.fits"));
         result.write(os);
         os.close();
     }
@@ -72,10 +90,10 @@ public class DebayerImage {
             if (axis.length == 2 && bayerpat != null && !bayerpat.trim().isEmpty()) {
                 // DebayerRowOrder row_order =
                 // DebayerRowOrder.valueOfFits(bayerpat);
-                DebayerRowOrder row_order = DebayerRowOrder.GRBG;
+                DebayerPattern row_order = DebayerPattern.GRBG;
 
                 ImagePixels ip = new ImagePixels(axis[1], axis[0]);
-                ip.setPixel(oneImage.getKernel(), oneImage.getHeader().getDoubleValue(StandardFitsHeader.DATAMAX));
+                ip.setPixel(oneImage.getKernel());
                 RGBImagePixels result = algorithm.decode(row_order, ip);
 
                 ImageIO.write(result.asImage(), "png", new File("target/result.png"));

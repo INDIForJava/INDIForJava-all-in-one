@@ -23,28 +23,54 @@ package org.indilib.i4j.fits.debayer;
  */
 
 /**
- * Algorithem to debayer a raw sensor image.
+ * This enum represents the different kind of supported bayering patterns.
  * 
  * @author Richard van Nieuwenhoven
  */
-interface DebayerAlgorithm {
-
+public enum DebayerPattern {
     /**
-     * decode (debayer) the image and return the color image. the colors are
-     * represented by doubles so every possible bit per pixel should be possible
-     * to debayer without loss of data. The instance is not thread save so do
-     * not cache the algorithm.
+     * This pattern represents.
      * 
-     * @param imageBayerPattern
-     *            the bayer pattern of the input image
-     * @param image
-     *            the input image.
-     * @return the image debayered (an image per color)
+     * <pre>
+     * R-G-R-G
+     * G-B-G-B
+     * R-G-R-G
+     * G-B-G-B
+     * </pre>
      */
-    RGBImagePixels decode(DebayerPattern imageBayerPattern, ImagePixels image);
-
+    RGGB,
     /**
-     * @return the name of the algorithm.
+     * This pattern represents.
+     * 
+     * <pre>
+     * B-G-B-G
+     * G-R-G-R
+     * B-G-B-G
+     * G-R-G-R
+     * </pre>
      */
-    String getName();
+    BGGR,
+    /**
+     * This pattern represents.
+     * 
+     * <pre>
+     * G-R-G-R
+     * B-G-B-G
+     * G-R-G-R
+     * B-G-B-G
+     * </pre>
+     */
+    GRBG,
+    /**
+     * This pattern represents.
+     * 
+     * <pre>
+     * G-B-G-B
+     * R-G-R-G
+     * G-B-G-B
+     * R-G-R-G
+     * </pre>
+     */
+    GBRG;
+
 }

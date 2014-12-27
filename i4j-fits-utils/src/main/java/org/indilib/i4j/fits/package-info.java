@@ -1,10 +1,13 @@
-package org.indilib.i4j.fits.debayer;
+/**
+ * This package contains the utilities for to use the fits libray in i4j.
+ */
+package org.indilib.i4j.fits;
 
 /*
  * #%L
- * INDI for Java Utilities for the fits image format
+ * INDI for Java Abstract CCD Driver
  * %%
- * Copyright (C) 2012 - 2014 indiforjava
+ * Copyright (C) 2013 - 2014 indiforjava
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,19 +25,3 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
-public enum DebayerRowOrder {
-    RGGB,
-    BGGR,
-    GRBG,
-    GBGR;
-
-    public static DebayerRowOrder valueOfFits(String bayerpat) {
-        for (DebayerRowOrder value : values()) {
-            if (value.name().startsWith(bayerpat.substring(0, 2))) {
-                return value;
-            }
-        }
-        return null;
-    }
-
-}

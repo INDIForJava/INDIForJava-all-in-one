@@ -117,10 +117,10 @@ public final class RowBuffer10Bit {
             int byte3 = this.buffer[bindex++] & BYTE_MASK;
             int split = this.buffer[bindex++] & BYTE_MASK;
 
-            iterator.setPixel(byte0 << BITS_IN_BYTE | (split & SPLIT_BYTE_FIRST_2));
-            iterator.setPixel(byte1 << BITS_IN_BYTE | (split & SPLIT_BYTE_SECOND_2) << SHIFT_SECOND_2_TO_FIRST_2);
-            iterator.setPixel(byte2 << BITS_IN_BYTE | (split & SPLIT_BYTE_THIRD_2) << SHIFT_THIRD_2_TO_FIRST_2);
-            iterator.setPixel(byte3 << BITS_IN_BYTE | (split & SPLIT_BYTE_FROUTH_2) << SHIFT_FOURTH_2_TO_FIRST_2);
+            iterator.setPixel((byte0 << BITS_IN_BYTE | (split & SPLIT_BYTE_FIRST_2)));
+            iterator.setPixel((byte1 << BITS_IN_BYTE | (split & SPLIT_BYTE_SECOND_2) << SHIFT_SECOND_2_TO_FIRST_2));
+            iterator.setPixel((byte2 << BITS_IN_BYTE | (split & SPLIT_BYTE_THIRD_2) << SHIFT_THIRD_2_TO_FIRST_2));
+            iterator.setPixel((byte3 << BITS_IN_BYTE | (split & SPLIT_BYTE_FROUTH_2) << SHIFT_FOURTH_2_TO_FIRST_2));
             pix += PIXELS_PER_5_BYTES;
         }
     }

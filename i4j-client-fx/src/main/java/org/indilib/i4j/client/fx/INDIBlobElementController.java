@@ -25,11 +25,16 @@ package org.indilib.i4j.client.fx;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.GridPane;
 
 import javax.imageio.ImageIO;
 
@@ -60,6 +65,13 @@ public class INDIBlobElementController extends INDIElementController<INDIBLOBEle
     }
 
     @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
+        image.fitWidthProperty().bind(((GridPane) element).widthProperty());
+        image.setPreserveRatio(true);
+    }
+
+    @Override
     public void elementChanged(INDIElement element) {
         super.elementChanged(element);
         INDIBLOBValue value = ((INDIBLOBElement) element).getValue();
@@ -78,7 +90,8 @@ public class INDIBlobElementController extends INDIElementController<INDIBLOBEle
             }
         }
         if (bufferedImage != null) {
-            image.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+            WritableImage fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
+            image.setImage(fxImage);
         } else {
             image.setImage(null);
         }

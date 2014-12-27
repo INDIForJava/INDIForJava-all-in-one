@@ -29,15 +29,15 @@ package org.indilib.i4j.driver.raspberry.camera;
  */
 public enum CameraOption {
     /**
-     * Set image width <size>.
+     * Set image width size.
      */
     width("-w", "--width", "Set image width <size>"),
     /**
-     * Set image height <size>.
+     * Set image height size.
      */
     height("-h", "--height", "Set image height <size>"),
     /**
-     * Set jpeg quality <0 to 100>.
+     * Set jpeg quality 0 to 100.
      */
     quality("-q", "--quality", "Set jpeg quality <0 to 100>"),
     /**
@@ -45,7 +45,7 @@ public enum CameraOption {
      */
     raw("-r", "--raw", "Add raw bayer data to jpeg metadata"),
     /**
-     * Output filename <filename> (to write to stdout, use '-o -'). If not
+     * Output filename filename (to write to stdout, use '-o -'). If not
      * specified, no file is saved.
      */
     output("-o", "--output", "Output filename <filename> (to write to stdout, use '-o -'). If not specified, no file is saved"),
@@ -75,7 +75,7 @@ public enum CameraOption {
      */
     exif("-x", "--exif", "EXIF tag to apply to captures (format as 'key=value')"),
     /**
-     * Timelapse mode. Takes a picture every <t>ms.
+     * Timelapse mode. Takes a picture every t ms.
      */
     timelapse("-tl", "--timelapse", "Timelapse mode. Takes a picture every <t>ms"),
     /**

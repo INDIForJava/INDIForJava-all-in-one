@@ -22,161 +22,139 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.BGGR;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GBGR;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.GRBG;
-import static org.indilib.i4j.fits.debayer.DebayerRowOrder.RGGB;
+/**
+ * the average debayer algorithm.
+ * http://www.umanitoba.ca/faculties/science/astronomy/jwest/plugins.html
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+class AverageDebayerAlgorithm extends DebayerAlgorithmImpl {
 
-class AverageDebayerAlgorithm implements DebayerAlgorithm {
+    /**
+     * number 4 (just because of checkstyle.
+     */
+    private static final int N_4 = 4;
 
     @Override
     public String getName() {
         return "Bilinear";
     }
 
-    public RGBImagePixels decode(DebayerRowOrder row_order, ImagePixels ip) { // Bilinear
-        int width = ip.getWidth();
-        int height = ip.getHeight();
-        // algorithm
-        double one = 0;
-        double two = 0;
-        double three = 0;
-        double four = 0;
-        RGBImagePixels rgb = new RGBImagePixels();
-        ImagePixels r = new ImagePixels(width, height);
-        ImagePixels g = new ImagePixels(width, height);
-        ImagePixels b = new ImagePixels(width, height);
-        // Short[] pixels = ip.getPixels();
+    /**
+     * Algorithm parameter.
+     */
+    private double one = 0;
 
-        if (row_order == RGGB || row_order == BGGR) {
-            for (int y = 0; y < height; y += 2) {
-                for (int x = 0; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x, y + 2);
-                    four = ip.getPixel(x + 2, y + 2);
+    /**
+     * Algorithm parameter.
+     */
+    private double two = 0;
 
-                    b.putPixel(x, y, one);
-                    b.putPixel(x + 1, y, (one + two) / 2);
-                    b.putPixel(x, y + 1, (one + three) / 2);
-                    b.putPixel(x + 1, y + 1, (one + two + three + four) / 4);
-                }
+    /**
+     * Algorithm parameter.
+     */
+    private double three = 0;
+
+    /**
+     * Algorithm parameter.
+     */
+    private double four = 0;
+
+    @Override
+    protected void decodeGreenMiddle(ImagePixels r, ImagePixels g, ImagePixels b) {
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x, y + 2);
+                four = inputImage.getPixel(x + 2, y + 2);
+                b.setPixel(x, y, one);
+                b.setPixel(x + 1, y, (one + two) / 2);
+                b.setPixel(x, y + 1, (one + three) / 2);
+                b.setPixel(x + 1, y + 1, (one + two + three + four) / N_4);
             }
-
-            for (int y = 1; y < height; y += 2) {
-                for (int x = 1; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x, y + 2);
-                    four = ip.getPixel(x + 2, y + 2);
-
-                    r.putPixel(x, y, one);
-                    r.putPixel(x + 1, y, (one + two) / 2);
-                    r.putPixel(x, y + 1, (one + three) / 2);
-                    r.putPixel(x + 1, y + 1, (one + two + three + four) / 4);
-                }
+        }
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x, y + 2);
+                four = inputImage.getPixel(x + 2, y + 2);
+                r.setPixel(x, y, one);
+                r.setPixel(x + 1, y, (one + two) / 2);
+                r.setPixel(x, y + 1, (one + three) / 2);
+                r.setPixel(x + 1, y + 1, (one + two + three + four) / N_4);
             }
-
-            for (int y = 0; y < height; y += 2) {
-                for (int x = 1; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x + 1, y + 1);
-                    four = ip.getPixel(x + 1, y - 1);
-
-                    g.putPixel(x, y, one);
-                    g.putPixel(x + 1, y, (one + two + three + four) / 4);
-                }
+        }
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x + 1, y + 1);
+                four = inputImage.getPixel(x + 1, y - 1);
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, (one + two + three + four) / N_4);
             }
+        }
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x + 1, y + 1);
+                four = inputImage.getPixel(x + 1, y - 1);
 
-            for (int y = 1; y < height; y += 2) {
-                for (int x = 0; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x + 1, y + 1);
-                    four = ip.getPixel(x + 1, y - 1);
-
-                    g.putPixel(x, y, one);
-                    g.putPixel(x + 1, y, (one + two + three + four) / 4);
-                }
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, (one + two + three + four) / N_4);
             }
+        }
+    }
 
-            if (row_order == RGGB) {
-                rgb.setRed(b);
-                rgb.setGreen(g);
-                rgb.setBlue(r);
-            } else if (row_order == BGGR) {
-                rgb.setRed(r);
-                rgb.setGreen(g);
-                rgb.setBlue(b);
+    @Override
+    protected void decodeGreenOutside(ImagePixels r, ImagePixels g, ImagePixels b) {
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x, y + 2);
+                four = inputImage.getPixel(x + 2, y + 2);
+                b.setPixel(x, y, one);
+                b.setPixel(x + 1, y, (one + two) / 2);
+                b.setPixel(x, y + 1, (one + three) / 2);
+                b.setPixel(x + 1, y + 1, (one + two + three + four) / N_4);
+            }
+        }
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x, y + 2);
+                four = inputImage.getPixel(x + 2, y + 2);
+                r.setPixel(x, y, one);
+                r.setPixel(x + 1, y, (one + two) / 2);
+                r.setPixel(x, y + 1, (one + three) / 2);
+                r.setPixel(x + 1, y + 1, (one + two + three + four) / N_4);
             }
         }
 
-        else if (row_order == GRBG || row_order == GBGR) {
-            for (int y = 1; y < height; y += 2) {
-                for (int x = 0; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x, y + 2);
-                    four = ip.getPixel(x + 2, y + 2);
-
-                    b.putPixel(x, y, one);
-                    b.putPixel(x + 1, y, (one + two) / 2);
-                    b.putPixel(x, y + 1, (one + three) / 2);
-                    b.putPixel(x + 1, y + 1, (one + two + three + four) / 4);
-                }
-            }
-
-            for (int y = 0; y < height; y += 2) {
-                for (int x = 1; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x, y + 2);
-                    four = ip.getPixel(x + 2, y + 2);
-
-                    r.putPixel(x, y, one);
-                    r.putPixel(x + 1, y, (one + two) / 2);
-                    r.putPixel(x, y + 1, (one + three) / 2);
-                    r.putPixel(x + 1, y + 1, (one + two + three + four) / 4);
-                }
-            }
-
-            for (int y = 0; y < height; y += 2) {
-                for (int x = 0; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x + 1, y + 1);
-                    four = ip.getPixel(x + 1, y - 1);
-
-                    g.putPixel(x, y, one);
-                    g.putPixel(x + 1, y, (one + two + three + four) / 4);
-                }
-            }
-
-            for (int y = 1; y < height; y += 2) {
-                for (int x = 1; x < width; x += 2) {
-                    one = ip.getPixel(x, y);
-                    two = ip.getPixel(x + 2, y);
-                    three = ip.getPixel(x + 1, y + 1);
-                    four = ip.getPixel(x + 1, y - 1);
-
-                    g.putPixel(x, y, one);
-                    g.putPixel(x + 1, y, (one + two + three + four) / 4);
-                }
-            }
-
-            if (row_order == GRBG) {
-                rgb.setRed(b);
-                rgb.setGreen(g);
-                rgb.setBlue(r);
-            } else if (row_order == GBGR) {
-                rgb.setRed(r);
-                rgb.setGreen(g);
-                rgb.setBlue(b);
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x + 1, y + 1);
+                four = inputImage.getPixel(x + 1, y - 1);
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, (one + two + three + four) / N_4);
             }
         }
-
-        return rgb;
-
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                two = inputImage.getPixel(x + 2, y);
+                three = inputImage.getPixel(x + 1, y + 1);
+                four = inputImage.getPixel(x + 1, y - 1);
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, (one + two + three + four) / N_4);
+            }
+        }
     }
 }

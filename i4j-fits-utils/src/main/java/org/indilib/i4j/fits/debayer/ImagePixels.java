@@ -22,29 +22,87 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
+/**
+ * Image pixel representation, stored as an single array of doubles.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class ImagePixels {
 
+    /**
+     * mask to create an integer from a unsigned byte.
+     */
+    private static final int UNSIGNED_BYTE_MASK = 0xFF;
+
+    /**
+     * number of bits in a byte.
+     */
+    private static final int BYTE_BITS = 8;
+
+    /**
+     * number of bits in a short.
+     */
+    private static final int SHORT_BITS = 16;
+
+    /**
+     * number of bits in an integer.
+     */
+    private static final int INTEGER_BITS = 32;
+
+    /**
+     * the pixel values of the image.
+     */
     private final double[] pixel;
 
+    /**
+     * the width of the image.
+     */
     private final int width;
 
+    /**
+     * the height of the image.
+     */
     private final int height;
 
+    /**
+     * @return the image width;
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * @return the image height.
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * constructor for the image.
+     * 
+     * @param width
+     *            width of the image.
+     * @param height
+     *            height of the image.
+     */
     public ImagePixels(int width, int height) {
         this.width = width;
         this.height = height;
         pixel = new double[width * height];
     }
 
-    public void putPixel(int x, int y, double value) {
+    /**
+     * set the pixel to the specified value.
+     * 
+     * @param x
+     *            the x coordinate.
+     * @param y
+     *            the y coordinate.
+     * @param value
+     *            the pixel value.
+     */
+    public void setPixel(int x, int y, double value) {
         if (value < 0) {
             value = 0;
         }
@@ -57,6 +115,15 @@ public class ImagePixels {
         pixel[y * width + x] = value;
     }
 
+    /**
+     * get the pixel value of the coordinates.
+     * 
+     * @param x
+     *            the x coordinate.
+     * @param y
+     *            the y coordinate.
+     * @return the pixel value.
+     */
     public double getPixel(int x, int y) {
         if (x < 0 || x >= width) {
             return 0;
@@ -67,28 +134,51 @@ public class ImagePixels {
         return pixel[y * width + x];
     }
 
-    public void setPixel(Object kernel, double datamax) {
-        if (kernel instanceof int[][]) {
-            double max = Math.min(Math.pow(2, 32), datamax > 1d ? datamax : Double.MAX_VALUE);
+    /**
+     * set all pixels to the image from a multy dimensional array. (the maximum
+     * value is used to scale the pixel values).
+     * 
+     * @param kernel
+     *            the multy dimensional array.
+     */
+    public void setPixel(Object kernel) {
+        if (kernel instanceof byte[][]) {
+            double range = Math.pow(2, BYTE_BITS);
             int pixelIndex = 0;
             int[][] other = (int[][]) kernel;
             for (int index1 = 0; index1 < other.length; index1++) {
                 for (int index2 = 0; index2 < other[index1].length; index2++) {
-                    pixel[pixelIndex++] = ((double) other[index1][index2]) / max;
+                    pixel[pixelIndex++] = ((double) (other[index1][index2] & UNSIGNED_BYTE_MASK)) / range;
+                }
+            }
+        } else if (kernel instanceof int[][]) {
+            double range = Math.pow(2, INTEGER_BITS);
+            double offset = -Integer.MIN_VALUE;
+            int pixelIndex = 0;
+            int[][] other = (int[][]) kernel;
+            for (int index1 = 0; index1 < other.length; index1++) {
+                for (int index2 = 0; index2 < other[index1].length; index2++) {
+                    pixel[pixelIndex++] = ((double) offset + other[index1][index2]) / range;
                 }
             }
         } else if (kernel instanceof short[][]) {
-            double max = Math.min(Math.pow(2, 16), datamax > 1d ? datamax : Double.MAX_VALUE);
+            double range = Math.pow(2, SHORT_BITS);
+            double offset = -Short.MIN_VALUE;
             int pixelIndex = 0;
             short[][] other = (short[][]) kernel;
             for (int index1 = 0; index1 < other.length; index1++) {
                 for (int index2 = 0; index2 < other[index1].length; index2++) {
-                    pixel[pixelIndex++] = ((double) (other[index1][index2] & 0xFFFF)) / max;
+                    pixel[pixelIndex++] = ((double) (offset + other[index1][index2])) / range;
                 }
             }
+        } else {
+            throw new UnsupportedOperationException("parameter not yet supported");
         }
     }
 
+    /**
+     * @return the internal pixel array.
+     */
     public double[] pixel() {
         return pixel;
     }

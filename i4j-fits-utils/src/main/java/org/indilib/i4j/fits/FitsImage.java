@@ -8,7 +8,7 @@ import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 
 import org.indilib.i4j.fits.debayer.AdaptiveDebayerAlgorithm;
-import org.indilib.i4j.fits.debayer.DebayerRowOrder;
+import org.indilib.i4j.fits.debayer.DebayerPattern;
 import org.indilib.i4j.fits.debayer.ImagePixels;
 import org.indilib.i4j.fits.debayer.RGBImagePixels;
 import org.slf4j.Logger;
@@ -36,12 +36,23 @@ import org.slf4j.LoggerFactory;
  * #L%
  */
 
-public class FitsImage {
+/**
+ * Utility funktions for fits images.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+public final class FitsImage {
 
     /**
      * A logger for the errors.
      */
     private static final Logger LOG = LoggerFactory.getLogger(FitsImage.class);
+
+    /**
+     * utility class.
+     */
+    private FitsImage() {
+    }
 
     /**
      * convert the bytes to a fits image.
@@ -64,7 +75,7 @@ public class FitsImage {
 
     /**
      * convert a fits image to a java displayable image, debayer it if
-     * nessesary.
+     * Necessary.
      * 
      * @param fitsImage
      *            the image to convert
@@ -76,35 +87,26 @@ public class FitsImage {
             String bayerpat = oneImage.getHeader().getStringValue(StandardFitsHeader.BAYERPAT);
             int[] axis = oneImage.getAxes();
             RGBImagePixels result;
-            double datamax = oneImage.getHeader().getDoubleValue(StandardFitsHeader.DATAMAX);
             if (axis.length == 2 && bayerpat != null && !bayerpat.trim().isEmpty()) {
                 // RAW image
                 ImagePixels ip = new ImagePixels(axis[1], axis[0]);
-                ip.setPixel(oneImage.getKernel(), datamax);
-                result = new AdaptiveDebayerAlgorithm().decode(DebayerRowOrder.valueOf(bayerpat), ip);
+                ip.setPixel(oneImage.getKernel());
+                result = new AdaptiveDebayerAlgorithm().decode(DebayerPattern.valueOf(bayerpat), ip);
             } else if (axis.length == 2) {
                 // GRAY Image
-                ImagePixels ip = new ImagePixels(axis[1], axis[0]);
-                ip.setPixel(oneImage.getKernel(), datamax);
-                result = new RGBImagePixels();
-                result.setBlue(ip);
-                result.setGreen(ip);
-                result.setRed(ip);
+                result = new RGBImagePixels(axis[1], axis[0]);
+                result.getGreen().setPixel(oneImage.getKernel());
+                result.setBlue(result.getGreen());
+                result.setRed(result.getGreen());
             } else {
                 // COLOR Image
-                result = new RGBImagePixels();
+                result = new RGBImagePixels(axis[1], axis[0]);
                 Object red = Array.get(oneImage.getKernel(), 0);
-                ImagePixels ip = new ImagePixels(axis[1], axis[0]);
-                ip.setPixel(red, datamax);
-                result.setRed(ip);
+                result.getRed().setPixel(red);
                 Object green = Array.get(oneImage.getKernel(), 1);
-                ip = new ImagePixels(axis[1], axis[0]);
-                ip.setPixel(green, datamax);
-                result.setGreen(ip);
+                result.getGreen().setPixel(green);
                 Object blue = Array.get(oneImage.getKernel(), 2);
-                ip = new ImagePixels(axis[1], axis[0]);
-                ip.setPixel(blue, datamax);
-                result.setBlue(ip);
+                result.getBlue().setPixel(blue);
             }
             return result.asImage();
         } catch (Exception e) {

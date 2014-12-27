@@ -15,7 +15,11 @@
 
 <Tab fx:id="device" xmlns:fx="http://javafx.com/fxml" fx:controller="org.indilib.i4j.client.fx.INDIDeviceController" styleClass="device" closable="false">
 	<content>
-		<VBox fx:id="groups" />
+		<ScrollPane fx:id="scroll" fitToWidth="true">
+			<content>
+				<VBox fx:id="groups" />
+			</content>
+		</ScrollPane>
 	</content>
 </Tab>
 
