@@ -74,7 +74,6 @@
 				<configuration>
 					<configurationDirectory>etc</configurationDirectory>
 					<useWildcardClassPath>true</useWildcardClassPath>
-					<extraJvmArguments>-DI4J_HOME=@BASEDIR@ -Dlogback.configurationFile=@BASEDIR@/etc/logback.xml</extraJvmArguments>
 					<programs>
 						<program>
 							<mainClass>org.indilib.i4j.client.ui.examples.SimpleINDIFrameClient</mainClass>
@@ -89,15 +88,14 @@
 								<commandLineArgument>@BASEDIR@</commandLineArgument>
 							</commandLineArguments>
 							<jvmSettings>
-								<systemProperties>
-									<systemProperty>logback.configurationFile=%I4J_HOME%/etc/logback.xml</systemProperty>
-								</systemProperties>
 								<extraArguments>
 									<extraArgument>-Xdebug</extraArgument>
 									<extraArgument>-Xrunjdwp:server=y,suspend=n,transport=dt_socket,address=4000</extraArgument>
+									<extraArgument>-DI4J_HOME=@BASEDIR@</extraArgument>
+									<extraArgument>-Dlogback.configurationFile=@BASEDIR@/etc/logback.xml</extraArgument>
 								</extraArguments>
-								<initialMemorySize>128M</initialMemorySize>
-								<maxMemorySize>512M</maxMemorySize>
+								<initialMemorySize>64M</initialMemorySize>
+								<maxMemorySize>386M</maxMemorySize>
 							</jvmSettings>
 						</program>
 					</programs>
@@ -123,7 +121,7 @@
 										</property>
 										<property>
 											<name>wrapper.logfile</name>
-											<value>%I4J_HOME%/logs/wrapper.log</value>
+											<value>@BASEDIR@/logs/wrapper.log</value>
 										</property>
 										<property>
 											<name>app.base.envvar</name>
@@ -158,15 +156,14 @@
 								</generatorConfiguration>
 							</generatorConfigurations>
 							<jvmSettings>
-								<systemProperties>
-									<systemProperty>logback.configurationFile=%I4J_HOME%/etc/logback.xml</systemProperty>
-								</systemProperties>
 								<extraArguments>
 									<extraArgument>-Xdebug</extraArgument>
 									<extraArgument>-Xrunjdwp:server=y,suspend=n,transport=dt_socket,address=4000</extraArgument>
+									<extraArgument>-DI4J_HOME=@BASEDIR@</extraArgument>
+									<extraArgument>-Dlogback.configurationFile=@BASEDIR@/etc/logback.xml</extraArgument>
 								</extraArguments>
-								<initialMemorySize>128M</initialMemorySize>
-								<maxMemorySize>512M</maxMemorySize>
+								<initialMemorySize>64M</initialMemorySize>
+								<maxMemorySize>386M</maxMemorySize>
 							</jvmSettings>
 						</daemon>
 					</daemons>

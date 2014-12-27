@@ -255,9 +255,13 @@ public final class INDIServer implements INDIServerInterface {
         if (baseAcceptor != null) {
             baseAcceptor.close();
         }
-        for (INDIDeviceListener indiDeviceListener : clients) {
+        for (INDIDeviceListener indiDeviceListener : new ArrayList<>(clients)) {
             if (indiDeviceListener instanceof INDIClient) {
-                ((INDIClient) indiDeviceListener).disconnect();
+                try {
+                    ((INDIClient) indiDeviceListener).disconnect();
+                } catch (Exception e) {
+                    LOG.warn("problem during client diskonnect", e);
+                }
             }
         }
     }

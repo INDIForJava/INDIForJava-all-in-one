@@ -34,6 +34,7 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDINumberElement;
+import org.indilib.i4j.driver.INDINumberElementAndValue;
 import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
@@ -46,6 +47,7 @@ import org.indilib.i4j.driver.ccd.INDICCDDriver;
 import org.indilib.i4j.driver.ccd.INDICCDImage;
 import org.indilib.i4j.driver.ccd.INDICCDImage.ImageType;
 import org.indilib.i4j.driver.ccd.INDICCDImage.PixelIterator;
+import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.raspberry.camera.image.RawImage;
 import org.indilib.i4j.driver.raspberry.camera.image.RowBuffer10Bit;
 import org.indilib.i4j.fits.StandardFitsHeader;
@@ -110,7 +112,7 @@ public class RaspberryCamera extends INDICCDDriver {
      * 
      * @see CameraOption#ISO
      */
-    @InjectElement(name = "ISO", label = "ISO")
+    @InjectElement(name = "ISO", label = "ISO", textValue = "800")
     protected INDITextElement iso;
 
     /**
@@ -118,7 +120,7 @@ public class RaspberryCamera extends INDICCDDriver {
      * 
      * @see CameraOption#awbgains
      */
-    @InjectElement(name = "AWBGAINS", label = "AWB Gains")
+    @InjectElement(name = "AWBGAINS", label = "AWB Gains", textValue = "1,1")
     protected INDITextElement awbgains;
 
     /**
@@ -126,7 +128,7 @@ public class RaspberryCamera extends INDICCDDriver {
      * 
      * @see CameraOption#timeout
      */
-    @InjectElement(name = "TIMEOUT", label = "timeout")
+    @InjectElement(name = "TIMEOUT", label = "timeout", textValue = "180000")
     protected INDITextElement timeout;
 
     /**
@@ -185,6 +187,24 @@ public class RaspberryCamera extends INDICCDDriver {
                 for (INDITextElement element : property) {
                     checkOptionValue(element);
                 }
+                property.setState(PropertyStates.OK);
+                updateProperty(property);
+            }
+        });
+        loopCountP.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                property.setValues(elementsAndValues);
+                property.setState(PropertyStates.OK);
+                updateProperty(property);
+            }
+        });
+        bayerpatP.setEventHandler(new org.indilib.i4j.driver.event.TextEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
+                property.setValues(elementsAndValues);
                 property.setState(PropertyStates.OK);
                 updateProperty(property);
             }

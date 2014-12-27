@@ -170,12 +170,12 @@ public abstract class INDICCDImage {
         /**
          * max value of of a pixel.
          */
-        private float maxPixelValue = Float.MIN_VALUE;
+        private int maxPixelValue = Integer.MIN_VALUE;
 
         /**
          * min value of of a pixel.
          */
-        private float minPixelValue = Float.MAX_VALUE;
+        private int minPixelValue = Integer.MAX_VALUE;
 
         /**
          * set the pixel value of the first layer.
@@ -217,7 +217,8 @@ public abstract class INDICCDImage {
 
         /**
          * check the max pixel value, an record the new max and min value.
-         * Attention the range adaption is not pressent here.
+         * Attention the range adaption is not pressent here. so do only enter
+         * values between 0 and Integer.MAX_VALUE
          * 
          * @param value
          *            the value to check
@@ -238,15 +239,24 @@ public abstract class INDICCDImage {
          * @return the unchanged original value
          */
         protected final short rangeCheckShort(int value) {
-            int shortValue = Math.min(value + Short.MIN_VALUE, Short.MAX_VALUE);
-            maxPixelValue = Math.max(maxPixelValue, shortValue);
-            minPixelValue = Math.min(minPixelValue, shortValue);
+            int shortValue = value + Short.MIN_VALUE;
+            if (shortValue < Short.MIN_VALUE) {
+                shortValue = Short.MIN_VALUE;
+                minPixelValue = Short.MIN_VALUE;
+            } else if (shortValue > Short.MAX_VALUE) {
+                shortValue = Short.MAX_VALUE;
+                maxPixelValue = Short.MAX_VALUE;
+            } else if (shortValue > maxPixelValue) {
+                maxPixelValue = shortValue;
+            } else if (shortValue < minPixelValue) {
+                minPixelValue = shortValue;
+            }
             return (short) shortValue;
         }
 
         /**
          * check the max pixel value, an record the new max and min value.
-         * assume that bytes are unsigned. so no range adaption
+         * assume that bytes are unsigned, so no range adaption
          * 
          * @param value
          *            the value to check
