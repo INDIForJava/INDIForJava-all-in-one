@@ -85,22 +85,24 @@ public final class FitsImage {
         try {
             BasicHDU oneImage = fitsImage.getHDU(0);
             String bayerpat = oneImage.getHeader().getStringValue(StandardFitsHeader.BAYERPAT);
+            int height = oneImage.getHeader().getIntValue(StandardFitsHeader.NAXIS1);
+            int width = oneImage.getHeader().getIntValue(StandardFitsHeader.NAXIS2);
             int[] axis = oneImage.getAxes();
             RGBImagePixels result;
             if (axis.length == 2 && bayerpat != null && !bayerpat.trim().isEmpty()) {
                 // RAW image
-                ImagePixels ip = new ImagePixels(axis[1], axis[0]);
+                ImagePixels ip = new ImagePixels(width, height);
                 ip.setPixel(oneImage.getKernel());
                 result = new AdaptiveDebayerAlgorithm().decode(DebayerPattern.valueOf(bayerpat), ip);
             } else if (axis.length == 2) {
                 // GRAY Image
-                result = new RGBImagePixels(axis[1], axis[0]);
+                result = new RGBImagePixels(width, height);
                 result.getGreen().setPixel(oneImage.getKernel());
                 result.setBlue(result.getGreen());
                 result.setRed(result.getGreen());
             } else {
                 // COLOR Image
-                result = new RGBImagePixels(axis[1], axis[0]);
+                result = new RGBImagePixels(width, height);
                 Object red = Array.get(oneImage.getKernel(), 0);
                 result.getRed().setPixel(red);
                 Object green = Array.get(oneImage.getKernel(), 1);

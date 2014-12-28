@@ -28,13 +28,22 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.GridPane;
+import javafx.scene.input.ScrollEvent;
 
 import javax.imageio.ImageIO;
 
@@ -54,9 +63,22 @@ public class INDIBlobElementController extends INDIElementController<INDIBLOBEle
     ImageView image;
 
     @FXML
-    private void show() {
-        image.setImage(null);
+    ScrollPane scrollPane;
 
+    WritableImage fxImage;
+
+    final DoubleProperty zoomProperty = new SimpleDoubleProperty(200);
+
+    @FXML
+    private void show(ActionEvent event) {
+        CheckMenuItem show = (CheckMenuItem) event.getSource();
+        if (show.isSelected()) {
+            image.setImage(fxImage);
+            scrollPane.setVisible(true);
+        } else {
+            image.setImage(null);
+            scrollPane.setVisible(false);
+        }
     }
 
     @FXML
@@ -67,8 +89,34 @@ public class INDIBlobElementController extends INDIElementController<INDIBLOBEle
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        image.fitWidthProperty().bind(((GridPane) element).widthProperty());
-        image.setPreserveRatio(true);
+        scrollPane.widthProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                scrollPane.setMaxHeight(newValue.doubleValue() / 4d * 3d);
+            }
+        });
+        zoomProperty.addListener(new InvalidationListener() {
+
+            @Override
+            public void invalidated(Observable arg0) {
+                image.setFitWidth(zoomProperty.get() * 4);
+                // image.setFitHeight(zoomProperty.get() * 4);
+            }
+        });
+
+        scrollPane.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+
+            @Override
+            public void handle(ScrollEvent event) {
+                if (event.getDeltaY() > 0) {
+                    zoomProperty.set(zoomProperty.get() * 1.1);
+                } else if (event.getDeltaY() < 0) {
+                    zoomProperty.set(zoomProperty.get() / 1.1);
+                }
+                event.consume();
+            }
+        });
     }
 
     @Override
@@ -90,7 +138,7 @@ public class INDIBlobElementController extends INDIElementController<INDIBLOBEle
             }
         }
         if (bufferedImage != null) {
-            WritableImage fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
+            fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
             image.setImage(fxImage);
         } else {
             image.setImage(null);

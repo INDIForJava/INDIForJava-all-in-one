@@ -22,9 +22,15 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
+import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDINumberElement;
 
@@ -36,8 +42,37 @@ public class INDINumberElementController extends INDIElementController<INDINumbe
     @FXML
     private TextField value;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
+        setValue.textProperty().addListener(new ChangeListener<String>() {
+
+            @Override
+            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+                try {
+                    if (indi.checkCorrectValue(newValue)) {
+                        indi.setDesiredValue(newValue);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // TODO: set error
+                }
+
+            }
+        });
+    }
+
+    @Override
+    protected void indiConnected() {
+        if (indi.getProperty().getPermission() == PropertyPermissions.RO) {
+            setValue.setVisible(false);
+        }
+    }
+
     @FXML
     public void clickOnRO() {
+        setValue.setText(value.getText());
         setValue.requestFocus();
     }
 

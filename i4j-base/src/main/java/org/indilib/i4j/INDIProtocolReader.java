@@ -84,9 +84,8 @@ public class INDIProtocolReader extends Thread {
             } catch (IOException e) {
                 LOG.error("Could not close Doc", e);
             }
+            parser.finishReader();
         }
-
-        parser.finishReader();
     }
 
     /**

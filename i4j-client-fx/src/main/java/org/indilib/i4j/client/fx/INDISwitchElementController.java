@@ -26,6 +26,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 
+import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDISwitchElement;
 
@@ -47,7 +48,17 @@ public class INDISwitchElementController extends INDIElementController<INDISwitc
 
     @FXML
     public void click() {
-        // TODO Auto-generated method stub
+        try {
+            if (indi.getValue() == SwitchStatus.ON) {
+                indi.setDesiredValue(SwitchStatus.OFF);
+            } else {
+                indi.setDesiredValue(SwitchStatus.ON);
+            }
+            indi.getProperty().sendChangesToDriver();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 }

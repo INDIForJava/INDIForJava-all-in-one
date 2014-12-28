@@ -15,7 +15,7 @@
 <GridPane fx:id="property" fx:controller="org.indilib.i4j.client.fx.INDITextPropertyController" xmlns:fx="http://javafx.com/fxml" alignment="TOP_LEFT" styleClass="property">
 	<ImageView fx:id="state" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER" styleClass="okLight" />
 	<Label fx:id="label" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER" GridPane.columnIndex="1" GridPane.rowIndex="0" text="propertyName" />
-	<Button fx:id="set" text="Set" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+	<Button fx:id="set" text="Set" onAction="#set" GridPane.columnIndex="2" GridPane.rowIndex="0" />
 	<VBox fx:id="elements" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" />
 </GridPane>
 

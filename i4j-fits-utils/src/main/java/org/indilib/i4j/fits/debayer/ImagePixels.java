@@ -145,7 +145,7 @@ public class ImagePixels {
         if (kernel instanceof byte[][]) {
             double range = Math.pow(2, BYTE_BITS);
             int pixelIndex = 0;
-            int[][] other = (int[][]) kernel;
+            byte[][] other = (byte[][]) kernel;
             for (int index1 = 0; index1 < other.length; index1++) {
                 for (int index2 = 0; index2 < other[index1].length; index2++) {
                     pixel[pixelIndex++] = ((double) (other[index1][index2] & UNSIGNED_BYTE_MASK)) / range;

@@ -118,7 +118,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
                 reader.setStop(true);
                 connection.close();
                 connection = null;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOG.error("disconnect exception", e);
             }
         }
@@ -154,7 +154,8 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     protected void sendXMLMessage(INDIProtocol<?> message) {
         try {
             connection.getINDIOutputStream().writeObject(message);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            LOG.warn("could not send xml message to client, disconnecting client", e);
             disconnect();
         }
     }

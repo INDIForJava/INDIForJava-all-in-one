@@ -30,9 +30,12 @@
 			</CheckMenuItem>
 		</items>
 	</MenuButton>
-
-	<ImageView fx:id="image" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
-		<Image url="/org/indilib/i4j/client/fx/default.jpg" />
-	</ImageView>
+	<ScrollPane fx:id="scrollPane" pannable="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+		<content>
+			<ImageView fx:id="image" preserveRatio="true">
+				<Image url="/org/indilib/i4j/client/fx/default.jpg" />
+			</ImageView>
+		</content>
+	</ScrollPane>
 </GridPane>
 

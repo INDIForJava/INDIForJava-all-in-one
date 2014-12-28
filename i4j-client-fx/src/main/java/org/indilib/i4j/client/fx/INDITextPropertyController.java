@@ -22,8 +22,19 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+
 import org.indilib.i4j.client.INDITextProperty;
 
 public class INDITextPropertyController extends INDIPropertyController<INDITextProperty> {
 
+    @FXML
+    private void set(ActionEvent event) {
+        try {
+            indi.sendChangesToDriver();
+        } catch (Exception e) {
+            // TODO error handling
+        }
+    }
 }
