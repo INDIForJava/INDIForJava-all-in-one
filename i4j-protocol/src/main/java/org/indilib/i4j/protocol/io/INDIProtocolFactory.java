@@ -175,7 +175,7 @@ public final class INDIProtocolFactory {
      *             when something went wrong with the underlaying intput stream.
      */
     public static INDIInputStream createINDIInputStream(InputStream in) throws IOException {
-        return new INDIInputStreamImpl(XSTREAM.createObjectInputStream(inputStreamWithRootTag(new BufferedInputStream(in, BUFFER_SIZE))));
+        return new INDIInputStreamImpl(XSTREAM.createObjectInputStream(inputStreamWithRootTag(new BufferedInputStream(new MinimalBlockinInputStream(in), BUFFER_SIZE))));
     }
 
     /**
