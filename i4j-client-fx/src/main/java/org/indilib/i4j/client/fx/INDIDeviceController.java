@@ -57,7 +57,7 @@ public class INDIDeviceController extends INDIController<INDIDevice> implements 
     public void newProperty(INDIDevice device, INDIProperty<?> property) {
         FxController<Parent, String, INDIGroupController> fxGroup = groupMap.get(property.getGroup());
         if (fxGroup == null) {
-            fxGroup = INDIFxFactory.newINDIFxGroup();
+            fxGroup = INDIFxFactory.newINDIFxGroupFxml();
             fxGroup.controller.setIndi(property.getGroup());
             groupMap.put(property.getGroup(), fxGroup);
             groups.getChildren().add(fxGroup.fx);

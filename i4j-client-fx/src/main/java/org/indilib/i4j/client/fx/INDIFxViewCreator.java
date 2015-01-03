@@ -51,67 +51,67 @@ public class INDIFxViewCreator implements org.indilib.i4j.client.INDIViewCreator
 
     @Override
     public INDIElementListener createBlobElementView(INDIBLOBElement indiblobElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDIBLOBElement, INDIBlobElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxBlobElement();
+        FxController<Tab, INDIBLOBElement, INDIBlobElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxBlobElementFxml();
         return newINDIFxNumberElement.initializeFx(indiblobElement);
     }
 
     @Override
     public INDIElementListener createLightElementView(INDILightElement indiLightElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDILightElement, INDILightElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxLightElement();
+        FxController<Tab, INDILightElement, INDILightElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxLightElementFxml();
         return newINDIFxNumberElement.initializeFx(indiLightElement);
     }
 
     @Override
     public INDIElementListener createNumberElementView(INDINumberElement indiNumberElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDINumberElement, INDINumberElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxNumberElement();
+        FxController<Tab, INDINumberElement, INDINumberElementController> newINDIFxNumberElement = INDIFxFactory.newINDIFxNumberElementFxml();
         return newINDIFxNumberElement.initializeFx(indiNumberElement);
     }
 
     @Override
     public INDIElementListener createSwitchElementView(INDISwitchElement indiSwitchElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDISwitchElement, INDISwitchElementController> newINDIFxSwitchElement = INDIFxFactory.newINDIFxSwitchElement();
+        FxController<Tab, INDISwitchElement, INDISwitchElementController> newINDIFxSwitchElement = INDIFxFactory.newINDIFxSwitchElementFxml();
         return newINDIFxSwitchElement.initializeFx(indiSwitchElement);
     }
 
     @Override
     public INDIElementListener createTextElementView(INDITextElement indiTextElement, PropertyPermissions permission) throws INDIException {
-        FxController<Tab, INDITextElement, INDITextElementController> newINDIFxTextElement = INDIFxFactory.newINDIFxTextElement();
+        FxController<Tab, INDITextElement, INDITextElementController> newINDIFxTextElement = INDIFxFactory.newINDIFxTextElementFxml();
         return newINDIFxTextElement.initializeFx(indiTextElement);
     }
 
     @Override
     public INDIPropertyListener createBlobPropertyView(INDIBLOBProperty indiProperty) throws INDIException {
-        FxController<Tab, INDIBLOBProperty, INDIBlobPropertyController> newFx = INDIFxFactory.newINDIFxBlobProperty();
+        FxController<Tab, INDIBLOBProperty, INDIBlobPropertyController> newFx = INDIFxFactory.newINDIFxBlobPropertyFxml();
         return newFx.initializeFx(indiProperty);
     }
 
     @Override
     public INDIPropertyListener createNumberPropertyView(INDINumberProperty indiProperty) throws INDIException {
-        FxController<Tab, INDINumberProperty, INDINumberPropertyController> newINDIFxNumberProperty = INDIFxFactory.newINDIFxNumberProperty();
+        FxController<Tab, INDINumberProperty, INDINumberPropertyController> newINDIFxNumberProperty = INDIFxFactory.newINDIFxNumberPropertyFxml();
         return newINDIFxNumberProperty.initializeFx(indiProperty);
     }
 
     @Override
     public INDIPropertyListener createTextPropertyView(INDITextProperty indiProperty) throws INDIException {
-        FxController<Tab, INDITextProperty, INDITextPropertyController> newINDIFxTextProperty = INDIFxFactory.newINDIFxTextProperty();
+        FxController<Tab, INDITextProperty, INDITextPropertyController> newINDIFxTextProperty = INDIFxFactory.newINDIFxTextPropertyFxml();
         return newINDIFxTextProperty.initializeFx(indiProperty);
     }
 
     @Override
     public INDIPropertyListener createSwitchPropertyView(INDISwitchProperty indiProperty) throws INDIException {
-        FxController<Tab, INDISwitchProperty, INDISwitchPropertyController> newINDIFxSwitchProperty = INDIFxFactory.newINDIFxSwitchProperty();
+        FxController<Tab, INDISwitchProperty, INDISwitchPropertyController> newINDIFxSwitchProperty = INDIFxFactory.newINDIFxSwitchPropertyFxml();
         return newINDIFxSwitchProperty.initializeFx(indiProperty);
     }
 
     @Override
     public INDIPropertyListener createLightPropertyView(INDILightProperty indiProperty) throws INDIException {
-        FxController<Tab, INDILightProperty, INDILightPropertyController> newFx = INDIFxFactory.newINDIFxLightProperty();
+        FxController<Tab, INDILightProperty, INDILightPropertyController> newFx = INDIFxFactory.newINDIFxLightPropertyFxml();
         return newFx.initializeFx(indiProperty);
     }
 
     @Override
     public INDIDeviceListener createDeviceView(INDIDevice indiDevice) throws INDIException {
-        FxController<Tab, INDIDevice, INDIController<INDIDevice>> newINDIFxDevice = INDIFxFactory.newINDIFxDevice();
+        FxController<Tab, INDIDevice, INDIController<INDIDevice>> newINDIFxDevice = INDIFxFactory.newINDIFxDeviceFxml();
         return newINDIFxDevice.initializeFx(indiDevice);
     }
 

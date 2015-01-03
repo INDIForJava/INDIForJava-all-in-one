@@ -67,7 +67,7 @@ public class INDIClient extends Application implements INDIServerConnectionListe
             LOG.error("Problem connecting to " + connection.toString(), e);
         }
 
-        devices = INDIFxFactory.newINDIFxDevices();
+        devices = INDIFxFactory.newINDIFxDevicesFxml();
 
         Scene scene = new Scene(devices.fx, 800, 275);
         scene.getStylesheets().add(getClass().getResource("indistyle.css").toExternalForm());

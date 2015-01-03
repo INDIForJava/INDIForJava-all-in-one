@@ -114,55 +114,55 @@ public class INDIFxFactory {
         STYLE_SWITCH_STATE_OK
     };
 
-    public static <T> T newINDIFxBlobElement() {
+    public static <T> T newINDIFxBlobElementFxml() {
         return load(INDIFxBlobElement);
     }
 
-    public static <T> T newINDIFxBlobProperty() {
+    public static <T> T newINDIFxBlobPropertyFxml() {
         return load(INDIFxBlobProperty);
     }
 
-    public static <T> T newINDIFxDevices() {
+    public static <T> T newINDIFxDevicesFxml() {
         return load(INDIFxDevices);
     }
 
-    public static <T> T newINDIFxDevice() {
+    public static <T> T newINDIFxDeviceFxml() {
         return load(INDIFxDevice);
     }
 
-    public static <T> T newINDIFxGroup() {
+    public static <T> T newINDIFxGroupFxml() {
         return load(INDIFxGroup);
     }
 
-    public static <T> T newINDIFxNumberElement() {
+    public static <T> T newINDIFxNumberElementFxml() {
         return load(INDIFxNumberElement);
     }
 
-    public static <T> T newINDIFxNumberProperty() {
+    public static <T> T newINDIFxNumberPropertyFxml() {
         return load(INDIFxNumberProperty);
     }
 
-    public static <T> T newINDIFxSwitchElement() {
+    public static <T> T newINDIFxSwitchElementFxml() {
         return load(INDIFxSwitchElement);
     }
 
-    public static <T> T newINDIFxSwitchProperty() {
+    public static <T> T newINDIFxSwitchPropertyFxml() {
         return load(INDIFxSwitchProperty);
     }
 
-    public static <T> T newINDIFxLightElement() {
+    public static <T> T newINDIFxLightElementFxml() {
         return load(INDIFxLightElement);
     }
 
-    public static <T> T newINDIFxLightProperty() {
+    public static <T> T newINDIFxLightPropertyFxml() {
         return load(INDIFxLightProperty);
     }
 
-    public static <T> T newINDIFxTextElement() {
+    public static <T> T newINDIFxTextElementFxml() {
         return load(INDIFxTextElement);
     }
 
-    public static <T> T newINDIFxTextProperty() {
+    public static <T> T newINDIFxTextPropertyFxml() {
         return load(INDIFxTextProperty);
     }
 

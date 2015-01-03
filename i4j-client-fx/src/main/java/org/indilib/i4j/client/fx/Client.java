@@ -32,7 +32,7 @@ public class Client extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = INDIFxFactory.newINDIFxGroup();
+        Parent root = INDIFxFactory.newINDIFxGroupFxml();
 
         Scene scene = new Scene(root, 800, 275);
         scene.getStylesheets().add(getClass().getResource("indistyle.css").toExternalForm());
