@@ -65,7 +65,7 @@ public class INDIZipSocketConnection extends INDISocketConnection {
 
     @Override
     protected InputStream wrap(InputStream coreInputStream) {
-        return new InflaterInputStream(coreInputStream) {
+        return new InflaterInputStream(new MinimalBlockinInputStream(coreInputStream)) {
 
             /**
              * available() should return the number of bytes that can be read
