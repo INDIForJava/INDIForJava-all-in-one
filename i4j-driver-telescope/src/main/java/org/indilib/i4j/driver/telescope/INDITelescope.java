@@ -371,6 +371,18 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     protected INDISerialPortExtension serialPortExtension;
 
     /**
+     * Speed of the telescope motion in arc minutes / second.
+     */
+    @InjectProperty(name = "TELESCOPE_MOTION_RATE", label = "Motion rate", state = OK, group = MOTION_TAB)
+    protected INDINumberProperty movementRateP;
+
+    /**
+     * Speed of the telescope motion in arc minutes / second.
+     */
+    @InjectElement(name = "MOTION_RATE", label = "Motion rate ", minimum = 0, maximum = 90d, numberFormat = "%010.6m", numberValue = 5d)
+    protected INDINumberElement movementRate;
+
+    /**
      * Telescope motion buttons, to move the pointing position over the
      * north/south axis.
      */
@@ -517,6 +529,15 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
                 newMovementWESValue(elementsAndValues);
+            }
+        });
+        this.movementRateP.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
+                property.setState(OK);
+                property.setValues(elementsAndValues);
+                updateProperty(property);
             }
         });
         this.trackState = TelescopeStatus.SCOPE_PARKED;
@@ -886,6 +907,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         addProperty(this.abort);
         serialPortExtension.connect();
 
+        addProperty(this.movementRateP);
         addProperty(this.movementNSS);
         addProperty(this.movementWES);
         addProperty(this.scopeParameters);
@@ -908,6 +930,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         } catch (Exception e) {
             LOG.error("problem during disconnect", e);
         }
+        removeProperty(this.movementRateP);
         removeProperty(this.movementNSS);
         removeProperty(this.movementWES);
         removeProperty(this.scopeParameters);

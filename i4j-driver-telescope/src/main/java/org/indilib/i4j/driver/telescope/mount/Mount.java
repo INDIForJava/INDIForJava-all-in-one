@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.telescope.mount;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -56,7 +56,21 @@ public class Mount<AxisWithEncoderType extends AxisWithEncoder> {
     public Mount() {
         horizontalAxis = createHorizontalAxis();
         verticalAxis = createVerticalAxis();
+        limitVerticalAxis();
+    }
+
+    /**
+     * limit the vertical axis, to not to far below the horizon.
+     */
+    public void limitVerticalAxis() {
         verticalAxis.setValidRange(MINIMUM_LEGAL_ALT_VALUE, MAXIMUM_LEGAL_ALT_VALUE);
+    }
+
+    /**
+     * free the vertical axis, attention this may block your scope.
+     */
+    public void freeVerticalAxis() {
+        verticalAxis.setValidRange(Double.NaN, Double.NaN);
     }
 
     /**

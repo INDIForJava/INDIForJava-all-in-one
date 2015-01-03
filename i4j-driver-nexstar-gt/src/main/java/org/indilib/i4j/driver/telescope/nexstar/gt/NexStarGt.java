@@ -129,6 +129,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     @Override
     public void driverConnect(Date timestamp) throws INDIException {
         super.driverConnect(timestamp);
+        addProperty(levelNorthP);
         serialPortExtension.connect();
         mathPluginManagement.connect();
         mount = new NexStarGtMount(this.serialPortExtension);
@@ -137,6 +138,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     @Override
     public void driverDisconnect(Date timestamp) throws INDIException {
         mount.stop();
+        removeProperty(levelNorthP);
         this.mathPluginManagement.disconnect();
         this.serialPortExtension.disconnect();
         super.driverDisconnect(timestamp);
@@ -159,6 +161,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     protected void doGoto(double ra, double dec) {
         parkExtension.setParked(false);
         trackState = TelescopeStatus.SCOPE_SLEWING;
+        this.mount.limitVerticalAxis();
 
         gotoDirection = new INDIDirection(ra, dec);
         gotoUpdate();
@@ -255,14 +258,16 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
 
     @Override
     protected boolean moveNS(TelescopeMotionNS dir) {
+        this.mount.freeVerticalAxis();
         this.movementNSS.resetAllSwitches();
         this.movementNSS.setState(IDLE);
         String message = null;
         double rate;
+        double arcminutes = movementRate.getValue();
         if (dir == TelescopeMotionNS.MOTION_NORTH) {
-            rate = 1d / ARCMINUTES_PER_DEGREE;
+            rate = (1d / ARCMINUTES_PER_DEGREE) * arcminutes;
         } else {
-            rate = -1d / ARCMINUTES_PER_DEGREE;
+            rate = (-1d / ARCMINUTES_PER_DEGREE) * arcminutes;
         }
         if (trackState == TelescopeStatus.SCOPE_IDLE) {
             trackState = TelescopeStatus.SCOPE_SLEWING;
@@ -279,14 +284,16 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
 
     @Override
     protected boolean moveWE(TelescopeMotionWE dir) {
+        this.mount.freeVerticalAxis();
         this.movementWES.resetAllSwitches();
         this.movementWES.setState(IDLE);
         String message = null;
         double rate;
+        double arcminutes = movementRate.getValue();
         if (dir == TelescopeMotionWE.MOTION_WEST) {
-            rate = 1d / ARCMINUTES_PER_DEGREE;
+            rate = (1d / ARCMINUTES_PER_DEGREE) * arcminutes;
         } else {
-            rate = -1d / ARCMINUTES_PER_DEGREE;
+            rate = (-1d / ARCMINUTES_PER_DEGREE) * arcminutes;
         }
         if (trackState == TelescopeStatus.SCOPE_IDLE) {
             trackState = TelescopeStatus.SCOPE_SLEWING;
