@@ -26,12 +26,28 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 
+import org.controlsfx.dialog.Dialogs;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDISwitchElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for a indi switch element.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDISwitchElementController extends INDIElementController<INDISwitchElement> {
 
+    /**
+     * A logger for the errors.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDISwitchElementController.class);
+
+    /**
+     * the button representing the switch.
+     */
     @FXML
     private ImageView buttonImage;
 
@@ -46,6 +62,10 @@ public class INDISwitchElementController extends INDIElementController<INDISwitc
         }
     }
 
+    /**
+     * the switch element was clicked. change the disired value and send it to
+     * the server.
+     */
     @FXML
     public void click() {
         try {
@@ -56,8 +76,13 @@ public class INDISwitchElementController extends INDIElementController<INDISwitc
             }
             indi.getProperty().sendChangesToDriver();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("could not send new value to the server", e);
+            Dialogs.create()//
+                    .owner(buttonImage)//
+                    .title("Set error")//
+                    .masthead("Could not send the new value to the indi server.")//
+                    .message(e.getMessage())//
+                    .showError();
         }
 
     }

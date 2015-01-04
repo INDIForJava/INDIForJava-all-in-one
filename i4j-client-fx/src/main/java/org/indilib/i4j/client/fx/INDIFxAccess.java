@@ -21,8 +21,22 @@ package org.indilib.i4j.client.fx;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
+/**
+ * generic interface to get the gui from a controller.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public interface INDIFxAccess {
 
+    /**
+     * get the gui element of the controller and cast it to the requested type.
+     * (And throw a case exception if it does not match)
+     * 
+     * @param clazz
+     *            the requested type
+     * @return the gui elemnet of the controller.
+     * @param <T>
+     *            the the requested type
+     */
     <T> T getGui(Class<T> clazz);
 }

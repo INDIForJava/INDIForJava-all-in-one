@@ -22,6 +22,8 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
+import java.util.Iterator;
+
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -30,17 +32,32 @@ import javafx.scene.layout.VBox;
 
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.client.INDIDevice;
+import org.indilib.i4j.client.INDIDeviceListener;
 import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDIPropertyListener;
 
-public class INDIGroupController extends INDIController<String> {
+/**
+ * controller class for a group of properties.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
+public class INDIGroupController extends INDIController<String> implements INDIDeviceListener {
 
+    /**
+     * the stackpane for the group.
+     */
     @FXML
     private StackPane group;
 
+    /**
+     * the label at the top of the group.
+     */
     @FXML
     private Label label;
 
+    /**
+     * the box containing the children (properties).
+     */
     @FXML
     private VBox box;
 
@@ -50,6 +67,7 @@ public class INDIGroupController extends INDIController<String> {
         label.setText(indi);
     }
 
+    @Override
     public void newProperty(INDIDevice device, INDIProperty<?> property) {
         try {
             INDIPropertyListener defaultUIComponent = property.getDefaultUIComponent();
@@ -66,12 +84,27 @@ public class INDIGroupController extends INDIController<String> {
         return clazz.cast(group);
     }
 
+    @Override
     public void removeProperty(INDIDevice device, INDIProperty<?> property) {
-        // TODO Auto-generated method stub
-
+        Iterator<Node> children = box.getChildren().iterator();
+        while (children.hasNext()) {
+            INDIPropertyController<?> propertyController = INDIFxFactory.controller((Node) children.next());
+            if (propertyController.indi == property) {
+                children.remove();
+                break;
+            }
+        }
     }
 
+    /**
+     * @return is this group emty?
+     */
     public boolean isEmpty() {
         return box.getChildren().isEmpty();
+    }
+
+    @Override
+    public void messageChanged(INDIDevice device) {
+
     }
 }

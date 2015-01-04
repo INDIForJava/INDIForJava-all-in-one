@@ -42,6 +42,11 @@ import org.indilib.i4j.client.INDITextElement;
 import org.indilib.i4j.client.INDITextProperty;
 import org.indilib.i4j.client.fx.INDIFxFactory.FxController;
 
+/**
+ * the indi for java gui creator for the javafx system.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDIFxViewCreator implements org.indilib.i4j.client.INDIViewCreatorInterface {
 
     @Override

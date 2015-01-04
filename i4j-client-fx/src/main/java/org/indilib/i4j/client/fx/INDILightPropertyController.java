@@ -24,6 +24,12 @@ package org.indilib.i4j.client.fx;
 
 import org.indilib.i4j.client.INDILightProperty;
 
+/**
+ * controller for light properties, currently no actions nessesary all is
+ * handled by the superclass.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDILightPropertyController extends INDIPropertyController<INDILightProperty> {
 
 }

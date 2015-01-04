@@ -34,6 +34,11 @@
 			<artifactId>i4j-fits-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.controlsfx</groupId>
+			<artifactId>controlsfx</artifactId>
+			<version>8.20.8</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<site.basedir>${project.parent.basedir}</site.basedir>

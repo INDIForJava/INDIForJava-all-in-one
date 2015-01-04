@@ -36,6 +36,7 @@ import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import org.controlsfx.dialog.Dialogs;
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
@@ -45,16 +46,42 @@ import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * standard fx client interface for the indi protocal, for more sofisticated
+ * guis please replace this class. Do not forget to create a css for your gui.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDIClient extends Application implements INDIServerConnectionListener {
 
+    /**
+     * default heigth and width of the main window.
+     */
+    private static final int DEFAULT_WINDOW_SIZE = 800;
+
+    /**
+     * A logger for the errors.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(INDIClient.class);
 
+    /**
+     * the indi server connection.
+     */
     private INDIServerConnection connection;
 
+    /**
+     * the currently controlled devices.
+     */
     private FxController<TabPane, Object, INDIDevicesController> devices;
+
+    /**
+     * the main stage of the application.
+     */
+    private Stage mainStage;
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.mainStage = stage;
 
         connection = new INDIServerConnection((INDIConnection) new URL(getParameters().getRaw().get(0)).openConnection());
 
@@ -69,7 +96,7 @@ public class INDIClient extends Application implements INDIServerConnectionListe
 
         devices = INDIFxFactory.newINDIFxDevicesFxml();
 
-        Scene scene = new Scene(devices.fx, 800, 275);
+        Scene scene = new Scene(devices.fx(), DEFAULT_WINDOW_SIZE, DEFAULT_WINDOW_SIZE);
         scene.getStylesheets().add(getClass().getResource("indistyle.css").toExternalForm());
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -85,39 +112,50 @@ public class INDIClient extends Application implements INDIServerConnectionListe
         stage.show();
     }
 
+    /**
+     * main program start, redirected to javafx.
+     * 
+     * @param args
+     *            the program arguments.
+     */
     public static void main(String[] args) {
         INDIURLStreamHandlerFactory.init();
         launch(args);
     }
 
     @Override
-    public void newDevice(INDIServerConnection connection, INDIDevice device) {
+    public void newDevice(INDIServerConnection serverConnection, INDIDevice device) {
         try {
             Tab tab = ((INDIFxAccess) device.getDefaultUIComponent()).getGui(Tab.class);
             device.blobsEnableAlso();
-            devices.fx.getTabs().add(tab);
+            devices.fx().getTabs().add(tab);
         } catch (Exception e) {
             throw new RuntimeException("?", e);
         }
     }
 
     @Override
-    public void removeDevice(INDIServerConnection connection, INDIDevice device) {
-        for (Tab tab : new ArrayList<>(devices.fx.getTabs())) {
-            if (tab.getUserData() == device) {
-                devices.fx.getTabs().remove(tab);
+    public void removeDevice(INDIServerConnection serverConnection, INDIDevice device) {
+        for (Tab tab : new ArrayList<>(devices.fx().getTabs())) {
+            INDIDeviceController controller = INDIFxFactory.controller(tab);
+            if (controller != null && controller.indi == device) {
+                devices.fx().getTabs().remove(tab);
             }
         }
     }
 
     @Override
-    public void connectionLost(INDIServerConnection connection) {
-        // TODO
+    public void connectionLost(INDIServerConnection serverConnection) {
+        Dialogs.create()//
+                .owner(mainStage)//
+                .title("Connection to server lost")//
+                .message("The connection to the server was servered, application will now close.")//
+                .showWarning();
+        mainStage.close();
     }
 
     @Override
-    public void newMessage(INDIServerConnection connection, Date timestamp, String message) {
-        // TODO
+    public void newMessage(INDIServerConnection serverConnection, Date timestamp, String message) {
     }
 
 }

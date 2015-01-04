@@ -26,18 +26,36 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 
+import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDILightElement;
 
+/**
+ * Controller for a light element.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDILightElementController extends INDIElementController<INDILightElement> {
 
+    /**
+     * The label of the light element.
+     */
     @FXML
     private Label label;
 
+    /**
+     * the image of the light element.
+     */
     @FXML
     private ImageView value;
 
-    public void click() {
-        value.getStyleClass().remove("icIdle");
-        value.getStyleClass().add("icOk");
+    @Override
+    public void elementChanged(INDIElement element) {
+        super.elementChanged(element);
+        label.setText(element.getLabel());
+        String lightStateToStyle = INDIFxFactory.lightStateToStyle(((INDILightElement) element).getValue());
+        if (!value.getStyleClass().contains(lightStateToStyle)) {
+            value.getStyleClass().removeAll(INDIFxFactory.LIGHT_STATES);
+            value.getStyleClass().add(lightStateToStyle);
+        }
     }
 }

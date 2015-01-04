@@ -35,19 +35,33 @@ import org.indilib.i4j.client.INDIDeviceListener;
 import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.fx.INDIFxFactory.FxController;
 
+/**
+ * javafx controller for complete devices, these are displaed in a tab.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDIDeviceController extends INDIController<INDIDevice> implements INDIDeviceListener {
 
+    /**
+     * the tab displaying the device.
+     */
     @FXML
-    private Tab device;
+    protected Tab deviceTab;
 
+    /**
+     * the vbox containing the groups of the device.
+     */
     @FXML
-    private VBox groups;
+    protected VBox groups;
 
+    /**
+     * lookup map for the displayed groups.
+     */
     private Map<String, FxController<Parent, String, INDIGroupController>> groupMap = new HashMap<>();
 
     @Override
     protected void indiConnected() {
-        device.setText(indi.getName());
+        deviceTab.setText(indi.getName());
         for (INDIProperty<?> property : indi.getPropertiesAsList()) {
             newProperty(indi, property);
         }
@@ -58,9 +72,9 @@ public class INDIDeviceController extends INDIController<INDIDevice> implements 
         FxController<Parent, String, INDIGroupController> fxGroup = groupMap.get(property.getGroup());
         if (fxGroup == null) {
             fxGroup = INDIFxFactory.newINDIFxGroupFxml();
-            fxGroup.controller.setIndi(property.getGroup());
+            fxGroup.controller().setIndi(property.getGroup());
             groupMap.put(property.getGroup(), fxGroup);
-            groups.getChildren().add(fxGroup.fx);
+            groups.getChildren().add(fxGroup.fx());
         }
         fxGroup.controller().newProperty(device, property);
     }
@@ -71,21 +85,20 @@ public class INDIDeviceController extends INDIController<INDIDevice> implements 
         if (fxGroup != null) {
             fxGroup.controller().removeProperty(device, property);
             if (fxGroup.controller().isEmpty()) {
-                groupMap.remove(fxGroup);
-                groups.getChildren().remove(fxGroup.fx);
+                groupMap.remove(property.getGroup());
+                groups.getChildren().remove(fxGroup.fx());
             }
         }
     }
 
     @Override
     public void messageChanged(INDIDevice device) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public <T> T getGui(Class<T> clazz) {
-        return clazz.cast(device);
+        return clazz.cast(deviceTab);
     }
 
 }

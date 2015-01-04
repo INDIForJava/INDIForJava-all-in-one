@@ -22,19 +22,42 @@ package org.indilib.i4j.client.fx;
  * #L%
  */
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import org.controlsfx.dialog.Dialogs;
 import org.indilib.i4j.client.INDITextProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * controller for text properties.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDITextPropertyController extends INDIPropertyController<INDITextProperty> {
 
+    /**
+     * A logger for the errors.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDITextPropertyController.class);
+
+    /**
+     * send the new value to the indi server.
+     * 
+     * @param event
+     */
     @FXML
-    private void set(ActionEvent event) {
+    private void set() {
         try {
             indi.sendChangesToDriver();
         } catch (Exception e) {
-            // TODO error handling
+            LOG.error("could not send new value to the server", e);
+            Dialogs.create()//
+                    .owner(label)//
+                    .title("Set error")//
+                    .masthead("Could not send the new value to the indi server.")//
+                    .message(e.getMessage())//
+                    .showError();
         }
     }
 }

@@ -29,16 +29,26 @@ import javafx.scene.control.Label;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDIElementListener;
 
+/**
+ * abstract java fx controller for indi elements.
+ * 
+ * @author Richard van Nieuwenhoven
+ * @param <ELEMENTCLASS>
+ *            the indi element class
+ */
 public abstract class INDIElementController<ELEMENTCLASS> extends INDIController<ELEMENTCLASS> implements INDIElementListener {
 
+    /**
+     * the node representing the element.
+     */
     @FXML
     protected Node element;
 
     @Override
-    public void elementChanged(INDIElement element) {
+    public void elementChanged(INDIElement indiElement) {
         Label label = (Label) this.element.lookup(".label");
         if (label != null) {
-            label.setText(element.getLabel());
+            label.setText(indiElement.getLabel());
         }
     }
 

@@ -28,6 +28,8 @@
 			</MenuItem>
 			<CheckMenuItem text="show" onAction="#show" selected="true">
 			</CheckMenuItem>
+			<CheckMenuItem text="autoSave" onAction="#autoSave" selected="false">
+			</CheckMenuItem>
 		</items>
 	</MenuButton>
 	<ScrollPane fx:id="scrollPane" pannable="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">

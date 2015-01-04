@@ -34,17 +34,36 @@ import org.indilib.i4j.client.INDIElementListener;
 import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDIPropertyListener;
 
+/**
+ * abstract property controller for all properties. handles all common tasks.
+ * 
+ * @author Richard van Nieuwenhoven
+ * @param <PROPERTYCLASS>
+ *            the type of the iniproperty.
+ */
 public abstract class INDIPropertyController<PROPERTYCLASS extends INDIProperty<?>> extends INDIController<PROPERTYCLASS> implements INDIPropertyListener {
 
+    /**
+     * image representing the state of the property.
+     */
     @FXML
     protected ImageView state;
 
+    /**
+     * the label with the descriptio of the preoperty.
+     */
     @FXML
     protected Label label;
 
+    /**
+     * the gui element in witch the elements will be kept.
+     */
     @FXML
     protected Pane elements;
 
+    /**
+     * the pane for the property itself.
+     */
     @FXML
     protected Pane property;
 
@@ -67,14 +86,20 @@ public abstract class INDIPropertyController<PROPERTYCLASS extends INDIProperty<
         }
     }
 
+    /**
+     * add a gui element to the children.
+     * 
+     * @param element
+     *            the element to add.
+     */
     protected void addElement(Node element) {
         elements.getChildren().add(element);
     }
 
     @Override
-    public void propertyChanged(INDIProperty<?> property) {
-        label.setText(property.getLabel());
-        String stateToStyle = INDIFxFactory.stateToStyle(property.getState());
+    public void propertyChanged(INDIProperty<?> indiProperty) {
+        label.setText(indiProperty.getLabel());
+        String stateToStyle = INDIFxFactory.stateToStyle(indiProperty.getState());
         if (!state.getStyleClass().contains(stateToStyle)) {
             state.getStyleClass().removeAll(INDIFxFactory.STYLE_STATES);
             state.getStyleClass().add(stateToStyle);

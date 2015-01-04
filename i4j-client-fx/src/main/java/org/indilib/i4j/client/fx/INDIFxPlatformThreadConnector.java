@@ -28,28 +28,75 @@ import java.lang.reflect.Proxy;
 
 import javafx.application.Platform;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * This class redirects all calls to an object to the fx gui thread, this way
+ * the normal gui does not have to think about if it can call a method or should
+ * it ge send to the gui thread first.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDIFxPlatformThreadConnector implements InvocationHandler {
 
+    /**
+     * we will wait a maximum of 1 second for a method to end.
+     */
+    private static final int MAX_WAIT_TIME = 1000;
+
+    /**
+     * the logger to use.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIFxPlatformThreadConnector.class);
+
+    /**
+     * runnable to use for calling a method in the gui platform.
+     */
     private static final class PlatformInvoker implements Runnable {
 
+        /**
+         * the object on with to call the method.
+         */
         private final Object base;
 
+        /**
+         * the method to call.
+         */
         private final Method method;
 
+        /**
+         * the arguments of the method call.
+         */
         private final Object[] args;
 
+        /**
+         * the return value of the method.
+         */
         private Object result;
 
-        private boolean ready = false;
+        /**
+         * has the method been called?
+         */
+        private boolean hasBeenCalled = false;
 
-        protected boolean isReady() {
-            return ready;
-        }
-
+        /**
+         * @return the return value of the method.
+         */
         protected Object getResult() {
             return result;
         }
 
+        /**
+         * constructor for the method call.
+         * 
+         * @param base
+         *            the object on with to call the method.
+         * @param method
+         *            the method to call.
+         * @param args
+         *            the arguments of the method call.
+         */
         public PlatformInvoker(Object base, Method method, Object[] args) {
             this.base = base;
             this.method = method;
@@ -61,15 +108,27 @@ public class INDIFxPlatformThreadConnector implements InvocationHandler {
             try {
                 result = method.invoke(base, args);
             } catch (Exception e) {
-                // TODO LOG it and re thow outside
-                e.printStackTrace();
+                LOG.error("could not invoke the method in the fx platform.", e);
+            } finally {
+                synchronized (this) {
+                    hasBeenCalled = true;
+                    this.notify();
+                }
             }
-            ready = true;
         }
     }
 
+    /**
+     * the object on with to call the methods.
+     */
     private final Object base;
 
+    /**
+     * the contructor for the thread connector.
+     * 
+     * @param base
+     *            the object on with to call the method.
+     */
     public INDIFxPlatformThreadConnector(Object base) {
         this.base = base;
     }
@@ -83,19 +142,36 @@ public class INDIFxPlatformThreadConnector implements InvocationHandler {
             Platform.runLater(invoker);
             if (method.getReturnType() != null) {
                 long start = System.currentTimeMillis();
-                while (!invoker.isReady()) {
-                    Thread.sleep(25L);
-                    if (System.currentTimeMillis() - start > 1000) {
-                        // log it and continue, we won't wait for more than a
-                        // second.
-                        break;
+                try {
+                    synchronized (invoker) {
+                        if (!invoker.hasBeenCalled) {
+                            invoker.wait(MAX_WAIT_TIME);
+                        }
                     }
+                } catch (InterruptedException e) {
+                    LOG.warn("wait interrupted", e);
                 }
+                if (System.currentTimeMillis() - start > MAX_WAIT_TIME) {
+                    LOG.warn("We will not wait any longer, continueing!");
+                } 
             }
         }
         return invoker.getResult();
     }
 
+    /**
+     * create the proxy that redirects the method calls to the gui thread.
+     * 
+     * @param implementor
+     *            the object on with to call the methods.
+     * @param interfaceToImplement
+     *            the interfaces the proxy should implement
+     * @param extraInterfaces
+     *            the other interfaces the proxy should implement
+     * @param <T>
+     *            the type of the main interface
+     * @return the proxy casted to the base interface
+     */
     public static <T> T connect(Object implementor, Class<T> interfaceToImplement, Class<?>... extraInterfaces) {
         Class<?>[] interfaces = new Class<?>[extraInterfaces.length + 1];
         interfaces[0] = interfaceToImplement;

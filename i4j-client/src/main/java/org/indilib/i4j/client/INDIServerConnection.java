@@ -415,7 +415,7 @@ public class INDIServerConnection implements INDIProtocolParser {
             if (d != null) {
                 String propertyName = xml.getName();
 
-                if (!(propertyName.length() == 0)) {
+                if (propertyName != null && !propertyName.isEmpty()) {
                     d.deleteProperty(xml);
                 } else {
                     deleteDevice(d);

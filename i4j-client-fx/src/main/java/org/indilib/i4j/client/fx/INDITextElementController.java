@@ -30,18 +30,41 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
+import org.controlsfx.dialog.Dialogs;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDITextElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for an indi text element.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDITextElementController extends INDIElementController<INDITextElement> {
 
+    /**
+     * A logger for the errors.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDITextElementController.class);
+
+    /**
+     * the field holding the desired value.
+     */
     @FXML
     private TextField setValue;
 
+    /**
+     * the field holding the current value.
+     */
     @FXML
     private TextField value;
 
+    /**
+     * the current value field was clicked, copy the value to the desired value
+     * field and shift the focus there.
+     */
     @FXML
     public void clickOnRO() {
         setValue.setText(value.getText());
@@ -71,9 +94,15 @@ public class INDITextElementController extends INDIElementController<INDITextEle
                 try {
                     indi.setDesiredValue(newValue);
                 } catch (Exception e) {
-                    // TODO: set error
+                    LOG.error("set the dired value as requested", e);
+                    Dialogs.create()//
+                            .owner(setValue)//
+                            .title("Set error")//
+                            .masthead("Could not set the desierd value.")//
+                            .message("the value was probably not a legal value, the value is reset to the current value, see the log for more details")//
+                            .showError();
+                    setValue.setText(value.getText());
                 }
-
             }
         });
     }

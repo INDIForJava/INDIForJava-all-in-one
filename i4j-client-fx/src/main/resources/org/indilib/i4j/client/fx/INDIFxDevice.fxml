@@ -13,7 +13,7 @@
 
 
 
-<Tab fx:id="device" xmlns:fx="http://javafx.com/fxml" fx:controller="org.indilib.i4j.client.fx.INDIDeviceController" styleClass="device" closable="false">
+<Tab fx:id="deviceTab" xmlns:fx="http://javafx.com/fxml" fx:controller="org.indilib.i4j.client.fx.INDIDeviceController" styleClass="device" closable="false">
 	<content>
 		<ScrollPane fx:id="scroll" fitToWidth="true">
 			<content>

@@ -34,11 +34,22 @@ import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.client.INDIElement;
 import org.indilib.i4j.client.INDINumberElement;
 
+/**
+ * Controller for number elements.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDINumberElementController extends INDIElementController<INDINumberElement> {
 
+    /**
+     * the value to set.
+     */
     @FXML
     private TextField setValue;
 
+    /**
+     * the value provided by the server.
+     */
     @FXML
     private TextField value;
 
@@ -70,6 +81,10 @@ public class INDINumberElementController extends INDIElementController<INDINumbe
         }
     }
 
+    /**
+     * when the server value was clicked, copy the value and focus on the local
+     * value.
+     */
     @FXML
     public void clickOnRO() {
         setValue.setText(value.getText());

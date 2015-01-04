@@ -27,13 +27,34 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.Initializable;
 
+/**
+ * abstract class for all javafx controller.
+ * 
+ * @author Richard van Nieuwenhoven
+ * @param <INDIClass>
+ *            the indi device/property or element class this controller is used
+ *            for.
+ */
 public abstract class INDIController<INDIClass> implements INDIFxAccess, Initializable {
 
+    /**
+     * the indi device/property or element this controller is used for.
+     */
     protected INDIClass indi;
 
+    /**
+     * subclassed can intercep the moment the controller is connected to the
+     * indi class.
+     */
     protected void indiConnected() {
     }
 
+    /**
+     * the indi device/property or element this controller is used for.
+     * 
+     * @param indi
+     *            indi device/property or element
+     */
     public void setIndi(INDIClass indi) {
         this.indi = indi;
         indiConnected();

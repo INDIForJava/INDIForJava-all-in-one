@@ -25,10 +25,18 @@ package org.indilib.i4j.client.fx;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
 
+/**
+ * Controller for the devices list, the tabpane.
+ * 
+ * @author Richard van Nieuwenhoven
+ */
 public class INDIDevicesController extends INDIController<Object> {
 
+    /**
+     * the devices tab pane.
+     */
     @FXML
-    TabPane devices;
+    protected TabPane devices;
 
     @Override
     public <T> T getGui(Class<T> clazz) {
