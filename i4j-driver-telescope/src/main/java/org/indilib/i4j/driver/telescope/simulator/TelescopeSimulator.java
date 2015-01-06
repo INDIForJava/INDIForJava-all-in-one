@@ -157,16 +157,6 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
     private double[] guiderEWTarget = new double[2];
 
     /**
-     * last move motion in the North/south axis.
-     */
-    private TelescopeMotionNS moveNSlastMotion = null;
-
-    /**
-     * last move motion in the west/east axis.
-     */
-    private TelescopeMotionWE moveWElastMotion = null;
-
-    /**
      * The current pointing coordinates.
      */
     private final INDIDirection current = new INDIDirection();
@@ -361,16 +351,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     @Override
     protected boolean abort() {
-        if (movementNSS.getState() == BUSY) {
-            movementNSS.resetAllSwitches();
-            movementNSS.setState(IDLE);
-            updateProperty(movementNSS);
-        }
-        if (movementWES.getState() == BUSY) {
-            movementWES.resetAllSwitches();
-            movementWES.setState(IDLE);
-            updateProperty(movementWES);
-        }
+        moveExtention.abort();
         if (parkExtension.isBusy()) {
             parkExtension.setIdle();
         }
@@ -402,65 +383,6 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         eqn.setState(BUSY);
 
         LOG.info(String.format("Slewing to RA: %s - DEC: %s", formattedRaString, formattedDecString));
-    }
-
-    @Override
-    protected boolean moveNS(TelescopeMotionNS dir) {
-
-        switch (dir) {
-            case MOTION_NORTH:
-                if (moveNSlastMotion != TelescopeMotionNS.MOTION_NORTH) {
-                    moveNSlastMotion = TelescopeMotionNS.MOTION_NORTH;
-                } else {
-                    movementNSS.resetAllSwitches();
-                    movementNSS.setState(IDLE);
-                    updateProperty(movementNSS);
-                }
-                break;
-
-            case MOTION_SOUTH:
-                if (moveNSlastMotion != TelescopeMotionNS.MOTION_SOUTH) {
-                    moveNSlastMotion = TelescopeMotionNS.MOTION_SOUTH;
-                } else {
-                    movementNSS.resetAllSwitches();
-                    movementNSS.setState(IDLE);
-                    updateProperty(movementNSS);
-                }
-                break;
-            default:
-                break;
-        }
-
-        return true;
-    }
-
-    @Override
-    protected boolean moveWE(TelescopeMotionWE dir) {
-        switch (dir) {
-            case MOTION_WEST:
-                if (moveWElastMotion != TelescopeMotionWE.MOTION_WEST) {
-                    moveWElastMotion = TelescopeMotionWE.MOTION_WEST;
-                } else {
-                    movementWES.resetAllSwitches();
-                    movementWES.setState(IDLE);
-                    updateProperty(movementWES);
-                }
-                break;
-
-            case MOTION_EAST:
-                if (moveWElastMotion != TelescopeMotionWE.MOTION_EAST) {
-                    moveWElastMotion = TelescopeMotionWE.MOTION_EAST;
-                } else {
-                    movementWES.resetAllSwitches();
-                    movementWES.setState(IDLE);
-                    updateProperty(movementWES);
-                }
-                break;
-            default:
-                break;
-        }
-
-        return true;
     }
 
     @Override
@@ -500,26 +422,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         } else {
             da.setDec(FINE_SLEW_RATE * dt);
         }
-        if (this.movementNSS.getState() == BUSY) {
-            if (this.movementNSSNorth.isOn()) {
-                current.addDec(da.getDec());
-            } else if (this.movementNSSSouth.isOn()) {
-                current.addDec(-da.getDec());
-            }
-            newRaDec(current.getRa(), current.getDec());
-            return;
-        }
-
-        if (this.movementWES.getState() == BUSY) {
-            if (this.movementWESWest.isOn()) {
-                current.addRa(da.getRa() / HOUR_TO_DEGREE);
-            } else if (this.movementWESEast.isOn()) {
-                current.addRa(-da.getRa() / HOUR_TO_DEGREE);
-            }
-            newRaDec(current.getRa(), current.getDec());
-            return;
-
-        }
+        moveExtention.update(current);
 
         /*
          * Process per current state. We check the state of

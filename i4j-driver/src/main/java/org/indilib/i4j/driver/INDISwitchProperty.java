@@ -139,7 +139,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      * 
      * @return the number of selected Elements.
      */
-    private int getSelectedCount() {
+    public int getSelectedCount() {
         int selectedCount = 0;
         for (INDISwitchElement el : this) {
             if (el.getValue() == SwitchStatus.ON) {

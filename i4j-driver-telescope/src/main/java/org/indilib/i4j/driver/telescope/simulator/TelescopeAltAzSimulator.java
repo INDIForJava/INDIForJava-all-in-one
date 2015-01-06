@@ -22,8 +22,6 @@ package org.indilib.i4j.driver.telescope.simulator;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
-
 import java.util.Date;
 
 import net.sourceforge.novaforjava.JulianDay;
@@ -34,6 +32,7 @@ import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.telescope.INDIDirection;
 import org.indilib.i4j.driver.telescope.INDITelescope;
+import org.indilib.i4j.driver.telescope.INDITelescopeMoveImplementation;
 import org.indilib.i4j.driver.telescope.INDITelescopeSyncInterface;
 import org.indilib.i4j.driver.telescope.alignment.AlignmentDatabaseEntry;
 import org.indilib.i4j.driver.telescope.alignment.DoubleRef;
@@ -167,6 +166,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
         mathPluginManagement.setApproximateAlignment(MountAlignment.ZENITH);
         mathPluginManagement.forceActive();
         mathPluginManagement.initialise();
+        moveExtention.setMoveImpl(new INDITelescopeMoveImplementation(moveExtention));
     }
 
     @Override
@@ -207,11 +207,19 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
     }
 
     /**
-     * update the commands to the mount, acording to the goto position (if it is
-     * set).
+     * update the commands to the mount, according to the goto position (if it
+     * is set).
      */
     protected void gotoUpdate() {
+        if (gotoDirection == null && moveExtention.hasMoveRequest()) {
+            gotoDirection = new INDIDirection(this.eqnRa.getValue(), this.eqnDec.getValue());
+            if (trackState == TelescopeStatus.SCOPE_IDLE) {
+                trackState = TelescopeStatus.SCOPE_SLEWING;
+            }
+        }
         if (gotoDirection != null) {
+            moveExtention.update(gotoDirection);
+
             long now = System.currentTimeMillis();
             long doubleUpdateInterfall = updateInterfall() * 2;
 
@@ -253,6 +261,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
         TelescopeDirectionVector vector = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualAltAz);
         mathPluginManagement.transformTelescopeToCelestial(vector, 0, rightAscensionRef, declinationRef);
         newRaDec(rightAscensionRef.getValue(), declinationRef.getValue());
+
         if (gotoDirection != null && trackState == TelescopeStatus.SCOPE_SLEWING) {
             double raDiff = Math.abs(rightAscensionRef.getValue() - gotoDirection.getRa());
             double decDiff = Math.abs(declinationRef.getValue() - gotoDirection.getDec());
@@ -286,54 +295,6 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
     @Override
     public String getName() {
         return getClass().getSimpleName();
-    }
-
-    @Override
-    protected boolean moveNS(TelescopeMotionNS dir) {
-        this.movementNSS.resetAllSwitches();
-        this.movementNSS.setState(IDLE);
-        String message = null;
-        double rate;
-        if (dir == TelescopeMotionNS.MOTION_NORTH) {
-            rate = 1d / ARCMINUTES_PER_DEGREE;
-        } else {
-            rate = -1d / ARCMINUTES_PER_DEGREE;
-        }
-        if (trackState == TelescopeStatus.SCOPE_IDLE) {
-            trackState = TelescopeStatus.SCOPE_SLEWING;
-            gotoDirection = new INDIDirection(eqnRa.getValue(), eqnDec.getValue() + rate);
-        } else if (trackState == TelescopeStatus.SCOPE_TRACKING || trackState == TelescopeStatus.SCOPE_SLEWING) {
-            gotoDirection.addDec(rate);
-        } else {
-            message = "can only move if the scope is idle or tracking";
-        }
-        updateProperty(this.movementNSS, message);
-
-        return true;
-    }
-
-    @Override
-    protected boolean moveWE(TelescopeMotionWE dir) {
-        this.movementWES.resetAllSwitches();
-        this.movementWES.setState(IDLE);
-        String message = null;
-        double rate;
-        if (dir == TelescopeMotionWE.MOTION_WEST) {
-            rate = 1d / ARCMINUTES_PER_DEGREE;
-        } else {
-            rate = -1d / ARCMINUTES_PER_DEGREE;
-        }
-        if (trackState == TelescopeStatus.SCOPE_IDLE) {
-            trackState = TelescopeStatus.SCOPE_SLEWING;
-            gotoDirection = new INDIDirection(eqnRa.getValue() + rate, eqnDec.getValue());
-        } else if (trackState == TelescopeStatus.SCOPE_TRACKING || trackState == TelescopeStatus.SCOPE_SLEWING) {
-            gotoDirection.addRa(rate);
-        } else {
-            message = "can only move if the scope is idle or tracking";
-        }
-        updateProperty(this.movementWES, message);
-
-        return true;
     }
 
     @Override

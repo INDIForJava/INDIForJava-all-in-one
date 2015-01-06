@@ -88,7 +88,7 @@ public abstract class INDIDriverExtension<Driver extends INDIDriver> {
      *            clients must be notified.
      * @return true im successful
      */
-    protected boolean updateProperty(INDIProperty<?> property) {
+    public boolean updateProperty(INDIProperty<?> property) {
         return driver.updateProperty(property);
     }
 
@@ -105,7 +105,7 @@ public abstract class INDIDriverExtension<Driver extends INDIDriver> {
      *            message.
      * @return true im successful
      */
-    protected boolean updateProperty(INDIProperty<?> property, String message) {
+    public boolean updateProperty(INDIProperty<?> property, String message) {
         return driver.updateProperty(property, message);
     }
 

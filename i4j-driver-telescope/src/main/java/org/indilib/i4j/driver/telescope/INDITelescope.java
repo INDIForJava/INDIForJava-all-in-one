@@ -130,11 +130,6 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     protected static final String SITE_TAB = "Site";
 
     /**
-     * The property tab for the motion controls.
-     */
-    protected static final String MOTION_TAB = "Motion";
-
-    /**
      * The scope status updater thats will run perioticaly to check the status
      * of the scope and send the current coordinates to the client.
      */
@@ -371,54 +366,10 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     protected INDISerialPortExtension serialPortExtension;
 
     /**
-     * Speed of the telescope motion in arc minutes / second.
+     * extention handling the (manual remote) movement of the scope.
      */
-    @InjectProperty(name = "TELESCOPE_MOTION_RATE", label = "Motion rate", state = OK, group = MOTION_TAB)
-    protected INDINumberProperty movementRateP;
-
-    /**
-     * Speed of the telescope motion in arc minutes / second.
-     */
-    @InjectElement(name = "MOTION_RATE", label = "Motion rate ", minimum = 0, maximum = 90d, numberFormat = "%010.6m", numberValue = 5d)
-    protected INDINumberElement movementRate;
-
-    /**
-     * Telescope motion buttons, to move the pointing position over the
-     * north/south axis.
-     */
-    @InjectProperty(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
-    protected INDISwitchProperty movementNSS;
-
-    /**
-     * move the scope pointing position to the north .
-     */
-    @InjectElement(name = "MOTION_NORTH", label = "North")
-    protected INDISwitchElement movementNSSNorth;
-
-    /**
-     * move the scope pointing position to the south.
-     */
-    @InjectElement(name = "MOTION_SOUTH", label = "South")
-    protected INDISwitchElement movementNSSSouth;
-
-    /**
-     * Telescope motion buttons, to move the pointing position over the
-     * west/east axis.
-     */
-    @InjectProperty(name = "TELESCOPE_MOTION_WE", label = "West/East", group = MOTION_TAB)
-    protected INDISwitchProperty movementWES;
-
-    /**
-     * move the scope pointing position to the west.
-     */
-    @InjectElement(name = "MOTION_WEST", label = "West")
-    protected INDISwitchElement movementWESWest;
-
-    /**
-     * move the scope pointing position to the east.
-     */
-    @InjectElement(name = "MOTION_EAST", label = "East")
-    protected INDISwitchElement movementWESEast;
+    @InjectExtension
+    protected INDITelescopeMoveExtension moveExtention;
 
     /**
      * All elements describing the current telescope are presented in this
@@ -517,29 +468,6 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
                 newScopeParameter(elementsAndValues);
             }
         });
-        this.movementNSS.setEventHandler(new SwitchEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
-                newMovementNSSValue(elementsAndValues);
-            }
-        });
-        this.movementWES.setEventHandler(new SwitchEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
-                newMovementWESValue(elementsAndValues);
-            }
-        });
-        this.movementRateP.setEventHandler(new NumberEvent() {
-
-            @Override
-            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
-                property.setState(OK);
-                property.setValues(elementsAndValues);
-                updateProperty(property);
-            }
-        });
         this.trackState = TelescopeStatus.SCOPE_PARKED;
 
     }
@@ -575,12 +503,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
             if (this.eqn.getState() == BUSY) {
                 this.eqn.setState(IDLE);
             }
-            if (this.movementWES.getState() == BUSY) {
-                this.movementWES.setState(IDLE);
-            }
-            if (this.movementNSS.getState() == BUSY) {
-                this.movementNSS.setState(IDLE);
-            }
+            this.moveExtention.abort();
             this.trackState = TelescopeStatus.SCOPE_IDLE;
         } else {
             this.abort.setState(ALERT);
@@ -664,39 +587,6 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     }
 
     /**
-     * new values where send from the client for the move north/south property.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
-     */
-    private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
-        movementNSS.setValues(elementsAndValues);
-        movementNSS.setState(BUSY);
-        if (this.movementNSSNorth.isOn()) {
-            moveNS(TelescopeMotionNS.MOTION_NORTH);
-        } else {
-            moveNS(TelescopeMotionNS.MOTION_SOUTH);
-        }
-    }
-
-    /**
-     * new values where send from the client for the move west/east property.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
-     */
-    private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
-        movementWES.setValues(elementsAndValues);
-        movementWES.setState(BUSY);
-        if (this.movementWESWest.isOn()) {
-            moveWE(TelescopeMotionWE.MOTION_WEST);
-        } else {
-            moveWE(TelescopeMotionWE.MOTION_EAST);
-
-        }
-    }
-
-    /**
      * The scope parameters where changes by the client.
      * 
      * @param elementsAndValues
@@ -765,38 +655,6 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      *            the declination of the point in space
      */
     protected abstract void doGoto(double ra, double dec);
-
-    /**
-     * this is the default implementation if the scope does not support
-     * North/South motion. Subclasses should override this method to support it.
-     * 
-     * @param dir
-     *            The direction to move to
-     * @return true is successful
-     */
-    protected boolean moveNS(TelescopeMotionNS dir) {
-        INDITelescope.LOG.error("Mount does not support North/South motion.");
-        this.movementNSS.resetAllSwitches();
-        this.movementNSS.setState(IDLE);
-        updateProperty(this.movementNSS);
-        return false;
-    }
-
-    /**
-     * this is the default implementation if the scope does not support
-     * West/East motion. Subclasses should override this method to support it.
-     * 
-     * @param dir
-     *            The direction to move to
-     * @return true is successful
-     */
-    protected boolean moveWE(TelescopeMotionWE dir) {
-        INDITelescope.LOG.error("Mount does not support West/East motion.");
-        this.movementWES.resetAllSwitches();
-        this.movementWES.setState(IDLE);
-        updateProperty(this.movementWES);
-        return false;
-    }
 
     /**
      * The scope is now pointing here, resport the pointing position back to the
@@ -907,9 +765,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         addProperty(this.abort);
         serialPortExtension.connect();
 
-        addProperty(this.movementRateP);
-        addProperty(this.movementNSS);
-        addProperty(this.movementWES);
+        this.moveExtention.connect();
         addProperty(this.scopeParameters);
 
     }
@@ -930,9 +786,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         } catch (Exception e) {
             LOG.error("problem during disconnect", e);
         }
-        removeProperty(this.movementRateP);
-        removeProperty(this.movementNSS);
-        removeProperty(this.movementWES);
+        this.moveExtention.disconnect();
         removeProperty(this.scopeParameters);
     }
 }
