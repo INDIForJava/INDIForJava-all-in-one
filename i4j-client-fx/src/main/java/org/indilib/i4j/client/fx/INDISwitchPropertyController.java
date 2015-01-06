@@ -23,6 +23,7 @@ package org.indilib.i4j.client.fx;
  */
 
 import org.indilib.i4j.client.INDISwitchProperty;
+
 /**
  * controller for switch properties, currently no actions nessesary all is
  * handled by the superclass.

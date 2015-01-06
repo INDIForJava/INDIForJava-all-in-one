@@ -22,16 +22,14 @@ package org.indilib.i4j.driver.telescope.nexstar.gt;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
-
 import java.util.Date;
 
 import net.sourceforge.novaforjava.JulianDay;
 import net.sourceforge.novaforjava.api.LnDate;
 import net.sourceforge.novaforjava.api.LnHrzPosn;
 
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
@@ -44,6 +42,7 @@ import org.indilib.i4j.driver.serial.INDISerialPortExtension;
 import org.indilib.i4j.driver.serial.INDISerialPortInterface;
 import org.indilib.i4j.driver.telescope.INDIDirection;
 import org.indilib.i4j.driver.telescope.INDITelescope;
+import org.indilib.i4j.driver.telescope.INDITelescopeMoveImplementation;
 import org.indilib.i4j.driver.telescope.INDITelescopeSyncInterface;
 import org.indilib.i4j.driver.telescope.alignment.AlignmentDatabaseEntry;
 import org.indilib.i4j.driver.telescope.alignment.DoubleRef;
@@ -110,6 +109,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
         mathPluginManagement.setApproximateAlignment(MountAlignment.ZENITH);
         mathPluginManagement.forceActive();
         mathPluginManagement.initialise();
+        moveExtention.setMoveImpl(new INDITelescopeMoveImplementation(moveExtention));
         levelNorthP.setEventHandler(new SwitchEvent() {
 
             @Override
@@ -172,7 +172,14 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
      * set).
      */
     protected void gotoUpdate() {
+        if (gotoDirection == null && moveExtention.hasMoveRequest()) {
+            gotoDirection = new INDIDirection(this.eqnRa.getValue(), this.eqnDec.getValue());
+            if (trackState == TelescopeStatus.SCOPE_IDLE) {
+                trackState = TelescopeStatus.SCOPE_SLEWING;
+            }
+        }
         if (gotoDirection != null) {
+            moveExtention.update(gotoDirection);
             long now = System.currentTimeMillis();
             // the gt is not so accurate so take a biger period (4 stecond in
             // the future) that will make a smouther ride..
@@ -254,58 +261,6 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     @Override
     public String getName() {
         return getClass().getSimpleName();
-    }
-
-    @Override
-    protected boolean moveNS(TelescopeMotionNS dir) {
-        this.mount.freeVerticalAxis();
-        this.movementNSS.resetAllSwitches();
-        this.movementNSS.setState(IDLE);
-        String message = null;
-        double rate;
-        double arcminutes = movementRate.getValue();
-        if (dir == TelescopeMotionNS.MOTION_NORTH) {
-            rate = (1d / ARCMINUTES_PER_DEGREE) * arcminutes;
-        } else {
-            rate = (-1d / ARCMINUTES_PER_DEGREE) * arcminutes;
-        }
-        if (trackState == TelescopeStatus.SCOPE_IDLE) {
-            trackState = TelescopeStatus.SCOPE_SLEWING;
-            gotoDirection = new INDIDirection(eqnRa.getValue(), eqnDec.getValue() + rate);
-        } else if (trackState == TelescopeStatus.SCOPE_TRACKING || trackState == TelescopeStatus.SCOPE_SLEWING) {
-            gotoDirection.addDec(rate);
-        } else {
-            message = "can only move if the scope is idle or tracking";
-        }
-        updateProperty(this.movementNSS, message);
-
-        return true;
-    }
-
-    @Override
-    protected boolean moveWE(TelescopeMotionWE dir) {
-        this.mount.freeVerticalAxis();
-        this.movementWES.resetAllSwitches();
-        this.movementWES.setState(IDLE);
-        String message = null;
-        double rate;
-        double arcminutes = movementRate.getValue();
-        if (dir == TelescopeMotionWE.MOTION_WEST) {
-            rate = (1d / ARCMINUTES_PER_DEGREE) * arcminutes;
-        } else {
-            rate = (-1d / ARCMINUTES_PER_DEGREE) * arcminutes;
-        }
-        if (trackState == TelescopeStatus.SCOPE_IDLE) {
-            trackState = TelescopeStatus.SCOPE_SLEWING;
-            gotoDirection = new INDIDirection(eqnRa.getValue() + rate, eqnDec.getValue());
-        } else if (trackState == TelescopeStatus.SCOPE_TRACKING || trackState == TelescopeStatus.SCOPE_SLEWING) {
-            gotoDirection.addRa(rate);
-        } else {
-            message = "can only move if the scope is idle or tracking";
-        }
-        updateProperty(this.movementWES, message);
-
-        return true;
     }
 
     @Override

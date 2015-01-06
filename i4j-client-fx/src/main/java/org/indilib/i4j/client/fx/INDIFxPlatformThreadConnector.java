@@ -153,7 +153,7 @@ public class INDIFxPlatformThreadConnector implements InvocationHandler {
                 }
                 if (System.currentTimeMillis() - start > MAX_WAIT_TIME) {
                     LOG.warn("We will not wait any longer, continueing!");
-                } 
+                }
             }
         }
         return invoker.getResult();
