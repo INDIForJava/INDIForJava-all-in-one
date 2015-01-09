@@ -22,6 +22,8 @@ package org.indilib.i4j.driver.examples;
  * #L%
  */
 
+import static org.indilib.i4j.Constants.PropertyStates.OK;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +34,6 @@ import java.util.Date;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
-import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIBLOBValue;
 import org.indilib.i4j.driver.INDIBLOBElement;
@@ -41,6 +42,8 @@ import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDISwitchElement;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.annotation.InjectElement;
+import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.connection.INDIConnectionHandler;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.protocol.api.INDIConnection;
@@ -51,9 +54,12 @@ import org.slf4j.LoggerFactory;
  * An example class representing a very basic INDI Driver.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author Richard van Nieuwenhoven
  */
+// START SNIPPET: declaration
 public class INDIDriverExample extends INDIDriver implements INDIConnectionHandler {
 
+    // END SNIPPET: declaration
     /**
      * logger to log to.
      */
@@ -64,8 +70,7 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
      */
     private static final int BUFFER_SIZE = 4096;
 
-    // START SNIPPET: fields
-    // The Properties and Elements of this Driver
+    // START SNIPPET: fieldsClasic
     /**
      * the image property.
      */
@@ -76,30 +81,40 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
      */
     private INDIBLOBElement imageE;
 
+    // END SNIPPET: fieldsClasic
+
+    // START SNIPPET: fieldsInject
     /**
-     * switch property.
+     * Define the Switch Property with this driver as its owner, name
+     * "sendImage", label "Send Image", group "Image Properties", initial state
+     * IDLE, Read/Write permission and AtMostOne rule for the switch.
      */
+    @InjectProperty(name = "sendImage", label = "Send Image", group = "Image Properties", switchRule = SwitchRules.AT_MOST_ONE)
     private INDISwitchProperty sendP;
 
     /**
-     * switch element.
+     * Define the Switch Element with name "sendImage", label "Send Image" and
+     * initial status OFF.
      */
+    @InjectElement()
     private INDISwitchElement sendE;
 
-    // END SNIPPET: fields
+    // END SNIPPET: fieldsInject
 
     /**
      * Constructs an instance of a <code>INDIDriverExample</code> with a
-     * particular <code>inputStream</code> from which to read the incoming
-     * messages (from clients) and a <code>outputStream</code> to write the
-     * messages to the clients.
+     * particular <code>INDIConnection</code> to write the messages to the
+     * clients.
      * 
      * @param connection
      *            the indi connection to the server.
      */
+
+    // START SNIPPET: constructor
     public INDIDriverExample(INDIConnection connection) {
         super(connection);
-
+        // END SNIPPET: constructor
+        // START SNIPPET: initClasic
         // Define the BLOB Property with this Driver as its owner, name "image",
         // label "Image", group "Image Properties", initial state IDLE and Read
         // Only.
@@ -107,15 +122,8 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         // Define the BLOB Element with name "image" and label "Image". Its
         // initial value is empty.
         imageE = imageP.newElement().create();
-
-        // Define the Switch Property with this driver as its owner, name
-        // "sendImage", label "Send Image", group "Image Properties", initial
-        // state IDLE, Read/Write permission and AtMostOne rule for the switch.
-        sendP = newSwitchProperty().name("sendImage").label("Send Image").group("Image Properties").switchRule(SwitchRules.AT_MOST_ONE).create();
-        // Define the Switch Element with name "sendImage", label "Send Image"
-        // and initial status OFF
-        sendE = sendP.newElement().create();
-
+        // END SNIPPET: initClasic
+        // START SNIPPET: eventHandler
         sendP.setEventHandler(new SwitchEvent() {
 
             @Override
@@ -123,13 +131,17 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
                 newSendValue(elementsAndValues);
             }
         });
+        // END SNIPPET: eventHandler
+
     }
 
-    // Returns the name of the Driver
+    // START SNIPPET: getName
     @Override
     public String getName() {
         return "INDI Driver Example";
     }
+
+    // END SNIPPET: getName
 
     /**
      * Processes the changes sent by the client to the Switch Property. If the
@@ -140,42 +152,36 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
      * @param elementsAndValues
      *            the new values for the property.
      */
+    // START SNIPPET: action
     private void newSendValue(INDISwitchElementAndValue[] elementsAndValues) {
-        if (elementsAndValues.length > 0) {
-            // If any element has been updated
-            INDISwitchElement el = elementsAndValues[0].getElement();
-            SwitchStatus s = elementsAndValues[0].getValue();
+        // set the property state to ok
+        this.sendP.setState(OK);
+        // update the propery from the values send by the client
+        this.sendP.setValues(elementsAndValues);
+        // send the property (state) back to the client
+        updateProperty(this.sendP);
+        // If the sendImage element has been switched one we send the image
+        if (sendE.isOn()) {
+            boolean imageLoaded = loadImageFromFile();
+            if (imageLoaded) {
+                // set the element to off
+                sendE.setOff();
+                // send the property
+                updateProperty(this.sendP);
 
-            if ((el == sendE) && (s == SwitchStatus.ON)) { // If the
-                // sendImage
-                // element has
-                // been switched
-                // one we send
-                // the image
-                boolean imageLoaded = loadImageFromFile();
-
-                if (imageLoaded) {
-                    sendP.setState(PropertyStates.OK); // Set the state
-                                                       // of
-                    // the sendImage
-                    // property as OK
-
-                    imageP.setState(PropertyStates.OK); // Set the state
-                                                        // of
-                    // the image
-                    // property as OK
-                    updateProperty(sendP); // Send the sendImage
-                                           // property to
-                    // the client.
-                    updateProperty(imageP); // Send the image property
-                                            // to
-                    // the client.
-                }
+                // the sendImage´ property as OK
+                imageP.setState(PropertyStates.OK);
+                // Send the sendImage property to the client.
+                updateProperty(imageP);
+            } else {
+                updateProperty(this.sendP, "no image found");
             }
         }
     }
 
-    // Add the image and send properties changes
+    // END SNIPPET: action
+
+    // START SNIPPET: connection
     @Override
     public void driverConnect(Date timestamp) {
         LOG.info("Driver connect");
@@ -183,13 +189,14 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
         this.addProperty(sendP);
     }
 
-    // Remove the image and send properties changes
     @Override
     public void driverDisconnect(Date timestamp) {
         LOG.info("Driver disconnect");
         this.removeProperty(imageP);
         this.removeProperty(sendP);
     }
+
+    // END SNIPPET: connection
 
     /**
      * Loads the image "image.jpg" from the same directory into the image
