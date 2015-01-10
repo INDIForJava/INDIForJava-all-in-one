@@ -173,7 +173,7 @@ public final class INDIServer implements INDIServerInterface {
 
     @Override
     public boolean isAlreadyLoaded(String deviceIdentifier) {
-        for (INDIDevice d : devices) {
+        for (INDIDevice d : staticCopyOfDevices()) {
             if (d.isDevice(deviceIdentifier)) {
                 return true;
             }
@@ -255,7 +255,7 @@ public final class INDIServer implements INDIServerInterface {
         if (baseAcceptor != null) {
             baseAcceptor.close();
         }
-        for (INDIDeviceListener indiDeviceListener : new ArrayList<>(clients)) {
+        for (INDIDeviceListener indiDeviceListener : staticCopyOfClients()) {
             if (indiDeviceListener instanceof INDIClient) {
                 try {
                     ((INDIClient) indiDeviceListener).disconnect();
@@ -267,6 +267,30 @@ public final class INDIServer implements INDIServerInterface {
     }
 
     /**
+     * @return a static list to iterate without the problem of concurent
+     *         modifications.
+     */
+    private INDIDeviceListener[] staticCopyOfClients() {
+        return clients.toArray(new INDIDeviceListener[clients.size()]);
+    }
+
+    /**
+     * @return a static list to iterate without the problem of concurent
+     *         modifications.
+     */
+    private INDIDevice[] staticCopyOfDevices() {
+        return devices.toArray(new INDIDevice[devices.size()]);
+    }
+
+    /**
+     * @return a static list to iterate without the problem of concurent
+     *         modifications.
+     */
+    private INDIServerEventHandler[] staticCopyOfEventHandlers() {
+        return eventHandlers.toArray(new INDIServerEventHandler[eventHandlers.size()]);
+    }
+
+    /**
      * send the notification to all event handlers that a client connection was
      * broken.
      * 
@@ -274,7 +298,7 @@ public final class INDIServer implements INDIServerInterface {
      *            the client who's connection broke.
      */
     protected void connectionWithClientBroken(INDIClient client) {
-        for (INDIServerEventHandler handler : eventHandlers) {
+        for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
             handler.connectionWithClientBroken(client);
         }
     }
@@ -287,7 +311,7 @@ public final class INDIServer implements INDIServerInterface {
      *            the client who's connection was estebisched.
      */
     protected void connectionWithClientEstablished(INDIClient client) {
-        for (INDIServerEventHandler handler : eventHandlers) {
+        for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
             handler.connectionWithClientEstablished(client);
         }
     }
@@ -300,7 +324,7 @@ public final class INDIServer implements INDIServerInterface {
      *            the device that was disconnected.
      */
     protected void driverDisconnected(INDIDevice device) {
-        for (INDIServerEventHandler handler : eventHandlers) {
+        for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
             handler.driverDisconnected(device);
         }
     }
@@ -314,7 +338,7 @@ public final class INDIServer implements INDIServerInterface {
      */
     protected List<INDIDeviceListener> getClientsListeningToDevice(String deviceName) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-        for (INDIDeviceListener c : clients) {
+        for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToDevice(deviceName)) {
                 list.add(c);
             }
@@ -333,7 +357,7 @@ public final class INDIServer implements INDIServerInterface {
      */
     protected List<INDIDeviceListener> getClientsListeningToProperty(String deviceName, String propertyName) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-        for (INDIDeviceListener c : clients) {
+        for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToProperty(deviceName, propertyName)) {
                 list.add(c);
             }
@@ -354,7 +378,7 @@ public final class INDIServer implements INDIServerInterface {
      */
     protected List<INDIDeviceListener> getClientsListeningToPropertyUpdates(String deviceName, String propertyName, boolean isBLOB) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-        for (INDIDeviceListener c : clients) {
+        for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToProperty(deviceName, propertyName)) {
                 if (isBLOB) {
                     if (c.isBLOBAccepted(deviceName, propertyName)) {
@@ -381,7 +405,7 @@ public final class INDIServer implements INDIServerInterface {
      */
     protected List<INDIDeviceListener> getClientsListeningToSingleProperties(String deviceName) {
         List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
-        for (INDIDeviceListener c : clients) {
+        for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToSingleProperty(deviceName)) {
                 list.add(c);
             }
@@ -397,7 +421,7 @@ public final class INDIServer implements INDIServerInterface {
      * @return The Device with name <code>deviceName</code>.
      */
     protected INDIDevice getDevice(String deviceName) {
-        for (INDIDevice device : devices) {
+        for (INDIDevice device : staticCopyOfDevices()) {
             if (device.hasName(deviceName)) {
                 return device;
             }
@@ -570,7 +594,7 @@ public final class INDIServer implements INDIServerInterface {
      *            The message to send.
      */
     protected void sendXMLMessageToAllClients(INDIProtocol<?> xml) {
-        for (INDIDeviceListener c : clients) {
+        for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c instanceof INDIClient) {
                 c.sendXMLMessage(xml);
             }
@@ -584,9 +608,7 @@ public final class INDIServer implements INDIServerInterface {
      *            The message to send.
      */
     protected void sendXMLMessageToAllDevices(INDIProtocol<?> xml) {
-        for (int i = 0; i < devices.size(); i++) {
-            INDIDevice d = devices.get(i);
-
+        for (INDIDevice d : staticCopyOfDevices()) {
             d.sendXMLMessage(xml);
         }
     }
@@ -602,7 +624,7 @@ public final class INDIServer implements INDIServerInterface {
      *         server. <code>false</code> otherwise.
      */
     private boolean acceptClient(INDIConnection clientSocket) {
-        for (INDIServerEventHandler handler : eventHandlers) {
+        for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
             if (!handler.acceptClient(clientSocket)) {
                 return false;
             }
@@ -685,7 +707,7 @@ public final class INDIServer implements INDIServerInterface {
      */
     private List<INDIDevice> getDevicesWithIdentifier(String deviceIdentifier) {
         List<INDIDevice> found = new ArrayList<INDIDevice>();
-        for (INDIDevice device : devices) {
+        for (INDIDevice device : staticCopyOfDevices()) {
             if (device.isDevice(deviceIdentifier)) {
                 found.add(device);
             }
