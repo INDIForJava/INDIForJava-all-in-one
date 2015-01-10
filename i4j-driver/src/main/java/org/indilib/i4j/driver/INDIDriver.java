@@ -207,7 +207,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     @Override
     public void finishReader() {
-        System.err.println("DRIVER " + getName() + " finishing");
+        LOG.info("DRIVER " + getName() + " finishing");
 
         if (reader != null) {
             reader.setStop(true);

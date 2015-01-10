@@ -387,6 +387,7 @@
 		<module>i4j-server-api</module>
 		<module>i4j-server-main</module>
 		<module>i4j-driver-guider</module>
+		<module>i4j-driver-junit</module>
 		<module>i4j-driver-nexstar-gt</module>
 		<module>i4j-stellarium-proxy</module>
 		<module>i4j-driver-raspberry-camera</module>

@@ -6,9 +6,9 @@
 		<artifactId>i4j</artifactId>
 		<version>1.39-SNAPSHOT</version>
 	</parent>
-	<artifactId>i4j-driver-examples</artifactId>
-	<name>INDI for Java Driver Examples</name>
-	<description>INDI for Java Driver Examples</description>
+	<artifactId>i4j-driver-junit</artifactId>
+	<name>INDI for Java Driver JUNIT Test Utilities</name>
+	<description>INDI for Java Driver JUNIT Test Utilities</description>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
@@ -18,9 +18,13 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>i4j-driver-junit</artifactId>
+			<artifactId>i4j-client</artifactId>
 			<version>${project.version}</version>
-			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
 		</dependency>
 	</dependencies>
 	<properties>
