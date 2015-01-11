@@ -35,8 +35,8 @@
 		<site>
 			<id>sourceforge-deploy</id>
 			<name>Sourceforge Maven 2 Project Site</name>
-<!-- 			<url>file://${java.io.tmpdir}/stage</url> -->
-			<url>scp://shell.sourceforge.net//home/project-web/indiforjava/htdocs/stage</url> 
+			<!-- <url>file://${java.io.tmpdir}/stage</url> -->
+			<url>scp://shell.sourceforge.net//home/project-web/indiforjava/htdocs/stage</url>
 		</site>
 	</distributionManagement>
 	<inceptionYear>2012</inceptionYear>
@@ -260,6 +260,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.7</version>
+				<configuration>
+					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
 				<reportSets>
 					<reportSet>
 						<reports>
