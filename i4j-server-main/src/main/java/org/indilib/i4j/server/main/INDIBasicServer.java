@@ -155,18 +155,19 @@ public class INDIBasicServer implements INDIServerEventHandler {
         if (commandLine.isInteractive()) {
             commandLine.printInteractiveHelp();
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-            String line;
             try {
 
                 while (server.isServerRunning()) {
-                    line = in.readLine();
-                    line = line.trim();
-                    if (line.length() > 0) {
-                        try {
-                            new INDICommandLine(line).setBasicServer(this).execute(true);
-                        } catch (Exception e) {
-                            print("Error in command: " + e.getMessage() + ". (see log)");
-                            LOG.error("could not parse/execute command", e);
+                    String line = in.readLine();
+                    if (line != null) {
+                        line = line.trim();
+                        if (line.length() > 0) {
+                            try {
+                                new INDICommandLine(line).setBasicServer(this).execute(true);
+                            } catch (Exception e) {
+                                print("Error in command: " + e.getMessage() + ". (see log)");
+                                LOG.error("could not parse/execute command", e);
+                            }
                         }
                     }
                 }

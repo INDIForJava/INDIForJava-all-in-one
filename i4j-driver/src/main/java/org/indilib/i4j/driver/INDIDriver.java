@@ -590,19 +590,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
             return;
         }
 
-        if (xml.getDevice() != null && !xml.getDevice().isEmpty()) {
-            String deviceName = xml.getDevice();
-
-            // TODO: this is wrong ;-)
-            if (deviceName.compareTo(deviceName) != 0) { // not asking for this
-                                                         // driver
-                return;
-            }
-        }
-
         if (xml.getName() != null && !xml.getName().trim().isEmpty()) {
             String propertyName = xml.getName();
-            INDIProperty p = getProperty(propertyName);
+            INDIProperty<?> p = getProperty(propertyName);
 
             if (p != null) {
                 sendDefXXXVectorMessage(p, null);

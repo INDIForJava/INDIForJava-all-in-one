@@ -34,12 +34,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class GetProperties extends INDIProtocol<GetProperties> {
 
     /**
-     * the device attribute of the element.
-     */
-    @XStreamAsAttribute
-    private String device;
-
-    /**
      * the property attribute of the element.
      */
     @XStreamAsAttribute
@@ -97,7 +91,6 @@ public class GetProperties extends INDIProtocol<GetProperties> {
 
     @Override
     public GetProperties trim() {
-        this.device = trim(this.device);
         this.property = trim(this.property);
         this.version = trim(this.version);
         return super.trim();
