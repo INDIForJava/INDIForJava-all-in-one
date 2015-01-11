@@ -1,3 +1,5 @@
+%{include|source-content=<div id\="apt-box">}
+
 INDI Protocol API
 
  This package contains the new INDI protocol classes that will be used starting with version 2.0.0.
@@ -25,3 +27,5 @@ they got a good toString representing the message as preview of the xml.
 Now you can use the schema "indi://host:port/Driver/property" to connect to a server. Be aware that the
 input and output streams are INDI(In/Out)putStream's and should be casted to such, they are not intended 
 to write bytes just indi protocol pojo's.   
+ 
+%{include|source-content=</div>}   

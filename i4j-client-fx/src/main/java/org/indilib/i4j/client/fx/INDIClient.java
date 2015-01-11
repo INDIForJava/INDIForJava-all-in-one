@@ -97,7 +97,9 @@ public class INDIClient extends Application implements INDIServerConnectionListe
         devices = INDIFxFactory.newINDIFxDevicesFxml();
 
         Scene scene = new Scene(devices.fx(), DEFAULT_WINDOW_SIZE, DEFAULT_WINDOW_SIZE);
+        // START SNIPPET: style
         scene.getStylesheets().add(getClass().getResource("indistyle.css").toExternalForm());
+        // END SNIPPET: style
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 

@@ -16,6 +16,10 @@
 			<item name="INDI for Java" href="../index.html" />
 			<item name="${project.name}" href="index.html" />
 		</breadcrumbs>
+		<menu name="Dokumentation">
+			<item name="About" href="index.html" />
+			<item name="Client programming" href="client.html" />
+		</menu>
 		<menu ref="modules" />
 		<menu ref="reports" />
 	</body>

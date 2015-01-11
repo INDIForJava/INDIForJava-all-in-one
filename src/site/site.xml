@@ -20,25 +20,34 @@
 			<item name="Migration" href="migration.html" />
 		</menu>
 		<menu name="Modules" >
-			<item name="Base Library" href="i4j-base/index.html" />
-			<item name="Client Library" href="i4j-client/index.html" />
-			<item name="Client UI Library" href="i4j-client-ui/index.html" />
-			<item name="Driver Library" href="i4j-driver/index.html" />
-			<item name="Server Library" href="i4j-server/index.html" />
-			<item name="Abstract Filter Wheel Driver" href="i4j-driver-filterwheel/index.html" />
-			<item name="Abstract Focuser Driver" href="i4j-driver-focuser/index.html" />
-			<item name="Abstract Telescope Driver" href="i4j-driver-telescope/index.html" />
-			<item name="Abstract CCD Driver" href="i4j-driver-ccd/index.html" />
-			<item name="Serial Port Extension" href="i4j-driver-serialextension/index.html" />
-			<item name="Driver for the Raspberry PI" href="i4j-driver-raspberrypigpio/index.html" />
-			<item name="Driver for the QHY Filter Wheel" href="i4j-driver-qhyfilterwheel/index.html" />
-			<item name="Driver for the Seletek" href="i4j-driver-seletek/index.html" />
-			<item name="Driver for the Sky Quality Meter - LU" href="i4j-driver-sqm/index.html" />
-			<item name="Driver Examples" href="i4j-driver-examples/index.html" />
-			<item name="Server Examples" href="i4j-server-examples/index.html" />
-			<item name="Client Examples" href="i4j-client-examples/index.html" />
-			<item name="GNU Scientific Library port" href="org.gnu.savannah.gsl/index.html" />
-			<item name="3D Convex Hull Algorithm" href="quickhull3d/index.html" />
+			<item name="INDI Protocol" href="i4j-protocol/index.html" />  
+			<item name="Base Library" href="i4j-base/index.html" />    
+			<item name="Client Library" href="i4j-client/index.html" />    
+			<item name="Swing Client UI Library" href="i4j-client-ui/index.html" />    
+			<item name="FX Client UI Library" href="i4j-client-fx/index.html" />    
+			<item name="Client Examples" href="i4j-client-examples/index.html" />    
+			<item name="Driver Library" href="i4j-driver/index.html" />    
+			<item name="Abstract Filter Wheel Driver" href="i4j-driver-filterwheel/index.html" />    
+			<item name="Abstract Focuser Driver" href="i4j-driver-focuser/index.html" />    
+			<item name="Serial Port Extension" href="i4j-driver-serialextension/index.html" />    
+			<item name="Abstract Telescope Driver" href="i4j-driver-telescope/index.html" />    
+			<item name="Fits utilities" href="i4j-fits-utils/index.html" />    
+			<item name="Abstract CCD Driver" href="i4j-driver-ccd/index.html" />    
+			<item name="Raspberry PI Driver" href="i4j-driver-raspberrypigpio/index.html" />    
+			<item name="QHY Filter Wheel Driver" href="i4j-driver-qhyfilterwheel/index.html" />    
+			<item name="Seletek Driver" href="i4j-driver-seletek/index.html" />    
+			<item name="Sky Quality Meter Driver" href="i4j-driver-sqm/index.html" />   
+			<item name="NexStar GT Mount Driver" href="i4j-driver-nexstar-gt/index.html" />    
+			<item name="Raspberry pi camera Driver" href="i4j-driver-raspberry-camera/index.html" />    
+			<item name="Proxy for stelarium" href="i4j-stellarium-proxy/index.html" />    
+			<item name="Driver JUNIT Test Utilities" href="i4j-driver-junit/index.html" />    
+			<item name="Server starter" href="i4j-server-main/index.html" />    
+			<item name="Server API" href="i4j-server-api/index.html" />    
+			<item name="Server Library" href="i4j-server/index.html" />    
+			<item name="Server Examples" href="i4j-server/index.html" />    
+			<item name="Server distribution" href="i4j-all-in-one/index.html" />   
+			<item name="GNU Scientific Library port" href="org.gnu.savannah.gsl/index.html" />  
+			<item name="nomtam FITS library" href="http://heasarc.gsfc.nasa.gov/docs/heasarc/fits/java/" />   
 		</menu>
 		<menu ref="reports" />
 		<menu name="Sourceforge">

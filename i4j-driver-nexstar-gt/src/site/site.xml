@@ -16,9 +16,9 @@
 			<item name="INDI for Java" href="../index.html" />
 			<item name="${project.name}" href="index.html" />
 		</breadcrumbs>
-		<menu name="Dokumentation">
+		<menu name="Documentation">
 			<item name="About" href="index.html" />
-			<item name="Java port" href="gsl.html" />
+			<item name="Nexstar GT" href="nexstar.html" />
 		</menu>
 		<menu ref="modules" />
 		<menu ref="reports" />

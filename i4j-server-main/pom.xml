@@ -7,8 +7,8 @@
 		<version>1.39-SNAPSHOT</version>
 	</parent>
 	<artifactId>i4j-server-main</artifactId>
-	<name>INDI for Java Server Examples</name>
-	<description>INDI for Java Server Examples</description>
+	<name>INDI for Java Server starter</name>
+	<description>INDI for Java Server starter</description>
 	<packaging>jar</packaging>
 	<build>
 		<plugins>

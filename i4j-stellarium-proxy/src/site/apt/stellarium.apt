@@ -1,3 +1,5 @@
+%{include|source-content=<div id\="apt-box">}
+
 Stellarium proxy
 
  This indi device is creates an stellarium server and can connect it to any indi telescope driver.
@@ -6,3 +8,5 @@ Just add this driver to your server and configure if with your faforite indi cli
  Because the stellarium api does not provide location properties you should provide them yourself
 in the telescope driver, again with your faforite indi client. This is optional for all drivers that
 do not have to convert to horizontal coordinates, but mandartory for all that do.
+
+%{include|source-content=</div>}

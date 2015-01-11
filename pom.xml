@@ -35,8 +35,8 @@
 		<site>
 			<id>sourceforge-deploy</id>
 			<name>Sourceforge Maven 2 Project Site</name>
-			<url>file://${java.io.tmpdir}/stage</url>
-			<!-- <url>sftp://web.sourceforge.net/home/groups/i/in/indiforjava/htdocs</url> -->
+<!-- 			<url>file://${java.io.tmpdir}/stage</url> -->
+			<url>scp://shell.sourceforge.net//home/project-web/indiforjava/htdocs/stage</url> 
 		</site>
 	</distributionManagement>
 	<inceptionYear>2012</inceptionYear>

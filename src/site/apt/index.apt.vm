@@ -18,7 +18,6 @@ this might be your starting point.
 Moreover, this project does not pretend to mimic every single option that the original libraries offer and, in fact, the programming ideas behind this 
 library differ in some points to the original ones: particularly, INDI for Java tries to provide a truly object oriented approach in the development of INDI compatible software.
  
- 
 *Where do I start?
 
  If you are interested in the project, you might want to check the Downloads available for the project. In those downloads you have all the necessary 

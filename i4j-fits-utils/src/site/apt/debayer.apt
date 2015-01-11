@@ -1,0 +1,13 @@
+%{include|source-content=<div id\="apt-box">}
+
+Debayer
+
+ All ccd color chips use a Bayer filter {{{http://en.wikipedia.org/wiki/Bayer_filter}Bayer filter}} to represent colors with the minimal los of resolution.
+Many programs can not handle these images, specially when they are in the fits format, so i4j used a number of freely available algorithems 
+{{{http://www.umanitoba.ca/faculties/science/astronomy/jwest/plugins.html}jimage debayer plugin}} and refactored them to a tool that can be used to
+debayer fits images. This algorithems can be used on the server as on the client. We recomment not to change the image in the indi system (and lose
+valuable informations). Rather we try to include as mutch information as possible in the fits header for later use.
+
+ Best way to use this library is to include it in your client to let the user see a debayered image of the raw images. 
+ 
+%{include|source-content=</div>}   

@@ -28,4 +28,15 @@ to convert the property creation to the new api.
  The empty default implementation in the super class enables you to delete the local implementation when it is empty. To
 see how you can use the new eventing api see the explination in {{{./develop.html}developing a driver}}.
 
+*API renaming
+
+ Because some of the methodnames use where not folowing the standard java naming standard, we renamed them. You will find them 
+easely, in most cases just the camel case changed.
+
+*Maven
+
+ We are now mavenaized and available from central, so it is recommended that you also us maven or simular for your development.
+The creation of a maven project is out of scope, but very simple (see {{{http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html}Maven in 5 Minutes}}).
+It is also recomendet that you use the i4j parent pom as your parent pom, that will keep your code compatible to the i4j code.
+
 %{include|source-content=</div>}

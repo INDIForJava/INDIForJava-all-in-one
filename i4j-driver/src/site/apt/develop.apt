@@ -2,6 +2,10 @@
 
 Develop an indi for java driver
 
- To develop an indi for java driver ....
+ To develop an indi for java driver you first have to decide what kind of driver it is. If it is one of the standard indi devices you should
+take the superclass from the aproriate abstract module. Like you want to write a driver for telescope "x" that create a module i4-driver-x and 
+add a dependecy to {{{../i4j-driver-telescope}i4j-driver-telescope}} and use the superclass org.indilib.i4j.driver.telescope.INDITelescope.
+
+ The same for all other devices. The basic driver implementation is eqaual for all types of drivers for that see the tutorial of the {{{../i4j-driver-examples}i4j-driver-examples}} module.
 
 %{include|source-content=</div>}
