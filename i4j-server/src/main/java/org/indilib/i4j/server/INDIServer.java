@@ -26,6 +26,7 @@ import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -86,7 +87,7 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * the list with listeners to server events.
      */
-    private List<INDIServerEventHandler> eventHandlers = new ArrayList<>();
+    private List<INDIServerEventHandler> eventHandlers = Collections.synchronizedList(new ArrayList<INDIServerEventHandler>());
 
     /**
      * The basis acceptor, normally a socket acceptor the basic indi protocol.
@@ -719,8 +720,8 @@ public final class INDIServer implements INDIServerInterface {
      * Inits the Server and launches the listening thread.
      */
     private void initServer() {
-        devices = new ArrayList<INDIDevice>();
-        clients = new ArrayList<INDIDeviceListener>();
+        devices = Collections.synchronizedList(new ArrayList<INDIDevice>());
+        clients = Collections.synchronizedList(new ArrayList<INDIDeviceListener>());
 
         startListeningToClients();
     }
