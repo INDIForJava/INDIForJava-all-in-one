@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.indilib.i4j</groupId>
+		<artifactId>i4j</artifactId>
+		<version>1.39-SNAPSHOT</version>
+	</parent>
+	<artifactId>i4j-driver-nmea-0183</artifactId>
+	<name>INDI for Java NMEA 0183 stream driver</name>
+	<description>INDI for Java NMEA 0183 stream driver for gps and wether</description>
+	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-driver</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-driver-junit</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-driver-serialextension</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.marineapi</groupId>
+			<artifactId>marineapi</artifactId>
+			<version>0.8.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.neuronrobotics</groupId>
+					<artifactId>nrjavaserial</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+	<properties>
+		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
+	</properties>
+</project>

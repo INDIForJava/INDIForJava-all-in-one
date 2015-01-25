@@ -30,11 +30,15 @@ import jssc.SerialPortException;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDIDriverExtension;
+import org.indilib.i4j.driver.INDINumberElement;
+import org.indilib.i4j.driver.INDINumberElementAndValue;
+import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
+import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +81,37 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     protected INDITextElement portElement;
 
     /**
+     * the property representing the connection details for serial connection
+     * port.
+     */
+    @InjectProperty(name = "PORTS_DETAILS", label = "Port details", group = INDIDriver.GROUP_OPTIONS, saveable = true)
+    protected INDINumberProperty portDetails;
+
+    /**
+     * The element representing the serial connection port Baut rate.
+     */
+    @InjectElement(name = "BAUD", label = "Baut rate", numberValue = SerialPort.BAUDRATE_4800)
+    protected INDINumberElement portBaut;
+
+    /**
+     * The element representing the serial connection port Data bits.
+     */
+    @InjectElement(name = "DATABITS", label = "Data bits", numberValue = SerialPort.DATABITS_8)
+    protected INDINumberElement portDataBits;
+
+    /**
+     * The element representing the serial connection port Stop bits.
+     */
+    @InjectElement(name = "STOPBITS", label = "Stop bits", numberValue = SerialPort.STOPBITS_1)
+    protected INDINumberElement portStopBits;
+
+    /**
+     * The element representing the serial connection port.
+     */
+    @InjectElement(name = "PARITY", label = "parity", numberValue = SerialPort.PARITY_NONE)
+    protected INDINumberElement portParity;
+
+    /**
      * The indicator interface if the extension is active for the driver.
      */
     private INDISerialPortInterface serialPortInterface;
@@ -85,26 +120,6 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * the real serial port.
      */
     private SerialPort serialPort;
-
-    /**
-     * the connection baut rate.
-     */
-    private int baudrate = SerialPort.BAUDRATE_4800;
-
-    /**
-     * the number of data bits.
-     */
-    private int databits = SerialPort.DATABITS_8;
-
-    /**
-     * the number os stop bits.
-     */
-    private int stopbits = SerialPort.STOPBITS_1;
-
-    /**
-     * the parity type to use.
-     */
-    private int parity = SerialPort.PARITY_NONE;
 
     /**
      * Minimum milliseconds between commands.
@@ -122,6 +137,11 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     private Thread shutdownHook;
 
     /**
+     * can the port details be changed from the client?
+     */
+    private boolean portDetailesFixed = true;
+
+    /**
      * Extension constructor. do not call this yourself.
      * 
      * @param driver
@@ -136,6 +156,15 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
             @Override
             public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
+                property.setValues(elementsAndValues);
+                property.setState(PropertyStates.OK);
+                updateProperty(property);
+            }
+        });
+        this.portDetails.setEventHandler(new NumberEvent() {
+
+            @Override
+            public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
                 property.setValues(elementsAndValues);
                 property.setState(PropertyStates.OK);
                 updateProperty(property);
@@ -256,7 +285,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             this.serialPort = new SerialPort(portElement.getValue());
             // Open serial port
             this.serialPort.openPort();
-            this.serialPort.setParams(baudrate, databits, stopbits, parity);
+            this.serialPort.setParams(portBaut.getIntValue(), portDataBits.getIntValue(), portStopBits.getIntValue(), portParity.getIntValue());
             return true;
         } catch (SerialPortException e) {
             handleSerialException(e);
@@ -282,6 +311,22 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     }
 
     /**
+     * can the port details be changed by the client? defaults to false because
+     * most devices have fixed settings.
+     * 
+     * @param portDetailesFixed
+     *            true if they can.
+     */
+    public void setPortDetailesFixed(boolean portDetailesFixed) {
+        this.portDetailesFixed = portDetailesFixed;
+        if (this.portDetailesFixed) {
+            addProperty(portDetails);
+        } else {
+            removeProperty(portDetails);
+        }
+    }
+
+    /**
      * set the baut rate.
      * 
      * @param newBaudrate
@@ -289,7 +334,8 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setBaudrate(int newBaudrate) {
-        this.baudrate = newBaudrate;
+        this.portBaut.setValue(newBaudrate);
+        updateProperty(this.portDetails);
         return this;
     }
 
@@ -301,7 +347,8 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setDatabits(int newDatabits) {
-        this.databits = newDatabits;
+        this.portDataBits.setValue(newDatabits);
+        updateProperty(this.portDetails);
         return this;
     }
 
@@ -313,7 +360,8 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setParity(int newParity) {
-        this.parity = newParity;
+        portParity.setValue(newParity);
+        updateProperty(this.portDetails);
         return this;
     }
 
@@ -325,7 +373,8 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setStopbits(int newStopbits) {
-        this.stopbits = newStopbits;
+        this.portStopBits.setValue(newStopbits);
+        updateProperty(this.portDetails);
         return this;
     }
 
@@ -432,6 +481,19 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     public byte readByte() {
         try {
             return this.serialPort.readBytes(1)[0];
+        } catch (Exception e) {
+            throw new IllegalStateException("serial port communication with telescope interupted", e);
+        }
+    }
+
+    /**
+     * non blocking read all the availabe bytes from the interface.
+     * 
+     * @return the read bytes.
+     */
+    public byte[] readBytes() {
+        try {
+            return this.serialPort.readBytes();
         } catch (Exception e) {
             throw new IllegalStateException("serial port communication with telescope interupted", e);
         }

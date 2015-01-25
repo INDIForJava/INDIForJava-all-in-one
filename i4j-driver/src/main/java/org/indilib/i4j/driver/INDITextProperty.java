@@ -22,6 +22,8 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
+import java.awt.event.TextEvent;
+
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;
 import org.indilib.i4j.protocol.DefTextVector;
 import org.indilib.i4j.protocol.DefVector;
@@ -70,4 +72,5 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
     protected Class<INDITextElement> elementClass() {
         return INDITextElement.class;
     }
+
 }

@@ -721,7 +721,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
                 // has yet conneted the driver.
                 return true;
             }
-            LOG.error("The Property is not from this driver. Maybe you forgot to add it?");
+            LOG.debug("The Property is not from this driver " + getName() + ". Maybe you forgot to add it? " + property.getName());
             return false;
         }
     }

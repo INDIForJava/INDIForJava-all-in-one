@@ -26,6 +26,7 @@ package org.indilib.i4j.fits;
  * Here all the 'standard' fits headers are defined with a detailed description,
  * captiored from differents places around the internet.
  * 
+ * @see http://iraf.noao.edu/projects/ccdmosaic/imagedef/fitsdic.html
  * @author Richard van Nieuwenhoven
  */
 public final class StandardFitsHeader {
@@ -232,6 +233,77 @@ public final class StandardFitsHeader {
      * (sec)
      */
     public static final String DARKTIME = "DARKTIME";
+
+    /**
+     * Site.Environment.temperature, Temperatures outside the dome at times
+     * given by ENVMJDn keywords. in UNITTEMP defaukts to kelvin.
+     */
+    public static final String ENVTEM = "ENVTEM";
+
+    /**
+     * Site.Environment.pressure, Atmospheric Air pressure measurements at times
+     * given by ENVMJDn keywords. in UNITPRES defaults to Pa.
+     */
+    public static final String ENVPRE = "ENVPRE";
+
+    /**
+     * Site.Environment.humidity in %. Relative humidity measurements at times
+     * given by ENVMJDn keywords.
+     */
+    public static final String ENVHUM = "ENVHUM";
+
+    /**
+     * Site.Environment.windspeed. Average wind speeds over the sampling period
+     * outside the dome at times given by ENVMJDn keywords.UNITVEL
+     */
+    public static final String ENVWIN = "ENVWIN";
+
+    /**
+     * Site.Environment.winddir. Average wind direction measurements measured
+     * east of north over the sampling period outside the dome at times given by
+     * ENVMJDn keywords. in UNITPA
+     */
+    public static final String ENVDIR = "ENVDIR";
+
+    /**
+     * Temperature unit.
+     */
+    public static final String UNITTEMP = "UNITTEMP";
+
+    /**
+     * Default Temperature unit.
+     */
+    public static final String UNITTEMP_DEFAULT = "K";
+
+    /**
+     * Pressure unit.
+     */
+    public static final String UNITPRES = "UNITPRES";
+
+    /**
+     * Default Pressure unit.
+     */
+    public static final String UNITPRES_DEFAULT = "Pa";
+
+    /**
+     * Velocity unit.
+     */
+    public static final String UNITVEL = "UNITVEL";
+
+    /**
+     * Default Velocity unit.
+     */
+    public static final String UNITVEL_DEFAULT = "km/s";
+
+    /**
+     * Position angle unit.
+     */
+    public static final String UNITPA = "UNITPA";
+
+    /**
+     * Default Position angle unit.
+     */
+    public static final String UNITPA_DEFAULT = "deg";
 
     /**
      * utility class.
