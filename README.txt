@@ -6,7 +6,6 @@ TO TAKE INTO ACCOUNT FOR THE 1.50 RELEASE:
 
 Note that this project uses code and resources from other free software packages. Particularly, it uses:
 
-  + The Ostermiller Java Utilities (http://ostermiller.org/utils/) by Stephen Ostermiller
   + The Silk icon set 1.3 (http://www.famfamfam.com/lab/icons/silk/) by Mark James
   + Icons from Glypish (http://glyphish.com) 
 
