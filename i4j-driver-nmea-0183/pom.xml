@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>net.sf.marineapi</groupId>
 			<artifactId>marineapi</artifactId>
-			<version>0.8.1</version>
+			<version>0.9.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.neuronrobotics</groupId>

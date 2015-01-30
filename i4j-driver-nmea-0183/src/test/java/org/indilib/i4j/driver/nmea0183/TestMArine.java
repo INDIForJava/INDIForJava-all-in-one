@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.nmea0183;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -32,14 +32,9 @@ import java.util.Enumeration;
 import net.sf.marineapi.nmea.event.SentenceEvent;
 import net.sf.marineapi.nmea.event.SentenceListener;
 import net.sf.marineapi.nmea.parser.SentenceFactory;
-import net.sf.marineapi.nmea.parser.XDRParserFixed;
 import net.sf.marineapi.nmea.sentence.PositionSentence;
 import net.sf.marineapi.nmea.sentence.Sentence;
-import net.sf.marineapi.nmea.sentence.SentenceId;
 import net.sf.marineapi.nmea.sentence.TimeSentence;
-
-import org.indilib.i4j.driver.nmea0183.parser.MDAParser;
-import org.indilib.i4j.driver.nmea0183.parser.MWDParser;
 
 public class TestMArine implements SentenceListener {
 
@@ -51,9 +46,9 @@ public class TestMArine implements SentenceListener {
 
             private final InputStream[] streams = {
                 TestMArine.class.getClassLoader().getResourceAsStream("xdr.txt"),
-            // TestMArine.class.getClassLoader().getResourceAsStream("gpsout.txt"),
-            // TestMArine.class.getClassLoader().getResourceAsStream("xxx.txt")
-                    };
+                TestMArine.class.getClassLoader().getResourceAsStream("gpsout.txt"),
+                TestMArine.class.getClassLoader().getResourceAsStream("xxx.txt")
+            };
 
             @Override
             public boolean hasMoreElements() {
@@ -70,9 +65,6 @@ public class TestMArine implements SentenceListener {
         TestMArine testMArine = new TestMArine();
 
         SentenceFactory factory = SentenceFactory.getInstance();
-        factory.registerParser(MDAParser.MDASentenceId, MDAParser.class);
-        factory.registerParser(MWDParser.MWDSentenceId, MWDParser.class);
-        factory.registerParser(SentenceId.XDR.name(), XDRParserFixed.class);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(data));
 

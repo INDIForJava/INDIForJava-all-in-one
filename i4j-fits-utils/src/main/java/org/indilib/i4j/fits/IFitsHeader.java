@@ -1,8 +1,8 @@
-package org.indilib.i4j.driver.nmea0183.sentence;
+package org.indilib.i4j.fits;
 
 /*
  * #%L
- * INDI for Java NMEA 0183 stream driver
+ * INDI for Java Utilities for the fits image format
  * %%
  * Copyright (C) 2012 - 2015 indiforjava
  * %%
@@ -22,17 +22,33 @@ package org.indilib.i4j.driver.nmea0183.sentence;
  * #L%
  */
 
-public interface MWDSentence {
+public interface IFitsHeader {
 
-    double getTrueWindDirection();
+    public enum HDU {
+        ANY,
+        IMAGE,
+        PRIMARY
+    }
 
-    double getMagneticWindDirection();
+    public enum STATUS {
+        RESERVED,
+        MANDATORY
+    }
 
-    double getWindSpeed();
+    public enum VALUE {
+        NONE,
+        STRING,
+        INTEGER,
+        LOGICAL
+    }
 
-    /**
-     * @return Wind speed, meters per second, to the nearest 0,1 m/s. NaN if not
-     *         available.
-     */
-    double getWindSpeedNots();
+    String headerName();
+
+    STATUS status();
+
+    HDU hdu();
+
+    VALUE valueType();
+
+    String comment();
 }

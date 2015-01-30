@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.nmea0183;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -30,10 +30,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import net.sf.marineapi.nmea.parser.SentenceFactory;
-import net.sf.marineapi.nmea.parser.XDRParserFixed;
 import net.sf.marineapi.nmea.sentence.PositionSentence;
 import net.sf.marineapi.nmea.sentence.Sentence;
-import net.sf.marineapi.nmea.sentence.SentenceId;
 import net.sf.marineapi.nmea.sentence.TimeSentence;
 import net.sf.marineapi.nmea.util.Time;
 
@@ -46,8 +44,6 @@ import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
-import org.indilib.i4j.driver.nmea0183.parser.MDAParser;
-import org.indilib.i4j.driver.nmea0183.parser.MWDParser;
 
 public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExtension<DRIVER> {
 
@@ -149,9 +145,6 @@ public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExte
         @Override
         public void run() {
             SentenceFactory factory = SentenceFactory.getInstance();
-            factory.registerParser(MDAParser.MDASentenceId, MDAParser.class);
-            factory.registerParser(MWDParser.MWDSentenceId, MWDParser.class);
-            factory.registerParser(SentenceId.XDR.name(), XDRParserFixed.class);
 
             String readLine = reader.readLine();
             while (readLine != null && !stop) {
