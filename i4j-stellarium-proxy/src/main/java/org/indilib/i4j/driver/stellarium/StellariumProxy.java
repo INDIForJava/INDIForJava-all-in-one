@@ -22,6 +22,9 @@ package org.indilib.i4j.driver.stellarium;
  * #L%
  */
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_DEVICES;
+import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_TELESCOPE;
+
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
@@ -40,9 +43,6 @@ import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_DEVICES;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_TELESCOPE;
 
 /**
  * This driver will start a server socket and accept the stellarium protokol

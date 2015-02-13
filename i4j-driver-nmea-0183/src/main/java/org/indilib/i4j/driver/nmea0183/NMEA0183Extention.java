@@ -23,6 +23,16 @@ package org.indilib.i4j.driver.nmea0183;
  */
 
 import static org.indilib.i4j.Constants.PropertyStates.OK;
+import static org.indilib.i4j.properties.INDIGeneralProperties.ATMOSPHERE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
+import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
+import static org.indilib.i4j.properties.INDIGeneralProperties.HUMIDITY;
+import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
+import static org.indilib.i4j.properties.INDIGeneralProperties.PRESSURE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.TEMPERATURE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.TIME_UTC;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UTC;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -44,16 +54,6 @@ import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
-import static org.indilib.i4j.properties.INDIGeneralProperties.TIME_UTC;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UTC;
-import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ATMOSPHERE;
-import static org.indilib.i4j.properties.INDIGeneralProperties.PRESSURE;
-import static org.indilib.i4j.properties.INDIGeneralProperties.TEMPERATURE;
-import static org.indilib.i4j.properties.INDIGeneralProperties.HUMIDITY;
 
 public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExtension<DRIVER> {
 

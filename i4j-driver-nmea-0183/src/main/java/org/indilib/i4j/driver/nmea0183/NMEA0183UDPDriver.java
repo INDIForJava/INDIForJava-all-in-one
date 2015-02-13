@@ -34,8 +34,8 @@ import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.connection.INDIConnectionHandler;
-import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.driver.nmea0183.NMEA0183Extention.ILineReader;
+import org.indilib.i4j.protocol.api.INDIConnection;
 
 public class NMEA0183UDPDriver extends INDIDriver implements INDIConnectionHandler {
 

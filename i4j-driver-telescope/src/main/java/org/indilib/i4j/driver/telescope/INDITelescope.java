@@ -43,6 +43,13 @@ import static org.indilib.i4j.Constants.PropertyStates.ALERT;
 import static org.indilib.i4j.Constants.PropertyStates.BUSY;
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 import static org.indilib.i4j.Constants.PropertyStates.OK;
+import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
+import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
+import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
+import static org.indilib.i4j.properties.INDIGeneralProperties.OFFSET;
+import static org.indilib.i4j.properties.INDIGeneralProperties.TIME_UTC;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UTC;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -73,14 +80,6 @@ import org.indilib.i4j.driver.serial.INDISerialPortExtension;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.indilib.i4j.properties.INDIGeneralProperties.TIME_UTC;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UTC;
-import static org.indilib.i4j.properties.INDIGeneralProperties.OFFSET;
-import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
 
 /**
  * A class that acts as a abstract INDI for Java Driver for any Telescope. All

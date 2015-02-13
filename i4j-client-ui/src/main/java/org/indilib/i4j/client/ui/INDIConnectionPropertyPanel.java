@@ -22,6 +22,10 @@ package org.indilib.i4j.client.ui;
  * #L%
  */
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
+import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
+
 import java.io.IOException;
 
 import org.indilib.i4j.Constants;
@@ -35,10 +39,6 @@ import org.indilib.i4j.client.INDISwitchProperty;
 import org.indilib.i4j.client.INDIValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
-
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
 
 /**
  * A panel to represent a the standard CONNECTION Property.

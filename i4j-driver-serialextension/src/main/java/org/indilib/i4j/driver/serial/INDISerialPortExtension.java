@@ -22,6 +22,9 @@ package org.indilib.i4j.driver.serial;
  * #L%
  */
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.DEVICE_PORT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.PORT;
+
 import java.util.Date;
 
 import jssc.SerialPort;
@@ -42,8 +45,6 @@ import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.indilib.i4j.properties.INDIGeneralProperties.DEVICE_PORT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.PORT;
 
 /**
  * Most astronomical devices are controlled by a serial connection, this

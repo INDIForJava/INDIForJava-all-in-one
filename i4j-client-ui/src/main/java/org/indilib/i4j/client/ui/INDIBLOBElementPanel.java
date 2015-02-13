@@ -28,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 

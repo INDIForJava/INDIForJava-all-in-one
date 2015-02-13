@@ -8,6 +8,7 @@ import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.header.Standard;
 import nom.tam.fits.header.extra.MaxImDLExt;
+
 import org.indilib.i4j.fits.debayer.AdaptiveDebayerAlgorithm;
 import org.indilib.i4j.fits.debayer.DebayerPattern;
 import org.indilib.i4j.fits.debayer.ImagePixels;

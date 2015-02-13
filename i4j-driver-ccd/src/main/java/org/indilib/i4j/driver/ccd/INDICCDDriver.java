@@ -22,6 +22,14 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_BOTH;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_CLIENT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_DIR;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_LOCAL;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_MODE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_PREFIX;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_SETTINGS;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -51,14 +59,6 @@ import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_MODE;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_CLIENT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_LOCAL;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_BOTH;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_SETTINGS;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_DIR;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_PREFIX;
 
 /**
  * This is the abstract cdd driver, all ccd drivers should subclass it. the

@@ -22,6 +22,8 @@ package org.indilib.i4j.client.ui;
  * #L%
  */
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
+
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.INDIException;
@@ -41,7 +43,6 @@ import org.indilib.i4j.client.INDISwitchProperty;
 import org.indilib.i4j.client.INDITextElement;
 import org.indilib.i4j.client.INDITextProperty;
 import org.indilib.i4j.client.INDIViewCreatorInterface;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
 
 /**
  * The swing view creator factory.

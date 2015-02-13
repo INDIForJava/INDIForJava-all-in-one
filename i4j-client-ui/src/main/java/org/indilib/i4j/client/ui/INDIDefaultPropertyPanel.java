@@ -23,6 +23,7 @@ package org.indilib.i4j.client.ui;
  */
 
 import java.io.IOException;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;

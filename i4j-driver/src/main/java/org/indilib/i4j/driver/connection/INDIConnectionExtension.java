@@ -22,6 +22,10 @@ package org.indilib.i4j.driver.connection;
  * #L%
  */
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
+import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
+
 import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyStates;
@@ -36,10 +40,6 @@ import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.SwitchEvent;
-
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
 
 /**
  * The standard Connection extension, is activated for any driver implementing
