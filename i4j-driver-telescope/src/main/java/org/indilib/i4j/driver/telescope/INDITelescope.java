@@ -81,6 +81,7 @@ import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
 import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
 import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
 import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
+
 /**
  * A class that acts as a abstract INDI for Java Driver for any Telescope. All
  * telescope drivers should subclass this abstract driver. The initial version

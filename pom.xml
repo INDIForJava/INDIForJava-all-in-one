@@ -479,17 +479,6 @@
 			</build>
 		</profile>
 		<profile>
-			<id>build-non-maven-jars</id>
-			<activation>
-				<property>
-					<name>!performRelease</name>
-				</property>
-			</activation>
-			<modules>
-				<module>fits</module>
-			</modules>
-		</profile>
-		<profile>
 			<id>use code formatter</id>
 			<activation>
 				<file>

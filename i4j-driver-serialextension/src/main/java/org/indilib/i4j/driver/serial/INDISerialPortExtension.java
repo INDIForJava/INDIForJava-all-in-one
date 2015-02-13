@@ -79,7 +79,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * The element representing the serial connection port.
      */
-    @InjectElement(name = PORT", label = "Port", textValue = "/dev/ttyUSB0")
+    @InjectElement(name = PORT, label = "Port", textValue = "/dev/ttyUSB0")
     protected INDITextElement portElement;
 
     /**

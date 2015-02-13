@@ -35,6 +35,7 @@ public class INDIValueException extends INDIException {
      * 
      */
     private static final long serialVersionUID = 1L;
+
     /**
      * The element that produced the exception.
      */

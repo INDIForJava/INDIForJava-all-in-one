@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
 import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
+
 /**
  * Tests for the example driver.
  * 

@@ -39,6 +39,7 @@ import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
 
 import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
 import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
+
 /**
  * A panel to represent a the standard CONNECTION Property.
  * 

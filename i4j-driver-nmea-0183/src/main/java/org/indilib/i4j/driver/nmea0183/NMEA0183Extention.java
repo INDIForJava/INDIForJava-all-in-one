@@ -55,8 +55,6 @@ import static org.indilib.i4j.properties.INDIGeneralProperties.PRESSURE;
 import static org.indilib.i4j.properties.INDIGeneralProperties.TEMPERATURE;
 import static org.indilib.i4j.properties.INDIGeneralProperties.HUMIDITY;
 
-
-
 public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExtension<DRIVER> {
 
     /**
