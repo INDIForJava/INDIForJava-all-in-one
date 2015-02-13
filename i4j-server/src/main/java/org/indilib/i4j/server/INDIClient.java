@@ -91,6 +91,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * 
      * @return A String representation of the host and port of the Client.
      */
+    @Override
     public String getInetAddress() {
         if (connection != null) {
             return connection.toString();
@@ -141,6 +142,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
      * @param xml
      *            the xml message
      */
+    @Override
     protected void processGetProperties(GetProperties xml) {
         String version = xml.getVersion().trim();
         if (version.isEmpty()) { // Some conditions to ignore the messages

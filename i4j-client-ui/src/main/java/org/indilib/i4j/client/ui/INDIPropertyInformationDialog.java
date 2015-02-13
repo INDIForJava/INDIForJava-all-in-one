@@ -173,6 +173,7 @@ public class INDIPropertyInformationDialog extends javax.swing.JDialog {
         close.setText("Close");
         close.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeActionPerformed(evt);
             }

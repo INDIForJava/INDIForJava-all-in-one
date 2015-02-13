@@ -138,7 +138,7 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
      *            The arguments of the application
      */
     public static void main(String[] args) {
-        if ((args.length < 1) || (args.length > 2)) {
+        if (args.length < 1 || args.length > 2) {
             printErrorMessageAndExit();
         }
 
@@ -153,7 +153,7 @@ public class SimpleINDIClient implements INDIServerConnectionListener, INDIDevic
             }
         }
 
-        SimpleINDIClient sic = new SimpleINDIClient(host, port);
+        new SimpleINDIClient(host, port);
     }
 
     /**

@@ -70,7 +70,7 @@ public class INDITelescopeSyncExtension extends INDIDriverExtension<INDITelescop
      * @return true if successful.
      */
     public boolean doSync(double ra, double dec) {
-        if (isActive() && this.coordSync.isOn()) {
+        if (isActive() && coordSync.isOn()) {
             return syncInterface.sync(ra, dec);
         }
         return false;

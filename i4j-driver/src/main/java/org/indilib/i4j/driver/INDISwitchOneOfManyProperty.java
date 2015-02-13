@@ -122,9 +122,9 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      * @return the first element that is on
      */
     public INDISwitchElementAndValue getSelectedElement(INDISwitchElementAndValue[] ev) {
-        for (int i = 0; i < ev.length; i++) {
-            if (ev[i].getValue() == SwitchStatus.ON) {
-                return ev[i];
+        for (INDISwitchElementAndValue element : ev) {
+            if (element.getValue() == SwitchStatus.ON) {
+                return element;
             }
         }
         return null;

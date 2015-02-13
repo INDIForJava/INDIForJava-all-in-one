@@ -146,9 +146,9 @@ public class ImagePixels {
             double range = Math.pow(2, BYTE_BITS);
             int pixelIndex = 0;
             byte[][] other = (byte[][]) kernel;
-            for (int index1 = 0; index1 < other.length; index1++) {
-                for (int index2 = 0; index2 < other[index1].length; index2++) {
-                    pixel[pixelIndex++] = ((double) (other[index1][index2] & UNSIGNED_BYTE_MASK)) / range;
+            for (byte[] element : other) {
+                for (int index2 = 0; index2 < element.length; index2++) {
+                    pixel[pixelIndex++] = (element[index2] & UNSIGNED_BYTE_MASK) / range;
                 }
             }
         } else if (kernel instanceof int[][]) {
@@ -156,9 +156,9 @@ public class ImagePixels {
             double offset = -Integer.MIN_VALUE;
             int pixelIndex = 0;
             int[][] other = (int[][]) kernel;
-            for (int index1 = 0; index1 < other.length; index1++) {
-                for (int index2 = 0; index2 < other[index1].length; index2++) {
-                    pixel[pixelIndex++] = ((double) offset + other[index1][index2]) / range;
+            for (int[] element : other) {
+                for (int index2 = 0; index2 < element.length; index2++) {
+                    pixel[pixelIndex++] = (offset + element[index2]) / range;
                 }
             }
         } else if (kernel instanceof short[][]) {
@@ -166,9 +166,9 @@ public class ImagePixels {
             double offset = -Short.MIN_VALUE;
             int pixelIndex = 0;
             short[][] other = (short[][]) kernel;
-            for (int index1 = 0; index1 < other.length; index1++) {
-                for (int index2 = 0; index2 < other[index1].length; index2++) {
-                    pixel[pixelIndex++] = ((double) (offset + other[index1][index2])) / range;
+            for (short[] element : other) {
+                for (int index2 = 0; index2 < element.length; index2++) {
+                    pixel[pixelIndex++] = (offset + element[index2]) / range;
                 }
             }
         } else {

@@ -22,6 +22,18 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
+import static nom.tam.fits.header.ObservationDurationDescription.EXPOSURE;
+import static nom.tam.fits.header.Standard.DATE_OBS;
+import static nom.tam.fits.header.Standard.INSTRUME;
+import static nom.tam.fits.header.extra.NOAOExt.PIXSIZEn;
+import static nom.tam.fits.header.extra.NOAOExt.TIMESYS;
+import static nom.tam.fits.header.extra.SBFitsExt.DARKTIME;
+import static nom.tam.fits.header.extra.SBFitsExt.IMAGETYP;
+import static nom.tam.fits.header.extra.SBFitsExt.XBINNING;
+import static nom.tam.fits.header.extra.SBFitsExt.XPIXSZ;
+import static nom.tam.fits.header.extra.SBFitsExt.YBINNING;
+import static nom.tam.fits.header.extra.SBFitsExt.YPIXSZ;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -56,7 +68,6 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
-import org.indilib.i4j.fits.StandardFitsHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -443,7 +454,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
                 newFrameTypeValue(elementsAndValues);
             }
         });
-        this.autoLoopProp.setEventHandler(new SwitchEvent() {
+        autoLoopProp.setEventHandler(new SwitchEvent() {
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
@@ -469,29 +480,29 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      *             if the header becomes invalid.
      */
     private void addFITSKeywords(BasicHDU fitsHeader) throws HeaderCardException {
-        fitsHeader.addValue(StandardFitsHeader.EXPTIME, exposureDuration, "Total Exposure Time (s)");
+        fitsHeader.addValue(EXPOSURE, exposureDuration);
 
         if (currentFrameType == CcdFrame.DARK_FRAME) {
-            fitsHeader.addValue(StandardFitsHeader.DARKTIME, exposureDuration, "Total Exposure Time (s)");
+            fitsHeader.addValue(DARKTIME, exposureDuration);
         }
-        fitsHeader.addValue(StandardFitsHeader.PIXSIZE1, pixelSizeX, "Pixel Size x axis (microns)");
-        fitsHeader.addValue(StandardFitsHeader.PIXSIZE2, pixelSizeY, "Pixel Size y axis (microns)");
-        fitsHeader.addValue(StandardFitsHeader.XPIXSZ, pixelSizeX, "Pixel Size x axis (microns)");
-        fitsHeader.addValue(StandardFitsHeader.YPIXSZ, pixelSizeY, "Pixel Size y axis (microns)");
-        fitsHeader.addValue(StandardFitsHeader.XBINNING, binningX, "Binning factor in width");
-        fitsHeader.addValue(StandardFitsHeader.YBINNING, binningY, "Binning factor in height");
-        fitsHeader.addValue(StandardFitsHeader.IMAGETYP, currentFrameType.fitsValue(), "Frame Type");
+        fitsHeader.addValue(PIXSIZEn.n(1), pixelSizeX);
+        fitsHeader.addValue(PIXSIZEn.n(2), pixelSizeY);
+        fitsHeader.addValue(XPIXSZ, pixelSizeX);
+        fitsHeader.addValue(YPIXSZ, pixelSizeY);
+        fitsHeader.addValue(XBINNING, binningX);
+        fitsHeader.addValue(YBINNING, binningY);
+        fitsHeader.addValue(IMAGETYP, currentFrameType.fitsValue());
 
-        fitsHeader.addValue(StandardFitsHeader.INSTRUME, driver.getName(), "CCD Name");
+        fitsHeader.addValue(INSTRUME, driver.getName());
 
-        fitsHeader.addValue(StandardFitsHeader.TIMESYS, "UTC approximate", "");
-        fitsHeader.addValue(StandardFitsHeader.DATE_OBS, getExposureStartTime(), "UTC start date of observation");
+        fitsHeader.addValue(TIMESYS, "UTC approximate");
+        fitsHeader.addValue(DATE_OBS, getExposureStartTime());
 
         Map<String, Object> attributes = driverInterface.getExtraFITSKeywords(fitsHeader);
         if (attributes != null) {
             for (Entry<String, Object> attribute : attributes.entrySet()) {
                 if (attribute.getValue() instanceof Date) {
-                    fitsHeader.addValue(attribute.getKey(), this.dateFormatISO8601.format((Date) attribute.getValue()), "");
+                    fitsHeader.addValue(attribute.getKey(), dateFormatISO8601.format((Date) attribute.getValue()), "");
                 } else if (attribute.getValue() instanceof String) {
                     String stringValue = (String) attribute.getValue();
                     String comment = "";
@@ -788,42 +799,42 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     @Override
     public void connect() {
-        addProperty(this.imageExposure);
+        addProperty(imageExposure);
         if (capability().canAbort()) {
-            addProperty(this.abort);
+            addProperty(abort);
         }
         if (!capability().canSubFrame()) {
-            this.imageFrame.setPermission(PropertyPermissions.RO);
+            imageFrame.setPermission(PropertyPermissions.RO);
         }
-        addProperty(this.imageFrame);
+        addProperty(imageFrame);
         if (capability().canBin()) {
-            addProperty(this.imageBin);
+            addProperty(imageBin);
         }
-        addProperty(this.imagePixelSize);
-        addProperty(this.compress);
-        addProperty(this.fits);
-        addProperty(this.frameType);
-        addProperty(this.autoLoopProp);
+        addProperty(imagePixelSize);
+        addProperty(compress);
+        addProperty(fits);
+        addProperty(frameType);
+        addProperty(autoLoopProp);
     }
 
     @Override
     public void disconnect() {
-        removeProperty(this.imageExposure);
+        removeProperty(imageExposure);
         if (capability().canAbort()) {
-            removeProperty(this.abort);
+            removeProperty(abort);
         }
         if (!capability().canSubFrame()) {
-            this.imageFrame.setPermission(PropertyPermissions.RO);
+            imageFrame.setPermission(PropertyPermissions.RO);
         }
-        removeProperty(this.imageFrame);
+        removeProperty(imageFrame);
         if (capability().canBin()) {
-            removeProperty(this.imageBin);
+            removeProperty(imageBin);
         }
-        removeProperty(this.imagePixelSize);
-        removeProperty(this.compress);
-        removeProperty(this.fits);
-        removeProperty(this.frameType);
-        removeProperty(this.autoLoopProp);
+        removeProperty(imagePixelSize);
+        removeProperty(compress);
+        removeProperty(fits);
+        removeProperty(frameType);
+        removeProperty(autoLoopProp);
     }
 
     /**
@@ -837,7 +848,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         boolean saveImage = driver.shouldSaveImage();
         if (sendImage || saveImage) {
             try {
-                if ("fits".equals((getImageExtension()))) {
+                if ("fits".equals(getImageExtension())) {
                     Fits f = ccdImage.asFitsImage();
                     addFITSKeywords(f.getHDU(0));
                 }
@@ -874,7 +885,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      * @return True if CCD is currently exposing, false otherwise.
      */
     public boolean isExposing() {
-        return (imageExposure.getState() == PropertyStates.BUSY);
+        return imageExposure.getState() == PropertyStates.BUSY;
     }
 
     /**
@@ -938,7 +949,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      *            the captured ccd image.
      */
     public void setFrameBuffer(INDICCDImage newCcdImage) {
-        this.ccdImage = newCcdImage;
+        ccdImage = newCcdImage;
     }
 
     /**
@@ -981,20 +992,20 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
         if (saveImage) {
             File fp = driver.getFileWithIndex(getImageExtension());
             try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fp)))) {
-                ccdImage.write(os, this.subframeX, this.subframeY, this.subframeWidth, this.subframeHeight, getImageExtension());
+                ccdImage.write(os, subframeX, subframeY, subframeWidth, subframeHeight, getImageExtension());
             }
         }
         if (sendImage) {
             if (sendCompressed) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(new DeflaterOutputStream(new BufferedOutputStream(out))))) {
-                    ccdImage.write(os, this.subframeX, this.subframeY, this.subframeWidth, this.subframeHeight, getImageExtension());
+                    ccdImage.write(os, subframeX, subframeY, subframeWidth, subframeHeight, getImageExtension());
                 }
                 fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + getImageExtension() + ".z"));
             } else {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 try (DataOutputStream os = new DataOutputStream(new BufferedOutputStream(out))) {
-                    ccdImage.write(os, this.subframeX, this.subframeY, this.subframeWidth, this.subframeHeight, getImageExtension());
+                    ccdImage.write(os, subframeX, subframeY, subframeWidth, subframeHeight, getImageExtension());
                 }
                 fitsImage.setValue(new INDIBLOBValue(out.toByteArray(), "." + getImageExtension()));
             }

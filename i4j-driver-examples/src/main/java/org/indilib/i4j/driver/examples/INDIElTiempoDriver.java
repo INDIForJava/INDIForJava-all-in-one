@@ -381,7 +381,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
 
         // Define
         INDIBLOBProperty pim = (INDIBLOBProperty) getProperty(imagePrefix + "_SATELLITE_IMAGE");
-        INDIBLOBElement eim = (INDIBLOBElement) pim.getElement(imagePrefix + "_SATELLITE_IMAGE");
+        INDIBLOBElement eim = pim.getElement(imagePrefix + "_SATELLITE_IMAGE");
 
         if (Arrays.equals(imageBytes, eim.getValue().getBlobData())) {
             return false; // The same image as the one in the property
@@ -398,7 +398,7 @@ public class INDIElTiempoDriver extends INDIDriver implements Runnable, INDIConn
                         + fileName.substring(pos1 + FIXED_STRING_POSITION_11, pos1 + FIXED_STRING_POSITION_13);
 
         INDITextProperty pn = (INDITextProperty) getProperty(imagePrefix + "_IMAGE_NAME");
-        INDITextElement en = (INDITextElement) pn.getElement(imagePrefix + "_IMAGE_NAME");
+        INDITextElement en = pn.getElement(imagePrefix + "_IMAGE_NAME");
 
         en.setValue(imagePrefix + " Satellite " + name + " UTC");
 

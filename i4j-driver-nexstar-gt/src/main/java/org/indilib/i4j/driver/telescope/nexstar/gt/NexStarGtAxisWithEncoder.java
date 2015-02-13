@@ -44,8 +44,8 @@ public class NexStarGtAxisWithEncoder extends AxisWithEncoder {
         this.movePlusCommand = movePlusCommand;
         this.stopCommand = stopCommand;
         this.readEncoderCommand = readEncoderCommand;
-        this.minimum = 0;
-        this.maximum = NexStarGtMount.MAX_ENCODER_VALUE;
+        minimum = 0;
+        maximum = NexStarGtMount.MAX_ENCODER_VALUE;
     }
 
     @Override

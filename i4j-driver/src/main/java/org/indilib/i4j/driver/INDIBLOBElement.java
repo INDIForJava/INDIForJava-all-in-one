@@ -77,7 +77,7 @@ public class INDIBLOBElement extends INDIElement {
             throw new IllegalArgumentException("Value for a BLOB Element must be a INDIBLOBValue");
         }
 
-        this.value = b;
+        value = b;
     }
 
     @Override

@@ -84,8 +84,9 @@ public final class INDIPipedConnections {
         /**
          * close the connection.
          */
+        @Override
         public void close() {
-            this.closed = true;
+            closed = true;
         }
 
         @Override

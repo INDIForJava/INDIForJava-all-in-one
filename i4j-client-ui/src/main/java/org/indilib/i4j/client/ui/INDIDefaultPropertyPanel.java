@@ -23,8 +23,6 @@ package org.indilib.i4j.client.ui;
  */
 
 import java.io.IOException;
-import java.util.List;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -200,6 +198,7 @@ public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
         setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         addComponentListener(new java.awt.event.ComponentAdapter() {
 
+            @Override
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
             }
@@ -230,6 +229,7 @@ public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
         set.setMargin(new java.awt.Insets(1, 14, 1, 14));
         set.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setActionPerformed(evt);
             }
@@ -243,6 +243,7 @@ public class INDIDefaultPropertyPanel extends INDIPropertyPanel {
         information.setPreferredSize(new java.awt.Dimension(50, 16));
         information.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 informationActionPerformed(evt);
             }

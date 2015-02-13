@@ -164,7 +164,7 @@ public class INDIBLOBElement extends INDIElement {
      */
     @Override
     protected OneElement<?> getXMLOneElementNewValue() {
-        INDIBLOBValue ibv = (INDIBLOBValue) desiredValue;
+        INDIBLOBValue ibv = desiredValue;
 
         OneBlob result = new OneBlob().setName(getName()).setByteContent(value.getBlobData()).setFormat(ibv.getFormat());
 

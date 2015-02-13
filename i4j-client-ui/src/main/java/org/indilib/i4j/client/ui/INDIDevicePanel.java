@@ -72,7 +72,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
 
     @Override
     public final void newProperty(INDIDevice aDevice, INDIProperty<?> ip) {
-        if (this.device == aDevice) {
+        if (device == aDevice) {
             String group = ip.getGroup();
 
             int pos = tabs.indexOfTab(group);
@@ -97,7 +97,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
 
     @Override
     public void removeProperty(INDIDevice aDevice, INDIProperty<?> ip) {
-        if (this.device == aDevice) {
+        if (device == aDevice) {
 
             String group = ip.getGroup();
 
@@ -121,7 +121,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
 
     @Override
     public void messageChanged(INDIDevice aDevice) {
-        if (this.device == aDevice) {
+        if (device == aDevice) {
             addMessage(aDevice.getLastMessage());
         }
     }
@@ -202,6 +202,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
         blobsNever.setText("Never");
         blobsNever.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 blobsNeverActionPerformed(evt);
             }
@@ -212,6 +213,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
         blobsOnly.setText("Only");
         blobsOnly.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 blobsOnlyActionPerformed(evt);
             }
@@ -222,6 +224,7 @@ public class INDIDevicePanel extends javax.swing.JPanel implements INDIDeviceLis
         blobsAlso.setText("Also");
         blobsAlso.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 blobsAlsoActionPerformed(evt);
             }

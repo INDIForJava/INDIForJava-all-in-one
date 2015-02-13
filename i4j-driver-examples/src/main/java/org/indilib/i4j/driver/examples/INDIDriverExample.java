@@ -155,11 +155,11 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
     // START SNIPPET: action
     private void newSendValue(INDISwitchElementAndValue[] elementsAndValues) {
         // set the property state to ok
-        this.sendP.setState(OK);
+        sendP.setState(OK);
         // update the propery from the values send by the client
-        this.sendP.setValues(elementsAndValues);
+        sendP.setValues(elementsAndValues);
         // send the property (state) back to the client
-        updateProperty(this.sendP);
+        updateProperty(sendP);
         // If the sendImage element has been switched one we send the image
         if (sendE.isOn()) {
             boolean imageLoaded = loadImageFromFile();
@@ -167,14 +167,14 @@ public class INDIDriverExample extends INDIDriver implements INDIConnectionHandl
                 // set the element to off
                 sendE.setOff();
                 // send the property
-                updateProperty(this.sendP);
+                updateProperty(sendP);
 
                 // the sendImage´ property as OK
                 imageP.setState(PropertyStates.OK);
                 // Send the sendImage property to the client.
                 updateProperty(imageP);
             } else {
-                updateProperty(this.sendP, "no image found");
+                updateProperty(sendP, "no image found");
             }
         }
     }

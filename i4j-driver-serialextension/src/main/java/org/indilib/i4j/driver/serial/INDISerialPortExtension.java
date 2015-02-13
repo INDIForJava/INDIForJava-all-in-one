@@ -42,6 +42,8 @@ import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.indilib.i4j.properties.INDIGeneralProperties.DEVICE_PORT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.PORT;
 
 /**
  * Most astronomical devices are controlled by a serial connection, this
@@ -71,13 +73,13 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * the property representing the serial connection port.
      */
-    @InjectProperty(name = "PORTS", label = "Ports", group = INDIDriver.GROUP_OPTIONS, saveable = true)
+    @InjectProperty(name = DEVICE_PORT, label = "Ports", group = INDIDriver.GROUP_OPTIONS, saveable = true)
     protected INDITextProperty port;
 
     /**
      * The element representing the serial connection port.
      */
-    @InjectElement(name = "PORT", label = "Port", textValue = "/dev/ttyUSB0")
+    @InjectElement(name = PORT", label = "Port", textValue = "/dev/ttyUSB0")
     protected INDITextElement portElement;
 
     /**
@@ -152,7 +154,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
         if (!isActive()) {
             return;
         }
-        this.port.setEventHandler(new TextEvent() {
+        port.setEventHandler(new TextEvent() {
 
             @Override
             public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {
@@ -161,7 +163,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
                 updateProperty(property);
             }
         });
-        this.portDetails.setEventHandler(new NumberEvent() {
+        portDetails.setEventHandler(new NumberEvent() {
 
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
@@ -171,7 +173,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             }
         });
         serialPortInterface = (INDISerialPortInterface) driver;
-        this.shutdownHook = new Thread(new Runnable() {
+        shutdownHook = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -184,7 +186,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
                 }
             }
         }, "serial port close hook");
-        Runtime.getRuntime().addShutdownHook(this.shutdownHook);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
         addProperty(port);
     }
 
@@ -206,7 +208,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     private void waitBeforeNextCommand() {
         if (minimumMillisecondsBetweenCommands > 0) {
             long now = System.currentTimeMillis();
-            long timeToWait = ((long) minimumMillisecondsBetweenCommands) - (now - lastSendCommand);
+            long timeToWait = minimumMillisecondsBetweenCommands - (now - lastSendCommand);
             if (timeToWait > 0) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("waiting time between commands activated for " + timeToWait + " milliseconds.");
@@ -228,11 +230,11 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      */
     public synchronized boolean close() {
         try {
-            if (this.serialPort != null) {
+            if (serialPort != null) {
                 // Close serial port
-                this.serialPort.closePort();
+                serialPort.closePort();
             }
-            this.serialPort = null;
+            serialPort = null;
             return true;
         } catch (SerialPortException e) {
             handleSerialException(e);
@@ -278,14 +280,14 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return true if successful.
      */
     public synchronized boolean open() {
-        if (this.serialPort != null) {
+        if (serialPort != null) {
             close();
         }
         try {
-            this.serialPort = new SerialPort(portElement.getValue());
+            serialPort = new SerialPort(portElement.getValue());
             // Open serial port
-            this.serialPort.openPort();
-            this.serialPort.setParams(portBaut.getIntValue(), portDataBits.getIntValue(), portStopBits.getIntValue(), portParity.getIntValue());
+            serialPort.openPort();
+            serialPort.setParams(portBaut.getIntValue(), portDataBits.getIntValue(), portStopBits.getIntValue(), portParity.getIntValue());
             return true;
         } catch (SerialPortException e) {
             handleSerialException(e);
@@ -334,8 +336,8 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setBaudrate(int newBaudrate) {
-        this.portBaut.setValue(newBaudrate);
-        updateProperty(this.portDetails);
+        portBaut.setValue(newBaudrate);
+        updateProperty(portDetails);
         return this;
     }
 
@@ -347,8 +349,8 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setDatabits(int newDatabits) {
-        this.portDataBits.setValue(newDatabits);
-        updateProperty(this.portDetails);
+        portDataBits.setValue(newDatabits);
+        updateProperty(portDetails);
         return this;
     }
 
@@ -361,7 +363,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      */
     public INDISerialPortExtension setParity(int newParity) {
         portParity.setValue(newParity);
-        updateProperty(this.portDetails);
+        updateProperty(portDetails);
         return this;
     }
 
@@ -373,8 +375,8 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setStopbits(int newStopbits) {
-        this.portStopBits.setValue(newStopbits);
-        updateProperty(this.portDetails);
+        portStopBits.setValue(newStopbits);
+        updateProperty(portDetails);
         return this;
     }
 
@@ -388,14 +390,14 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      *            if true all bytes currently in the read queue will be scipped.
      */
     public void sendByte(byte value, boolean skipQueue) {
-        if (this.serialPort != null) {
+        if (serialPort != null) {
             try {
 
                 if (skipQueue) {
                     skipBytes();
                 }
                 waitBeforeNextCommand();
-                this.serialPort.writeByte(value);
+                serialPort.writeByte(value);
             } catch (Exception e) {
                 throw new IllegalStateException("serial port communication with telescope interupted", e);
             }
@@ -415,11 +417,11 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      *            if true all bytes currently in the read queue will be scipped.
      */
     public void sendBytes(byte[] bytes, boolean skipQueue) {
-        if (this.serialPort != null) {
+        if (serialPort != null) {
             try {
                 skipBytes();
                 waitBeforeNextCommand();
-                this.serialPort.writeBytes(bytes);
+                serialPort.writeBytes(bytes);
             } catch (Exception e) {
                 throw new IllegalStateException("serial port communication with telescope interupted", e);
             }
@@ -446,14 +448,14 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * skip all bytes currently in the queue.
      */
     public void skipBytes() {
-        if (this.serialPort != null) {
+        if (serialPort != null) {
             try {
-                if (this.serialPort.getInputBufferBytesCount() > 0) {
+                if (serialPort.getInputBufferBytesCount() > 0) {
                     // ok there is something wrong here lets wait for more to
                     // come.
                     Thread.sleep(MILLISECONDS_TO_WAIT_BEFORE_SKIPPING_BYTES);
                     // now consume them all
-                    byte[] buffer = this.serialPort.readBytes();
+                    byte[] buffer = serialPort.readBytes();
                     StringBuffer string = new StringBuffer();
                     for (byte b : buffer) {
                         String hexString = Integer.toHexString(b & UNSIGNED_BYTE_HELPER);
@@ -480,7 +482,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      */
     public byte readByte() {
         try {
-            return this.serialPort.readBytes(1)[0];
+            return serialPort.readBytes(1)[0];
         } catch (Exception e) {
             throw new IllegalStateException("serial port communication with telescope interupted", e);
         }
@@ -493,7 +495,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      */
     public byte[] readBytes() {
         try {
-            return this.serialPort.readBytes();
+            return serialPort.readBytes();
         } catch (Exception e) {
             throw new IllegalStateException("serial port communication with telescope interupted", e);
         }
@@ -508,9 +510,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * @return the read byte array.
      */
     public byte[] readByte(int nrOfBytes) {
-        if (this.serialPort != null) {
+        if (serialPort != null) {
             try {
-                return this.serialPort.readBytes(nrOfBytes);
+                return serialPort.readBytes(nrOfBytes);
             } catch (Exception e) {
                 throw new IllegalStateException("serial port communication with telescope interupted", e);
             }

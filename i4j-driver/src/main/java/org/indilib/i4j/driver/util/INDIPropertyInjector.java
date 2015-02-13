@@ -207,7 +207,7 @@ public final class INDIPropertyInjector {
     private void initializeAnnotatedElement(Object instance, Field field) {
         InjectElement elem = field.getAnnotation(InjectElement.class);
         if (elem != null) {
-            INDIProperty<?> propertyToConnect = findNamedProperty(elem.property(), this.lastProperty);
+            INDIProperty<?> propertyToConnect = findNamedProperty(elem.property(), lastProperty);
             if (propertyToConnect != null) {
                 INDIElementBuilder<?> builder = propertyToConnect.newElement().set(elem);
                 builder.name(rename(builder.name()));
@@ -247,7 +247,7 @@ public final class INDIPropertyInjector {
                 builder.group(currentGroup);
             }
             builder.name(rename(builder.name()));
-            lastProperty = (INDIProperty<?>) builder.create();
+            lastProperty = builder.create();
 
             if (prop.saveable()) {
                 lastProperty.setSaveable(true);

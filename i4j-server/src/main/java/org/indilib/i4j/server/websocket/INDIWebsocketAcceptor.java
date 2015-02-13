@@ -111,7 +111,7 @@ public class INDIWebsocketAcceptor implements INDIServerAcceptor {
     public void setArguments(Object... arguments) {
         if (arguments != null && arguments.length > 0 && arguments[0] != null) {
             try {
-                this.localPort = Integer.parseInt(arguments[0].toString().trim());
+                localPort = Integer.parseInt(arguments[0].toString().trim());
             } catch (Exception e) {
                 LOG.error("argument was not port integer", e);
             }

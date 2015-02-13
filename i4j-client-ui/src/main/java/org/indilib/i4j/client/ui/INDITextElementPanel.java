@@ -111,7 +111,7 @@ public class INDITextElementPanel extends INDIElementPanel {
     private void updateElementData() {
         name.setText(te.getLabel());
         name.setToolTipText(te.getName());
-        currentValue.setText((String) te.getValue());
+        currentValue.setText(te.getValue());
     }
 
     /**
@@ -198,6 +198,6 @@ public class INDITextElementPanel extends INDIElementPanel {
 
     @Override
     protected void setNameSize(int size) {
-        name.setPreferredSize(new Dimension(size, (int) (name.getPreferredSize().getHeight())));
+        name.setPreferredSize(new Dimension(size, (int) name.getPreferredSize().getHeight()));
     }
 }

@@ -127,7 +127,7 @@ public final class INDIServer implements INDIServerInterface {
 
     @Override
     public void addEventHandler(INDIServerEventHandler eventHandler) {
-        this.eventHandlers.add(eventHandler);
+        eventHandlers.add(eventHandler);
     }
 
     @Override
@@ -818,7 +818,7 @@ public final class INDIServer implements INDIServerInterface {
     public void activateAcceptor(String name, Object... arguments) {
         Iterator<INDIServerAcceptor> acceptors = ServiceLoader.load(INDIServerAcceptor.class).iterator();
         while (acceptors.hasNext()) {
-            INDIServerAcceptor indiServerAcceptor = (INDIServerAcceptor) acceptors.next();
+            INDIServerAcceptor indiServerAcceptor = acceptors.next();
             if (indiServerAcceptor.getName().equalsIgnoreCase(name)) {
                 additionalAcceptors.add(indiServerAcceptor);
                 indiServerAcceptor.setArguments(arguments);

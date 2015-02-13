@@ -78,16 +78,16 @@ public class INDIProcessConnection implements INDIConnection {
 
     @Override
     public INDIInputStream getINDIInputStream() throws IOException {
-        if (this.inputStream == null) {
-            this.inputStream = INDIProtocolFactory.createINDIInputStream(process.getInputStream());
+        if (inputStream == null) {
+            inputStream = INDIProtocolFactory.createINDIInputStream(process.getInputStream());
         }
         return inputStream;
     }
 
     @Override
     public INDIOutputStream getINDIOutputStream() throws IOException {
-        if (this.inputStream == null) {
-            this.outputStream = INDIProtocolFactory.createINDIOutputStream(process.getOutputStream());
+        if (inputStream == null) {
+            outputStream = INDIProtocolFactory.createINDIOutputStream(process.getOutputStream());
         }
         return outputStream;
     }

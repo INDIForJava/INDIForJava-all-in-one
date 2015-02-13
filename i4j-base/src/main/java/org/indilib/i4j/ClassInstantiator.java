@@ -67,9 +67,7 @@ public final class ClassInstantiator {
          * arguments[i].getClass(); }
          */
 
-        for (int i = 0; i < possibleClassNames.length; i++) {
-            String className = possibleClassNames[i];
-
+        for (String className : possibleClassNames) {
             try {
                 Class theClass = Class.forName(className);
                 Constructor[] constructors = theClass.getConstructors();
@@ -105,9 +103,7 @@ public final class ClassInstantiator {
      *             If no suitable constructor is found.
      */
     private static Constructor getSuitableConstructor(final Constructor[] constructors, final Object[] arguments) throws INDIException {
-        for (int i = 0; i < constructors.length; i++) {
-            Constructor c = constructors[i];
-
+        for (Constructor c : constructors) {
             Class[] cClassParam = c.getParameterTypes();
             boolean match = true;
             if (cClassParam.length != arguments.length) {

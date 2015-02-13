@@ -114,7 +114,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     public INDIServerConnection(String host, int port) {
         try {
-            this.indiUrl = new URL(INDIURLStreamHandler.PROTOCOL, host, port, "/");
+            indiUrl = new URL(INDIURLStreamHandler.PROTOCOL, host, port, "/");
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("illegal indi url", e);
         }
@@ -157,7 +157,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      *            the indi connection to base on.
      */
     public INDIServerConnection(INDIConnection connection) {
-        this.indiUrl = connection.getURL();
+        indiUrl = connection.getURL();
         this.connection = connection;
     }
 
@@ -191,10 +191,10 @@ public class INDIServerConnection implements INDIProtocolParser {
     public INDIDevice waitForDevice(String deviceName, int maxWait) {
         INDIDevice d = null;
 
-        long startTime = (new Date()).getTime();
+        long startTime = new Date().getTime();
         boolean timeElapsed = false;
 
-        while ((d == null) && (!timeElapsed)) {
+        while (d == null && !timeElapsed) {
             d = this.getDevice(deviceName);
 
             if (d == null) {
@@ -205,9 +205,9 @@ public class INDIServerConnection implements INDIProtocolParser {
                 }
             }
 
-            long endTime = (new Date()).getTime();
+            long endTime = new Date().getTime();
 
-            if (((endTime - startTime) / Constants.MILLISECONDS_IN_A_SECOND) > maxWait) {
+            if ((endTime - startTime) / Constants.MILLISECONDS_IN_A_SECOND > maxWait) {
                 timeElapsed = true;
             }
         }

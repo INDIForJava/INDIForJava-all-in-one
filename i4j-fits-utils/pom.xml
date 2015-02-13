@@ -12,9 +12,9 @@
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>org.indilib.i4j</groupId>
-			<artifactId>nom.tam.fits</artifactId>
-			<version>1.11.1</version>
+			<groupId>gov.nasa.gsfc.heasarc</groupId>
+			<artifactId>nom-tam-fits</artifactId>
+			<version>1.12.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<properties>

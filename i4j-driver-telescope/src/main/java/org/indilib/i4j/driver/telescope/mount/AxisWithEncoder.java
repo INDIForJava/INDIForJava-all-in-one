@@ -105,7 +105,7 @@ public class AxisWithEncoder {
      */
     protected void setPosition(long position) {
         this.position = position;
-        this.positionTimeMs = System.currentTimeMillis();
+        positionTimeMs = System.currentTimeMillis();
     }
 
     /**
@@ -156,7 +156,7 @@ public class AxisWithEncoder {
         }
         double difference = futurePos - position;
         // check if the other direction would be faster.
-        if (Math.abs(difference) > (range / 2d)) {
+        if (Math.abs(difference) > range / 2d) {
             // ok, the other way around is faster.
             if (difference > 0) {
                 difference = -(range - difference);
@@ -179,7 +179,7 @@ public class AxisWithEncoder {
             // maybe the direction change will not be nessesary in the next
             // iteration. (a direction change makes a very bad accuracy due to
             // the backlash.
-            if ((speed < 0) != (getSpeedInTicksPerSecond() < 0)) {
+            if (speed < 0 != getSpeedInTicksPerSecond() < 0) {
                 // direction change, lets try 0 first.
                 speed = 0;
             }
@@ -255,7 +255,7 @@ public class AxisWithEncoder {
         double secondsSinsLastPositionUpdate = (System.currentTimeMillis() - positionTimeMs) / MILLISECONDS_PER_SECOND;
         double currentPosition = position + secondsSinsLastPositionUpdate * speedInTicksPerSecond;
         double positionRelativeToZero = currentPosition - zeroPosition;
-        return degreeRange(((positionRelativeToZero / range) * FULL_CIRCLE_IN_DEGREES));
+        return degreeRange(positionRelativeToZero / range * FULL_CIRCLE_IN_DEGREES);
     }
 
     /**
@@ -268,7 +268,7 @@ public class AxisWithEncoder {
      *            the maximum legal value in degrees
      */
     protected void setValidRange(double newMinimumLegalValue, double newMaximumLegalValue) {
-        this.minimumLegalValue = newMinimumLegalValue;
-        this.maximumLegalValue = newMaximumLegalValue;
+        minimumLegalValue = newMinimumLegalValue;
+        maximumLegalValue = newMaximumLegalValue;
     }
 }

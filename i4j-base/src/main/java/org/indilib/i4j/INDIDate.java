@@ -302,7 +302,7 @@ public class INDIDate {
             this.days = days;
         } else if ((months == APRIL || months == JUNE || months == SEPTEMBER || months == NOVEMBER) && days <= DAYS_SHORT_MONTH) {
             this.days = days;
-        } else if (months == FEBRUARY && (years % YEARS_FOR_LEAP_YEAR == 0) && days <= DAYS_FEBRUARY_LEAP_YEAR) {
+        } else if (months == FEBRUARY && years % YEARS_FOR_LEAP_YEAR == 0 && days <= DAYS_FEBRUARY_LEAP_YEAR) {
             this.days = days;
         }
     }

@@ -121,8 +121,8 @@ public class INDINumberElement extends INDIElement {
             throw new IllegalArgumentException("Number format not starting with %\n");
         }
 
-        if ((!newNumberFormat.endsWith("f")) && (!newNumberFormat.endsWith("e")) && (!newNumberFormat.endsWith("E")) && (!newNumberFormat.endsWith("g"))
-                && (!newNumberFormat.endsWith("G")) && (!newNumberFormat.endsWith("m"))) {
+        if (!newNumberFormat.endsWith("f") && !newNumberFormat.endsWith("e") && !newNumberFormat.endsWith("E") && !newNumberFormat.endsWith("g")
+                && !newNumberFormat.endsWith("G") && !newNumberFormat.endsWith("m")) {
             throw new IllegalArgumentException("Number format not recognized%\n");
         }
 
@@ -134,7 +134,7 @@ public class INDINumberElement extends INDIElement {
             newNumberFormat = "%.0f";
         }
 
-        this.numberFormat = newNumberFormat;
+        numberFormat = newNumberFormat;
     }
 
     /**
@@ -211,7 +211,7 @@ public class INDINumberElement extends INDIElement {
      */
     @Override
     public String getValueAsString() {
-        return getNumberAsString((Double) getValue());
+        return getNumberAsString(getValue());
     }
 
     /**
@@ -306,7 +306,7 @@ public class INDINumberElement extends INDIElement {
     private void setValue(String valueS) {
         value = parseNumber(valueS);
 
-        if ((value < min) || (value > max)) {
+        if (value < min || value > max) {
             String message = this.getProperty().getName() + " ; " + getName() + " ; " + "Number (" + valueS + ") not in range [" + min + ", " + max + "]";
             LOG.error(message);
             // throw new IllegalArgumentException();
@@ -429,11 +429,11 @@ public class INDINumberElement extends INDIElement {
     private void setDesiredValueAsString(String newDesiredValue) throws INDIValueException {
         double dd = parseNumber(newDesiredValue);
 
-        if ((dd < min) || (dd > max)) {
+        if (dd < min || dd > max) {
             throw new INDIValueException(this, getName() + " ; " + "Number (" + newDesiredValue + ") not in range [" + min + ", " + max + "]");
         }
 
-        this.desiredValue = new Double(dd);
+        desiredValue = new Double(dd);
     }
 
     /**
@@ -447,11 +447,11 @@ public class INDINumberElement extends INDIElement {
     private void setDesiredValueAsdouble(double newDesiredValue) throws INDIValueException {
         double dd = newDesiredValue;
 
-        if ((dd < min) || (dd > max)) {
+        if (dd < min || dd > max) {
             throw new INDIValueException(this, getName() + " ; " + "Number (" + value + ") not in range [" + min + ", " + max + "]");
         }
 
-        this.desiredValue = new Double(dd);
+        desiredValue = new Double(dd);
     }
 
     @Override

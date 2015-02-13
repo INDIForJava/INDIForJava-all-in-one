@@ -52,6 +52,14 @@ import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_MODE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_CLIENT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_LOCAL;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_BOTH;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_SETTINGS;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_DIR;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UPLOAD_PREFIX;
+
 /**
  * This is the abstract cdd driver, all ccd drivers should subclass it. the
  * initial verion of the Functionality is a port of the c++ driver.
@@ -101,45 +109,45 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * The upload mode for the images, if they should be saved on the server or
      * send to the client.
      */
-    @InjectProperty(name = "UPLOAD_MODE", label = "Upload", group = INDIDriver.GROUP_OPTIONS, timeout = 0, saveable = true)
+    @InjectProperty(name = UPLOAD_MODE, label = "Upload", group = INDIDriver.GROUP_OPTIONS, timeout = 0, saveable = true)
     private INDISwitchProperty upload;
 
     /**
      * should the images be send to the client?
      */
-    @InjectElement(name = "UPLOAD_CLIENT", label = "Client", switchValue = SwitchStatus.ON)
+    @InjectElement(name = UPLOAD_CLIENT, label = "Client", switchValue = SwitchStatus.ON)
     private INDISwitchElement uploadClient;
 
     /**
      * should the images be stored locally (where the driver resides)?
      */
-    @InjectElement(name = "UPLOAD_LOCAL", label = "Local")
+    @InjectElement(name = UPLOAD_LOCAL, label = "Local")
     private INDISwitchElement uploadLocal;
 
     /**
      * should the images be send to the client and stored locally (where the
      * driver resides).
      */
-    @InjectElement(name = "UPLOAD_BOTH", label = "Both")
+    @InjectElement(name = UPLOAD_BOTH, label = "Both")
     private INDISwitchElement uploadBoth;
 
     /**
      * Upload directory and filenames for local storage.
      */
-    @InjectProperty(name = "UPLOAD_SETTINGS", label = "Upload Settings", group = INDIDriver.GROUP_OPTIONS, saveable = true)
+    @InjectProperty(name = UPLOAD_SETTINGS, label = "Upload Settings", group = INDIDriver.GROUP_OPTIONS, saveable = true)
     private INDITextProperty uploadSettings;
 
     /**
      * Upload directory for local storage.
      */
-    @InjectElement(name = "UPLOAD_DIR", label = "Dir")
+    @InjectElement(name = UPLOAD_DIR, label = "Dir")
     private INDITextElement uploadSettingsDir;
 
     /**
      * The prefix for the images to store. (The "XX" part of the name will be
      * replaced by a number).
      */
-    @InjectElement(name = "UPLOAD_PREFIX", label = "Prefix", textValue = "IMAGE_XX")
+    @InjectElement(name = UPLOAD_PREFIX, label = "Prefix", textValue = "IMAGE_XX")
     private INDITextElement uploadSettingsPrefix;
 
     /**
@@ -177,21 +185,21 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         super(connection);
         primaryCCD.setDriverInterface(this);
         guiderCCD.setDriverInterface(createGuiderDriverHandler());
-        this.temperature.setEventHandler(new NumberEvent() {
+        temperature.setEventHandler(new NumberEvent() {
 
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
                 newTemperatureValue(elementsAndValues);
             }
         });
-        this.upload.setEventHandler(new SwitchEvent() {
+        upload.setEventHandler(new SwitchEvent() {
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
                 newUploadValue(elementsAndValues);
             }
         });
-        this.uploadSettings.setEventHandler(new TextEvent() {
+        uploadSettings.setEventHandler(new TextEvent() {
 
             @Override
             public void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues) {

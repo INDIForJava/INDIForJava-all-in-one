@@ -260,13 +260,13 @@ public abstract class JpegStreamScanner implements Runnable {
             if (baseMarker != MARKER_FF00) {
                 throw new IllegalArgumentException("basemarker wrong!");
             }
-            marker = (baseMarker + (headerBytes[1] & BYTE_MASK) << 0);
+            marker = baseMarker + (headerBytes[1] & BYTE_MASK) << 0;
             if (marker == MARKER_FFD9) {
                 return;
             }
             if (hasLength()) {
                 readFully(in, sizeBytes);
-                size = (((sizeBytes[0] & BYTE_MASK) << BITS_IN_BYTE) + ((sizeBytes[1] & BYTE_MASK) << 0));
+                size = ((sizeBytes[0] & BYTE_MASK) << BITS_IN_BYTE) + ((sizeBytes[1] & BYTE_MASK) << 0);
                 if (size > 0) {
                     data = new byte[size - 2];
                     readFully(in, data);
@@ -340,7 +340,7 @@ public abstract class JpegStreamScanner implements Runnable {
          * @return true if this block has a length value.
          */
         private boolean hasLength() {
-            if ((marker >= MARKER_FFD0 && marker < MARKER_FFD9) || marker == MARKER_FF01 || marker == MARKER_FF00) {
+            if (marker >= MARKER_FFD0 && marker < MARKER_FFD9 || marker == MARKER_FF01 || marker == MARKER_FF00) {
                 return false;
             }
             return true;

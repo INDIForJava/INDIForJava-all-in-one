@@ -88,7 +88,7 @@ public class INDIGroupController extends INDIController<String> implements INDID
     public void removeProperty(INDIDevice device, INDIProperty<?> property) {
         Iterator<Node> children = box.getChildren().iterator();
         while (children.hasNext()) {
-            INDIPropertyController<?> propertyController = INDIFxFactory.controller((Node) children.next());
+            INDIPropertyController<?> propertyController = INDIFxFactory.controller(children.next());
             if (propertyController.indi == property) {
                 children.remove();
                 break;

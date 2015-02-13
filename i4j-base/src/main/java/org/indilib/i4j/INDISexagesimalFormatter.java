@@ -332,7 +332,7 @@ public class INDISexagesimalFormatter implements Serializable {
 
         int integerPart;
 
-        integerPart = ((int) Math.floor(newNumber));
+        integerPart = (int) Math.floor(newNumber);
 
         double fractional = Math.abs(newNumber - integerPart);
 
@@ -357,7 +357,7 @@ public class INDISexagesimalFormatter implements Serializable {
         } else {
             double minutes = Math.floor(fractional * MINUTES_PER_HOUR);
 
-            double rest = fractional - ((double) minutes) / SECONDS_PER_MINUTE;
+            double rest = fractional - minutes / SECONDS_PER_MINUTE;
 
             double seconds = rest * SECONDS_PER_HOUR;
 

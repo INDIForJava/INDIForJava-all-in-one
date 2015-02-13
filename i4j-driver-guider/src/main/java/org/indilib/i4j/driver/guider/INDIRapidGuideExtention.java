@@ -142,7 +142,7 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
     private void newRapidGuideValue(INDISwitchElementAndValue[] elementsAndValues) {
         rapidGuide.setValues(elementsAndValues);
         rapidGuide.setState(PropertyStates.OK);
-        rapidGuideEnabled = (rapidGuideEnable.getValue() == SwitchStatus.ON);
+        rapidGuideEnabled = rapidGuideEnable.getValue() == SwitchStatus.ON;
 
         if (rapidGuideEnabled) {
             addProperty(rapidGuideSetup);
@@ -156,19 +156,19 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
 
     @Override
     public void connect() {
-        addProperty(this.rapidGuide);
+        addProperty(rapidGuide);
         if (rapidGuideEnabled) {
-            addProperty(this.rapidGuideSetup);
-            addProperty(this.rapidGuideData);
+            addProperty(rapidGuideSetup);
+            addProperty(rapidGuideData);
         }
     }
 
     @Override
     public void disconnect() {
-        removeProperty(this.rapidGuide);
+        removeProperty(rapidGuide);
         if (rapidGuideEnabled) {
-            removeProperty(this.rapidGuideSetup);
-            removeProperty(this.rapidGuideData);
+            removeProperty(rapidGuideSetup);
+            removeProperty(rapidGuideData);
         }
     }
 

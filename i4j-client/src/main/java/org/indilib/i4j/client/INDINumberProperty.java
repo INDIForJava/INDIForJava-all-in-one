@@ -109,6 +109,6 @@ public class INDINumberProperty extends INDIProperty<INDINumberElement> {
      */
     @Override
     public INDINumberElement getElement(String name) {
-        return (INDINumberElement) super.getElement(name);
+        return super.getElement(name);
     }
 }

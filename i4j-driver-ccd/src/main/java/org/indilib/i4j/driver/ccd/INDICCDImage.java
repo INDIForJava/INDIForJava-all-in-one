@@ -22,15 +22,13 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
-import static org.indilib.i4j.fits.StandardFitsHeader.BITPIX;
-import static org.indilib.i4j.fits.StandardFitsHeader.DATAMAX;
-import static org.indilib.i4j.fits.StandardFitsHeader.DATAMIN;
-import static org.indilib.i4j.fits.StandardFitsHeader.HISTORY;
-import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS;
-import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS1;
-import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS2;
-import static org.indilib.i4j.fits.StandardFitsHeader.NAXIS3;
-import static org.indilib.i4j.fits.StandardFitsHeader.SIMPLE;
+import static nom.tam.fits.header.Standard.BITPIX;
+import static nom.tam.fits.header.Standard.DATAMAX;
+import static nom.tam.fits.header.Standard.DATAMIN;
+import static nom.tam.fits.header.Standard.HISTORY;
+import static nom.tam.fits.header.Standard.NAXIS;
+import static nom.tam.fits.header.Standard.NAXISn;
+import static nom.tam.fits.header.Standard.SIMPLE;
 
 import java.io.DataOutputStream;
 import java.util.HashMap;
@@ -74,24 +72,9 @@ public abstract class INDICCDImage {
     private static final int COLOR_SCALE_NAXIS = 3;
 
     /**
-     * the maximum value of a short.
-     */
-    private static final int MAX_SHORT_VALUE = 32768;
-
-    /**
      * the maximum value of a byte.
      */
     private static final int MAX_BYTE_VALUE = 255;
-
-    /**
-     * integer to convert a unsigned byte.
-     */
-    private static final int UNSIGNED_BYTE = 0xFF;
-
-    /**
-     * integer to convert a unsigned short.
-     */
-    private static final int UNSIGNED_SHORT = 0xFFFF;
 
     /**
      * color type of the image.
@@ -163,8 +146,8 @@ public abstract class INDICCDImage {
          */
         private PixelIterator(int width, int heigth) {
             this.width = width;
-            this.indexLayer2 = width * heigth;
-            this.indexLayer3 = this.indexLayer2 * 2;
+            indexLayer2 = width * heigth;
+            indexLayer3 = indexLayer2 * 2;
         }
 
         /**
@@ -210,9 +193,9 @@ public abstract class INDICCDImage {
          * skip over the next pixel line.
          */
         public void nextLine() {
-            index = ((index + 1) % width) * width + width;
-            indexLayer2 = ((indexLayer2 + 1) % width) * width + width;
-            indexLayer3 = ((indexLayer3 + 1) % width) * width + width;
+            index = (index + 1) % width * width + width;
+            indexLayer2 = (indexLayer2 + 1) % width * width + width;
+            indexLayer3 = (indexLayer3 + 1) % width * width + width;
         }
 
         /**
@@ -520,18 +503,18 @@ public abstract class INDICCDImage {
      *             if the header got illegal
      */
     private void addFitsAttributes(BasicHDU imageFits) throws HeaderCardException {
-        imageFits.addValue(HISTORY, "FITS image created by i4j", "");
-        imageFits.addValue(SIMPLE, "T", "");
-        imageFits.addValue(BITPIX, bpp, "");
-        imageFits.addValue(NAXIS, type == ImageType.COLOR ? COLOR_SCALE_NAXIS : GRAY_SCALE_NAXIS, "");
-        imageFits.addValue(NAXIS1, height, "");
-        imageFits.addValue(NAXIS2, width, "");
+        imageFits.addValue(HISTORY, "FITS image created by i4j");
+        imageFits.addValue(SIMPLE, "T");
+        imageFits.addValue(BITPIX, bpp);
+        imageFits.addValue(NAXIS, type == ImageType.COLOR ? COLOR_SCALE_NAXIS : GRAY_SCALE_NAXIS);
+        imageFits.addValue(NAXISn.n(1), height);
+        imageFits.addValue(NAXISn.n(2), width);
         if (type == ImageType.COLOR) {
-            imageFits.addValue(NAXIS3, COLOR_AXIS3, "");
+            imageFits.addValue(NAXISn.n(3), COLOR_AXIS3);
         }
         if (maxPixelValue > minPixelValue) {
-            imageFits.addValue(DATAMAX, maxPixelValue, "");
-            imageFits.addValue(DATAMIN, minPixelValue, "");
+            imageFits.addValue(DATAMAX, maxPixelValue);
+            imageFits.addValue(DATAMIN, minPixelValue);
         }
         if (extraFitsHeaders != null) {
             for (Entry<String, Object> header : extraFitsHeaders.entrySet()) {

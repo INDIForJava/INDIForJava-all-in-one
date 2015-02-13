@@ -57,7 +57,7 @@ public class INDISwitchElement extends INDIElement {
      */
     public INDISwitchElement(INDIElementBuilder<INDISwitchElement> builder) {
         super(builder);
-        this.status = builder.switchValue();
+        status = builder.switchValue();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class INDISwitchElement extends INDIElement {
             }
         }
 
-        this.status = ss;
+        status = ss;
     }
 
     @Override

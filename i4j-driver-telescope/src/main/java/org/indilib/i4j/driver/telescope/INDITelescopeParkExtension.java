@@ -129,9 +129,9 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         if (!isActive()) {
             return;
         }
-        this.park.setState(IDLE);
+        park.setState(IDLE);
         park.resetAllSwitches();
-        updateProperty(this.park);
+        updateProperty(park);
     }
 
     /**
@@ -141,8 +141,8 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
         if (!isActive()) {
             return;
         }
-        if (this.park.getState() == PropertyStates.BUSY) {
-            this.park.setState(IDLE);
+        if (park.getState() == PropertyStates.BUSY) {
+            park.setState(IDLE);
         }
 
     }

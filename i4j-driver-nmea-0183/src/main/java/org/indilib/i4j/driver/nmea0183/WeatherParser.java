@@ -35,7 +35,7 @@ public class WeatherParser {
     private final Sentence sentence;
 
     public WeatherParser(Sentence sentence) {
-        this.sentence = (Sentence) sentence;
+        this.sentence = sentence;
     }
 
     public static boolean hasData(Sentence sentence) {

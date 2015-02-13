@@ -30,6 +30,11 @@ package org.indilib.i4j;
 public class INDIException extends Exception {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Creates a INDI Exception.
      * 
      * @param msg

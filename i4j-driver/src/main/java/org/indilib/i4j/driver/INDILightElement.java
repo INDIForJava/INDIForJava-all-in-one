@@ -56,7 +56,7 @@ public class INDILightElement extends INDIElement {
      */
     public INDILightElement(INDIElementBuilder<INDILightElement> builder) {
         super(builder);
-        this.state = builder.state();
+        state = builder.state();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class INDILightElement extends INDIElement {
             throw new IllegalArgumentException("Value for a Light Element must be a INDILightElement.LightStates");
         }
 
-        this.state = ns;
+        state = ns;
     }
 
     @Override

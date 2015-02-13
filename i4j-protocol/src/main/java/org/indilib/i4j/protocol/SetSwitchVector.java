@@ -64,13 +64,13 @@ public class SetSwitchVector extends SetVector<SetSwitchVector> {
      * @return this for builder pattern.
      */
     public SetSwitchVector setRule(String newRule) {
-        this.rule = newRule;
+        rule = newRule;
         return this;
     }
 
     @Override
     public SetSwitchVector trim() {
-        this.rule = trim(this.rule);
+        rule = trim(rule);
         return super.trim();
     }
 }

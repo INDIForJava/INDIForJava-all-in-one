@@ -144,14 +144,14 @@ public class RGBImagePixels {
             double max = Math.pow(2, BITS_PER_BYTE) - 1d;
             byte[] value = new byte[redPixel.length + greenPixel.length + bluePixel.length];
             int pixelIndex = 0;
-            for (int index = 0; index < redPixel.length; index++) {
-                value[pixelIndex++] = (byte) scalePixel(redPixel[index], max);
+            for (double element : redPixel) {
+                value[pixelIndex++] = (byte) scalePixel(element, max);
             }
-            for (int index = 0; index < greenPixel.length; index++) {
-                value[pixelIndex++] = (byte) scalePixel(greenPixel[index], max);
+            for (double element : greenPixel) {
+                value[pixelIndex++] = (byte) scalePixel(element, max);
             }
-            for (int index = 0; index < bluePixel.length; index++) {
-                value[pixelIndex++] = (byte) scalePixel(bluePixel[index], max);
+            for (double element : bluePixel) {
+                value[pixelIndex++] = (byte) scalePixel(element, max);
             }
             return value;
         } else if (bitsPerPixel == BITS_PER_SHORT) {
@@ -159,28 +159,28 @@ public class RGBImagePixels {
             double min = Short.MIN_VALUE;
             short[] value = new short[redPixel.length + greenPixel.length + bluePixel.length];
             int pixelIndex = 0;
-            for (int index = 0; index < redPixel.length; index++) {
-                value[pixelIndex++] = (short) scalePixel(redPixel[index], min, max);
+            for (double element : redPixel) {
+                value[pixelIndex++] = (short) scalePixel(element, min, max);
             }
-            for (int index = 0; index < greenPixel.length; index++) {
-                value[pixelIndex++] = (short) scalePixel(greenPixel[index], min, max);
+            for (double element : greenPixel) {
+                value[pixelIndex++] = (short) scalePixel(element, min, max);
             }
-            for (int index = 0; index < bluePixel.length; index++) {
-                value[pixelIndex++] = (short) scalePixel(bluePixel[index], min, max);
+            for (double element : bluePixel) {
+                value[pixelIndex++] = (short) scalePixel(element, min, max);
             }
             return value;
         } else if (bitsPerPixel == BITS_PER_INTEGER) {
             double max = Math.pow(2, BITS_PER_INTEGER) - 1d;
             int[] value = new int[redPixel.length + greenPixel.length + bluePixel.length];
             int pixelIndex = 0;
-            for (int index = 0; index < redPixel.length; index++) {
-                value[pixelIndex++] = (int) scalePixel(redPixel[index], max);
+            for (double element : redPixel) {
+                value[pixelIndex++] = (int) scalePixel(element, max);
             }
-            for (int index = 0; index < greenPixel.length; index++) {
-                value[pixelIndex++] = (int) scalePixel(greenPixel[index], max);
+            for (double element : greenPixel) {
+                value[pixelIndex++] = (int) scalePixel(element, max);
             }
-            for (int index = 0; index < bluePixel.length; index++) {
-                value[pixelIndex++] = (int) scalePixel(bluePixel[index], max);
+            for (double element : bluePixel) {
+                value[pixelIndex++] = (int) scalePixel(element, max);
             }
             return value;
         }
@@ -233,7 +233,7 @@ public class RGBImagePixels {
             int bluePixelValue = (int) scalePixel(greenPixel[index], max);
             result.setRGB(x, y, new Color(redPixelValue, greenPixelValue, bluePixelValue).getRGB());
             x++;
-            if (x >= this.red.getWidth()) {
+            if (x >= red.getWidth()) {
                 x = 0;
                 y++;
             }

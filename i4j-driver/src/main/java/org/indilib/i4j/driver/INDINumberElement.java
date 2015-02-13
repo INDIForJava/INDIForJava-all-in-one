@@ -84,9 +84,9 @@ public class INDINumberElement extends INDIElement {
     public INDINumberElement(INDIElementBuilder<INDINumberElement> builder) {
         super(builder);
         setNumberFormat(builder.numberFormat());
-        this.min = builder.minimum();
-        this.max = builder.maximum();
-        this.step = builder.step();
+        min = builder.minimum();
+        max = builder.maximum();
+        step = builder.step();
         setValueAsdouble(builder.numberValue());
     }
 
@@ -117,7 +117,7 @@ public class INDINumberElement extends INDIElement {
             sFormatter = new INDISexagesimalFormatter(newNumberFormat);
         }
 
-        this.numberFormat = newNumberFormat;
+        numberFormat = newNumberFormat;
     }
 
     /**
@@ -193,7 +193,7 @@ public class INDINumberElement extends INDIElement {
      * @return The value of this Number Element formatted as a String.
      */
     public String getValueAsString() {
-        return getNumberAsString((Double) getValue());
+        return getNumberAsString(getValue());
     }
 
     /**
@@ -267,7 +267,7 @@ public class INDINumberElement extends INDIElement {
      *            The value if it is not a value within the limits.
      */
     private void setValueAsdouble(double doubleValue) {
-        this.value = doubleValue;
+        value = doubleValue;
 
         if (doubleValue < min || doubleValue > max) {
             throw new IllegalArgumentException(getName() + " ; " + "Number (" + doubleValue + ") not in range [" + min + ", " + max + "]");

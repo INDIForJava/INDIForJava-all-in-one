@@ -6,7 +6,8 @@ import java.lang.reflect.Array;
 
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
-
+import nom.tam.fits.header.Standard;
+import nom.tam.fits.header.extra.MaxImDLExt;
 import org.indilib.i4j.fits.debayer.AdaptiveDebayerAlgorithm;
 import org.indilib.i4j.fits.debayer.DebayerPattern;
 import org.indilib.i4j.fits.debayer.ImagePixels;
@@ -84,9 +85,9 @@ public final class FitsImage {
     public static BufferedImage asJavaImage(Fits fitsImage) {
         try {
             BasicHDU oneImage = fitsImage.getHDU(0);
-            String bayerpat = oneImage.getHeader().getStringValue(StandardFitsHeader.BAYERPAT);
-            int height = oneImage.getHeader().getIntValue(StandardFitsHeader.NAXIS1);
-            int width = oneImage.getHeader().getIntValue(StandardFitsHeader.NAXIS2);
+            String bayerpat = oneImage.getHeader().getStringValue(MaxImDLExt.BAYERPAT);
+            int height = oneImage.getHeader().getIntValue(Standard.NAXISn.n(1));
+            int width = oneImage.getHeader().getIntValue(Standard.NAXISn.n(2));
             int[] axis = oneImage.getAxes();
             RGBImagePixels result;
             if (axis.length == 2 && bayerpat != null && !bayerpat.trim().isEmpty()) {

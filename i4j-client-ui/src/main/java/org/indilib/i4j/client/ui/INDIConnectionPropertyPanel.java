@@ -35,13 +35,21 @@ import org.indilib.i4j.client.INDISwitchProperty;
 import org.indilib.i4j.client.INDIValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
 /**
  * A panel to represent a the standard CONNECTION Property.
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements INDIElementListener {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = LoggerFactory.getLogger(INDIConnectionPropertyPanel.class);
 
@@ -61,13 +69,13 @@ public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements IN
     public INDIConnectionPropertyPanel(INDISwitchProperty property) throws INDIException {
         super(property);
 
-        connectedE = property.getElement("CONNECT");
+        connectedE = property.getElement(CONNECT);
         if (connectedE == null) {
             throw new INDIException("CONNECT Element not present");
         }
         connectedE.addINDIElementListener(this);
 
-        disconnectedE = property.getElement("DISCONNECT");
+        disconnectedE = property.getElement(DISCONNECT);
         if (disconnectedE == null) {
             throw new INDIException("DISCONNECT Element not present");
         }
@@ -126,9 +134,10 @@ public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements IN
         setLayout(new java.awt.BorderLayout(5, 0));
 
         button.setText("Disconnected");
-        button.setToolTipText("CONNECTION");
+        button.setToolTipText(CONNECTION);
         button.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonActionPerformed(evt);
             }

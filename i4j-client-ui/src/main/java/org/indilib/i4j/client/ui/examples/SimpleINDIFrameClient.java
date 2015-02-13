@@ -62,6 +62,11 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDIServerConnectionListener {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     private static final Logger LOG = LoggerFactory.getLogger(SimpleINDIFrameClient.class);
 
     INDIServerConnection connection;
@@ -185,7 +190,7 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
             }
         }
 
-        if ((args.length < 1) || (args.length > 2)) {
+        if (args.length < 1 || args.length > 2) {
             printErrorMessageAndExit();
         }
 

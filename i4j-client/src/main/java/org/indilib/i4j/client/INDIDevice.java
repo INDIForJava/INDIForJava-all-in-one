@@ -110,9 +110,9 @@ public class INDIDevice {
         this.name = name;
         this.server = server;
 
-        this.properties = new LinkedHashMap<String, INDIProperty<?>>();
+        properties = new LinkedHashMap<String, INDIProperty<?>>();
 
-        this.listeners = new ArrayList<INDIDeviceListener>();
+        listeners = new ArrayList<INDIDeviceListener>();
 
         timestamp = new Date();
         message = "";
@@ -198,7 +198,7 @@ public class INDIDevice {
      *             if there is some problem sending the message.
      */
     public void blobsEnable(BLOBEnables enable, INDIProperty<?> property) throws IOException {
-        if ((properties.containsValue(property)) && (property instanceof INDIBLOBProperty)) {
+        if (properties.containsValue(property) && property instanceof INDIBLOBProperty) {
             sendMessageToServer(new EnableBLOB().setDevice(getName()).setName(property.getName()).setTextContent(Constants.getBLOBEnableAsString(enable)));
         }
     }
@@ -391,10 +391,10 @@ public class INDIDevice {
     public INDIProperty<?> waitForProperty(String propertyName, int maxWait) {
         INDIProperty<?> p = null;
 
-        long startTime = (new Date()).getTime();
+        long startTime = new Date().getTime();
         boolean timeElapsed = false;
 
-        while ((p == null) && (!timeElapsed)) {
+        while (p == null && !timeElapsed) {
             p = this.getProperty(propertyName);
 
             if (p == null) {
@@ -405,9 +405,9 @@ public class INDIDevice {
                 }
             }
 
-            long endTime = (new Date()).getTime();
+            long endTime = new Date().getTime();
 
-            if (((endTime - startTime) / Constants.MILLISECONDS_IN_A_SECOND) > maxWait) {
+            if ((endTime - startTime) / Constants.MILLISECONDS_IN_A_SECOND > maxWait) {
                 timeElapsed = true;
             }
         }
@@ -424,23 +424,23 @@ public class INDIDevice {
     protected void updateProperty(SetVector<?> xml) {
         String propertyName = xml.getName();
 
-        if (!(propertyName.isEmpty())) {
+        if (!propertyName.isEmpty()) {
             // check message
             messageReceived(xml);
 
             INDIProperty<?> p = getProperty(propertyName);
 
             if (p != null) { // If it does not exist else ignore
-                if ((p instanceof INDITextProperty) && (xml instanceof SetTextVector)) {
-                    p.update((SetTextVector) xml);
-                } else if ((p instanceof INDINumberProperty) && (xml instanceof SetNumberVector)) {
-                    p.update((SetNumberVector) xml);
-                } else if ((p instanceof INDISwitchProperty) && (xml instanceof SetSwitchVector)) {
-                    p.update((SetSwitchVector) xml);
-                } else if ((p instanceof INDILightProperty) && (xml instanceof SetLightVector)) {
-                    p.update((SetLightVector) xml);
-                } else if ((p instanceof INDIBLOBProperty) && (xml instanceof SetBlobVector)) {
-                    p.update((SetBlobVector) xml);
+                if (p instanceof INDITextProperty && xml instanceof SetTextVector) {
+                    p.update(xml);
+                } else if (p instanceof INDINumberProperty && xml instanceof SetNumberVector) {
+                    p.update(xml);
+                } else if (p instanceof INDISwitchProperty && xml instanceof SetSwitchVector) {
+                    p.update(xml);
+                } else if (p instanceof INDILightProperty && xml instanceof SetLightVector) {
+                    p.update(xml);
+                } else if (p instanceof INDIBLOBProperty && xml instanceof SetBlobVector) {
+                    p.update(xml);
                 }
             }
         }
@@ -456,7 +456,7 @@ public class INDIDevice {
     protected void addProperty(DefVector<?> xml) {
         String propertyName = xml.getName();
 
-        if (!(propertyName.isEmpty())) {
+        if (!propertyName.isEmpty()) {
             messageReceived(xml);
 
             INDIProperty<?> p = getProperty(propertyName);

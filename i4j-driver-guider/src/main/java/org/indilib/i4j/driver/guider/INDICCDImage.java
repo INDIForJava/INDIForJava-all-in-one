@@ -61,8 +61,9 @@ public abstract class INDICCDImage {
             }
 
             if (ymax < height - 1) {
-                for (int x = xmin; x <= xmax; x++)
+                for (int x = xmin; x <= xmax; x++) {
                     imageData[x][xmax] = (short) 50000;
+                }
             }
         }
 
@@ -83,8 +84,6 @@ public abstract class INDICCDImage {
     }
 
     public class INDI32BitCCDImage extends INDICCDImage {
-
-        private int[][] imageData;
 
         @Override
         public void drawMarker(int ix, int iy) {
@@ -131,8 +130,9 @@ public abstract class INDICCDImage {
             }
 
             if (ymax < height - 1) {
-                for (int x = xmin; x <= xmax; x++)
+                for (int x = xmin; x <= xmax; x++) {
                     imageData[x][xmax] = (byte) 200;
+                }
             }
         }
 

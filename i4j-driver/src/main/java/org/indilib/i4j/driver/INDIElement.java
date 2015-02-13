@@ -40,6 +40,11 @@ import org.indilib.i4j.protocol.OneElement;
 public abstract class INDIElement implements Serializable {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * The name of the Element.
      */
     private String name;
@@ -63,13 +68,13 @@ public abstract class INDIElement implements Serializable {
      */
     @SuppressWarnings("unchecked")
     protected INDIElement(INDIElementBuilder<? extends INDIElement> builder) {
-        this.property = builder.indiProperty();
+        property = builder.indiProperty();
         name = builder.name();
         if (name.isEmpty()) {
             throw new IllegalArgumentException("No name for Element");
         }
-        this.label = builder.label();
-        this.property.addElement(this);
+        label = builder.label();
+        property.addElement(this);
     }
 
     /**

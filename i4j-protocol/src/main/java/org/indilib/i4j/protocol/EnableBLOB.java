@@ -63,13 +63,13 @@ public class EnableBLOB extends INDIProtocol<EnableBLOB> {
      * @return this for builder pattern.
      */
     public EnableBLOB setTextContent(String newTextContent) {
-        this.textContent = newTextContent;
-        return (EnableBLOB) this;
+        textContent = newTextContent;
+        return this;
     }
 
     @Override
     public EnableBLOB trim() {
-        this.textContent = trim(this.textContent);
+        textContent = trim(textContent);
         return super.trim();
     }
 }

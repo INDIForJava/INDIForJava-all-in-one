@@ -260,7 +260,7 @@ public class INDICommandLine {
      * @return this.
      */
     public INDICommandLine setBasicServer(INDIBasicServer newBasicServer) {
-        this.basicServer = newBasicServer;
+        basicServer = newBasicServer;
         if (startupCommandLines != null) {
             for (INDICommandLine startupCommandLine : startupCommandLines) {
                 startupCommandLine.setBasicServer(newBasicServer);
@@ -345,7 +345,7 @@ public class INDICommandLine {
     public INDICommandLine parseArgument(String[] args, boolean recursiv) throws Exception {
         CommandLineParser parser = new PosixParser();
         commandLine = parser.parse(options, args);
-        this.startupCommandLines = parseStartupCommands(recursiv);
+        startupCommandLines = parseStartupCommands(recursiv);
         return this;
     }
 
@@ -427,13 +427,13 @@ public class INDICommandLine {
                 printHelp();
             }
         } else if (option.equals(list)) {
-            List<INDIDeviceInterface> devs = this.basicServer.getServer().getDevices();
+            List<INDIDeviceInterface> devs = basicServer.getServer().getDevices();
             INDIBasicServer.print("Number of loaded Drivers: " + devs.size());
             for (INDIDeviceInterface indiDeviceInterface : devs) {
                 INDIBasicServer.print("  - " + indiDeviceInterface);
             }
         } else if (option.equals(listAvailable)) {
-            List<String> classes = this.basicServer.getServer().getAvailableDevices();
+            List<String> classes = basicServer.getServer().getAvailableDevices();
             INDIBasicServer.print("Number of available Drivers: " + classes.size());
             for (String className : classes) {
                 INDIBasicServer.print("  - " + className);
@@ -469,7 +469,7 @@ public class INDICommandLine {
             } else if (option.equals(disconnect)) {
                 String[] optionValues = commandLine.getOptionValues(option.getLongOpt());
                 server.destroyNetworkDriver(optionValues[0], Integer.parseInt(optionValues[1]));
-            } else if (option.equals(this.interactive)) {
+            } else if (option.equals(interactive)) {
                 if (interactiveMode) {
                     INDIBasicServer.print("server already interactive.");
                 }

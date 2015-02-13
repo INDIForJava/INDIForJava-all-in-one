@@ -147,22 +147,22 @@ public class INDIWebSocketConnection implements INDIConnection {
             public void write(int b) throws IOException {
                 byte[] bytes = new byte[1];
                 bytes[0] = (byte) b;
-                INDIWebSocketConnection.this.session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes));
+                session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes));
             }
 
             @Override
             public void write(byte[] bytes) throws IOException {
-                INDIWebSocketConnection.this.session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes));
+                session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes));
             }
 
             @Override
             public void write(byte[] bytes, int off, int len) throws IOException {
-                INDIWebSocketConnection.this.session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes, off, len));
+                session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes, off, len));
             }
 
             @Override
             public void flush() throws IOException {
-                INDIWebSocketConnection.this.session.getBasicRemote().sendBinary(ByteBuffer.wrap(new byte[0]), true);
+                session.getBasicRemote().sendBinary(ByteBuffer.wrap(new byte[0]), true);
             }
         });
 

@@ -172,11 +172,11 @@ public class INDINativeDevice extends INDIDevice {
      */
     @Override
     protected boolean hasName(String nameToCheck) {
-        if (this.name == null) {
+        if (name == null) {
             return false;
         }
 
-        if (this.name.equals(nameToCheck)) {
+        if (name.equals(nameToCheck)) {
             return true;
         }
 

@@ -268,7 +268,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         scopeParametersGuiderFocalLength.setValue(DEFAULT_FOCAL_LENGTH);
 
         trackState = TelescopeStatus.SCOPE_IDLE;
-        this.guideRate.setEventHandler(new NumberEvent() {
+        guideRate.setEventHandler(new NumberEvent() {
 
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
@@ -298,9 +298,9 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
      *            The new Elements and Values
      */
     private void newGuideRateValue(INDINumberElementAndValue[] elementsAndValues) {
-        this.guideRate.setValues(elementsAndValues);
+        guideRate.setValues(elementsAndValues);
         guideRate.setState(OK);
-        updateProperty(this.guideRate);
+        updateProperty(guideRate);
     };
 
     /**
@@ -323,7 +323,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         }
         periodicErrorNS.resetAllSwitches();
         updateProperty(periodicErrorNS);
-        updateProperty(this.eqPen);
+        updateProperty(eqPen);
     }
 
     /**
@@ -346,7 +346,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
         periodicErrorWE.resetAllSwitches();
         updateProperty(periodicErrorWE);
-        updateProperty(this.eqPen);
+        updateProperty(eqPen);
     }
 
     @Override
@@ -405,12 +405,12 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         if (lastSystime == -1) {
             lastSystime = now;
         }
-        dt = ((double) (now - lastSystime)) / MILLISECONDS_PER_SECOND;
+        dt = (now - lastSystime) / MILLISECONDS_PER_SECOND;
         lastSystime = now;
 
-        if ((Math.abs(target.getRa() - current.getRa()) * HOUR_TO_DEGREE) >= GOTO_LIMIT) {
+        if (Math.abs(target.getRa() - current.getRa()) * HOUR_TO_DEGREE >= GOTO_LIMIT) {
             da.setRa(GOTO_RATE * dt);
-        } else if ((Math.abs(target.getRa() - current.getRa()) * HOUR_TO_DEGREE) >= SLEW_LIMIT) {
+        } else if (Math.abs(target.getRa() - current.getRa()) * HOUR_TO_DEGREE >= SLEW_LIMIT) {
             da.setRa(SLEW_RATE * dt);
         } else {
             da.setRa(FINE_SLEW_RATE * dt);
@@ -523,16 +523,16 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         if (!eq(delta.getRa(), lastDelta.getRa()) || !eq(delta.getDec(), lastDelta.getDec()) || !eq(guideDt.getRa(), 0) || !eq(guideDt.getDec(), 0)) {
             lastDelta.set(delta.getRa(), delta.getDec());
             LOG.info(String.format("dt is %g", dt));
-            LOG.info(String.format("RA Displacement (%s) %s -- %s of target RA %s", delta.getRaString(), pe.getRaString(), (eqPenRa.getValue() - target.getRa()) > 0 ? "East"
+            LOG.info(String.format("RA Displacement (%s) %s -- %s of target RA %s", delta.getRaString(), pe.getRaString(), eqPenRa.getValue() - target.getRa() > 0 ? "East"
                     : "West", target.getRaString()));
-            LOG.info(String.format("DEC Displacement (%s) %s -- %s of target RA %s", delta.getDecString(), pe.getDecString(), (eqPenDec.getValue() - target.getDec()) > 0
+            LOG.info(String.format("DEC Displacement (%s) %s -- %s of target RA %s", delta.getDecString(), pe.getDecString(), eqPenDec.getValue() - target.getDec() > 0
                     ? "North" : "South", target.getDecString()));
             LOG.info(String.format("RA Guide Correction (%g) %s -- Direction %s", guideDt.getRa(), guideDt.getRaString(), guideDt.getRa() > 0 ? "East" : "West"));
             LOG.info(String.format("DEC Guide Correction (%g) %s -- Direction %s", guideDt.getDec(), guideDt.getDecString(), guideDt.getDec() > 0 ? "North" : "South"));
         }
 
         if (nsGuideDir != -1 || weGuideDir != -1) {
-            updateProperty(this.eqPen);
+            updateProperty(eqPen);
         }
     }
 
@@ -550,7 +550,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
         delta.setRa(target.getRa() - current.getRa());
 
-        if ((Math.abs(delta.getRa()) * HOUR_TO_DEGREE) <= da.getRa()) {
+        if (Math.abs(delta.getRa()) * HOUR_TO_DEGREE <= da.getRa()) {
             current.setRa(target.getRa());
             nlocked++;
         } else if (delta.getRa() > 0) {
@@ -575,7 +575,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
                 // Initially no PE in both axis.
                 eqnRa.setValue(current.getRa());
                 eqnDec.setValue(current.getDec());
-                updateProperty(this.eqn);
+                updateProperty(eqn);
                 trackState = TelescopeStatus.SCOPE_TRACKING;
 
                 eqn.setState(OK);
@@ -594,7 +594,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
         eqPenRa.setValue(ra);
         eqPenDec.setValue(dec);
-        updateProperty(this.eqPen);
+        updateProperty(eqPen);
 
         LOG.info("Sync is successful.");
 

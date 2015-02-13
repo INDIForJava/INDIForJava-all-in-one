@@ -189,9 +189,9 @@ public abstract class StellariumServer implements Runnable {
          */
         public int readInt() throws IOException {
             int value = in.read();
-            value = value | (in.read() << BYTE_SHIFT_2);
-            value = value | (in.read() << BYTE_SHIFT_3);
-            value = value | (in.read() << BYTE_SHIFT_4);
+            value = value | in.read() << BYTE_SHIFT_2;
+            value = value | in.read() << BYTE_SHIFT_3;
+            value = value | in.read() << BYTE_SHIFT_4;
             return value;
         }
 
@@ -202,13 +202,13 @@ public abstract class StellariumServer implements Runnable {
          */
         public long readLong() throws IOException {
             long value = readByteAsLong();
-            value = value | (readByteAsLong() << BYTE_SHIFT_2);
-            value = value | (readByteAsLong() << BYTE_SHIFT_3);
-            value = value | (readByteAsLong() << BYTE_SHIFT_4);
-            value = value | (readByteAsLong() << BYTE_SHIFT_5);
-            value = value | (readByteAsLong() << BYTE_SHIFT_6);
-            value = value | (readByteAsLong() << BYTE_SHIFT_7);
-            value = value | (readByteAsLong() << BYTE_SHIFT_8);
+            value = value | readByteAsLong() << BYTE_SHIFT_2;
+            value = value | readByteAsLong() << BYTE_SHIFT_3;
+            value = value | readByteAsLong() << BYTE_SHIFT_4;
+            value = value | readByteAsLong() << BYTE_SHIFT_5;
+            value = value | readByteAsLong() << BYTE_SHIFT_6;
+            value = value | readByteAsLong() << BYTE_SHIFT_7;
+            value = value | readByteAsLong() << BYTE_SHIFT_8;
             return value;
         }
 
@@ -219,7 +219,7 @@ public abstract class StellariumServer implements Runnable {
          */
         public int readShort() throws IOException {
             int value = in.read();
-            value = value | (in.read() << BYTE_SHIFT_2);
+            value = value | in.read() << BYTE_SHIFT_2;
             return value;
         }
 
@@ -239,9 +239,8 @@ public abstract class StellariumServer implements Runnable {
                         length -= 2;
                     }
                     if (type == 0) {
-                        long time = -1;
                         if (length > 0) {
-                            time = readLong();
+                            readLong();
                             length -= LONG_SIZE_IN_BYTES;
                         }
                         long ra = -1;
@@ -255,8 +254,8 @@ public abstract class StellariumServer implements Runnable {
                             dec = readInt();
                             length -= INTEGER_SIZE_IN_BYTES;
                         }
-                        double raDouble = (Long.valueOf(ra).doubleValue() / Long.valueOf(STELLARIUM_24H_RA_VALUE).doubleValue()) * RA_24_HOURS;
-                        double decDouble = (Long.valueOf(dec).doubleValue() / Long.valueOf(STELLARIUM_90_DEGREE_DEC_VALUE).doubleValue()) * DEC_90_DEGREES;
+                        double raDouble = Long.valueOf(ra).doubleValue() / Long.valueOf(STELLARIUM_24H_RA_VALUE).doubleValue() * RA_24_HOURS;
+                        double decDouble = Long.valueOf(dec).doubleValue() / Long.valueOf(STELLARIUM_90_DEGREE_DEC_VALUE).doubleValue() * DEC_90_DEGREES;
 
                         vectorRecievedFromStellariumClient(raDouble, decDouble);
                     }
@@ -269,7 +268,7 @@ public abstract class StellariumServer implements Runnable {
                 LOG.error("stelarium client disconnected", e);
             }
             try {
-                this.clientSocket.close();
+                clientSocket.close();
             } catch (IOException e1) {
                 LOG.error("could not close client", e1);
             }
@@ -289,12 +288,12 @@ public abstract class StellariumServer implements Runnable {
             long raInt = 0;
             long decInt = 0;
             while (dec > DEC_90_DEGREES) {
-                dec = dec - (DEC_90_DEGREES * 2);
-                ra = ra - (RA_24_HOURS / 2);
+                dec = dec - DEC_90_DEGREES * 2;
+                ra = ra - RA_24_HOURS / 2;
             }
-            while (dec < (-DEC_90_DEGREES)) {
-                dec = dec + (DEC_90_DEGREES * 2);
-                ra = ra + (RA_24_HOURS / 2);
+            while (dec < -DEC_90_DEGREES) {
+                dec = dec + DEC_90_DEGREES * 2;
+                ra = ra + RA_24_HOURS / 2;
             }
             while (ra > RA_24_HOURS) {
                 ra = ra - RA_24_HOURS;
@@ -302,8 +301,8 @@ public abstract class StellariumServer implements Runnable {
             while (ra < 0d) {
                 ra = ra + RA_24_HOURS;
             }
-            raInt = (long) ((ra / RA_24_HOURS) * Long.valueOf(STELLARIUM_24H_RA_VALUE).doubleValue());
-            decInt = (long) ((dec / DEC_90_DEGREES) * Long.valueOf(STELLARIUM_90_DEGREE_DEC_VALUE).doubleValue());
+            raInt = (long) (ra / RA_24_HOURS * Long.valueOf(STELLARIUM_24H_RA_VALUE).doubleValue());
+            decInt = (long) (dec / DEC_90_DEGREES * Long.valueOf(STELLARIUM_90_DEGREE_DEC_VALUE).doubleValue());
             writeShort(STELLARIUM_REPONCE_MESSAGE_SIZE);
             writeShort(0); // type
             writeLong(System.currentTimeMillis()); // time
@@ -322,9 +321,9 @@ public abstract class StellariumServer implements Runnable {
          */
         public void writeInt(int value) throws IOException {
             out.write(value & INTEGER_LOWEST_BYTE_MASK);
-            out.write((value >> BYTE_SHIFT_2) & INTEGER_LOWEST_BYTE_MASK);
-            out.write((value >> BYTE_SHIFT_3) & INTEGER_LOWEST_BYTE_MASK);
-            out.write((value >> BYTE_SHIFT_4) & INTEGER_LOWEST_BYTE_MASK);
+            out.write(value >> BYTE_SHIFT_2 & INTEGER_LOWEST_BYTE_MASK);
+            out.write(value >> BYTE_SHIFT_3 & INTEGER_LOWEST_BYTE_MASK);
+            out.write(value >> BYTE_SHIFT_4 & INTEGER_LOWEST_BYTE_MASK);
         }
 
         /**
@@ -337,13 +336,13 @@ public abstract class StellariumServer implements Runnable {
          */
         public void writeLong(long value) throws IOException {
             out.write((int) (value & LONG_LOWEST_BYTE_MASK));
-            out.write((int) ((value >> BYTE_SHIFT_2) & LONG_LOWEST_BYTE_MASK));
-            out.write((int) ((value >> BYTE_SHIFT_3) & LONG_LOWEST_BYTE_MASK));
-            out.write((int) ((value >> BYTE_SHIFT_4) & LONG_LOWEST_BYTE_MASK));
-            out.write((int) ((value >> BYTE_SHIFT_5) & LONG_LOWEST_BYTE_MASK));
-            out.write((int) ((value >> BYTE_SHIFT_6) & LONG_LOWEST_BYTE_MASK));
-            out.write((int) ((value >> BYTE_SHIFT_7) & LONG_LOWEST_BYTE_MASK));
-            out.write((int) ((value >> BYTE_SHIFT_8) & LONG_LOWEST_BYTE_MASK));
+            out.write((int) (value >> BYTE_SHIFT_2 & LONG_LOWEST_BYTE_MASK));
+            out.write((int) (value >> BYTE_SHIFT_3 & LONG_LOWEST_BYTE_MASK));
+            out.write((int) (value >> BYTE_SHIFT_4 & LONG_LOWEST_BYTE_MASK));
+            out.write((int) (value >> BYTE_SHIFT_5 & LONG_LOWEST_BYTE_MASK));
+            out.write((int) (value >> BYTE_SHIFT_6 & LONG_LOWEST_BYTE_MASK));
+            out.write((int) (value >> BYTE_SHIFT_7 & LONG_LOWEST_BYTE_MASK));
+            out.write((int) (value >> BYTE_SHIFT_8 & LONG_LOWEST_BYTE_MASK));
         }
 
         /**
@@ -356,7 +355,7 @@ public abstract class StellariumServer implements Runnable {
          */
         public void writeShort(int value) throws IOException {
             out.write(value & INTEGER_LOWEST_BYTE_MASK);
-            out.write((value >> BYTE_SHIFT_2) & INTEGER_LOWEST_BYTE_MASK);
+            out.write(value >> BYTE_SHIFT_2 & INTEGER_LOWEST_BYTE_MASK);
         }
 
         /**

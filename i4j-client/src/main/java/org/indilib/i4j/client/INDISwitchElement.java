@@ -166,7 +166,7 @@ public class INDISwitchElement extends INDIElement {
             throw new INDIValueException(this, "Value for a Switch Element must be a SwitchStatus");
         }
 
-        this.desiredStatus = ss;
+        desiredStatus = ss;
     }
 
     @Override

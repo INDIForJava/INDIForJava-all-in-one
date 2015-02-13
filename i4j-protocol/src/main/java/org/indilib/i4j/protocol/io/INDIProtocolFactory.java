@@ -191,24 +191,29 @@ public final class INDIProtocolFactory {
         final StatefulWriter statefulWriter = new StatefulWriter(STREAM_DRIVER.createWriter(new BufferedOutputStream(out, BUFFER_SIZE)));
         return new INDIOutputStreamImpl(new CustomObjectOutputStream(new CustomObjectOutputStream.StreamCallback() {
 
+            @Override
             public void close() {
                 if (statefulWriter.state() != StatefulWriter.STATE_CLOSED) {
                     statefulWriter.close();
                 }
             }
 
+            @Override
             public void defaultWriteObject() throws NotActiveException {
                 throw new NotActiveException("not in call to writeObject");
             }
 
+            @Override
             public void flush() {
                 statefulWriter.flush();
             }
 
+            @Override
             public void writeFieldsToStream(@SuppressWarnings("rawtypes") Map fields) throws NotActiveException {
                 throw new NotActiveException("not in call to writeObject");
             }
 
+            @Override
             public void writeToStream(Object object) {
                 XSTREAM.marshal(object, statefulWriter);
             }

@@ -41,6 +41,7 @@ import org.indilib.i4j.client.INDISwitchProperty;
 import org.indilib.i4j.client.INDITextElement;
 import org.indilib.i4j.client.INDITextProperty;
 import org.indilib.i4j.client.INDIViewCreatorInterface;
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
 
 /**
  * The swing view creator factory.
@@ -109,7 +110,7 @@ public class INDISwingViewCreator implements INDIViewCreatorInterface {
 
     @Override
     public INDIPropertyListener createSwitchPropertyView(INDISwitchProperty indiProperty) throws INDIException {
-        if (indiProperty.getName().equals("CONNECTION")) {
+        if (indiProperty.getName().equals(CONNECTION)) {
             return new INDIConnectionPropertyPanel(indiProperty);
         } else if (indiProperty.getRule() == SwitchRules.ONE_OF_MANY) {
             return new INDISwitchOneOfManyPropertyPanel(indiProperty);

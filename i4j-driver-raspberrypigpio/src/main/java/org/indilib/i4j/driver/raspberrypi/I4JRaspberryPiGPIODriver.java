@@ -763,11 +763,11 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      */
     protected void setSensors() {
         try {
-            memoryUsedE.setValue((SystemInfo.getMemoryUsed() / ONE_MEGABYTE) + "");
-            memoryFreeE.setValue((SystemInfo.getMemoryFree() / ONE_MEGABYTE) + "");
-            memoryBuffersE.setValue((SystemInfo.getMemoryBuffers() / ONE_MEGABYTE) + "");
-            memoryCachedE.setValue((SystemInfo.getMemoryCached() / ONE_MEGABYTE) + "");
-            memorySharedE.setValue((SystemInfo.getMemoryShared() / ONE_MEGABYTE) + "");
+            memoryUsedE.setValue(SystemInfo.getMemoryUsed() / ONE_MEGABYTE + "");
+            memoryFreeE.setValue(SystemInfo.getMemoryFree() / ONE_MEGABYTE + "");
+            memoryBuffersE.setValue(SystemInfo.getMemoryBuffers() / ONE_MEGABYTE + "");
+            memoryCachedE.setValue(SystemInfo.getMemoryCached() / ONE_MEGABYTE + "");
+            memorySharedE.setValue(SystemInfo.getMemoryShared() / ONE_MEGABYTE + "");
 
             cpuTemperatureE.setValue(SystemInfo.getCpuTemperature() + "");
         } catch (IOException | InterruptedException e) {
@@ -783,8 +783,8 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
             String aux2 = sc.next();
             sc.close();
 
-            long ut = (Double.valueOf(aux1)).longValue();
-            long uti = (Double.valueOf(aux2)).longValue();
+            long ut = Double.valueOf(aux1).longValue();
+            long uti = Double.valueOf(aux2).longValue();
 
             uptimeE.setValue(ut + "");
             uptimeIdleE.setValue(uti + "");

@@ -128,7 +128,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     protected INDIDriver(INDIConnection connection) {
         this.connection = connection;
-        this.subdrivers = new ArrayList<INDIDriver>();
+        subdrivers = new ArrayList<INDIDriver>();
         started = false;
         properties = new LinkedHashMap<>();
         INDIPropertyInjector.initialize(this, this);

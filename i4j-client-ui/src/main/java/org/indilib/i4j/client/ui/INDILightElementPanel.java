@@ -90,7 +90,7 @@ public class INDILightElementPanel extends INDIElementPanel {
         name.setText(le.getLabel());
         name.setToolTipText(le.getName());
 
-        LightStates s = (LightStates) le.getValue();
+        LightStates s = le.getValue();
 
         if (s == LightStates.ALERT) {
             currentValue.setText("Alert");
@@ -183,6 +183,6 @@ public class INDILightElementPanel extends INDIElementPanel {
 
     @Override
     protected void setNameSize(int size) {
-        name.setPreferredSize(new Dimension(size, (int) (name.getPreferredSize().getHeight())));
+        name.setPreferredSize(new Dimension(size, (int) name.getPreferredSize().getHeight()));
     }
 }

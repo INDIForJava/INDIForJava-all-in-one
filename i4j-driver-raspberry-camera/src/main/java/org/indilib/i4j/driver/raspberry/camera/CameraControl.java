@@ -204,7 +204,7 @@ public class CameraControl {
      */
     public CameraControl addOption(CameraOption key, String value) {
         if (value != null && !value.trim().isEmpty()) {
-            this.arguments.put(key, value);
+            arguments.put(key, value);
         }
         return this;
     }
@@ -220,8 +220,8 @@ public class CameraControl {
      * @return this (builder pattern)
      */
     public CameraControl addDefaultOption(CameraOption key, String value) {
-        if (!this.arguments.containsKey(key)) {
-            this.arguments.put(key, value);
+        if (!arguments.containsKey(key)) {
+            arguments.put(key, value);
         }
         return this;
     }
@@ -276,7 +276,7 @@ public class CameraControl {
             }
             // process.destroy();
             // wait for the threads to end nicely
-            while ((errorThread != null && errorThread.isAlive()) || (converterThread != null && converterThread.isAlive())) {
+            while (errorThread != null && errorThread.isAlive() || converterThread != null && converterThread.isAlive()) {
                 try {
                     Thread.sleep(THREAD_SLEEP_TIME);
                 } catch (InterruptedException e) {
@@ -310,7 +310,7 @@ public class CameraControl {
         StringBuffer commandString = new StringBuffer("Command used to capture image: ");
         command.add(CameraControl.COMMAND);
         commandString.append(CameraControl.COMMAND);
-        for (Entry<CameraOption, String> argument : this.arguments.entrySet()) {
+        for (Entry<CameraOption, String> argument : arguments.entrySet()) {
             if (argument.getValue() != OPTION_OFF) {
                 command.add(argument.getKey().getLongArg());
                 commandString.append(' ');

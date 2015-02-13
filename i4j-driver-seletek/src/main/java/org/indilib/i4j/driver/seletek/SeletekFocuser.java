@@ -186,7 +186,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
         halfStepP.newElement().name("Half Step").create();
 
         addProperty(halfStepP);
-        boolean half = (halfStepP.getStatus() == SwitchStatus.ON);
+        boolean half = halfStepP.getStatus() == SwitchStatus.ON;
         driver.setStepperHalfStep(seletekPort, half);
 
         powerSettingsP = newNumberProperty().saveable(true).name("stepper_pow").label("Power Settings").group("Configuration").create();
@@ -238,7 +238,7 @@ public class SeletekFocuser extends INDIFocuserDriver implements INDINotLoadable
         }
 
         if (property == halfStepP) {
-            boolean half = (halfStepP.getStatus(elementsAndValues) == SwitchStatus.ON);
+            boolean half = halfStepP.getStatus(elementsAndValues) == SwitchStatus.ON;
             driver.setStepperHalfStep(seletekPort, half);
             halfStepP.setStatus(elementsAndValues);
             halfStepP.setState(PropertyStates.OK);

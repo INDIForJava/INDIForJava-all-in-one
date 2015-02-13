@@ -32,6 +32,10 @@ import org.indilib.i4j.INDIException;
 public class INDIValueException extends INDIException {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    /**
      * The element that produced the exception.
      */
     private INDIElement element;

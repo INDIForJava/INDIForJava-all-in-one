@@ -146,11 +146,11 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
             int selectedCount = getSelectedCount();
 
-            if ((rule == SwitchRules.ONE_OF_MANY) && (selectedCount != 1)) {
+            if (rule == SwitchRules.ONE_OF_MANY && selectedCount != 1) {
                 return false;
             }
 
-            if ((rule == SwitchRules.AT_MOST_ONE) && (selectedCount > 1)) {
+            if (rule == SwitchRules.AT_MOST_ONE && selectedCount > 1) {
                 return false;
             }
         }
@@ -206,7 +206,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      */
     @Override
     public final INDISwitchElement getElement(String name) {
-        return (INDISwitchElement) super.getElement(name);
+        return super.getElement(name);
     }
 
     /**

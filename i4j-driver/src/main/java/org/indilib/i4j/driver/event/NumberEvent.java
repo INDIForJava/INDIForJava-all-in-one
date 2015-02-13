@@ -44,7 +44,7 @@ public abstract class NumberEvent implements IEventHandler<INDINumberProperty, I
 
     @Override
     public final void processNewValue(INDINumberProperty valueProperty, Date date, INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
-        this.property = valueProperty;
+        property = valueProperty;
         if (elementsAndValues instanceof INDINumberElementAndValue[]) {
             processNewValue(date, INDINumberElementAndValue[].class.cast(elementsAndValues));
         } else {

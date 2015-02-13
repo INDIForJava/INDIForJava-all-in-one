@@ -62,7 +62,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
         if (builder.permission() == PropertyPermissions.WO) {
             throw new IllegalArgumentException("Switch Properties cannot be Write Only");
         }
-        this.rule = builder.switchRule();
+        rule = builder.switchRule();
     }
 
     /**

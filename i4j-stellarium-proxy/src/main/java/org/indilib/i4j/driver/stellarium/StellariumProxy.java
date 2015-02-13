@@ -41,6 +41,9 @@ import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_DEVICES;
+import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_TELESCOPE;
+
 /**
  * This driver will start a server socket and accept the stellarium protokol
  * clients there. It will on the other side try to detect the current indi
@@ -68,13 +71,13 @@ public class StellariumProxy extends INDIDriver {
     /**
      * The indi url with the path to a telescope driver.
      */
-    @InjectProperty(name = "telescope", label = "URI of the telescope", saveable = true)
+    @InjectProperty(name = ACTIVE_DEVICES, label = "URI of the telescope", saveable = true)
     private INDITextProperty indiUrlP;
 
     /**
      * The indi uri of the telescope driver.
      */
-    @InjectElement(textValue = "indi:///")
+    @InjectElement(name = ACTIVE_TELESCOPE, textValue = "indi:///")
     private INDITextElement indiUrl;
 
     /**

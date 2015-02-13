@@ -64,13 +64,13 @@ public class DefSwitchVector extends DefVector<DefSwitchVector> {
      * @return this for builder pattern.
      */
     public DefSwitchVector setRule(String newRule) {
-        this.rule = newRule;
+        rule = newRule;
         return this;
     }
 
     @Override
     public DefSwitchVector trim() {
-        this.rule = trim(this.rule);
+        rule = trim(rule);
         return super.trim();
     }
 }

@@ -721,7 +721,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
         int t = Integer.parseInt(temp);
 
         // TODO: document this "black magic"?
-        double nt = (((t - 192) * 1.7) - 0) / 10;
+        double nt = ((t - 192) * 1.7 - 0) / 10;
 
         externalTemperatures[currentExternalTemperature] = nt;
 
@@ -758,7 +758,7 @@ public class I4JSeletekDriver extends INDIDriver implements INDIConnectionHandle
         int t = Integer.parseInt(temp);
 
         // TODO: document this "black magic"?
-        double nt = (((t - 261) * 1.8) - 250) / 10;
+        double nt = ((t - 261) * 1.8 - 250) / 10;
 
         internalTemperatures[currentInternalTemperature] = nt;
 

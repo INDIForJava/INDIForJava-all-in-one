@@ -123,8 +123,8 @@ public class INDIDirection {
      *            the declination of the point in space
      */
     public void set(double newRa, double newDec) {
-        this.ra = newRa;
-        this.dec = newDec;
+        ra = newRa;
+        dec = newDec;
     }
 
     /**
@@ -135,7 +135,7 @@ public class INDIDirection {
      *            the addition to the right ascension of the point in space
      */
     public void addRa(double addRa) {
-        this.ra += addRa;
+        ra += addRa;
     }
 
     /**
@@ -145,7 +145,7 @@ public class INDIDirection {
      *            the addition to the declination of the point in space
      */
     public void addDec(double addDec) {
-        this.dec += addDec;
+        dec += addDec;
     }
 
 }

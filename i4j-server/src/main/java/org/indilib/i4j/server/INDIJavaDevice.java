@@ -101,7 +101,7 @@ public class INDIJavaDevice extends INDIDevice {
         driverConnection = connections.first();
         try {
             Constructor<?> c = driverClass.getConstructor(INDIConnection.class);
-            this.driver = (INDIDriver) c.newInstance(connections.second());
+            driver = (INDIDriver) c.newInstance(connections.second());
         } catch (InstantiationException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
             throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);

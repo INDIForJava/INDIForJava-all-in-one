@@ -73,7 +73,7 @@ public class GetProperties extends INDIProtocol<GetProperties> {
      * @return this for builder pattern.
      */
     public GetProperties setProperty(String newProperty) {
-        this.property = newProperty;
+        property = newProperty;
         return this;
     }
 
@@ -85,14 +85,14 @@ public class GetProperties extends INDIProtocol<GetProperties> {
      * @return this for builder pattern.
      */
     public GetProperties setVersion(String newVersion) {
-        this.version = newVersion;
+        version = newVersion;
         return this;
     }
 
     @Override
     public GetProperties trim() {
-        this.property = trim(this.property);
-        this.version = trim(this.version);
+        property = trim(property);
+        version = trim(version);
         return super.trim();
     }
 }

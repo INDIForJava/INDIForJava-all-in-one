@@ -133,8 +133,8 @@ public final class Util {
             URL[] urls = sysLoader.getURLs();
             URL udir = dirOrJar.toURI().toURL();
             String udirs = udir.toString();
-            for (int i = 0; i < urls.length; i++) {
-                if (urls[i].toString().equalsIgnoreCase(udirs)) {
+            for (URL url : urls) {
+                if (url.toString().equalsIgnoreCase(udirs)) {
                     Indexer indexer = new Indexer();
                     Result result = JarIndexer.createJarIndex(dirOrJar, indexer, false, false, false);
                     return result.getIndex();

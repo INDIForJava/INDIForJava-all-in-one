@@ -75,6 +75,7 @@ public class INDIZipSocketConnection extends INDISocketConnection {
              * (java.util.zip.InflaterInputStream does not fit the bill). This
              * code has been tested to work with BufferedReader.readLine();
              */
+            @Override
             public int available() throws IOException {
                 if (!inf.finished() && !inf.needsInput()) {
                     return 1;

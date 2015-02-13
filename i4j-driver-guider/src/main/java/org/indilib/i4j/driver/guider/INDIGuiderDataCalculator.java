@@ -172,8 +172,8 @@ public class INDIGuiderDataCalculator {
             maxy = Math.min(lastRapidY + 20, height - 4);
         }
         int[][] src = ccdImage.subImageInt(minx - 4, miny - 4, maxx + 4, maxy + 4);
-        for (int y = 4; y < (src.length - 4); y++) {
-            for (int x = 4; x < (src[x].length - 4); x++) {
+        for (int y = 4; y < src.length - 4; y++) {
+            for (int x = 4; x < src[x].length - 4; x++) {
                 i[0] = i[1] = i[2] = i[3] = i[4] = i[5] = i[6] = i[7] = i[8] = 0;
                 for (int My = 0; My < PROXIMITY_MATRIX.length; My++) {
                     for (int Mx = 0; Mx < PROXIMITY_MATRIX[My].length; Mx++) {
@@ -209,8 +209,8 @@ public class INDIGuiderDataCalculator {
             }
         }
 
-        ix = ix + (minx - 4);
-        iy = iy + (miny - 4);
+        ix = ix + minx - 4;
+        iy = iy + miny - 4;
 
         rapidGuideDataX.setValue(ix);
         rapidGuideDataY.setValue(iy);

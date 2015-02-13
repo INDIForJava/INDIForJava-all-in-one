@@ -75,7 +75,7 @@ public class Capability {
      * @return this to specify more capabilities
      */
     public Capability canAbort(boolean canAbortValue) {
-        this.canAbort = canAbortValue;
+        canAbort = canAbortValue;
         return this;
     }
 
@@ -94,7 +94,7 @@ public class Capability {
      * @return this to specify more capabilities
      */
     public Capability canBin(boolean canBinValue) {
-        this.canBin = canBinValue;
+        canBin = canBinValue;
         return this;
     }
 
@@ -113,7 +113,7 @@ public class Capability {
      * @return this to specify more capabilities
      */
     public Capability canSubFrame(boolean canSubFrameValue) {
-        this.canSubFrame = canSubFrameValue;
+        canSubFrame = canSubFrameValue;
         return this;
     }
 
@@ -133,7 +133,7 @@ public class Capability {
      * @return this to specify more capabilities
      */
     public Capability hasCooler(boolean hasCoolerValue) {
-        this.hasCooler = hasCoolerValue;
+        hasCooler = hasCoolerValue;
         return this;
     }
 
@@ -152,7 +152,7 @@ public class Capability {
      * @return this to specify more capabilities
      */
     public Capability hasGuideHead(boolean hasGuideHeadValue) {
-        this.hasGuideHead = hasGuideHeadValue;
+        hasGuideHead = hasGuideHeadValue;
         return this;
     }
 
@@ -172,7 +172,7 @@ public class Capability {
      * @return this to specify more capabilities
      */
     public Capability hasShutter(boolean hasShutterValue) {
-        this.hasShutter = hasShutterValue;
+        hasShutter = hasShutterValue;
         return this;
     }
 

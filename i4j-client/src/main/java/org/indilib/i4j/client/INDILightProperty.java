@@ -144,6 +144,6 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
      */
     @Override
     public INDILightElement getElement(String name) {
-        return (INDILightElement) super.getElement(name);
+        return super.getElement(name);
     }
 }

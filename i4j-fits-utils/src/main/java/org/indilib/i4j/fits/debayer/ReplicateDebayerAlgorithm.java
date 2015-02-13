@@ -36,72 +36,72 @@ class ReplicateDebayerAlgorithm extends DebayerAlgorithmImpl {
 
     @Override
     protected void decodeGreenMiddle(ImagePixels r, ImagePixels g, ImagePixels b) {
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 0; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                b.setPixel(x, y, this.one);
-                b.setPixel(x + 1, y, this.one);
-                b.setPixel(x, y + 1, this.one);
-                b.setPixel(x + 1, y + 1, this.one);
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                b.setPixel(x, y, one);
+                b.setPixel(x + 1, y, one);
+                b.setPixel(x, y + 1, one);
+                b.setPixel(x + 1, y + 1, one);
             }
         }
-        for (int y = 1; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                r.setPixel(x, y, this.one);
-                r.setPixel(x + 1, y, this.one);
-                r.setPixel(x, y + 1, this.one);
-                r.setPixel(x + 1, y + 1, this.one);
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                r.setPixel(x, y, one);
+                r.setPixel(x + 1, y, one);
+                r.setPixel(x, y + 1, one);
+                r.setPixel(x + 1, y + 1, one);
             }
         }
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                g.setPixel(x, y, this.one);
-                g.setPixel(x + 1, y, this.one);
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, one);
             }
         }
-        for (int y = 1; y < this.height; y += 2) {
-            for (int x = 0; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                g.setPixel(x, y, this.one);
-                g.setPixel(x + 1, y, this.one);
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, one);
             }
         }
     }
 
     @Override
     protected void decodeGreenOutside(ImagePixels r, ImagePixels g, ImagePixels b) {
-        for (int y = 1; y < this.height; y += 2) {
-            for (int x = 0; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                b.setPixel(x, y, this.one);
-                b.setPixel(x + 1, y, this.one);
-                b.setPixel(x, y + 1, this.one);
-                b.setPixel(x + 1, y + 1, this.one);
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                b.setPixel(x, y, one);
+                b.setPixel(x + 1, y, one);
+                b.setPixel(x, y + 1, one);
+                b.setPixel(x + 1, y + 1, one);
             }
         }
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                r.setPixel(x, y, this.one);
-                r.setPixel(x + 1, y, this.one);
-                r.setPixel(x, y + 1, this.one);
-                r.setPixel(x + 1, y + 1, this.one);
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                r.setPixel(x, y, one);
+                r.setPixel(x + 1, y, one);
+                r.setPixel(x, y + 1, one);
+                r.setPixel(x + 1, y + 1, one);
             }
         }
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 0; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                g.setPixel(x, y, this.one);
-                g.setPixel(x + 1, y, this.one);
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, one);
             }
         }
-        for (int y = 1; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.one = this.inputImage.getPixel(x, y);
-                g.setPixel(x, y, this.one);
-                g.setPixel(x + 1, y, this.one);
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                one = inputImage.getPixel(x, y);
+                g.setPixel(x, y, one);
+                g.setPixel(x + 1, y, one);
             }
         }
     }

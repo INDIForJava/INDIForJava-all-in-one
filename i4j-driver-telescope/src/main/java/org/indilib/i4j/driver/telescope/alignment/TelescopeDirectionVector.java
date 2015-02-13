@@ -493,9 +493,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      *            the vector to copy the data from.
      */
     public void copyFrom(TelescopeDirectionVector otherVector) {
-        this.x = otherVector.x;
-        this.y = otherVector.y;
-        this.z = otherVector.z;
+        x = otherVector.x;
+        y = otherVector.y;
+        z = otherVector.z;
     }
 
 }

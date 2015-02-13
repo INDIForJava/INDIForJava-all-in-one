@@ -71,11 +71,6 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     private static final double MILLISECONDS_PER_SECOND = 1000d;
 
     /**
-     * the number of arc minutes per degree.
-     */
-    private static final double ARCMINUTES_PER_DEGREE = 60d;
-
-    /**
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(NexStarGt.class);
@@ -123,7 +118,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     }
 
     protected INDISerialPortExtension getSerial() {
-        return this.serialPortExtension;
+        return serialPortExtension;
     }
 
     @Override
@@ -132,15 +127,15 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
         addProperty(levelNorthP);
         serialPortExtension.connect();
         mathPluginManagement.connect();
-        mount = new NexStarGtMount(this.serialPortExtension);
+        mount = new NexStarGtMount(serialPortExtension);
     }
 
     @Override
     public void driverDisconnect(Date timestamp) throws INDIException {
         mount.stop();
         removeProperty(levelNorthP);
-        this.mathPluginManagement.disconnect();
-        this.serialPortExtension.disconnect();
+        mathPluginManagement.disconnect();
+        serialPortExtension.disconnect();
         super.driverDisconnect(timestamp);
     }
 
@@ -161,7 +156,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
     protected void doGoto(double ra, double dec) {
         parkExtension.setParked(false);
         trackState = TelescopeStatus.SCOPE_SLEWING;
-        this.mount.limitVerticalAxis();
+        mount.limitVerticalAxis();
 
         gotoDirection = new INDIDirection(ra, dec);
         gotoUpdate();
@@ -173,7 +168,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
      */
     protected void gotoUpdate() {
         if (gotoDirection == null && moveExtention.hasMoveRequest()) {
-            gotoDirection = new INDIDirection(this.eqnRa.getValue(), this.eqnDec.getValue());
+            gotoDirection = new INDIDirection(eqnRa.getValue(), eqnDec.getValue());
             if (trackState == TelescopeStatus.SCOPE_IDLE) {
                 trackState = TelescopeStatus.SCOPE_SLEWING;
             }
@@ -193,7 +188,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
             LnHrzPosn actualAltAz = new LnHrzPosn();
             apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
-            mount.gotoWithSpeed(actualAltAz.az, actualAltAz.alt, ((double) doubleUpdateInterfall) / MILLISECONDS_PER_SECOND);
+            mount.gotoWithSpeed(actualAltAz.az, actualAltAz.alt, doubleUpdateInterfall / MILLISECONDS_PER_SECOND);
         }
     }
 
@@ -270,7 +265,7 @@ public class NexStarGt extends INDITelescope implements INDITelescopeSyncInterfa
         actualAltAz.alt = mount.getVerticalPosition();
         TelescopeDirectionVector vector = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualAltAz);
         AlignmentDatabaseEntry e = new AlignmentDatabaseEntry(rightAscension, declination, jdTimeFromCurrentMiliseconds(System.currentTimeMillis()), vector);
-        this.mathPluginManagement.add(e);
+        mathPluginManagement.add(e);
         return true;
     }
 

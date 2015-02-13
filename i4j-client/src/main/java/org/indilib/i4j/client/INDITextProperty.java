@@ -112,6 +112,6 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      */
     @Override
     public final INDITextElement getElement(String name) {
-        return (INDITextElement) super.getElement(name);
+        return super.getElement(name);
     }
 }

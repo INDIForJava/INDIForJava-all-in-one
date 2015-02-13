@@ -216,8 +216,8 @@ public class CCDSimulator extends INDICCDDriver {
             int biny = primaryCCD.getBinningY();
             int sensorWidth = width;
             int sensorHeigth = heigth;
-            sensorWidth = (sensorWidth / binx) * binx;
-            sensorHeigth = (sensorHeigth / biny) * biny;
+            sensorWidth = sensorWidth / binx * binx;
+            sensorHeigth = sensorHeigth / biny * biny;
 
             INDICCDImage newCcdImage = INDICCDImage.createImage(sensorWidth / binx, sensorHeigth / biny, BITS_PER_PIXEL_COLOR, ImageType.COLOR);
             Raster stdData = stdImage.getData();

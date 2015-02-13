@@ -135,9 +135,9 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
     @Override
     public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
         if (property == filterNamesP) {
-            for (int i = 0; i < elementsAndValues.length; i++) {
-                INDITextElement el = elementsAndValues[i].getElement();
-                String val = elementsAndValues[i].getValue();
+            for (INDITextElementAndValue elementsAndValue : elementsAndValues) {
+                INDITextElement el = elementsAndValue.getElement();
+                String val = elementsAndValue.getValue();
                 el.setValue(val);
             }
 

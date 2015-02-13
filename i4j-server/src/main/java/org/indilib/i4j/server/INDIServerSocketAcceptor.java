@@ -68,7 +68,7 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
      */
     public INDIServerSocketAcceptor() {
         mainThreadRunning = false;
-        this.listeningPort = 0;
+        listeningPort = 0;
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
      */
     private int getListeningPort() {
         if (listeningPort <= 0) {
-            this.listeningPort = getDefaultPort();
+            listeningPort = getDefaultPort();
         }
         return listeningPort;
     }
@@ -192,7 +192,7 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
     public void setArguments(Object... arguments) {
         if (arguments != null && arguments.length > 0 && arguments[0] != null) {
             try {
-                this.listeningPort = Integer.parseInt(arguments[0].toString().trim());
+                listeningPort = Integer.parseInt(arguments[0].toString().trim());
             } catch (Exception e) {
                 LOG.error("argument was not port integer", e);
             }

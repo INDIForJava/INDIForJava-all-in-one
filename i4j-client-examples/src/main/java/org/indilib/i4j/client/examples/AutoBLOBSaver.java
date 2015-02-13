@@ -118,9 +118,9 @@ public class AutoBLOBSaver implements INDIElementListener {
      *            The name of the element
      */
     public void listenAndSaveBLOB(String deviceToListen, String propertyToListen, String elementToListen) {
-        this.deviceName = deviceToListen;
-        this.propertyName = propertyToListen;
-        this.elementName = elementToListen;
+        deviceName = deviceToListen;
+        propertyName = propertyToListen;
+        elementName = elementToListen;
 
         try {
             connection.connect();
@@ -190,7 +190,7 @@ public class AutoBLOBSaver implements INDIElementListener {
      *            The arguments of the application
      */
     public static void main(String[] args) {
-        if ((args.length < PORT_PARAMETER) || (args.length > PORT_PARAMETER + 1)) {
+        if (args.length < PORT_PARAMETER || args.length > PORT_PARAMETER + 1) {
             printErrorMessageAndExit();
         }
 

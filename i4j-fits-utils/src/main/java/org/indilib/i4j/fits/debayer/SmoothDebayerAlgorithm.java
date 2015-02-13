@@ -118,108 +118,108 @@ class SmoothDebayerAlgorithm extends DebayerAlgorithmImpl {
     @Override
     protected void decodeGreenMiddle(ImagePixels r, ImagePixels g, ImagePixels b) {
         // Solve for green pixels first
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.pG1 = this.inputImage.getPixel(x, y);
-                this.pG2 = this.inputImage.getPixel(x + 2, y);
-                this.pG3 = this.inputImage.getPixel(x + 1, y + 1);
-                this.pG4 = this.inputImage.getPixel(x + 1, y - 1);
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                pG1 = inputImage.getPixel(x, y);
+                pG2 = inputImage.getPixel(x + 2, y);
+                pG3 = inputImage.getPixel(x + 1, y + 1);
+                pG4 = inputImage.getPixel(x + 1, y - 1);
 
-                g.setPixel(x, y, this.pG1);
+                g.setPixel(x, y, pG1);
                 if (y == 0) {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3) / N_3);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3) / N_3);
                 } else {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3 + this.pG4) / N_4);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3 + pG4) / N_4);
                 }
                 if (x == 1) {
-                    g.setPixel(x - 1, y, (this.pG1 + this.pG4 + this.inputImage.getPixel(x - 1, y + 1)) / N_3);
+                    g.setPixel(x - 1, y, (pG1 + pG4 + inputImage.getPixel(x - 1, y + 1)) / N_3);
                 }
             }
         }
 
-        for (int x = 0; x < this.width; x += 2) {
-            for (int y = 1; y < this.height; y += 2) {
+        for (int x = 0; x < width; x += 2) {
+            for (int y = 1; y < height; y += 2) {
 
-                this.pG1 = this.inputImage.getPixel(x, y);
-                this.pG2 = this.inputImage.getPixel(x + 2, y);
-                this.pG3 = this.inputImage.getPixel(x + 1, y + 1);
-                this.pG4 = this.inputImage.getPixel(x + 1, y - 1);
+                pG1 = inputImage.getPixel(x, y);
+                pG2 = inputImage.getPixel(x + 2, y);
+                pG3 = inputImage.getPixel(x + 1, y + 1);
+                pG4 = inputImage.getPixel(x + 1, y - 1);
 
-                g.setPixel(x, y, this.pG1);
+                g.setPixel(x, y, pG1);
                 if (x == 0) {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3) / N_3);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3) / N_3);
                 } else {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3 + this.pG4) / N_4);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3 + pG4) / N_4);
                 }
             }
         }
 
-        g.setPixel(0, 0, (this.inputImage.getPixel(0, 1) + this.inputImage.getPixel(1, 0)) / 2);
+        g.setPixel(0, 0, (inputImage.getPixel(0, 1) + inputImage.getPixel(1, 0)) / 2);
 
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 0; x < this.width; x += 2) {
-                this.pB1 = this.inputImage.getPixel(x, y);
-                this.pB2 = this.inputImage.getPixel(x + 2, y);
-                this.pB3 = this.inputImage.getPixel(x, y + 2);
-                this.pB4 = this.inputImage.getPixel(x + 2, y + 2);
-                this.pG1 = g.getPixel(x, y);
-                this.pG2 = g.getPixel(x + 2, y);
-                this.pG3 = g.getPixel(x, y + 2);
-                this.pG4 = g.getPixel(x + 2, y + 2);
-                this.pG5 = g.getPixel(x + 1, y);
-                this.pG6 = g.getPixel(x, y + 1);
-                this.pG9 = g.getPixel(x + 1, y + 1);
-                if (this.pG1 == 0) {
-                    this.pG1 = 1;
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                pB1 = inputImage.getPixel(x, y);
+                pB2 = inputImage.getPixel(x + 2, y);
+                pB3 = inputImage.getPixel(x, y + 2);
+                pB4 = inputImage.getPixel(x + 2, y + 2);
+                pG1 = g.getPixel(x, y);
+                pG2 = g.getPixel(x + 2, y);
+                pG3 = g.getPixel(x, y + 2);
+                pG4 = g.getPixel(x + 2, y + 2);
+                pG5 = g.getPixel(x + 1, y);
+                pG6 = g.getPixel(x, y + 1);
+                pG9 = g.getPixel(x + 1, y + 1);
+                if (pG1 == 0) {
+                    pG1 = 1;
                 }
-                if (this.pG2 == 0) {
-                    this.pG2 = 1;
+                if (pG2 == 0) {
+                    pG2 = 1;
                 }
-                if (this.pG3 == 0) {
-                    this.pG3 = 1;
+                if (pG3 == 0) {
+                    pG3 = 1;
                 }
-                if (this.pG4 == 0) {
-                    this.pG4 = 1;
+                if (pG4 == 0) {
+                    pG4 = 1;
                 }
 
-                b.setPixel(x, y, this.pB1);
-                b.setPixel(x + 1, y, this.pG5 / 2 * (this.pB1 / this.pG1 + this.pB2 / this.pG2));
-                b.setPixel(x, y + 1, this.pG6 / 2 * (this.pB1 / this.pG1 + this.pB3 / this.pG3));
-                b.setPixel(x + 1, y + 1, this.pG9 / N_4 * (this.pB1 / this.pG1 + this.pB3 / this.pG3 + this.pB2 / this.pG2 + this.pB4 / this.pG4));
+                b.setPixel(x, y, pB1);
+                b.setPixel(x + 1, y, pG5 / 2 * (pB1 / pG1 + pB2 / pG2));
+                b.setPixel(x, y + 1, pG6 / 2 * (pB1 / pG1 + pB3 / pG3));
+                b.setPixel(x + 1, y + 1, pG9 / N_4 * (pB1 / pG1 + pB3 / pG3 + pB2 / pG2 + pB4 / pG4));
 
             }
         }
 
-        for (int y = 1; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.pR1 = this.inputImage.getPixel(x, y);
-                this.pR2 = this.inputImage.getPixel(x + 2, y);
-                this.pR3 = this.inputImage.getPixel(x, y + 2);
-                this.pR4 = this.inputImage.getPixel(x + 2, y + 2);
-                this.pG1 = g.getPixel(x, y);
-                this.pG2 = g.getPixel(x + 2, y);
-                this.pG3 = g.getPixel(x, y + 2);
-                this.pG4 = g.getPixel(x + 2, y + 2);
-                this.pG5 = g.getPixel(x + 1, y);
-                this.pG6 = g.getPixel(x, y + 1);
-                this.pG9 = g.getPixel(x + 1, y + 1);
-                if (this.pG1 == 0) {
-                    this.pG1 = 1;
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                pR1 = inputImage.getPixel(x, y);
+                pR2 = inputImage.getPixel(x + 2, y);
+                pR3 = inputImage.getPixel(x, y + 2);
+                pR4 = inputImage.getPixel(x + 2, y + 2);
+                pG1 = g.getPixel(x, y);
+                pG2 = g.getPixel(x + 2, y);
+                pG3 = g.getPixel(x, y + 2);
+                pG4 = g.getPixel(x + 2, y + 2);
+                pG5 = g.getPixel(x + 1, y);
+                pG6 = g.getPixel(x, y + 1);
+                pG9 = g.getPixel(x + 1, y + 1);
+                if (pG1 == 0) {
+                    pG1 = 1;
                 }
-                if (this.pG2 == 0) {
-                    this.pG2 = 1;
+                if (pG2 == 0) {
+                    pG2 = 1;
                 }
-                if (this.pG3 == 0) {
-                    this.pG3 = 1;
+                if (pG3 == 0) {
+                    pG3 = 1;
                 }
-                if (this.pG4 == 0) {
-                    this.pG4 = 1;
+                if (pG4 == 0) {
+                    pG4 = 1;
                 }
 
-                r.setPixel(x, y, this.pR1);
-                r.setPixel(x + 1, y, this.pG5 / 2 * (this.pR1 / this.pG1 + this.pR2 / this.pG2));
-                r.setPixel(x, y + 1, this.pG6 / 2 * (this.pR1 / this.pG1 + this.pR3 / this.pG3));
-                r.setPixel(x + 1, y + 1, this.pG9 / N_4 * (this.pR1 / this.pG1 + this.pR3 / this.pG3 + this.pR2 / this.pG2 + this.pR4 / this.pG4));
+                r.setPixel(x, y, pR1);
+                r.setPixel(x + 1, y, pG5 / 2 * (pR1 / pG1 + pR2 / pG2));
+                r.setPixel(x, y + 1, pG6 / 2 * (pR1 / pG1 + pR3 / pG3));
+                r.setPixel(x + 1, y + 1, pG9 / N_4 * (pR1 / pG1 + pR3 / pG3 + pR2 / pG2 + pR4 / pG4));
             }
         }
     }
@@ -227,107 +227,107 @@ class SmoothDebayerAlgorithm extends DebayerAlgorithmImpl {
     @Override
     protected void decodeGreenOutside(ImagePixels r, ImagePixels g, ImagePixels b) {
 
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 0; x < this.width; x += 2) {
-                this.pG1 = this.inputImage.getPixel(x, y);
-                this.pG2 = this.inputImage.getPixel(x + 2, y);
-                this.pG3 = this.inputImage.getPixel(x + 1, y + 1);
-                this.pG4 = this.inputImage.getPixel(x + 1, y - 1);
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                pG1 = inputImage.getPixel(x, y);
+                pG2 = inputImage.getPixel(x + 2, y);
+                pG3 = inputImage.getPixel(x + 1, y + 1);
+                pG4 = inputImage.getPixel(x + 1, y - 1);
 
-                g.setPixel(x, y, this.pG1);
+                g.setPixel(x, y, pG1);
                 if (y == 0) {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3) / N_3);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3) / N_3);
                 } else {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3 + this.pG4) / N_4);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3 + pG4) / N_4);
                 }
                 if (x == 1) {
-                    g.setPixel(x - 1, y, (this.pG1 + this.pG4 + this.inputImage.getPixel(x - 1, y + 1)) / N_3);
+                    g.setPixel(x - 1, y, (pG1 + pG4 + inputImage.getPixel(x - 1, y + 1)) / N_3);
                 }
             }
         }
 
-        for (int y = 1; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.pG1 = this.inputImage.getPixel(x, y);
-                this.pG2 = this.inputImage.getPixel(x + 2, y);
-                this.pG3 = this.inputImage.getPixel(x + 1, y + 1);
-                this.pG4 = this.inputImage.getPixel(x + 1, y - 1);
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                pG1 = inputImage.getPixel(x, y);
+                pG2 = inputImage.getPixel(x + 2, y);
+                pG3 = inputImage.getPixel(x + 1, y + 1);
+                pG4 = inputImage.getPixel(x + 1, y - 1);
 
-                g.setPixel(x, y, this.pG1);
+                g.setPixel(x, y, pG1);
                 if (x == 0) {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3) / N_3);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3) / N_3);
                 } else {
-                    g.setPixel(x + 1, y, (this.pG1 + this.pG2 + this.pG3 + this.pG4) / N_4);
+                    g.setPixel(x + 1, y, (pG1 + pG2 + pG3 + pG4) / N_4);
                 }
             }
         }
 
-        g.setPixel(0, 0, (this.inputImage.getPixel(0, 1) + this.inputImage.getPixel(1, 0)) / 2);
+        g.setPixel(0, 0, (inputImage.getPixel(0, 1) + inputImage.getPixel(1, 0)) / 2);
 
-        for (int y = 1; y < this.height; y += 2) {
-            for (int x = 0; x < this.width; x += 2) {
-                this.pB1 = this.inputImage.getPixel(x, y);
-                this.pB2 = this.inputImage.getPixel(x + 2, y);
-                this.pB3 = this.inputImage.getPixel(x, y + 2);
-                this.pB4 = this.inputImage.getPixel(x + 2, y + 2);
-                this.pG1 = g.getPixel(x, y);
-                this.pG2 = g.getPixel(x + 2, y);
-                this.pG3 = g.getPixel(x, y + 2);
-                this.pG4 = g.getPixel(x + 2, y + 2);
-                this.pG5 = g.getPixel(x + 1, y);
-                this.pG6 = g.getPixel(x, y + 1);
-                this.pG9 = g.getPixel(x + 1, y + 1);
-                if (this.pG1 == 0) {
-                    this.pG1 = 1;
+        for (int y = 1; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                pB1 = inputImage.getPixel(x, y);
+                pB2 = inputImage.getPixel(x + 2, y);
+                pB3 = inputImage.getPixel(x, y + 2);
+                pB4 = inputImage.getPixel(x + 2, y + 2);
+                pG1 = g.getPixel(x, y);
+                pG2 = g.getPixel(x + 2, y);
+                pG3 = g.getPixel(x, y + 2);
+                pG4 = g.getPixel(x + 2, y + 2);
+                pG5 = g.getPixel(x + 1, y);
+                pG6 = g.getPixel(x, y + 1);
+                pG9 = g.getPixel(x + 1, y + 1);
+                if (pG1 == 0) {
+                    pG1 = 1;
                 }
-                if (this.pG2 == 0) {
-                    this.pG2 = 1;
+                if (pG2 == 0) {
+                    pG2 = 1;
                 }
-                if (this.pG3 == 0) {
-                    this.pG3 = 1;
+                if (pG3 == 0) {
+                    pG3 = 1;
                 }
-                if (this.pG4 == 0) {
-                    this.pG4 = 1;
+                if (pG4 == 0) {
+                    pG4 = 1;
                 }
 
-                b.setPixel(x, y, this.pB1);
-                b.setPixel(x + 1, y, this.pG5 / 2 * (this.pB1 / this.pG1 + this.pB2 / this.pG2));
-                b.setPixel(x, y + 1, this.pG6 / 2 * (this.pB1 / this.pG1 + this.pB3 / this.pG3));
-                b.setPixel(x + 1, y + 1, this.pG9 / N_4 * (this.pB1 / this.pG1 + this.pB3 / this.pG3 + this.pB2 / this.pG2 + this.pB4 / this.pG4));
+                b.setPixel(x, y, pB1);
+                b.setPixel(x + 1, y, pG5 / 2 * (pB1 / pG1 + pB2 / pG2));
+                b.setPixel(x, y + 1, pG6 / 2 * (pB1 / pG1 + pB3 / pG3));
+                b.setPixel(x + 1, y + 1, pG9 / N_4 * (pB1 / pG1 + pB3 / pG3 + pB2 / pG2 + pB4 / pG4));
 
             }
         }
 
-        for (int y = 0; y < this.height; y += 2) {
-            for (int x = 1; x < this.width; x += 2) {
-                this.pR1 = this.inputImage.getPixel(x, y);
-                this.pR2 = this.inputImage.getPixel(x + 2, y);
-                this.pR3 = this.inputImage.getPixel(x, y + 2);
-                this.pR4 = this.inputImage.getPixel(x + 2, y + 2);
-                this.pG1 = g.getPixel(x, y);
-                this.pG2 = g.getPixel(x + 2, y);
-                this.pG3 = g.getPixel(x, y + 2);
-                this.pG4 = g.getPixel(x + 2, y + 2);
-                this.pG5 = g.getPixel(x + 1, y);
-                this.pG6 = g.getPixel(x, y + 1);
-                this.pG9 = g.getPixel(x + 1, y + 1);
-                if (this.pG1 == 0) {
-                    this.pG1 = 1;
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 1; x < width; x += 2) {
+                pR1 = inputImage.getPixel(x, y);
+                pR2 = inputImage.getPixel(x + 2, y);
+                pR3 = inputImage.getPixel(x, y + 2);
+                pR4 = inputImage.getPixel(x + 2, y + 2);
+                pG1 = g.getPixel(x, y);
+                pG2 = g.getPixel(x + 2, y);
+                pG3 = g.getPixel(x, y + 2);
+                pG4 = g.getPixel(x + 2, y + 2);
+                pG5 = g.getPixel(x + 1, y);
+                pG6 = g.getPixel(x, y + 1);
+                pG9 = g.getPixel(x + 1, y + 1);
+                if (pG1 == 0) {
+                    pG1 = 1;
                 }
-                if (this.pG2 == 0) {
-                    this.pG2 = 1;
+                if (pG2 == 0) {
+                    pG2 = 1;
                 }
-                if (this.pG3 == 0) {
-                    this.pG3 = 1;
+                if (pG3 == 0) {
+                    pG3 = 1;
                 }
-                if (this.pG4 == 0) {
-                    this.pG4 = 1;
+                if (pG4 == 0) {
+                    pG4 = 1;
                 }
 
-                r.setPixel(x, y, this.pR1);
-                r.setPixel(x + 1, y, this.pG5 / 2 * (this.pR1 / this.pG1 + this.pR2 / this.pG2));
-                r.setPixel(x, y + 1, this.pG6 / 2 * (this.pR1 / this.pG1 + this.pR3 / this.pG3));
-                r.setPixel(x + 1, y + 1, this.pG9 / N_4 * (this.pR1 / this.pG1 + this.pR3 / this.pG3 + this.pR2 / this.pG2 + this.pR4 / this.pG4));
+                r.setPixel(x, y, pR1);
+                r.setPixel(x + 1, y, pG5 / 2 * (pR1 / pG1 + pR2 / pG2));
+                r.setPixel(x, y + 1, pG6 / 2 * (pR1 / pG1 + pR3 / pG3));
+                r.setPixel(x + 1, y + 1, pG9 / N_4 * (pR1 / pG1 + pR3 / pG3 + pR2 / pG2 + pR4 / pG4));
             }
         }
     }

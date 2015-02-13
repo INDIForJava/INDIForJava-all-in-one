@@ -81,7 +81,7 @@ public class INDIClient extends Application implements INDIServerConnectionListe
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.mainStage = stage;
+        mainStage = stage;
 
         connection = new INDIServerConnection((INDIConnection) new URL(getParameters().getRaw().get(0)).openConnection());
 

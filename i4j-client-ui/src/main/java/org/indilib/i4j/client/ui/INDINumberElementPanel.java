@@ -189,6 +189,7 @@ public class INDINumberElementPanel extends INDIElementPanel {
         info.setPreferredSize(new java.awt.Dimension(16, 16));
         info.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 infoActionPerformed(evt);
             }
@@ -246,7 +247,7 @@ public class INDINumberElementPanel extends INDIElementPanel {
 
     @Override
     protected void setError(boolean erroneous, String errorMessage) {
-        this.desiredValueErroneous = erroneous;
+        desiredValueErroneous = erroneous;
 
         if (erroneous) {
             desiredValue.setBackground(Color.PINK);
@@ -275,6 +276,6 @@ public class INDINumberElementPanel extends INDIElementPanel {
 
     @Override
     protected void setNameSize(int size) {
-        name.setPreferredSize(new Dimension(size, (int) (name.getPreferredSize().getHeight())));
+        name.setPreferredSize(new Dimension(size, (int) name.getPreferredSize().getHeight()));
     }
 }

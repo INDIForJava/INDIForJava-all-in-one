@@ -70,9 +70,9 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      */
     public void setStatus(INDISwitchElementAndValue[] ev) {
         INDISwitchElement firstElement = firstElement();
-        for (int i = 0; i < ev.length; i++) {
-            if (ev[i].getElement() == firstElement) {
-                firstElement.setValue(ev[i].getValue());
+        for (INDISwitchElementAndValue element : ev) {
+            if (element.getElement() == firstElement) {
+                firstElement.setValue(element.getValue());
             }
         }
     }
@@ -98,9 +98,9 @@ public class INDISwitchOneOrNoneProperty extends INDISwitchProperty {
      */
     public SwitchStatus getStatus(INDISwitchElementAndValue[] ev) {
         INDISwitchElement firstElement = firstElement();
-        for (int i = 0; i < ev.length; i++) {
-            if (ev[i].getElement() == firstElement) {
-                return ev[i].getValue();
+        for (INDISwitchElementAndValue element : ev) {
+            if (element.getElement() == firstElement) {
+                return element.getValue();
             }
         }
 

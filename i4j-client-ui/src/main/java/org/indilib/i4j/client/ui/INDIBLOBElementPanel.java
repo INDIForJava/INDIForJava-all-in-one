@@ -91,7 +91,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
             mainPanel.remove(sendPanel);
         }
 
-        this.blobElement = be;
+        blobElement = be;
 
         desiredValue = null;
 
@@ -143,6 +143,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
         saveBLOBButton.setEnabled(false);
         saveBLOBButton.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveBLOBButtonActionPerformed(evt);
             }
@@ -175,6 +176,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
         loadBLOBButton.setText("Load...");
         loadBLOBButton.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadBLOBButtonActionPerformed(evt);
             }
@@ -223,7 +225,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
             try {
                 blobElement.getValue().saveBLOBData(f);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Problem saving BLOB data in " + f.getAbsolutePath(), "Saving problem",
+                JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Problem saving BLOB data in " + f.getAbsolutePath(), "Saving problem",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -256,7 +258,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
                 fis = new FileInputStream(f);
                 int breaded = fis.read(bytes);
                 pos = breaded;
-                while ((breaded != -1) && (size < pos)) {
+                while (breaded != -1 && size < pos) {
                     breaded = fis.read(bytes, pos, size - pos);
                     if (breaded != -1) {
                         pos += breaded;
@@ -274,7 +276,7 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
                         LOG.error("could not close stream", e);
                     }
                 }
-                JOptionPane.showMessageDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Problem loading BLOB data from " + f.getAbsolutePath(), "Loading problem",
+                JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Problem loading BLOB data from " + f.getAbsolutePath(), "Loading problem",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -355,6 +357,6 @@ public class INDIBLOBElementPanel extends INDIElementPanel {
 
     @Override
     protected void setNameSize(int size) {
-        name.setPreferredSize(new Dimension(size, (int) (name.getPreferredSize().getHeight())));
+        name.setPreferredSize(new Dimension(size, (int) name.getPreferredSize().getHeight()));
     }
 }

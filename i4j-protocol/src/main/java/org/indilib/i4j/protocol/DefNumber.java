@@ -110,7 +110,7 @@ public class DefNumber extends DefElement<DefNumber> {
      * @return this for builder pattern.
      */
     public DefNumber setFormat(String newFormat) {
-        this.format = newFormat;
+        format = newFormat;
         return this;
     }
 
@@ -122,7 +122,7 @@ public class DefNumber extends DefElement<DefNumber> {
      * @return this for builder pattern.
      */
     public DefNumber setMax(String newMax) {
-        this.max = newMax;
+        max = newMax;
         return this;
     }
 
@@ -134,7 +134,7 @@ public class DefNumber extends DefElement<DefNumber> {
      * @return this for builder pattern.
      */
     public DefNumber setMin(String newMin) {
-        this.min = newMin;
+        min = newMin;
         return this;
     }
 
@@ -146,16 +146,16 @@ public class DefNumber extends DefElement<DefNumber> {
      * @return this for builder pattern.
      */
     public DefNumber setStep(String newLeft) {
-        this.step = newLeft;
+        step = newLeft;
         return this;
     }
 
     @Override
     public DefNumber trim() {
-        this.min = trim(this.min);
-        this.max = trim(this.max);
-        this.format = trim(this.format);
-        this.step = trim(this.step);
+        min = trim(min);
+        max = trim(max);
+        format = trim(format);
+        step = trim(step);
         return super.trim();
     }
 

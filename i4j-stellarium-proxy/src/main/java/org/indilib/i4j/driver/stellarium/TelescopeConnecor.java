@@ -75,11 +75,6 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
     private INDIServerConnection serverConnection;
 
     /**
-     * indicatior to signal a stop of the connection with the telescope.
-     */
-    private boolean stop;
-
-    /**
      * Constructor for the telescope connectior.
      * 
      * @param indiUrl
@@ -113,27 +108,25 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
         } else {
             serverConnection = new INDIServerConnection(currentServer.createConnection());
         }
-        if (this.indiDeviceName == null || this.indiDeviceName.isEmpty()) {
+        if (indiDeviceName == null || indiDeviceName.isEmpty()) {
             autoDetect = true;
         }
         if (autoDetect) {
             try {
-                serverConnection.addINDIDeviceListener(this.indiDeviceName, this);
+                serverConnection.addINDIDeviceListener(indiDeviceName, this);
                 serverConnection.addINDIServerConnectionListener(this);
                 serverConnection.connect();
                 serverConnection.askForDevices();
             } catch (IOException e) {
                 LOG.error("could not ask for devices");
-                stop = true;
             }
         } else {
             try {
-                serverConnection.addINDIDeviceListener(this.indiDeviceName, this);
+                serverConnection.addINDIDeviceListener(indiDeviceName, this);
                 serverConnection.connect();
-                serverConnection.askForDevices(this.indiDeviceName, "EQUATORIAL_EOD_COORD");
+                serverConnection.askForDevices(indiDeviceName, "EQUATORIAL_EOD_COORD");
             } catch (IOException e) {
-                LOG.error("could not ask for device " + this.indiDevice);
-                stop = true;
+                LOG.error("could not ask for device " + indiDevice);
             }
         }
     }
@@ -142,7 +135,6 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
      * close the connection with the telescope.
      */
     public void close() {
-        this.stop = true;
         try {
             serverConnection.disconnect();
         } catch (Exception e) {
@@ -152,7 +144,6 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
 
     @Override
     public void connectionLost(INDIServerConnection connection) {
-        this.stop = true;
     }
 
     /**

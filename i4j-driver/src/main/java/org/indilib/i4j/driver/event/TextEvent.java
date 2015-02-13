@@ -53,7 +53,7 @@ public abstract class TextEvent implements IEventHandler<INDITextProperty, INDIT
 
     @Override
     public final void processNewValue(INDITextProperty valueProperty, Date date, INDIElementAndValue<INDITextElement, String>[] elementsAndValues) {
-        this.property = valueProperty;
+        property = valueProperty;
         if (elementsAndValues instanceof INDITextElementAndValue[]) {
             processNewValue(date, INDITextElementAndValue[].class.cast(elementsAndValues));
         } else {

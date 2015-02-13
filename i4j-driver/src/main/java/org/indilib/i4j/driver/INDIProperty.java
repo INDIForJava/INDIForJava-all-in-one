@@ -588,10 +588,10 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      *            The array of elements and values
      */
     public void setValues(INDIElementAndValue<Element, ?>[] elementsAndValues) {
-        for (int i = 0; i < elementsAndValues.length; i++) {
-            INDIElement element = elementsAndValues[i].getElement();
+        for (INDIElementAndValue<Element, ?> elementsAndValue : elementsAndValues) {
+            INDIElement element = elementsAndValue.getElement();
 
-            element.setValue(elementsAndValues[i].getValue());
+            element.setValue(elementsAndValue.getValue());
         }
     }
 

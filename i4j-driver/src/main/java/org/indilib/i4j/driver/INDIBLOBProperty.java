@@ -35,6 +35,11 @@ import org.indilib.i4j.protocol.SetBlobVector;
 public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Constructs an instance of <code>INDIBLOBProperty</code> with the
      * properties collected by the builder.
      * 
@@ -47,7 +52,7 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
 
     @Override
     public INDIBLOBElement getElement(String name) {
-        return (INDIBLOBElement) super.getElement(name);
+        return super.getElement(name);
     }
 
     @Override

@@ -54,13 +54,13 @@ public class DelProperty extends INDIProtocol<DelProperty> {
      * @return this for builder pattern.
      */
     public DelProperty setVersion(String newVersion) {
-        this.version = newVersion;
+        version = newVersion;
         return this;
     }
 
     @Override
     public DelProperty trim() {
-        this.version = trim(this.version);
+        version = trim(version);
         return super.trim();
     }
 }

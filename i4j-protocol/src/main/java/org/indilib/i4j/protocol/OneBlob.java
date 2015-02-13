@@ -96,11 +96,11 @@ public class OneBlob extends OneElement<OneBlob> {
      * @return this for builder pattern.
      */
     public OneBlob setByteContent(byte[] newByteContent) {
-        this.byteContent = newByteContent;
-        if (this.byteContent != null) {
-            this.size = Integer.toString(this.byteContent.length);
+        byteContent = newByteContent;
+        if (byteContent != null) {
+            size = Integer.toString(byteContent.length);
         } else {
-            this.size = Integer.toString(0);
+            size = Integer.toString(0);
         }
         return this;
     }
@@ -113,14 +113,14 @@ public class OneBlob extends OneElement<OneBlob> {
      * @return this for builder pattern.
      */
     public OneBlob setFormat(String newFormat) {
-        this.format = newFormat;
+        format = newFormat;
         return this;
     }
 
     @Override
     public OneBlob trim() {
-        this.format = trim(this.format);
-        this.size = trim(this.size);
+        format = trim(format);
+        size = trim(size);
         return super.trim();
     }
 }

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nom.tam.fits.BasicHDU;
+import nom.tam.fits.header.extra.MaxImDLExt;
 
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
@@ -50,7 +51,6 @@ import org.indilib.i4j.driver.ccd.INDICCDImage.PixelIterator;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.raspberry.camera.image.RawImage;
 import org.indilib.i4j.driver.raspberry.camera.image.RowBuffer10Bit;
-import org.indilib.i4j.fits.StandardFitsHeader;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -286,7 +286,7 @@ public class RaspberryCamera extends INDICCDDriver {
         if (bayerpat.getValue() != null && !bayerpat.getValue().trim().isEmpty()) {
             bayerPattern = bayerpat.getValue();
         }
-        result.put(StandardFitsHeader.BAYERPAT, bayerPattern);
+        result.put(MaxImDLExt.BAYERPAT.key(), bayerPattern);
         return result;
     }
 

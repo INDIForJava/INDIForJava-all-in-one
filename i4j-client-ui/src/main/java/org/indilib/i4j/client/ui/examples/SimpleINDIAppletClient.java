@@ -59,6 +59,11 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleINDIAppletClient extends javax.swing.JApplet implements INDIServerConnectionListener {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     private static final Logger LOG = LoggerFactory.getLogger(SimpleINDIAppletClient.class);
 
     private INDIServerConnection connection;

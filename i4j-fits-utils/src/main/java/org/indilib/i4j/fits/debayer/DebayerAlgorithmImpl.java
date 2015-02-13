@@ -61,17 +61,17 @@ public abstract class DebayerAlgorithmImpl implements DebayerAlgorithm {
 
     @Override
     public final RGBImagePixels decode(DebayerPattern imageBayerPattern, ImagePixels image) {
-        this.bayerPattern = imageBayerPattern;
-        this.width = image.getWidth();
-        this.height = image.getHeight();
-        this.inputImage = image;
-        this.rgb = new RGBImagePixels(width, height);
+        bayerPattern = imageBayerPattern;
+        width = image.getWidth();
+        height = image.getHeight();
+        inputImage = image;
+        rgb = new RGBImagePixels(width, height);
         // Hue
         // algorithm
         // (Edge detecting)
-        if (this.bayerPattern == RGGB || this.bayerPattern == BGGR) {
+        if (bayerPattern == RGGB || bayerPattern == BGGR) {
             decodeGreenMiddle();
-        } else if (this.bayerPattern == GRBG || this.bayerPattern == GBRG) {
+        } else if (bayerPattern == GRBG || bayerPattern == GBRG) {
             decodeGreenOutside();
         }
         return rgb;

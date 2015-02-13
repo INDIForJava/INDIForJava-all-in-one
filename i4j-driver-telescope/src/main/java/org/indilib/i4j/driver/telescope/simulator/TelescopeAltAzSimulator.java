@@ -69,11 +69,6 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
     private static final double MILLISECONDS_PER_SECOND = 1000d;
 
     /**
-     * the number of arc minutes per degree.
-     */
-    private static final double ARCMINUTES_PER_DEGREE = 60d;
-
-    /**
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(TelescopeAltAzSimulator.class);
@@ -95,7 +90,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
             long now = System.currentTimeMillis();
             if (updateTime > 0) {
                 double millisecondsPassed = now - updateTime;
-                setPosition((long) (getPosition() + (speedInTicksPerSecond * millisecondsPassed / MILLISECONDS_PER_SECOND)));
+                setPosition((long) (getPosition() + speedInTicksPerSecond * millisecondsPassed / MILLISECONDS_PER_SECOND));
             }
             updateTime = now;
         }
@@ -212,7 +207,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
      */
     protected void gotoUpdate() {
         if (gotoDirection == null && moveExtention.hasMoveRequest()) {
-            gotoDirection = new INDIDirection(this.eqnRa.getValue(), this.eqnDec.getValue());
+            gotoDirection = new INDIDirection(eqnRa.getValue(), eqnDec.getValue());
             if (trackState == TelescopeStatus.SCOPE_IDLE) {
                 trackState = TelescopeStatus.SCOPE_SLEWING;
             }
@@ -231,7 +226,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
             LnHrzPosn actualAltAz = new LnHrzPosn();
             apparentTelescopeDirectionVector.altitudeAzimuthFromTelescopeDirectionVector(actualAltAz);
 
-            mount.gotoWithSpeed(actualAltAz.az, actualAltAz.alt, ((double) doubleUpdateInterfall) / MILLISECONDS_PER_SECOND);
+            mount.gotoWithSpeed(actualAltAz.az, actualAltAz.alt, doubleUpdateInterfall / MILLISECONDS_PER_SECOND);
         }
     }
 
@@ -304,7 +299,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
         actualAltAz.alt = mount.getVerticalPosition();
         TelescopeDirectionVector vector = TelescopeDirectionVector.telescopeDirectionVectorFromAltitudeAzimuth(actualAltAz);
         AlignmentDatabaseEntry e = new AlignmentDatabaseEntry(rightAscension, declination, jdTimeFromCurrentMiliseconds(System.currentTimeMillis()), vector);
-        this.mathPluginManagement.add(e);
+        mathPluginManagement.add(e);
         return true;
     }
 

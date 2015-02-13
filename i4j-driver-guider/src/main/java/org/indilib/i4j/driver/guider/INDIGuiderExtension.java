@@ -100,8 +100,9 @@ public class INDIGuiderExtension extends INDIDriverExtension<INDIDriver> {
                 if (guideWest.getValue() != 0) {
                     guideEast.setValue(0);
                     rc = guiderInterface.guideEast(guideWest.getValue());
-                } else if (guideEast.getValue() != 0)
+                } else if (guideEast.getValue() != 0) {
                     rc = guiderInterface.guideWest(guideEast.getValue());
+                }
 
                 guideWE.setState(rc ? PropertyStates.OK : PropertyStates.ALERT);
                 driver.updateProperty(guideWE);

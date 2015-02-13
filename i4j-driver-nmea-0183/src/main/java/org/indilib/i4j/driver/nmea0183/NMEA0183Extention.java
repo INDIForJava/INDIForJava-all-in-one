@@ -44,6 +44,18 @@ import org.indilib.i4j.driver.INDITextElement;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
+import static org.indilib.i4j.properties.INDIGeneralProperties.TIME_UTC;
+import static org.indilib.i4j.properties.INDIGeneralProperties.UTC;
+import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
+import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
+import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
+import static org.indilib.i4j.properties.INDIGeneralProperties.ATMOSPHERE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.PRESSURE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.TEMPERATURE;
+import static org.indilib.i4j.properties.INDIGeneralProperties.HUMIDITY;
+
+
 
 public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExtension<DRIVER> {
 
@@ -55,61 +67,61 @@ public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExte
     /**
      * Property for the utc time of the nmea stream.
      */
-    @InjectProperty(name = "TIME_UTC", label = "UTC", group = "Main Control", permission = PropertyPermissions.RO)
+    @InjectProperty(name = TIME_UTC, label = "UTC", group = "Main Control", permission = PropertyPermissions.RO)
     protected INDITextProperty time;
 
     /**
      * The UTC time of the nmea stream.
      */
-    @InjectElement(name = "UTC", label = "UTC Time")
+    @InjectElement(name = UTC, label = "UTC Time")
     protected INDITextElement timeutc;
 
     /**
      * The geographic coordinates of the telescope location on earth.
      */
-    @InjectProperty(name = "GEOGRAPHIC_COORD", label = "Location", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
+    @InjectProperty(name = GEOGRAPHIC_COORD, label = "Location", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
     protected INDINumberProperty location;
 
     /**
      * the latitude of the coordinates.
      */
-    @InjectElement(name = "LAT", label = "Lat (dd:mm:ss)", numberFormat = "%010.6m")
+    @InjectElement(name = LAT, label = "Lat (dd:mm:ss)", numberFormat = "%010.6m")
     protected INDINumberElement locationLat;
 
     /**
      * the longtitude of the coordinates.
      */
-    @InjectElement(name = "LONG", label = "Lon (dd:mm:ss)", numberFormat = "%010.6m")
+    @InjectElement(name = LONG, label = "Lon (dd:mm:ss)", numberFormat = "%010.6m")
     protected INDINumberElement locationLong;
 
     /**
      * The elevation of the coordinates.
      */
-    @InjectElement(name = "ELEV", label = "Elevation (m)", numberFormat = "%5.1f")
+    @InjectElement(name = ELEV, label = "Elevation (m)", numberFormat = "%5.1f")
     protected INDINumberElement locationElev;
 
     /**
      * Weather conditions.
      */
-    @InjectProperty(name = "ATMOSPHERE", label = "Weather conditions", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
+    @InjectProperty(name = ATMOSPHERE, label = "Weather conditions", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
     protected INDINumberProperty weatherConditions;
 
     /**
      * The temperature in Kelvin.
      */
-    @InjectElement(name = "TEMPERATURE", label = "Temperature in Kelvin", numberFormat = "%5.1f")
+    @InjectElement(name = TEMPERATURE, label = "Temperature in Kelvin", numberFormat = "%5.1f")
     protected INDINumberElement temperature;
 
     /**
      * The temperature in Kelvin.
      */
-    @InjectElement(name = "PRESSURE", label = "pressure in hPa", numberFormat = "%5.1f")
+    @InjectElement(name = PRESSURE, label = "pressure in hPa", numberFormat = "%5.1f")
     protected INDINumberElement pressure;
 
     /**
      * The absolute humidity in %.
      */
-    @InjectElement(name = "HUMIDITY", label = "absolute humidity in %", numberFormat = "%5.1f")
+    @InjectElement(name = HUMIDITY, label = "absolute humidity in %", numberFormat = "%5.1f")
     protected INDINumberElement absoluteHumidity;
 
     /**
@@ -268,7 +280,7 @@ public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExte
     }
 
     protected Calendar getUTCTime(TimeSentence sentence) {
-        Time time = ((TimeSentence) sentence).getTime();
+        Time time = sentence.getTime();
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         // check if are just switching the day, assuming the stream is not
         // historic

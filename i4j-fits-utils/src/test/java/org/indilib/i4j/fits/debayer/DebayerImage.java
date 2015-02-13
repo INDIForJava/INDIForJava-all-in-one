@@ -15,9 +15,9 @@ import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
 import nom.tam.fits.FitsFactory;
 import nom.tam.fits.HeaderCard;
+import nom.tam.fits.header.Standard;
+import nom.tam.fits.header.extra.MaxImDLExt;
 import nom.tam.util.Cursor;
-
-import org.indilib.i4j.fits.StandardFitsHeader;
 
 /*
  * #%L
@@ -85,7 +85,7 @@ public class DebayerImage {
         int count = fitsImage.getNumberOfHDUs();
         for (int index = 0; index < count; index++) {
             BasicHDU oneImage = fitsImage.getHDU(index);
-            String bayerpat = oneImage.getHeader().getStringValue(StandardFitsHeader.BAYERPAT);
+            String bayerpat = oneImage.getHeader().getStringValue(MaxImDLExt.BAYERPAT);
             int[] axis = oneImage.getAxes();
             if (axis.length == 2 && bayerpat != null && !bayerpat.trim().isEmpty()) {
                 // DebayerRowOrder row_order =
@@ -105,7 +105,7 @@ public class DebayerImage {
                 Cursor iter = oneImage.getHeader().iterator();
                 while (iter.hasNext()) {
                     HeaderCard headerCard = (HeaderCard) iter.next();
-                    if (headerCard.getKey().equals(StandardFitsHeader.BAYERPAT) || headerCard.getKey().equals(StandardFitsHeader.NAXIS)) {
+                    if (headerCard.getKey().equals(MaxImDLExt.BAYERPAT) || headerCard.getKey().equals(Standard.NAXIS)) {
                         // ignore
                     } else {
                         colorHDU.getHeader().addLine(headerCard);

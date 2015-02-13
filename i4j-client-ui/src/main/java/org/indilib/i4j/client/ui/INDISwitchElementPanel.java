@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.ButtonGroup;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
@@ -93,7 +94,7 @@ public class INDISwitchElementPanel extends INDIElementPanel {
         name.setText(se.getLabel());
         name.setToolTipText(se.getName());
 
-        SwitchStatus ss = (SwitchStatus) se.getValue();
+        SwitchStatus ss = se.getValue();
 
         if (ss == SwitchStatus.OFF) {
             currentValue.setText("");
@@ -113,7 +114,7 @@ public class INDISwitchElementPanel extends INDIElementPanel {
         name.setText(se.getLabel());
         name.setToolTipText(se.getName());
 
-        SwitchStatus ss = (SwitchStatus) se.getValue();
+        SwitchStatus ss = se.getValue();
 
         if (ss == SwitchStatus.OFF) {
             currentValue.setText("");
@@ -153,7 +154,7 @@ public class INDISwitchElementPanel extends INDIElementPanel {
         mainPanel.setLayout(new java.awt.GridLayout(1, 3, 5, 0));
 
         currentValue.setEditable(false);
-        currentValue.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        currentValue.setHorizontalAlignment(SwingConstants.CENTER);
         currentValue.setToolTipText("Current Value");
         currentValue.setMinimumSize(new java.awt.Dimension(4, 16));
         mainPanel.add(currentValue);
@@ -161,6 +162,7 @@ public class INDISwitchElementPanel extends INDIElementPanel {
         desiredValue.setText("Select");
         desiredValue.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 desiredValueActionPerformed(evt);
             }
@@ -236,6 +238,6 @@ public class INDISwitchElementPanel extends INDIElementPanel {
 
     @Override
     protected void setNameSize(int size) {
-        name.setPreferredSize(new Dimension(size, (int) (name.getPreferredSize().getHeight())));
+        name.setPreferredSize(new Dimension(size, (int) name.getPreferredSize().getHeight()));
     }
 }

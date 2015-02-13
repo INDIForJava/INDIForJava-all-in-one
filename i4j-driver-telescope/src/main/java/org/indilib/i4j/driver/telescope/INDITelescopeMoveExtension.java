@@ -156,21 +156,21 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
      */
     public INDITelescopeMoveExtension(INDITelescope driver) {
         super(driver);
-        this.movementNSS.setEventHandler(new SwitchEvent() {
+        movementNSS.setEventHandler(new SwitchEvent() {
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
                 newMovementNSSValue(elementsAndValues);
             }
         });
-        this.movementWES.setEventHandler(new SwitchEvent() {
+        movementWES.setEventHandler(new SwitchEvent() {
 
             @Override
             public void processNewValue(Date date, INDISwitchElementAndValue[] elementsAndValues) {
                 newMovementWESValue(elementsAndValues);
             }
         });
-        this.movementRateP.setEventHandler(new NumberEvent() {
+        movementRateP.setEventHandler(new NumberEvent() {
 
             @Override
             public void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues) {
@@ -195,7 +195,7 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
     private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementNSS.setValues(elementsAndValues);
         movementNSS.setState(BUSY);
-        if (this.movementNSSNorth.isOn()) {
+        if (movementNSSNorth.isOn()) {
             moveImpl.moveNS(TelescopeMotionNS.MOTION_NORTH);
         } else {
             moveImpl.moveNS(TelescopeMotionNS.MOTION_SOUTH);
@@ -211,7 +211,7 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
     private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementWES.setValues(elementsAndValues);
         movementWES.setState(BUSY);
-        if (this.movementWESWest.isOn()) {
+        if (movementWESWest.isOn()) {
             moveImpl.moveWE(TelescopeMotionWE.MOTION_WEST);
         } else {
             moveImpl.moveWE(TelescopeMotionWE.MOTION_EAST);
@@ -222,31 +222,31 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
     @Override
     public void connect() {
         super.connect();
-        addProperty(this.movementRateP);
-        addProperty(this.movementNSS);
-        addProperty(this.movementWES);
+        addProperty(movementRateP);
+        addProperty(movementNSS);
+        addProperty(movementWES);
     }
 
     @Override
     public void disconnect() {
         super.disconnect();
-        removeProperty(this.movementRateP);
-        removeProperty(this.movementNSS);
-        removeProperty(this.movementWES);
+        removeProperty(movementRateP);
+        removeProperty(movementNSS);
+        removeProperty(movementWES);
     }
 
     /**
      * abort all movements!
      */
     public void abort() {
-        if (this.movementWES.getState() == BUSY) {
-            this.movementWES.resetAllSwitches();
-            this.movementWES.setState(IDLE);
+        if (movementWES.getState() == BUSY) {
+            movementWES.resetAllSwitches();
+            movementWES.setState(IDLE);
             updateProperty(movementWES);
         }
-        if (this.movementNSS.getState() == BUSY) {
-            this.movementNSS.resetAllSwitches();
-            this.movementNSS.setState(IDLE);
+        if (movementNSS.getState() == BUSY) {
+            movementNSS.resetAllSwitches();
+            movementNSS.setState(IDLE);
             updateProperty(movementNSS);
         }
     }
@@ -339,7 +339,7 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
      * @return should the scope move in any direction?
      */
     public boolean hasMoveRequest() {
-        return (movementNSS.getState() == BUSY && movementNSS.getSelectedCount() > 0) || //
-                (movementWES.getState() == BUSY && movementWES.getSelectedCount() > 0);
+        return movementNSS.getState() == BUSY && movementNSS.getSelectedCount() > 0 || //
+                movementWES.getState() == BUSY && movementWES.getSelectedCount() > 0;
     }
 }

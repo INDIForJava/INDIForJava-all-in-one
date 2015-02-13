@@ -265,7 +265,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
      */
     @Override
     public boolean initialise(InMemoryDatabase anInMemoryDatabase) {
-        this.inMemoryDatabase = anInMemoryDatabase;
+        inMemoryDatabase = anInMemoryDatabase;
 
         switch (inMemoryDatabase.getAlignmentDatabase().size()) {
             case POINT_DB_EMPTY:
@@ -1140,13 +1140,13 @@ public class BuiltInMathPlugin implements IMathPlugin {
         TelescopeDirectionVector q = tVector.multiply(edge1);
 
         // Calculate v parameter and test bound
-        double v = (ray.dotProduct(q)) * inverseDeterminant;
+        double v = ray.dotProduct(q) * inverseDeterminant;
 
         if (v < 0.0 || u + v > 1.0) {
             // The intersection lies outside of the triangle
             return false;
         }
-        double t = (edge2.dotProduct(q)) * inverseDeterminant;
+        double t = edge2.dotProduct(q) * inverseDeterminant;
 
         if (t > DBL_EPSILON) {
             // ray intersection

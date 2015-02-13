@@ -194,7 +194,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
     private void checkName(INDIProtocol<?> elem) {
         String newName = elem.getDevice();
 
-        if (!(newName.isEmpty())) {
+        if (!newName.isEmpty()) {
             dealWithPossibleNewDeviceName(newName);
         }
     }

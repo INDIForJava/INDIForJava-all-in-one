@@ -73,7 +73,7 @@ public class FileFilterByExtension extends FileFilter {
      * @see #addExtension
      */
     public FileFilterByExtension() {
-        this.filters = new LinkedHashMap<>();
+        filters = new LinkedHashMap<>();
     }
 
     /**
@@ -139,9 +139,9 @@ public class FileFilterByExtension extends FileFilter {
      */
     public FileFilterByExtension(String[] filters, String description) {
         this();
-        for (int i = 0; i < filters.length; i++) {
+        for (String filter : filters) {
             // add filters one by one
-            addExtension(filters[i]);
+            addExtension(filter);
         }
         if (description != null) {
             setDescription(description);
@@ -158,6 +158,7 @@ public class FileFilterByExtension extends FileFilter {
      *         otherwise.
      * @see FileFilter#accept
      */
+    @Override
     public boolean accept(File file) {
         if (file != null) {
             if (file.isDirectory()) {
@@ -200,6 +201,7 @@ public class FileFilterByExtension extends FileFilter {
      * @see #isExtensionListInDescription
      * @see FileFilter#getDescription
      */
+    @Override
     public String getDescription() {
         if (fullDescription == null) {
             if (description == null || isExtensionListInDescription()) {
@@ -207,9 +209,9 @@ public class FileFilterByExtension extends FileFilter {
                 // build the description from the extension list
                 Iterator<String> extensions = filters.keySet().iterator();
                 if (extensions != null) {
-                    fullDescription += "." + (String) extensions.next();
+                    fullDescription += "." + extensions.next();
                     while (extensions.hasNext()) {
-                        fullDescription += ", " + (String) extensions.next();
+                        fullDescription += ", " + extensions.next();
                     }
                 }
                 fullDescription += ")";
@@ -247,7 +249,7 @@ public class FileFilterByExtension extends FileFilter {
      * @see #isExtensionListInDescription
      */
     public void setExtensionListInDescription(boolean useExtensionListInDescription) {
-        this.useExtensionsListInDescription = useExtensionListInDescription;
+        useExtensionsListInDescription = useExtensionListInDescription;
         fullDescription = null;
     }
 

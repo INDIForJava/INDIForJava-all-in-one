@@ -104,23 +104,23 @@ public final class RowBuffer10Bit {
      *             if something went wrong.
      */
     public void copy10BitPixelRowToIterator(InputStream from, PixelIterator iterator) throws IOException {
-        from.read(this.buffer, 0, CameraConstands.ROWSIZE);
+        from.read(buffer, 0, CameraConstands.ROWSIZE);
         int pix = 0;
         int bindex = 0;
         while (pix < CameraConstands.HPIXELS) {
             /*
              * decode 4x10 bit from 5 bytes
              */
-            int byte0 = this.buffer[bindex++] & BYTE_MASK;
-            int byte1 = this.buffer[bindex++] & BYTE_MASK;
-            int byte2 = this.buffer[bindex++] & BYTE_MASK;
-            int byte3 = this.buffer[bindex++] & BYTE_MASK;
-            int split = this.buffer[bindex++] & BYTE_MASK;
+            int byte0 = buffer[bindex++] & BYTE_MASK;
+            int byte1 = buffer[bindex++] & BYTE_MASK;
+            int byte2 = buffer[bindex++] & BYTE_MASK;
+            int byte3 = buffer[bindex++] & BYTE_MASK;
+            int split = buffer[bindex++] & BYTE_MASK;
 
-            iterator.setPixel((byte0 << BITS_IN_BYTE | (split & SPLIT_BYTE_FIRST_2)));
-            iterator.setPixel((byte1 << BITS_IN_BYTE | (split & SPLIT_BYTE_SECOND_2) << SHIFT_SECOND_2_TO_FIRST_2));
-            iterator.setPixel((byte2 << BITS_IN_BYTE | (split & SPLIT_BYTE_THIRD_2) << SHIFT_THIRD_2_TO_FIRST_2));
-            iterator.setPixel((byte3 << BITS_IN_BYTE | (split & SPLIT_BYTE_FROUTH_2) << SHIFT_FOURTH_2_TO_FIRST_2));
+            iterator.setPixel(byte0 << BITS_IN_BYTE | split & SPLIT_BYTE_FIRST_2);
+            iterator.setPixel(byte1 << BITS_IN_BYTE | (split & SPLIT_BYTE_SECOND_2) << SHIFT_SECOND_2_TO_FIRST_2);
+            iterator.setPixel(byte2 << BITS_IN_BYTE | (split & SPLIT_BYTE_THIRD_2) << SHIFT_THIRD_2_TO_FIRST_2);
+            iterator.setPixel(byte3 << BITS_IN_BYTE | (split & SPLIT_BYTE_FROUTH_2) << SHIFT_FOURTH_2_TO_FIRST_2);
             pix += PIXELS_PER_5_BYTES;
         }
     }

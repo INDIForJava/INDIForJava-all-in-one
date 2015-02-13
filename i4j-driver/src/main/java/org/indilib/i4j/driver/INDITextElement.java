@@ -54,7 +54,7 @@ public class INDITextElement extends INDIElement {
      */
     public INDITextElement(INDIElementBuilder<INDITextElement> builder) {
         super(builder);
-        this.value = builder.textValue();
+        value = builder.textValue();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class INDITextElement extends INDIElement {
             throw new IllegalArgumentException("Value for a Text Element must be a String");
         }
 
-        this.value = v;
+        value = v;
     }
 
     @Override

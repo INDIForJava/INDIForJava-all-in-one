@@ -133,10 +133,10 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      */
     public MathPluginManagement(INDITelescope driver) {
         super(driver);
-        this.inMemoryDatabase = new InMemoryDatabase();
+        inMemoryDatabase = new InMemoryDatabase();
         enumeratePlugins();
         for (IMathPlugin mathPlugin : plugins.values()) {
-            this.alignmentSubsystemMathPlugins.newElement().name(mathPlugin.id()).label(mathPlugin.name()).create();
+            alignmentSubsystemMathPlugins.newElement().name(mathPlugin.id()).label(mathPlugin.name()).create();
         }
         alignmentSubsystemMathPlugins.setEventHandler(new SwitchEvent() {
 
@@ -177,7 +177,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
         ServiceLoader<IMathPlugin> loader = ServiceLoader.load(IMathPlugin.class, Thread.currentThread().getContextClassLoader());
         Iterator<IMathPlugin> iter = loader.iterator();
         while (iter.hasNext()) {
-            IMathPlugin iMathPlugin = (IMathPlugin) iter.next();
+            IMathPlugin iMathPlugin = iter.next();
             plugins.put(iMathPlugin.id(), iMathPlugin);
         }
     }
@@ -279,16 +279,16 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
 
     @Override
     public void connect() {
-        addProperty(this.alignmentSubsystemMathPlugins);
-        addProperty(this.alignmentSubsystemMathPluginInitialise);
-        addProperty(this.alignmentSubsystemActive);
+        addProperty(alignmentSubsystemMathPlugins);
+        addProperty(alignmentSubsystemMathPluginInitialise);
+        addProperty(alignmentSubsystemActive);
     }
 
     @Override
     public void disconnect() {
-        removeProperty(this.alignmentSubsystemMathPlugins);
-        removeProperty(this.alignmentSubsystemMathPluginInitialise);
-        removeProperty(this.alignmentSubsystemActive);
+        removeProperty(alignmentSubsystemMathPlugins);
+        removeProperty(alignmentSubsystemMathPluginInitialise);
+        removeProperty(alignmentSubsystemActive);
     }
 
     /**
@@ -304,8 +304,8 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      * @return true if successful.
      */
     public boolean initialise() {
-        this.inMemoryDatabase.loadDatabase(this.driver.getName());
-        return plugin().initialise(this.inMemoryDatabase);
+        inMemoryDatabase.loadDatabase(driver.getName());
+        return plugin().initialise(inMemoryDatabase);
     }
 
     /**
@@ -372,7 +372,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      *            the longtitude.
      */
     public void setDatabaseReferencePosition(double lat, double lng) {
-        this.inMemoryDatabase.setDatabaseReferencePosition(lat, lng);
+        inMemoryDatabase.setDatabaseReferencePosition(lat, lng);
     }
 
     /**
@@ -381,10 +381,10 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
      * be active.
      */
     public void forceActive() {
-        this.alignmentSubsystemActiveElement.setOn();
-        this.alignmentSubsystemActive.setPermission(PropertyPermissions.RO);
-        this.alignmentSubsystemActive.setState(OK);
-        this.driver.updateProperty(alignmentSubsystemActive);
+        alignmentSubsystemActiveElement.setOn();
+        alignmentSubsystemActive.setPermission(PropertyPermissions.RO);
+        alignmentSubsystemActive.setState(OK);
+        driver.updateProperty(alignmentSubsystemActive);
     }
 
     /**

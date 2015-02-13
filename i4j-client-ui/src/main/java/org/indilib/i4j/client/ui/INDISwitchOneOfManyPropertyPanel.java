@@ -159,6 +159,7 @@ public class INDISwitchOneOfManyPropertyPanel extends INDIPropertyPanel implemen
         information.setPreferredSize(new java.awt.Dimension(78, 16));
         information.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 informationActionPerformed(evt);
             }
@@ -177,6 +178,7 @@ public class INDISwitchOneOfManyPropertyPanel extends INDIPropertyPanel implemen
         desiredValue.setToolTipText("Desired Value");
         desiredValue.addActionListener(new java.awt.event.ActionListener() {
 
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 desiredValueActionPerformed(evt);
             }

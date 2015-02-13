@@ -37,6 +37,10 @@ import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.SwitchEvent;
 
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
+import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
+import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
+
 /**
  * The standard Connection extension, is activated for any driver implementing
  * the INDIConnectionHandler interface.
@@ -48,19 +52,19 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * The standard CONNECTION property (optional).
      */
-    @InjectProperty(name = "CONNECTION", label = "Connection", group = INDIDriver.GROUP_MAIN_CONTROL, timeout = 100, switchRule = SwitchRules.ONE_OF_MANY)
+    @InjectProperty(name = CONNECTION, label = "Connection", group = INDIDriver.GROUP_MAIN_CONTROL, timeout = 100, switchRule = SwitchRules.ONE_OF_MANY)
     private INDISwitchProperty connectionP;
 
     /**
      * A Switch Element for the CONNECTION property.
      */
-    @InjectElement(name = "CONNECT", label = "Connect")
+    @InjectElement(name = CONNECT, label = "Connect")
     private INDISwitchElement connectedE;
 
     /**
      * A Switch Element for the CONNECTION property.
      */
-    @InjectElement(name = "DISCONNECT", label = "Disconnect", switchValue = SwitchStatus.ON)
+    @InjectElement(name = DISCONNECT, label = "Disconnect", switchValue = SwitchStatus.ON)
     private INDISwitchElement disconnectedE;
 
     /**
@@ -164,9 +168,9 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
      *            The timestamp of the received CONNECTION message.
      */
     private synchronized void handleConnectionProperty(INDISwitchElementAndValue[] newEvs, Date timestamp) {
-        for (int i = 0; i < newEvs.length; i++) {
-            INDISwitchElement el = newEvs[i].getElement();
-            SwitchStatus s = newEvs[i].getValue();
+        for (INDISwitchElementAndValue newEv : newEvs) {
+            INDISwitchElement el = newEv.getElement();
+            SwitchStatus s = newEv.getValue();
 
             if (el == connectedE) {
                 if (s == SwitchStatus.ON) {

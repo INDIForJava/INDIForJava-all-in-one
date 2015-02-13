@@ -84,7 +84,7 @@ public class OneNumber extends OneElement<OneNumber> {
      * @return this for builder pattern.
      */
     public OneNumber setMax(String newMax) {
-        this.max = newMax;
+        max = newMax;
         return this;
     }
 
@@ -96,14 +96,14 @@ public class OneNumber extends OneElement<OneNumber> {
      * @return this for builder pattern.
      */
     public OneNumber setMin(String newMin) {
-        this.min = newMin;
+        min = newMin;
         return this;
     }
 
     @Override
     public OneNumber trim() {
-        this.min = trim(this.min);
-        this.max = trim(this.max);
+        min = trim(min);
+        max = trim(max);
         return super.trim();
     }
 }

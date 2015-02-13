@@ -56,8 +56,8 @@ public class DevicePropertyBLOBEnableTuple {
      */
     protected DevicePropertyBLOBEnableTuple(String device) {
         this.device = device;
-        this.property = null;
-        this.enable = null;
+        property = null;
+        enable = null;
     }
 
     /**
@@ -70,7 +70,7 @@ public class DevicePropertyBLOBEnableTuple {
      */
     protected DevicePropertyBLOBEnableTuple(String device, BLOBEnables enable) {
         this.device = device;
-        this.property = null;
+        property = null;
         this.enable = enable;
     }
 
@@ -86,7 +86,7 @@ public class DevicePropertyBLOBEnableTuple {
     protected DevicePropertyBLOBEnableTuple(String device, String property) {
         this.device = device;
         this.property = property;
-        this.enable = null;
+        enable = null;
     }
 
     /**
@@ -141,7 +141,7 @@ public class DevicePropertyBLOBEnableTuple {
      *         <code>false</code> otherwise.
      */
     protected boolean isDevice(String deviceName) {
-        if (this.device.equals(deviceName)) {
+        if (device.equals(deviceName)) {
             return true;
         }
 
@@ -160,14 +160,14 @@ public class DevicePropertyBLOBEnableTuple {
      *         name of the Property coincides. <code>false</code> otherwise.
      */
     protected boolean isProperty(String deviceName, String propertyName) {
-        if (this.device.equals(deviceName)) {
-            if (propertyName == null && this.property == null) {
+        if (device.equals(deviceName)) {
+            if (propertyName == null && property == null) {
                 return true;
-            } else if (propertyName == null && this.property != null) {
+            } else if (propertyName == null && property != null) {
                 return false;
-            } else if (propertyName != null && this.property == null) {
+            } else if (propertyName != null && property == null) {
                 return false;
-            } else if (this.property.equals(propertyName)) {
+            } else if (property.equals(propertyName)) {
                 return true;
             }
         }
