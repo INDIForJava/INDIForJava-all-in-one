@@ -45,13 +45,43 @@ public class WeatherParser {
 
     public double getBarometricPressure() {
         if (sentence instanceof MDASentence) {
-            return ((MDASentence) sentence).getBarometricPressure();
+            double value = Double.NaN;
+            MDASentence mdaSentence = (MDASentence) sentence;
+            value = getPressureValue(mdaSentence, 'B');
+            if (Double.isNaN(value)) {
+                // check the value in pascal
+                value = getPressureValue(mdaSentence, 'P');
+                if (!Double.isNaN(value)) {
+                    // 1 bar = 100000 pascal
+                    value = value / 100000d;
+                }
+            }
+            if (Double.isNaN(value)) {
+                // check the value in inches of mercury
+                value = getPressureValue(mdaSentence, 'I');
+                if (!Double.isNaN(value)) {
+                    // 1 bar = 29.53 inHg
+                    value = value / 29.53d;
+                }
+            }
+            return value;
         }
         Measurement measurement = getMesurment("P");
         if (measurement != null) {
             return measurement.getValue();
         }
         return Double.NaN;
+    }
+
+    private double getPressureValue(MDASentence mdaSentence, char unit) {
+        double value = Double.NaN;
+        if (mdaSentence.getSecondaryBarometricPressureUnit() == unit) {
+            value = mdaSentence.getSecondaryBarometricPressure();
+        }
+        if (Double.isNaN(value) && mdaSentence.getPrimaryBarometricPressureUnit() == unit) {
+            value = mdaSentence.getPrimaryBarometricPressure();
+        }
+        return value;
     }
 
     private Measurement getMesurment(String type) {
