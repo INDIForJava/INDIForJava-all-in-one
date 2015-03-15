@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.indilib.i4j</groupId>
 		<artifactId>i4j</artifactId>
-		<version>1.39-SNAPSHOT</version>
+		<version>1.50-SNAPSHOT</version>
 	</parent>
 	<artifactId>i4j-all-in-one</artifactId>
 	<packaging>pom</packaging>
@@ -49,7 +49,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>wagon-maven-plugin</artifactId>
-				<version>1.0-beta-5</version>
+				<version>${org.codehaus.mojo.wagon-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>upload-to-sourceforge</id>

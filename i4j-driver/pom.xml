@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.indilib.i4j</groupId>
 		<artifactId>i4j</artifactId>
-		<version>1.39-SNAPSHOT</version>
+		<version>1.50-SNAPSHOT</version>
 	</parent>
 	<artifactId>i4j-driver</artifactId>
 	<name>INDI for Java Driver Library</name>

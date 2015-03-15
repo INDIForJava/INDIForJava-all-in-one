@@ -1,52 +1,65 @@
 .root {
     -fx-background: #f4f4f4;
 }
+
 .alertLight {
-	-fx-image: url("light_alert_big.png");
+    -fx-image: url("light_alert_big.png");
 }
+
 .busyLight {
-	-fx-image: url("light_busy_big.png");
+    -fx-image: url("light_busy_big.png");
 }
+
 .idleLight {
-	-fx-image: url("light_idle_big.png");
+    -fx-image: url("light_idle_big.png");
 }
+
 .okLight {
-	-fx-image: url("light_ok_big.png");
+    -fx-image: url("light_ok_big.png");
 }
+
 .icOk {
-	-fx-image: url("ic_ok.png");
+    -fx-image: url("ic_ok.png");
 }
+
 .icIdle {
-	-fx-image: url("ic_idle.png");
+    -fx-image: url("ic_idle.png");
 }
+
 .menuImage {
-	-fx-image: url("menu.png");
+    -fx-image: url("menu.png");
 }
+
 .diskImage {
-	-fx-image: url("disk.png");
+    -fx-image: url("disk.png");
 }
+
 .group {
     -fx-border-width: 2.0px;
     -fx-padding: 2.0;
 }
+
 .groupBox {
-   	-fx-border-insets: 8.0 2.0 2.0 2.0;
-  	-fx-border-color: darkgray;
-  	-fx-border-radius: 10 10 10 10;
-  	-fx-background-radius: 10 10 10 10;
+    -fx-border-insets: 8.0 2.0 2.0 2.0;
+    -fx-border-color: darkgray;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
     -fx-padding: 2.0;
 }
+
 .groupLabel {
-  	-fx-background-color: #f4f4f4;
+    -fx-background-color: #f4f4f4;
 }
+
 .element {
     -fx-padding: 2.0;
     -fx-hgap: 2.0;
 }
+
 .switch #elements {
     -fx-spacing: 2.0;
-    
 }
+
 .property {
     -fx-padding: 2.0;
     -fx-hgap: 2.0;
