@@ -5,6 +5,13 @@
      "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
 
 <suppressions>
+
+	<suppress files=".jpg" checks="NewlineAtEndOfFile|FileTabCharacter|FileLength" />
+	<suppress files=".png" checks="NewlineAtEndOfFile|FileTabCharacter|FileLength" />
+	<suppress files=".fxml" checks="FileTabCharacter" />
+	<suppress files=".css" checks="FileTabCharacter" />
+	<suppress files="META[\\-]INF[\\/]services[\\/]" checks="NewlineAtEndOfFile|FileTabCharacter" />
+	
 	<suppress checks="." files="org[\\/]gnu[\\/]savannah[\\/]gsl[\\/]" />
 	<suppress checks="."
 		files="org[\\/]gnu[\\/]savannah[\\/]gsl[\\/]util[\\/]" />
