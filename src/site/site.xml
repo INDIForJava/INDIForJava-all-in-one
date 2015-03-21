@@ -48,7 +48,7 @@
 			<item name="Server Examples" href="i4j-server/index.html" />
 			<item name="Server distribution" href="i4j-all-in-one/index.html" />
 			<item name="GNU Scientific Library port" href="org.gnu.savannah.gsl/index.html" />
-			<item name="nomtam FITS library" href="http://heasarc.gsfc.nasa.gov/docs/heasarc/fits/java/" />
+			<item name="nom-tam-FITS library" href="http://nom-tam-fits.github.io/nom-tam-fits" />
 		</menu>
 		<menu ref="reports" />
 		<menu name="Sourceforge">

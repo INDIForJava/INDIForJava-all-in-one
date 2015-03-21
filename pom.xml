@@ -63,6 +63,7 @@
 			<roles>
 				<role>Developer</role>
 			</roles>
+			<organizationUrl>http://j4all.org</organizationUrl>
 			<properties>
 				<picUrl>http://www.gravatar.com/avatar/9e2c2e7aa94335b72952a4b2d56bfc89.png</picUrl>
 			</properties>
