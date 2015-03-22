@@ -32,6 +32,7 @@ import org.indilib.i4j.driver.INDINumberProperty;
 import org.indilib.i4j.driver.INDISwitchElementAndValue;
 import org.indilib.i4j.driver.INDISwitchProperty;
 import org.indilib.i4j.protocol.api.INDIConnection;
+import static org.indilib.i4j.properties.INDIStandardProperty.ABS_FOCUS_POSITION;
 
 /**
  * A class representing a Focuser Driver in the INDI Protocol. INDI Focuser
@@ -101,7 +102,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * Initializes the standard properties. MUST BE CALLED BY SUBDRIVERS.
      */
     protected void initializeStandardProperties() {
-        absFocusPositionP = newNumberProperty().name("ABS_FOCUS_POSITION").label("Absolute").group("Control").create();
+        absFocusPositionP = newNumberProperty().name(ABS_FOCUS_POSITION).label("Absolute").group("Control").create();
         focusAbsolutePositionE = absFocusPositionP.newElement().name("FOCUS_ABSOLUTE_POSITION").label("Focus Position").step(1d).numberFormat("%.0f")//
                 .numberValue(getInitialAbsPos()).minimum(getMinimumAbsPos()).maximum(getMaximumAbsPos()).create();
 

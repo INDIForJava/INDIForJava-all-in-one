@@ -23,16 +23,16 @@ package org.indilib.i4j.driver.nmea0183;
  */
 
 import static org.indilib.i4j.Constants.PropertyStates.OK;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ATMOSPHERE;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
-import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
-import static org.indilib.i4j.properties.INDIGeneralProperties.HUMIDITY;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
-import static org.indilib.i4j.properties.INDIGeneralProperties.PRESSURE;
-import static org.indilib.i4j.properties.INDIGeneralProperties.TEMPERATURE;
-import static org.indilib.i4j.properties.INDIGeneralProperties.TIME_UTC;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UTC;
+import static org.indilib.i4j.properties.INDIStandardProperty.ATMOSPHERE;
+import static org.indilib.i4j.properties.INDIStandardElement.ELEV;
+import static org.indilib.i4j.properties.INDIStandardProperty.GEOGRAPHIC_COORD;
+import static org.indilib.i4j.properties.INDIStandardElement.HUMIDITY;
+import static org.indilib.i4j.properties.INDIStandardElement.LAT;
+import static org.indilib.i4j.properties.INDIStandardElement.LONG;
+import static org.indilib.i4j.properties.INDIStandardElement.PRESSURE;
+import static org.indilib.i4j.properties.INDIStandardElement.TEMPERATURE;
+import static org.indilib.i4j.properties.INDIStandardProperty.TIME_UTC;
+import static org.indilib.i4j.properties.INDIStandardElement.UTC;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -65,61 +65,61 @@ public class NMEA0183Extention<DRIVER extends INDIDriver> extends INDIDriverExte
     /**
      * Property for the utc time of the nmea stream.
      */
-    @InjectProperty(name = TIME_UTC, label = "UTC", group = "Main Control", permission = PropertyPermissions.RO)
+    @InjectProperty(std = TIME_UTC, label = "UTC", group = "Main Control", permission = PropertyPermissions.RO)
     protected INDITextProperty time;
 
     /**
      * The UTC time of the nmea stream.
      */
-    @InjectElement(name = UTC, label = "UTC Time")
+    @InjectElement(std = UTC, label = "UTC Time")
     protected INDITextElement timeutc;
 
     /**
      * The geographic coordinates of the telescope location on earth.
      */
-    @InjectProperty(name = GEOGRAPHIC_COORD, label = "Location", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
+    @InjectProperty(std = GEOGRAPHIC_COORD, label = "Location", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
     protected INDINumberProperty location;
 
     /**
      * the latitude of the coordinates.
      */
-    @InjectElement(name = LAT, label = "Lat (dd:mm:ss)", numberFormat = "%010.6m")
+    @InjectElement(std = LAT, label = "Lat (dd:mm:ss)", numberFormat = "%010.6m")
     protected INDINumberElement locationLat;
 
     /**
      * the longtitude of the coordinates.
      */
-    @InjectElement(name = LONG, label = "Lon (dd:mm:ss)", numberFormat = "%010.6m")
+    @InjectElement(std = LONG, label = "Lon (dd:mm:ss)", numberFormat = "%010.6m")
     protected INDINumberElement locationLong;
 
     /**
      * The elevation of the coordinates.
      */
-    @InjectElement(name = ELEV, label = "Elevation (m)", numberFormat = "%5.1f")
+    @InjectElement(std = ELEV, label = "Elevation (m)", numberFormat = "%5.1f")
     protected INDINumberElement locationElev;
 
     /**
      * Weather conditions.
      */
-    @InjectProperty(name = ATMOSPHERE, label = "Weather conditions", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
+    @InjectProperty(std = ATMOSPHERE, label = "Weather conditions", state = OK, group = "Main Control", permission = PropertyPermissions.RO)
     protected INDINumberProperty weatherConditions;
 
     /**
      * The temperature in Kelvin.
      */
-    @InjectElement(name = TEMPERATURE, label = "Temperature in Kelvin", numberFormat = "%5.1f")
+    @InjectElement(std = TEMPERATURE, label = "Temperature in Kelvin", numberFormat = "%5.1f")
     protected INDINumberElement temperature;
 
     /**
      * The temperature in Kelvin.
      */
-    @InjectElement(name = PRESSURE, label = "pressure in hPa", numberFormat = "%5.1f")
+    @InjectElement(std = PRESSURE, label = "pressure in hPa", numberFormat = "%5.1f")
     protected INDINumberElement pressure;
 
     /**
      * The absolute humidity in %.
      */
-    @InjectElement(name = HUMIDITY, label = "absolute humidity in %", numberFormat = "%5.1f")
+    @InjectElement(std = HUMIDITY, label = "absolute humidity in %", numberFormat = "%5.1f")
     protected INDINumberElement absoluteHumidity;
 
     /**

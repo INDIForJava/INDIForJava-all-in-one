@@ -22,8 +22,8 @@ package org.indilib.i4j.driver;
  * #L%
  */
 
-import static org.indilib.i4j.properties.INDIGeneralProperties.DEVICE_PORT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.PORT;
+import static org.indilib.i4j.properties.INDIStandardProperty.DEVICE_PORT;
+import static org.indilib.i4j.properties.INDIStandardElement.PORT;
 
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.driver.util.INDIPropertyBuilder;

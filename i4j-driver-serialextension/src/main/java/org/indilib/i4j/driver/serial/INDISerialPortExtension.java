@@ -22,8 +22,8 @@ package org.indilib.i4j.driver.serial;
  * #L%
  */
 
-import static org.indilib.i4j.properties.INDIGeneralProperties.DEVICE_PORT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.PORT;
+import static org.indilib.i4j.properties.INDIStandardProperty.DEVICE_PORT;
+import static org.indilib.i4j.properties.INDIStandardElement.PORT;
 
 import java.util.Date;
 
@@ -74,13 +74,13 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * the property representing the serial connection port.
      */
-    @InjectProperty(name = DEVICE_PORT, label = "Ports", group = INDIDriver.GROUP_OPTIONS, saveable = true)
+    @InjectProperty(std = DEVICE_PORT, label = "Ports", group = INDIDriver.GROUP_OPTIONS, saveable = true)
     protected INDITextProperty port;
 
     /**
      * The element representing the serial connection port.
      */
-    @InjectElement(name = PORT, label = "Port", textValue = "/dev/ttyUSB0")
+    @InjectElement(std = PORT, label = "Port", textValue = "/dev/ttyUSB0")
     protected INDITextElement portElement;
 
     /**

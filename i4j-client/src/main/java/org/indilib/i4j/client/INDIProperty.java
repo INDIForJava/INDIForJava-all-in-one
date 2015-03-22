@@ -26,6 +26,8 @@ import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.properties.INDIStandardElement;
+import org.indilib.i4j.properties.INDIStandardProperty;
 import org.indilib.i4j.protocol.DefVector;
 import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneElement;
@@ -359,6 +361,32 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      */
     public Element getElement(String elementName) {
         return elements.get(elementName);
+    }
+
+    /**
+     * Gets a particular Element of this Property by its elementName.
+     * 
+     * @param elementName
+     *            The elementName of the Element to be returned
+     * @return The Element of this Property with the given
+     *         <code>elementName</code>. <code>null</code> if there is no
+     *         Element with that <code>elementName</code>.
+     */
+    public Element getElement(INDIStandardElement elementName) {
+        return elements.get(elementName.name());
+    }
+
+    /**
+     * Gets a particular Element of this Property by its elementName.
+     * 
+     * @param elementName
+     *            The elementName of the Element to be returned
+     * @return The Element of this Property with the given
+     *         <code>elementName</code>. <code>null</code> if there is no
+     *         Element with that <code>elementName</code>.
+     */
+    public Element getElement(INDIStandardProperty elementName) {
+        return elements.get(elementName.name());
     }
 
     /**

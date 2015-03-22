@@ -22,9 +22,9 @@ package org.indilib.i4j.client.ui;
  * #L%
  */
 
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
-import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
+import static org.indilib.i4j.properties.INDIStandardElement.CONNECT;
+import static org.indilib.i4j.properties.INDIStandardProperty.CONNECTION;
+import static org.indilib.i4j.properties.INDIStandardElement.DISCONNECT;
 
 import java.io.IOException;
 
@@ -135,7 +135,7 @@ public class INDIConnectionPropertyPanel extends INDIPropertyPanel implements IN
         setLayout(new java.awt.BorderLayout(5, 0));
 
         button.setText("Disconnected");
-        button.setToolTipText(CONNECTION);
+        button.setToolTipText(CONNECTION.name());
         button.addActionListener(new java.awt.event.ActionListener() {
 
             @Override

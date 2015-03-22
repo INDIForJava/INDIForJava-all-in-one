@@ -34,10 +34,10 @@ import org.indilib.i4j.INDIException;
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
-import org.indilib.i4j.properties.INDIGeneralProperties;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
+import org.indilib.i4j.properties.INDIStandardProperty;
+import static org.indilib.i4j.properties.INDIStandardProperty.CONNECTION;
+import static org.indilib.i4j.properties.INDIStandardProperty.CONNECT;
+import static org.indilib.i4j.properties.INDIStandardProperty.DISCONNECT;
 
 /**
  * An Android Activity that implements a INDI Client.
@@ -180,7 +180,7 @@ public class INDIAndroidActivity extends Activity implements INDIServerConnectio
         });
         connectionTab.addView(disconnectionButton);
 
-        TabSpec tspec = tabs.newTabSpec(CONNECTION).setIndicator("Connection", getResources().getDrawable(R.drawable.ic_network));
+        TabSpec tspec = tabs.newTabSpec(CONNECTION.name()).setIndicator("Connection", getResources().getDrawable(R.drawable.ic_network));
         tspec.setContent(new TabHost.TabContentFactory() {
 
             public View createTabContent(String tag) {

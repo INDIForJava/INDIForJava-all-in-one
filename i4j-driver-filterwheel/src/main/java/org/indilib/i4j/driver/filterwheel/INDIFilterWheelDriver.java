@@ -37,6 +37,8 @@ import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.indilib.i4j.properties.INDIStandardProperty.FILTER_NAME;
+import static org.indilib.i4j.properties.INDIStandardProperty.FILTER_SLOT;
 
 /**
  * A class representing a Filter Wheel Driver in the INDI Protocol. INDI Filter
@@ -120,11 +122,11 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
             filterNamesP.newElement().name("filter_name_" + (i + 1)).label("Filter " + (i + 1)).textValue("Filter " + (i + 1)).create();
         }
 
-        filterSlotP = newNumberProperty().name("FILTER_SLOT").label("Filter Slot").group("Control").create();
+        filterSlotP = newNumberProperty().name(FILTER_SLOT).label("Filter Slot").group("Control").create();
         filterSlotValueE = filterSlotP.newElement().name("FILTER_SLOT_VALUE").label("Filter Slot Value")//
                 .numberValue(1).minimum(1).maximum(getNumberOfFilters()).step(1).numberFormat("%1.0f").create();
 
-        filterNameP = newTextProperty().name("FILTER_NAME").label("Filter Name").group("Control").permission(PropertyPermissions.RO).create();
+        filterNameP = newTextProperty().name(FILTER_NAME).label("Filter Name").group("Control").permission(PropertyPermissions.RO).create();
 
         String firstFilterName = filterNamesP.getElement("filter_name_1").getValue();
         filterNameValueE = filterNameP.newElement().name("FILTER_NAME_VALUE").label("Filter Name Value").textValue(firstFilterName).create();

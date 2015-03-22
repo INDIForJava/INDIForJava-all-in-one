@@ -43,13 +43,16 @@ import static org.indilib.i4j.Constants.PropertyStates.ALERT;
 import static org.indilib.i4j.Constants.PropertyStates.BUSY;
 import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 import static org.indilib.i4j.Constants.PropertyStates.OK;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ELEV;
-import static org.indilib.i4j.properties.INDIGeneralProperties.GEOGRAPHIC_COORD;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LAT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.LONG;
-import static org.indilib.i4j.properties.INDIGeneralProperties.OFFSET;
-import static org.indilib.i4j.properties.INDIGeneralProperties.TIME_UTC;
-import static org.indilib.i4j.properties.INDIGeneralProperties.UTC;
+import static org.indilib.i4j.properties.INDIStandardElement.DEC;
+import static org.indilib.i4j.properties.INDIStandardElement.ELEV;
+import static org.indilib.i4j.properties.INDIStandardProperty.EQUATORIAL_EOD_COORD;
+import static org.indilib.i4j.properties.INDIStandardProperty.GEOGRAPHIC_COORD;
+import static org.indilib.i4j.properties.INDIStandardElement.LAT;
+import static org.indilib.i4j.properties.INDIStandardElement.LONG;
+import static org.indilib.i4j.properties.INDIStandardElement.OFFSET;
+import static org.indilib.i4j.properties.INDIStandardElement.RA;
+import static org.indilib.i4j.properties.INDIStandardProperty.TIME_UTC;
+import static org.indilib.i4j.properties.INDIStandardElement.UTC;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -245,61 +248,61 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * Standard property for the pointing direction of the scope.
      */
-    @InjectProperty(name = "EQUATORIAL_EOD_COORD", label = "Eq. Coordinates", group = INDIDriver.GROUP_MAIN_CONTROL)
+    @InjectProperty(std = EQUATORIAL_EOD_COORD, label = "Eq. Coordinates", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDINumberProperty eqn;
 
     /**
      * This element represents the right ascension of the pointing direction.
      */
-    @InjectElement(name = "RA", label = "RA (hh:mm:ss)", maximum = 24d, numberFormat = "%010.6m")
+    @InjectElement(std = RA, label = "RA (hh:mm:ss)", maximum = 24d, numberFormat = "%010.6m")
     protected INDINumberElement eqnRa;
 
     /**
      * This element represents the declination of the pointing direction.
      */
-    @InjectElement(name = "DEC", label = "DEC (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
+    @InjectElement(std = DEC, label = "DEC (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement eqnDec;
 
     /**
      * Property for the utc time of the client.
      */
-    @InjectProperty(name = TIME_UTC, label = "UTC", group = SITE_TAB)
+    @InjectProperty(std = TIME_UTC, label = "UTC", group = SITE_TAB)
     protected INDITextProperty time;
 
     /**
      * The UTC time of the client.
      */
-    @InjectElement(name = UTC, label = "UTC Time")
+    @InjectElement(std = UTC, label = "UTC Time")
     protected INDITextElement timeutc;
 
     /**
      * The current location offset to the UTC time.
      */
-    @InjectElement(name = OFFSET, label = "UTC Offset")
+    @InjectElement(std = OFFSET, label = "UTC Offset")
     protected INDITextElement timeOffset;
 
     /**
      * The geographic coordinates of the telescope location on earth.
      */
-    @InjectProperty(name = GEOGRAPHIC_COORD, label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
+    @InjectProperty(std = GEOGRAPHIC_COORD, label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
     protected INDINumberProperty location;
 
     /**
      * the latitude of the coordinates.
      */
-    @InjectElement(name = LAT, label = "Lat (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
+    @InjectElement(std = LAT, label = "Lat (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement locationLat;
 
     /**
      * the longtitude of the coordinates.
      */
-    @InjectElement(name = LONG, label = "Lon (dd:mm:ss)", maximum = 360d, numberFormat = "%010.6m")
+    @InjectElement(std = LONG, label = "Lon (dd:mm:ss)", maximum = 360d, numberFormat = "%010.6m")
     protected INDINumberElement locationLong;
 
     /**
      * The elevation of the coordinates.
      */
-    @InjectElement(name = ELEV, label = "Elevation (m)", minimum = MINIMUM_ELEVATION, maximum = 10000d)
+    @InjectElement(std = ELEV, label = "Elevation (m)", minimum = MINIMUM_ELEVATION, maximum = 10000d)
     protected INDINumberElement locationElev;
 
     /**

@@ -22,6 +22,10 @@ package org.indilib.i4j.driver.stellarium;
  * #L%
  */
 
+import static org.indilib.i4j.properties.INDIStandardElement.DEC;
+import static org.indilib.i4j.properties.INDIStandardProperty.EQUATORIAL_EOD_COORD;
+import static org.indilib.i4j.properties.INDIStandardElement.RA;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -124,7 +128,7 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
             try {
                 serverConnection.addINDIDeviceListener(indiDeviceName, this);
                 serverConnection.connect();
-                serverConnection.askForDevices(indiDeviceName, "EQUATORIAL_EOD_COORD");
+                serverConnection.askForDevices(indiDeviceName, EQUATORIAL_EOD_COORD.name());
             } catch (IOException e) {
                 LOG.error("could not ask for device " + indiDevice);
             }
@@ -186,8 +190,8 @@ public abstract class TelescopeConnecor implements INDIDeviceListener, INDIPrope
 
     @Override
     public void propertyChanged(INDIProperty<?> property) {
-        Object ra = property.getElement("RA").getValue();
-        Object dec = property.getElement("DEC").getValue();
+        Object ra = property.getElement(RA.name()).getValue();
+        Object dec = property.getElement(DEC.name()).getValue();
         if (ra instanceof Double && dec instanceof Double) {
             receivedVectorFromINDI(((Double) ra).doubleValue(), ((Double) dec).doubleValue());
         }

@@ -13,18 +13,18 @@ package org.indilib.i4j.driver.connection;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
-import static org.indilib.i4j.properties.INDIGeneralProperties.DISCONNECT;
+import static org.indilib.i4j.properties.INDIStandardElement.CONNECT;
+import static org.indilib.i4j.properties.INDIStandardProperty.CONNECTION;
+import static org.indilib.i4j.properties.INDIStandardElement.DISCONNECT;
 
 import java.util.Date;
 
@@ -52,19 +52,19 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * The standard CONNECTION property (optional).
      */
-    @InjectProperty(name = CONNECTION, label = "Connection", group = INDIDriver.GROUP_MAIN_CONTROL, timeout = 100, switchRule = SwitchRules.ONE_OF_MANY)
+    @InjectProperty(std = CONNECTION, label = "Connection", group = INDIDriver.GROUP_MAIN_CONTROL, timeout = 100, switchRule = SwitchRules.ONE_OF_MANY)
     private INDISwitchProperty connectionP;
 
     /**
      * A Switch Element for the CONNECTION property.
      */
-    @InjectElement(name = CONNECT, label = "Connect")
+    @InjectElement(std = CONNECT, label = "Connect")
     private INDISwitchElement connectedE;
 
     /**
      * A Switch Element for the CONNECTION property.
      */
-    @InjectElement(name = DISCONNECT, label = "Disconnect", switchValue = SwitchStatus.ON)
+    @InjectElement(std = DISCONNECT, label = "Disconnect", switchValue = SwitchStatus.ON)
     private INDISwitchElement disconnectedE;
 
     /**

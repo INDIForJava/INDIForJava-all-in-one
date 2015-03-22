@@ -30,8 +30,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECT;
+import static org.indilib.i4j.properties.INDIStandardProperty.CONNECTION;
+import static org.indilib.i4j.properties.INDIStandardElement.CONNECT;
 
 /**
  * Tests for the example driver.
@@ -72,8 +72,8 @@ public class TestINDIDriverExample {
     // START SNIPPET: test
     @Test
     public void testSomething() throws Exception {
-        testClient.waitForProperty(CONNECTION)//
-                .setValue(CONNECT, SwitchStatus.ON)//
+        testClient.waitForProperty(CONNECTION.name())//
+                .setValue(CONNECT.name(), SwitchStatus.ON)//
                 .send()//
                 .waitForProperty("sendImage")//
                 .setValue("sendImage", SwitchStatus.ON)//
@@ -92,8 +92,8 @@ public class TestINDIDriverExample {
      */
     @Test
     public void testSomethingElse() throws Exception {
-        testClient.waitForProperty(CONNECTION)//
-                .setValue(CONNECT, SwitchStatus.ON)//
+        testClient.waitForProperty(CONNECTION.name())//
+                .setValue(CONNECT.name(), SwitchStatus.ON)//
                 .send()//
                 .waitForProperty("sendImage")//
                 .setValue("sendImage", SwitchStatus.ON)//

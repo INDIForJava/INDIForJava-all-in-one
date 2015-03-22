@@ -30,6 +30,7 @@ import java.lang.annotation.Target;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
+import org.indilib.i4j.properties.INDIStandardProperty;
 
 /**
  * Use this annotation on a field in your driver oder extension and a element
@@ -64,9 +65,14 @@ public @interface InjectProperty {
     int timeout() default ONE_MINUTE_SECONDS;
 
     /**
-     * @return name of the property (mandatory).
+     * @return name of the property (mandatory ).
      */
-    String name();
+    String name() default "";
+
+    /**
+     * @return the general property that this property represents.
+     */
+    INDIStandardProperty std() default INDIStandardProperty.NONE;
 
     /**
      * @return label of the property (mandatory).

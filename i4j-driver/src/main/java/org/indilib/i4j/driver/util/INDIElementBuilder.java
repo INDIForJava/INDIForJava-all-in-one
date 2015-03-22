@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.util;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -27,6 +27,7 @@ import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.driver.INDIElement;
 import org.indilib.i4j.driver.INDIProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
+import org.indilib.i4j.properties.INDIStandardElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,6 +235,20 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     }
 
     /**
+     * set the name of the element (mandatory).
+     * 
+     * @param nameValue
+     *            the new value
+     * @return the builder itself.
+     */
+    public INDIElementBuilder<ElementClass> name(INDIStandardElement nameValue) {
+        if (nameValue != null) {
+            name = nameValue.name();
+        }
+        return this;
+    }
+
+    /**
      * set the label of the element (mandatory).
      * 
      * @param labelValue
@@ -389,7 +404,11 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     public INDIElementBuilder<ElementClass> set(InjectElement elem) {
         this.maximum(elem.maximum());
         this.minimum(elem.minimum());
-        this.name(elem.name());
+        if (elem.std() != INDIStandardElement.NONE) {
+            this.name(elem.std());
+        } else {
+            this.name(elem.name());
+        }
         this.label(elem.label());
         this.numberFormat(elem.numberFormat());
         this.numberValue(elem.numberValue());

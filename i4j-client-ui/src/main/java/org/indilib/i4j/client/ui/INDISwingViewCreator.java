@@ -22,7 +22,7 @@ package org.indilib.i4j.client.ui;
  * #L%
  */
 
-import static org.indilib.i4j.properties.INDIGeneralProperties.CONNECTION;
+import static org.indilib.i4j.properties.INDIStandardProperty.CONNECTION;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.SwitchRules;

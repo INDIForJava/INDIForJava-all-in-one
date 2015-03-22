@@ -27,6 +27,7 @@ import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
+import org.indilib.i4j.properties.INDIStandardProperty;
 import org.indilib.i4j.protocol.DefElement;
 import org.indilib.i4j.protocol.DefSwitch;
 import org.indilib.i4j.protocol.DefSwitchVector;
@@ -207,6 +208,20 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     @Override
     public final INDISwitchElement getElement(String name) {
         return super.getElement(name);
+    }
+
+    /**
+     * Gets a particular Element of this Property by its name.
+     * 
+     * @param name
+     *            The name of the Element to be returned
+     * @return The Element of this Property with the given <code>name</code>.
+     *         <code>null</code> if there is no Element with that
+     *         <code>name</code>.
+     */
+    @Override
+    public final INDISwitchElement getElement(INDIStandardProperty name) {
+        return super.getElement(name.name());
     }
 
     /**

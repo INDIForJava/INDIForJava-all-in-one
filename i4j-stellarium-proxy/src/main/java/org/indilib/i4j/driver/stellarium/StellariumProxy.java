@@ -22,8 +22,8 @@ package org.indilib.i4j.driver.stellarium;
  * #L%
  */
 
-import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_DEVICES;
-import static org.indilib.i4j.properties.INDIGeneralProperties.ACTIVE_TELESCOPE;
+import static org.indilib.i4j.properties.INDIStandardProperty.ACTIVE_DEVICES;
+import static org.indilib.i4j.properties.INDIStandardElement.ACTIVE_TELESCOPE;
 
 import java.util.Date;
 
@@ -71,13 +71,13 @@ public class StellariumProxy extends INDIDriver {
     /**
      * The indi url with the path to a telescope driver.
      */
-    @InjectProperty(name = ACTIVE_DEVICES, label = "URI of the telescope", saveable = true)
+    @InjectProperty(std = ACTIVE_DEVICES, label = "URI of the telescope", saveable = true)
     private INDITextProperty indiUrlP;
 
     /**
      * The indi uri of the telescope driver.
      */
-    @InjectElement(name = ACTIVE_TELESCOPE, textValue = "indi:///")
+    @InjectElement(std = ACTIVE_TELESCOPE, textValue = "indi:///")
     private INDITextElement indiUrl;
 
     /**

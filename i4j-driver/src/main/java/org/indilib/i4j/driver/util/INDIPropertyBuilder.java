@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.util;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -28,6 +28,7 @@ import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.driver.INDIDriver;
 import org.indilib.i4j.driver.INDIProperty;
 import org.indilib.i4j.driver.annotation.InjectProperty;
+import org.indilib.i4j.properties.INDIStandardProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -215,6 +216,20 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     }
 
     /**
+     * set name of the property (mandatory).
+     * 
+     * @param nameValue
+     *            the new name value.
+     * @return the builder itself.
+     */
+    public INDIPropertyBuilder<PropertyClass> name(INDIStandardProperty nameValue) {
+        if (nameValue != null) {
+            name = nameValue.name();
+        }
+        return this;
+    }
+
+    /**
      * set label of the property (mandatory).
      * 
      * @param labelValue
@@ -329,7 +344,11 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     public INDIPropertyBuilder<PropertyClass> set(InjectProperty injectProperty) {
         this.group(injectProperty.group());
         this.label(injectProperty.label());
-        this.name(injectProperty.name());
+        if (injectProperty.std() != INDIStandardProperty.NONE) {
+            this.name(injectProperty.std());
+        } else {
+            this.name(injectProperty.name());
+        }
         this.permission(injectProperty.permission());
         this.saveable(injectProperty.saveable());
         this.state(injectProperty.state());

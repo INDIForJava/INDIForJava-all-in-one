@@ -29,6 +29,8 @@ import java.lang.annotation.Target;
 
 import org.indilib.i4j.Constants.LightStates;
 import org.indilib.i4j.Constants.SwitchStatus;
+import org.indilib.i4j.properties.INDIStandardElement;
+import org.indilib.i4j.properties.INDIStandardProperty;
 
 /**
  * Use this annotation on a field in your driver oder extension and a element
@@ -46,6 +48,11 @@ public @interface InjectElement {
      * @return the name of the element,defaults to the name of the property.
      */
     String name() default "";
+
+    /**
+     * @return name is set useing the general properties.
+     */
+    INDIStandardElement std() default INDIStandardElement.NONE;
 
     /**
      * @return the label of the element ,defaults to the name or the label of
