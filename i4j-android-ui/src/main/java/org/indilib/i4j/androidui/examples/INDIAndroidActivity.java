@@ -36,8 +36,8 @@ import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
 import org.indilib.i4j.properties.INDIStandardProperty;
 import static org.indilib.i4j.properties.INDIStandardProperty.CONNECTION;
-import static org.indilib.i4j.properties.INDIStandardProperty.CONNECT;
-import static org.indilib.i4j.properties.INDIStandardProperty.DISCONNECT;
+import static org.indilib.i4j.properties.INDIStandardElement.CONNECT;
+import static org.indilib.i4j.properties.INDIStandardElement.DISCONNECT;
 
 /**
  * An Android Activity that implements a INDI Client.
