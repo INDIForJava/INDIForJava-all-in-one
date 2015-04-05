@@ -401,6 +401,7 @@
 		<module>i4j-all-in-one</module>
 		<module>i4j-fits-utils</module>
 		<module>i4j-driver-nmea-0183</module>
+		<module>i4j-driver-active-device-extension</module>
 		<module>gsl</module>
 	</modules>
 	<dependencies>
