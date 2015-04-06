@@ -27,11 +27,11 @@
 			<item name="FX Client UI Library" href="i4j-client-fx/index.html" />
 			<item name="Client Examples" href="i4j-client-examples/index.html" />
 			<item name="Driver Library" href="i4j-driver/index.html" />
+			<item name="Serial Port Extension" href="i4j-driver-serialextension/index.html" />
+			<item name="Active Device Extension" href="i4j-driver-active-device-extension/index.html" />
 			<item name="Abstract Filter Wheel Driver" href="i4j-driver-filterwheel/index.html" />
 			<item name="Abstract Focuser Driver" href="i4j-driver-focuser/index.html" />
-			<item name="Serial Port Extension" href="i4j-driver-serialextension/index.html" />
 			<item name="Abstract Telescope Driver" href="i4j-driver-telescope/index.html" />
-			<item name="Fits utilities" href="i4j-fits-utils/index.html" />
 			<item name="Abstract CCD Driver" href="i4j-driver-ccd/index.html" />
 			<item name="Raspberry PI Driver" href="i4j-driver-raspberrypigpio/index.html" />
 			<item name="QHY Filter Wheel Driver" href="i4j-driver-qhyfilterwheel/index.html" />
@@ -47,6 +47,7 @@
 			<item name="Server Library" href="i4j-server/index.html" />
 			<item name="Server Examples" href="i4j-server/index.html" />
 			<item name="Server distribution" href="i4j-all-in-one/index.html" />
+			<item name="Fits utilities" href="i4j-fits-utils/index.html" />
 			<item name="GNU Scientific Library port" href="org.gnu.savannah.gsl/index.html" />
 			<item name="nom-tam-FITS library" href="http://nom-tam-fits.github.io/nom-tam-fits" />
 		</menu>

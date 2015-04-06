@@ -13,14 +13,21 @@ package org.indilib.i4j.driver.active.device;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.indilib.i4j.client.INDIDevice;
 import org.indilib.i4j.client.INDIDeviceListener;
@@ -30,6 +37,8 @@ import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.driver.INDITextElement;
 
 public class ActiveDeviceListener implements INDIDeviceListener, INDIPropertyListener {
+
+    private Map<String, Set<String>> properties = new HashMap<>();
 
     private final INDITextElement element;
 
@@ -43,7 +52,7 @@ public class ActiveDeviceListener implements INDIDeviceListener, INDIPropertyLis
     @Override
     public void newProperty(INDIDevice device, INDIProperty<?> property) {
         property.addINDIPropertyListener(this);
-
+        propertyChanged(property);
     }
 
     @Override
@@ -58,8 +67,12 @@ public class ActiveDeviceListener implements INDIDeviceListener, INDIPropertyLis
 
     @Override
     public void propertyChanged(INDIProperty<?> property) {
-        // now copy the values to the apropitate target properties.
-
+        Set<String> deviceProperties = properties.get(property.getDevice().getName());
+        if (deviceProperties == null) {
+            deviceProperties = new HashSet<>();
+            properties.put(property.getDevice().getName(), deviceProperties);
+        }
+        deviceProperties.add(property.getName());
     }
 
 }

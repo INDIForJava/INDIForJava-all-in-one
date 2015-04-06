@@ -13,11 +13,11 @@ package org.indilib.i4j.properties;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -67,6 +67,14 @@ import static org.indilib.i4j.properties.INDIStandardProperty.TELESCOPE_TIMED_GU
 import static org.indilib.i4j.properties.INDIStandardProperty.TELESCOPE_TRACK_RATE;
 import static org.indilib.i4j.properties.INDIStandardProperty.TIME_UTC;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * This enumeration list allows the detectction what kind of device a device is
  * depending on the available properties.
@@ -114,7 +122,12 @@ public enum INDIDeviceDescriptor {
     /**
      * switch device.
      */
-    SWITCH(present(SWITCHn), missing(EQUATORIAL_EOD_COORD), missing(EQUATORIAL_COORD), missing(HORIZONTAL_COORD), missing(CCDn_FRAME));
+    SWITCH(present(SWITCHn), missing(EQUATORIAL_EOD_COORD), missing(EQUATORIAL_COORD), missing(HORIZONTAL_COORD), missing(CCDn_FRAME)),
+
+    /**
+     * an unknown device, no standard properties.
+     */
+    UNKNOWN();
 
     /**
      * Description of a property that should be availabe or missing in a device.
@@ -122,7 +135,7 @@ public enum INDIDeviceDescriptor {
     private static final class Description {
 
         /**
-         * shoudl the property be there or not.
+         * should the property be there or not.
          */
         private final boolean present;
 
@@ -132,10 +145,10 @@ public enum INDIDeviceDescriptor {
         private final String name;
 
         /**
-         * @return the name of the property.
+         * @return if the property should be there or just not.
          */
-        private String name() {
-            return name;
+        private boolean isPresent() {
+            return present;
         }
 
         /**
@@ -153,9 +166,45 @@ public enum INDIDeviceDescriptor {
     }
 
     /**
+     * a match during the search for devices.
+     */
+    private static class Match {
+
+        /**
+         * the matching descriptor.
+         */
+        private final INDIDeviceDescriptor descriptor;
+
+        /**
+         * how good does the device match? the higher the better.
+         */
+        private final int matchPoints;
+
+        /**
+         * constructor for the Match.
+         * 
+         * @param descriptor
+         *            the matching descriptor.
+         * @param matchPoints
+         *            how good does the device match? the higher the better.
+         */
+        public Match(INDIDeviceDescriptor descriptor, int matchPoints) {
+            this.descriptor = descriptor;
+            this.matchPoints = matchPoints;
+        }
+    }
+
+    /**
      * properties that describe a device.
      */
     private final Description[] propertyDescription;
+
+    /**
+     * @return properties that describe a device.
+     */
+    private Description[] getPropertyDescription() {
+        return propertyDescription;
+    }
 
     /**
      * construct a device description based on avaiable and not available
@@ -190,4 +239,73 @@ public enum INDIDeviceDescriptor {
         return new Description(property.name(), false);
     }
 
+    /**
+     * Analyze a list of properties and depending on the presence or not
+     * Presence of properties try to detect the type of device something is.
+     * 
+     * @param properties
+     *            the available list of properties.
+     * @return the enumeration that describes the device type.
+     */
+    public static INDIDeviceDescriptor[] detectDeviceType(Collection<String> properties) {
+        Set<String> indexedProperties = unfifyPropertyNames(properties);
+        List<Match> matches = new LinkedList<>();
+        for (INDIDeviceDescriptor device : values()) {
+            int points = 0;
+            for (Description property : device.getPropertyDescription()) {
+                if (property.isPresent()) {
+                    // the presence of a property counts as a point.
+                    if (indexedProperties.contains(property.name)) {
+                        points++;
+                    }
+                } else {
+                    // the presence of a missing property is absolute (no
+                    // match).
+                    if (indexedProperties.contains(property.name)) {
+                        points = Integer.MIN_VALUE;
+                        break;
+                    }
+                }
+            }
+            if (points > 0) {
+                matches.add(new Match(device, points));
+            }
+        }
+        Collections.sort(matches, new Comparator<Match>() {
+
+            @Override
+            public int compare(Match o1, Match o2) {
+                return o1.matchPoints - o2.matchPoints;
+            }
+        });
+        INDIDeviceDescriptor[] result = new INDIDeviceDescriptor[matches.size()];
+        for (int index = 0; index < result.length; index++) {
+            result[index] = matches.get(index).descriptor;
+        }
+        return result;
+    }
+
+    /**
+     * take the list of strings and rename each to a naming that is compatible
+     * with the device list. So all upper cases and all digits to a small 'n'.
+     * 
+     * @param properties
+     *            the list of properties to convert
+     * @return the new unified list.
+     */
+    private static Set<String> unfifyPropertyNames(Collection<String> properties) {
+        Set<String> indexedProperties = new HashSet<>();
+        for (String string : properties) {
+            StringBuffer buffer = new StringBuffer();
+            for (char character : string.toCharArray()) {
+                if (Character.isDigit(character)) {
+                    buffer.append('n');
+                } else {
+                    buffer.append(Character.toUpperCase(character));
+                }
+            }
+            indexedProperties.add(buffer.toString());
+        }
+        return indexedProperties;
+    }
 }

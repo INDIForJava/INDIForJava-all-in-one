@@ -35,8 +35,19 @@ The libraries are now also more modulized, so if you want to develop a driver (i
 		</dependency>
 ----------------------------------------
 
- to your denpendencies and you are ready to start.
+ to your dependencies and you are ready to start. For bleeding edge snapshot versions you will need to add the sonatype snapshot repository to your pom.
+we deploy there very commit automatically (with ~30 minutes delay).  
 
+----------------------------------------
+     <repositories>
+       <repository>
+         <id>snapshots-repo</id>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+         <releases><enabled>false</enabled></releases>
+         <snapshots><enabled>true</enabled></snapshots>
+       </repository>
+     </repositories>
+----------------------------------------
 
  It is also recommended that you check the original INDI Library web page in which you will find lots of information about the INDI protocol, the original 
 INDI libraries (written in C and C++) and many more resources (including a developers mailing list) that might help you start developing your own INDI related projects.

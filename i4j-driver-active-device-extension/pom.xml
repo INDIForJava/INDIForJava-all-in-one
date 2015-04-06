@@ -7,7 +7,7 @@
 		<version>1.50-SNAPSHOT</version>
 	</parent>
 	<artifactId>i4j-driver-active-device-extension</artifactId>
-	<name>INDI for Java Acive Device Extension</name>
+	<name>INDI for Java Active Device Extension</name>
 	<description>INDI for Java Active Device Extension</description>
 	<packaging>jar</packaging>
 	<dependencies>

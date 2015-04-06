@@ -44,6 +44,7 @@ import org.indilib.i4j.driver.INDITextElementAndValue;
 import org.indilib.i4j.driver.INDITextProperty;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
+import org.indilib.i4j.properties.INDIDeviceDescriptor;
 import org.indilib.i4j.properties.INDIStandardElement;
 import org.indilib.i4j.properties.INDIStandardProperty;
 import org.indilib.i4j.protocol.api.INDIConnection;
@@ -88,12 +89,12 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * the list with device types that can be activated.
      */
-    private List<INDIStandardElement> deviceTypes = new LinkedList<>();
+    private List<INDIDeviceDescriptor> deviceTypes = new LinkedList<>();
 
     /**
      * property/element mappings from an other device to this device.
      */
-    private Map<INDIStandardElement, List<ElementMapping>> elementMappings = new HashMap<>();
+    private Map<INDIDeviceDescriptor, List<ElementMapping>> elementMappings = new HashMap<>();
 
     /**
      * Constructor for the extension.
@@ -112,11 +113,11 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
      * @param deviceTypes
      *            the array of device types
      */
-    public void setDeviceTypes(INDIStandardElement... deviceTypes) {
+    public void setDeviceTypes(INDIDeviceDescriptor... deviceTypes) {
         this.deviceTypes.clear();
         List<INDIStandardElement> allElements = Arrays.asList(INDIStandardProperty.ACTIVE_DEVICES.elements());
-        INDIStandardProperty.ACTIVE_DEVICES.elements();
-        for (INDIStandardElement indiStandardElement : deviceTypes) {
+        //we need a connection between the ACTIVE_DEVICES elements and and the device descriptors.
+        for (INDIDeviceDescriptor indiStandardElement : deviceTypes) {
             if (allElements.contains(indiStandardElement)) {
                 this.deviceTypes.add(indiStandardElement);
             }
@@ -144,7 +145,7 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
                     .name(INDIStandardProperty.ACTIVE_DEVICES.name())//
                     .label(INDIStandardProperty.ACTIVE_DEVICES.name())//
                     .create();
-            for (INDIStandardElement deviceType : this.deviceTypes) {
+            for (INDIDeviceDescriptor deviceType : this.deviceTypes) {
                 this.activeDevices.newElement().name(deviceType.name()).create();
             }
             this.activeDevices.setEventHandler(new org.indilib.i4j.driver.event.TextEvent() {
@@ -238,7 +239,7 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
         return host + ':' + port;
     }
 
-    public void add(INDIStandardElement deviceType, ElementMapping mapping) {
+    public void add(INDIDeviceDescriptor deviceType, ElementMapping mapping) {
         List<ElementMapping> mappings = elementMappings.get(deviceType);
         if (mappings == null) {
             mappings = new LinkedList<>();
