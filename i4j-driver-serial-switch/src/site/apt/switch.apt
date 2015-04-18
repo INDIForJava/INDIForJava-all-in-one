@@ -1,0 +1,10 @@
+%{include|source-content=<div id\="apt-box">}
+
+Serial switch
+
+ This is a driver for the ceap serial switches availabe over multiple online shops from china. Sold under
+different names like ICSE012A ICSE013A ICSE014A they can have 1 to 16 relais on them.
+
+[images/switch.png] Serial switch ICSE013A
+
+%{include|source-content=</div>}

@@ -40,6 +40,7 @@
 			<item name="NexStar GT Mount Driver" href="i4j-driver-nexstar-gt/index.html" />
 			<item name="Raspberry pi camera Driver" href="i4j-driver-raspberry-camera/index.html" />
 			<item name="NMEA 0183 Driver" href="i4j-driver-nmea-0183/index.html" />
+			<item name="Serial switch Driver" href="i4j-driver-serial-switch/index.html" />
 			<item name="Proxy for stelarium" href="i4j-stellarium-proxy/index.html" />
 			<item name="Driver JUNIT Test Utilities" href="i4j-driver-junit/index.html" />
 			<item name="Server starter" href="i4j-server-main/index.html" />
