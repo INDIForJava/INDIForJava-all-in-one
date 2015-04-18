@@ -178,7 +178,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @return The Driver of the Property.
      */
-    protected INDIDriver getDriver() {
+    public INDIDriver getDriver() {
         return driver;
     }
 

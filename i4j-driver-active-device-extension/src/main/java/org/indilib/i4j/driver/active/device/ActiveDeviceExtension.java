@@ -13,11 +13,11 @@ package org.indilib.i4j.driver.active.device;
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
  * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
+ * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -116,7 +116,8 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
     public void setDeviceTypes(INDIDeviceDescriptor... deviceTypes) {
         this.deviceTypes.clear();
         List<INDIStandardElement> allElements = Arrays.asList(INDIStandardProperty.ACTIVE_DEVICES.elements());
-        //we need a connection between the ACTIVE_DEVICES elements and and the device descriptors.
+        // we need a connection between the ACTIVE_DEVICES elements and and the
+        // device descriptors.
         for (INDIDeviceDescriptor indiStandardElement : deviceTypes) {
             if (allElements.contains(indiStandardElement)) {
                 this.deviceTypes.add(indiStandardElement);
@@ -172,7 +173,7 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
      */
     protected void updateDriverConnection(INDITextElement element) {
         LOG.info("Active devices element changed for " + driver.getName() + " and device type " + element.getName());
-        createServerConnection(element, element.getValue());
+        createServerConnection(element);
     }
 
     @Override
@@ -182,14 +183,15 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
 
     Map<String, INDIServerConnection> serverConnections;
 
-    private void createServerConnection(INDITextElement element, String indiUrl) {
+    private void createServerConnection(INDITextElement element) {
+        String elementValue = element.getValue();
         INDIServerConnection serverConnection = null;
         INDIServerInterface currentServer = initializeLocalServerConnection();
         String indiDeviceName = "";
         // if a ':' is in the device name the name is surly an url.
-        if (!indiUrl.trim().isEmpty() && indiUrl.indexOf(':') > 0) {
+        if (!elementValue.trim().isEmpty() && elementValue.indexOf(':') > 0) {
             try {
-                URL parsedUrl = new URL(indiUrl.trim());
+                URL parsedUrl = new URL(elementValue.trim());
                 if (!currentServer.isLocalURL(parsedUrl)) {
                     int port = parsedUrl.getPort();
                     if (port < 1) {
@@ -202,26 +204,38 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
                         serverConnections.put(connectionKey, serverConnection);
                     }
                 }
-                List<String> device = INDIURLConnection.splitQuery(parsedUrl).get("device");
-                if (device != null && !device.isEmpty()) {
-                    indiDeviceName = device.get(0);
-                }
+                indiDeviceName = getDeviceFromUrl(parsedUrl);
             } catch (MalformedURLException e) {
-                String errorMessage = "not a legal url \"" + indiUrl.trim() + "\" using the current server.";
+                String errorMessage = "not a legal url \"" + elementValue.trim() + "\" using the current server.";
                 LOG.error(errorMessage);
                 driver.updateProperty(activeDevices, errorMessage);
             } catch (IOException e) {
-                String errorMessage = "could not connect \"" + indiUrl.trim() + "\" using the current server.";
+                String errorMessage = "could not connect \"" + elementValue.trim() + "\" using the current server.";
                 LOG.error(errorMessage);
                 driver.updateProperty(activeDevices, errorMessage);
             }
         } else {
-            indiDeviceName = indiUrl.trim();
+            indiDeviceName = elementValue.trim();
         }
         if (serverConnection != null && indiDeviceName != null && !indiDeviceName.trim().isEmpty()) {
             indiDeviceName = indiDeviceName.trim();
             serverConnection.addINDIDeviceListener(indiDeviceName, new ActiveDeviceListener(element, serverConnection));
+            try {
+                serverConnection.askForDevices();
+            } catch (IOException e) {
+                LOG.error(e.getMessage(), e);
+                driver.updateProperty(activeDevices, e.getMessage());
+            }
         }
+    }
+
+    protected static String getDeviceFromUrl(URL parsedUrl) {
+        String indiDeviceName = "";
+        List<String> device = INDIURLConnection.splitQuery(parsedUrl).get("device");
+        if (device != null && !device.isEmpty()) {
+            indiDeviceName = device.get(0);
+        }
+        return indiDeviceName;
     }
 
     private INDIServerInterface initializeLocalServerConnection() {
