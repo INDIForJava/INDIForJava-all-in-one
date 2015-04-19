@@ -93,25 +93,25 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * The element representing the serial connection port Baut rate.
      */
-    @InjectElement(name = "BAUD", label = "Baut rate", numberValue = SerialPort.BAUDRATE_4800)
+    @InjectElement(name = "BAUD", label = "Baut rate", numberValue = SerialPort.BAUDRATE_4800, numberFormat = "%10.0f")
     protected INDINumberElement portBaut;
 
     /**
      * The element representing the serial connection port Data bits.
      */
-    @InjectElement(name = "DATABITS", label = "Data bits", numberValue = SerialPort.DATABITS_8)
+    @InjectElement(name = "DATABITS", label = "Data bits", numberValue = SerialPort.DATABITS_8, numberFormat = "%2.0f")
     protected INDINumberElement portDataBits;
 
     /**
      * The element representing the serial connection port Stop bits.
      */
-    @InjectElement(name = "STOPBITS", label = "Stop bits", numberValue = SerialPort.STOPBITS_1)
+    @InjectElement(name = "STOPBITS", label = "Stop bits", numberValue = SerialPort.STOPBITS_1, numberFormat = "%2.0f")
     protected INDINumberElement portStopBits;
 
     /**
      * The element representing the serial connection port.
      */
-    @InjectElement(name = "PARITY", label = "parity", numberValue = SerialPort.PARITY_NONE)
+    @InjectElement(name = "PARITY", label = "parity", numberValue = SerialPort.PARITY_NONE, numberFormat = "%2.0f")
     protected INDINumberElement portParity;
 
     /**
@@ -322,7 +322,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      */
     public void setPortDetailesFixed(boolean portDetailesFixed) {
         this.portDetailesFixed = portDetailesFixed;
-        if (this.portDetailesFixed) {
+        if (!this.portDetailesFixed) {
             addProperty(portDetails);
         } else {
             removeProperty(portDetails);

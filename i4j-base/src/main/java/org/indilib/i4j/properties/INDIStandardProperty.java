@@ -134,6 +134,7 @@ import static org.indilib.i4j.properties.INDIStandardElement.VER_BIN;
 import static org.indilib.i4j.properties.INDIStandardElement.WIDTH;
 import static org.indilib.i4j.properties.INDIStandardElement.X;
 import static org.indilib.i4j.properties.INDIStandardElement.Y;
+import static org.indilib.i4j.properties.INDIStandardElement.SWITCHn;
 
 /**
  * The following tables describe standard properties pertaining to generic
@@ -391,7 +392,7 @@ public enum INDIStandardProperty {
     /**
      * generic SWICH property.
      */
-    SWITCHn;
+    SWITCH_MODULE(SWITCHn);
 
     /**
      * standard elements of this property.

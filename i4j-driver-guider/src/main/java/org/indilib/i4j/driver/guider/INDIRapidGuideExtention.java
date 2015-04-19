@@ -73,7 +73,7 @@ public class INDIRapidGuideExtention extends INDIDriverExtension<INDIDriver> {
     @InjectProperty(name = "RAPID_GUIDE_DATA", label = "Rapid Guide Data", group = RAPIDGUIDE_TAB, permission = PropertyPermissions.RO)
     protected INDINumberProperty rapidGuideData;
 
-    @InjectElement(name = "GUIDESTAR_X", label = "Guide star position X", maximum = 1024, numberFormat = "%%5.2f")
+    @InjectElement(name = "GUIDESTAR_X", label = "Guide star position X", maximum = 1024, numberFormat = "%5.2f")
     protected INDINumberElement rapidGuideDataX;
 
     @InjectElement(name = "GUIDESTAR_Y", label = "Guide star position Y", maximum = 1024, numberFormat = "%5.2f")

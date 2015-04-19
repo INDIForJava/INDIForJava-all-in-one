@@ -101,6 +101,11 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     private String numberFormat = "%g";
 
     /**
+     * the index number replacement for the lowercase 'n' character..
+     */
+    private int nIndex = 1;
+
+    /**
      * the default value of the element when it is a switch field, defaults to
      * an empty string.
      */
@@ -375,9 +380,22 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     }
 
     /**
+     * set the index replacement for the lowercase 'n' character.
+     * 
+     * @param index
+     *            the new index value.
+     * @return the builder itself.
+     */
+    public INDIElementBuilder<ElementClass> nIndex(int nIndex) {
+        this.nIndex = nIndex;
+        return this;
+    }
+
+    /**
      * @return the new instance of the element with all specified settings.
      */
     public ElementClass create() {
+        applyNIndex();
         try {
             INDIElement existing = this.indiProperty.getElement(name());
             if (existing != null) {
@@ -391,6 +409,26 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
         } catch (Exception e) {
             LOG.error("could not instanciate element", e);
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    /**
+     * if the name or the label contains a lower case 'n' the character is
+     * replaced by the specified index. same is done with any %n in the label.
+     */
+    private void applyNIndex() {
+        if (name != null && nIndex >= 0) {
+            int indexOfIndex = name.indexOf('n');
+            if (indexOfIndex >= 0) {
+                String newName = name.substring(0, indexOfIndex) + Integer.toString(nIndex);
+                if (indexOfIndex != name.length() - 1) {
+                    newName = newName + name.substring(indexOfIndex + 1);
+                }
+                this.name = newName;
+                if (this.label != null) {
+                    this.label = this.label.replace("%n", Integer.toString(nIndex));
+                }
+            }
         }
     }
 
@@ -416,6 +454,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
         this.step(elem.step());
         this.switchValue(elem.switchValue());
         this.textValue(elem.textValue());
+        this.nIndex(elem.nIndex());
         return this;
     }
 

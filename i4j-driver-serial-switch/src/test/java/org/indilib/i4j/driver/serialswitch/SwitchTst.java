@@ -33,14 +33,13 @@ public class SwitchTst {
         serialPort.setParams(9600, 8, 1, 0);
 
         serialPort.writeByte((byte) 0x50);
-        Thread.sleep(500);
+        Thread.sleep(10);
         serialPort.writeByte((byte) 0x51);
         while (true) {
-            Thread.sleep(1000);
+            Thread.sleep(100);
             serialPort.writeByte((byte) 0xFF);
-            Thread.sleep(1000);
+            Thread.sleep(100);
             serialPort.writeByte((byte) 0x00);
-            Thread.sleep(1000);
         }
     }
 }

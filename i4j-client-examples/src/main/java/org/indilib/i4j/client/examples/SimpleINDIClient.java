@@ -32,6 +32,8 @@ import org.indilib.i4j.client.INDIProperty;
 import org.indilib.i4j.client.INDIPropertyListener;
 import org.indilib.i4j.client.INDIServerConnection;
 import org.indilib.i4j.client.INDIServerConnectionListener;
+import org.indilib.i4j.protocol.INDIProtocol;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +44,10 @@ import org.slf4j.LoggerFactory;
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class SimpleINDIClient implements INDIServerConnectionListener, INDIDeviceListener, INDIPropertyListener {
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
      * A logger for errors.

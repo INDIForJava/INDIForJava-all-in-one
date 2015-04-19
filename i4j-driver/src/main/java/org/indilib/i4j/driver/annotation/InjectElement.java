@@ -80,9 +80,9 @@ public @interface InjectElement {
 
     /**
      * @return the maximal value of the element when it is a number field,
-     *         defaults to 0.
+     *         defaults to Double.MAX_VALUE.
      */
-    double maximum() default 0d;
+    double maximum() default Double.MAX_VALUE;
 
     /**
      * @return the step value of the element when it is a number field, defaults
@@ -114,4 +114,9 @@ public @interface InjectElement {
      *         defaults to an empty string.
      */
     LightStates state() default LightStates.IDLE;
+
+    /**
+     * @return the index to use instead of the lowercase 'n' character.
+     */
+    int nIndex() default -1;
 }

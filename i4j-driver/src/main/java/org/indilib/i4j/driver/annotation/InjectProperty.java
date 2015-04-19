@@ -102,4 +102,9 @@ public @interface InjectProperty {
      */
     SwitchRules switchRule() default SwitchRules.ONE_OF_MANY;
 
+    /**
+     * @return the index to use instead of the lowercase 'n' character.
+     */
+    int nIndex() default -1;
+
 }

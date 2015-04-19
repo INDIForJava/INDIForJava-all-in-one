@@ -72,7 +72,7 @@ public class SimpleINDIFrameClient extends javax.swing.JFrame implements INDISer
     INDIServerConnection connection;
 
     /**
-     * Creates new form SimpleINDIFrameClient
+     * Creates new form SimpleINDIFrameClient.
      * 
      * @param host
      *            host to connect to

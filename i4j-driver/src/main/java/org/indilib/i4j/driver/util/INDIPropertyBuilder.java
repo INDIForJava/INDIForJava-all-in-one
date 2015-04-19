@@ -100,6 +100,11 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     private SwitchRules switchRule = SwitchRules.ONE_OF_MANY;
 
     /**
+     * the index number replacement for the lowercase 'n' character..
+     */
+    private int nIndex = 1;
+
+    /**
      * default constructor of the property builder.
      * 
      * @param propertyClazz
@@ -198,6 +203,18 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
      */
     public INDIPropertyBuilder<PropertyClass> timeout(int timeoutValue) {
         timeout = Math.max(0, timeoutValue);
+        return this;
+    }
+
+    /**
+     * set the index replacement for the lowercase 'n' character.
+     * 
+     * @param index
+     *            the new index value.
+     * @return the builder itself.
+     */
+    public INDIPropertyBuilder<PropertyClass> nIndex(int nIndex) {
+        this.nIndex = nIndex;
         return this;
     }
 
@@ -316,6 +333,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
      * @return the instanciated property filled with all collected settings.
      */
     public PropertyClass create() {
+        applyNIndex();
         try {
             if (saveable) {
                 INDIProperty<?> loadedProperty = INDIProperty.loadFromFile(driver, name());
@@ -331,6 +349,25 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
         } catch (Exception e) {
             LOG.error("could not instanciate property", e);
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    /**
+     * if the name or the label contains a lower case 'n' the character is
+     * replaced by the specified index. same is done with any %n in the label.
+     */
+    private void applyNIndex() {
+        if (name != null && nIndex >= 0) {
+            int indexOfIndex = name.indexOf('n');
+            if (indexOfIndex >= 0) {
+                String newName = name.substring(0, indexOfIndex) + Integer.toString(nIndex);
+                if (indexOfIndex != name.length() - 1) {
+                    newName = newName + name.substring(indexOfIndex + 1);
+                }
+                if (this.label != null) {
+                    this.label = this.label.replace("%n", Integer.toString(nIndex));
+                }
+            }
         }
     }
 
@@ -354,6 +391,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
         this.state(injectProperty.state());
         this.switchRule(injectProperty.switchRule());
         this.timeout(injectProperty.timeout());
+        this.nIndex(injectProperty.nIndex());
         return this;
     }
 

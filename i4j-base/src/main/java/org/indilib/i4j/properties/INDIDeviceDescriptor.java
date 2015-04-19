@@ -55,7 +55,7 @@ import static org.indilib.i4j.properties.INDIStandardProperty.GEOGRAPHIC_COORD;
 import static org.indilib.i4j.properties.INDIStandardProperty.HORIZONTAL_COORD;
 import static org.indilib.i4j.properties.INDIStandardProperty.ON_COORD_SET;
 import static org.indilib.i4j.properties.INDIStandardProperty.REL_DOME_POSITION;
-import static org.indilib.i4j.properties.INDIStandardProperty.SWITCHn;
+import static org.indilib.i4j.properties.INDIStandardProperty.SWITCH_MODULE;
 import static org.indilib.i4j.properties.INDIStandardProperty.TELESCOPE_ABORT_MOTION;
 import static org.indilib.i4j.properties.INDIStandardProperty.TELESCOPE_INFO;
 import static org.indilib.i4j.properties.INDIStandardProperty.TELESCOPE_MOTION_NS;
@@ -122,7 +122,7 @@ public enum INDIDeviceDescriptor {
     /**
      * switch device.
      */
-    SWITCH(present(SWITCHn), missing(EQUATORIAL_EOD_COORD), missing(EQUATORIAL_COORD), missing(HORIZONTAL_COORD), missing(CCDn_FRAME)),
+    SWITCH(present(SWITCH_MODULE), missing(EQUATORIAL_EOD_COORD), missing(EQUATORIAL_COORD), missing(HORIZONTAL_COORD), missing(CCDn_FRAME)),
 
     /**
      * an unknown device, no standard properties.
