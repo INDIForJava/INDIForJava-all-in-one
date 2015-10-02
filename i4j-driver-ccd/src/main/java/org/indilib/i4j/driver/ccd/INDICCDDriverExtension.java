@@ -213,7 +213,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * Some informations about the ccd sensor itself.
      */
-    @InjectProperty(name = "INFO", label = "CCD Information", group = INDICCDDriver.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
+    @InjectProperty(name = "CCD_INFO", label = "CCD Information", group = INDICCDDriver.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
     protected INDINumberProperty imagePixelSize;
 
     /**
