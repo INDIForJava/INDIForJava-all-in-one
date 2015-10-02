@@ -46,7 +46,9 @@ public class INDIURLStreamHandlerFactory implements URLStreamHandlerFactory {
     public static void init() {
         if (!initialized) {
             initialized = true;
-            URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
+            if (System.getProperty(INDIURLStreamHandlerFactory.class.getSimpleName() + ".auto.register", "true").equalsIgnoreCase("true")) {
+                URL.setURLStreamHandlerFactory(new INDIURLStreamHandlerFactory());
+            }
         }
     }
 
