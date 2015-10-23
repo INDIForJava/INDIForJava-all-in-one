@@ -403,6 +403,7 @@
 		<module>i4j-driver-nmea-0183</module>
 		<module>i4j-driver-serial-switch</module>
 		<module>i4j-driver-active-device-extension</module>
+		<module>i4j-nbp-integration</module>
 		<module>gsl</module>
 	</modules>
 	<dependencies>
