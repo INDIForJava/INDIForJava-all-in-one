@@ -413,21 +413,30 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     }
 
     /**
-     * if the name or the label contains a lower case 'n' the character is
-     * replaced by the specified index. same is done with any %n in the label.
+     * if the name or the label contains the string "${n}" it will be replaced
+     * by the specified index (the last occurence). Same is done with any "${n}"
+     * in the label.
      */
     private void applyNIndex() {
         if (name != null && nIndex >= 0) {
-            int indexOfIndex = name.indexOf('n');
+            int indexOfIndex = name.lastIndexOf("${n}");
             if (indexOfIndex >= 0) {
                 String newName = name.substring(0, indexOfIndex) + Integer.toString(nIndex);
-                if (indexOfIndex != name.length() - 1) {
-                    newName = newName + name.substring(indexOfIndex + 1);
+                if (indexOfIndex != name.length() - 4) {
+                    newName += name.substring(indexOfIndex + 4);
                 }
                 this.name = newName;
-                if (this.label != null) {
-                    this.label = this.label.replace("%n", Integer.toString(nIndex));
+            }
+        }
+
+        if (label != null && nIndex >= 0) {
+            int indexOfIndex = label.lastIndexOf("${n}");
+            if (indexOfIndex >= 0) {
+                String newLabel = label.substring(0, indexOfIndex) + Integer.toString(nIndex);
+                if (indexOfIndex != label.length() - 4) {
+                    newLabel += label.substring(indexOfIndex + 4);
                 }
+                this.label = newLabel;
             }
         }
     }
