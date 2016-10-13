@@ -21,7 +21,6 @@ package org.indilib.i4j.driver.qhyfilterwheel;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -68,12 +67,17 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
     /**
      * Device send a filter changed info response.
      */
-    private static final int FILTER_RESPONSE_FILTER_CHANGED = 1;
+    private static final byte FILTER_RESPONSE_FILTER_CHANGED = '-';
 
     /**
      * Device send a new filter status info response.
      */
-    private static final int FILTER_RESPONSE_STATUS_INFO = 17;
+    private static final byte FILTER_RESPONSE_STATUS_INFO = 0;
+
+    /**
+     * Number of bytes to read for the file status info response
+     */
+    private static final int FILTER_RESPONSE_STATUS_INFO_SIZE = 16;
 
     /**
      * buffer size for reading commands from the device.
@@ -321,9 +325,19 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
         addProperty(filterPositionsP);
         addProperty(factorySettingsP);
 
-        getSetupPositions();
+        (new Thread() {
 
-        changeFilter(1);
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                }
+                changeFilter(1);
+
+                getSetupPositions();
+            }
+        }).start();
+
     }
 
     @Override
@@ -477,20 +491,26 @@ public class I4JQHYFilterWheelDriver extends INDIFilterWheelDriver implements IN
      */
     @Override
     public void run() {
+        readerEnd = false;
+
         while (!readerEnd) {
             try {
                 if (fwInput.available() > 0) {
-                    byte[] readed = new byte[READ_BUFFER_SIZE];
+                    byte br = (byte) fwInput.read();
 
-                    int br = fwInput.read(readed);
+                    // LOG.info("br " + ((int) br));
                     if (br == FILTER_RESPONSE_FILTER_CHANGED) {
-                        if (readed[0] == '-') {
-                            filterHasBeenChanged(lastAskedFilter);
-                        }
+                        filterHasBeenChanged(lastAskedFilter);
                     } else if (br == FILTER_RESPONSE_STATUS_INFO) {
+                        byte[] readed = new byte[FILTER_RESPONSE_STATUS_INFO_SIZE];
+
+                        while (fwInput.available() < FILTER_RESPONSE_STATUS_INFO_SIZE) {
+                            // Wait until we got all info
+                        }
+                        fwInput.read(readed);
                         int[] filterPositions = new int[NUMBER_OF_FILTER_POSITIONS];
 
-                        int index = 1;
+                        int index = 0;
                         filterPositions[FILTER_POSITIONS_1] = readed[index++] << BITS_PER_BYTE & HIGH_BYTE_FILTER | readed[index++] & BYTE_FILTER;
                         filterPositions[FILTER_POSITIONS_2] = readed[index++] << BITS_PER_BYTE & HIGH_BYTE_FILTER | readed[index++] & BYTE_FILTER;
                         filterPositions[FILTER_POSITIONS_3] = readed[index++] << BITS_PER_BYTE & HIGH_BYTE_FILTER | readed[index++] & BYTE_FILTER;
