@@ -22,18 +22,17 @@ package org.indilib.i4j.driver.telescope.alignment;
  * #L%
  */
 
-import java.io.Serializable;
-
 import net.sourceforge.novaforjava.Utility;
 import net.sourceforge.novaforjava.api.LnEquPosn;
 import net.sourceforge.novaforjava.api.LnHrzPosn;
 import net.sourceforge.novaforjava.api.LnhEquPosn;
 import net.sourceforge.novaforjava.api.LnhHrzPosn;
-
 import org.gnu.savannah.gsl.CBLAS_TRANSPOSE;
 import org.gnu.savannah.gsl.Gsl;
 import org.gnu.savannah.gsl.GslMatrix;
 import org.gnu.savannah.gsl.GslVector;
+
+import java.io.Serializable;
 
 /**
  * These functions are used to convert different coordinate systems to and from

@@ -21,33 +21,24 @@ package org.indilib.i4j.client;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.INDIProtocolParser;
 import org.indilib.i4j.INDIProtocolReader;
-import org.indilib.i4j.protocol.DefVector;
-import org.indilib.i4j.protocol.DelProperty;
-import org.indilib.i4j.protocol.GetProperties;
-import org.indilib.i4j.protocol.INDIProtocol;
-import org.indilib.i4j.protocol.Message;
-import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.*;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandler;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 /**
  * A class representing a INDI Server Connection. Usually this is the entry

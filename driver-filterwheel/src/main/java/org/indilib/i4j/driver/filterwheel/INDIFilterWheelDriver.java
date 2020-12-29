@@ -22,21 +22,16 @@ package org.indilib.i4j.driver.filterwheel;
  * #L%
  */
 
-import java.util.Date;
-
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDITextElement;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+
 import static org.indilib.i4j.properties.INDIStandardProperty.FILTER_NAME;
 import static org.indilib.i4j.properties.INDIStandardProperty.FILTER_SLOT;
 

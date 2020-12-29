@@ -22,9 +22,6 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import java.util.Formatter;
-import java.util.Locale;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDISexagesimalFormatter;
 import org.indilib.i4j.protocol.DefNumber;
@@ -32,6 +29,9 @@ import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.OneNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Formatter;
+import java.util.Locale;
 
 /**
  * A class representing a INDI Number Element.

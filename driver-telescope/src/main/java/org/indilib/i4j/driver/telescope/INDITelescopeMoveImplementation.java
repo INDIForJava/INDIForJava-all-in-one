@@ -22,10 +22,10 @@ package org.indilib.i4j.driver.telescope;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
-
 import org.indilib.i4j.driver.telescope.INDITelescope.TelescopeMotionNS;
 import org.indilib.i4j.driver.telescope.INDITelescope.TelescopeMotionWE;
+
+import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 
 /**
  * This is the standard implementation of scope movements, if the scope supports

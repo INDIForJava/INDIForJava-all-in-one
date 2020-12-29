@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/driver" />
             <option value="$PROJECT_DIR$/driver-filterwheel" />
             <option value="$PROJECT_DIR$/driver-focuser" />
+            <option value="$PROJECT_DIR$/driver-serial-extension" />
             <option value="$PROJECT_DIR$/driver-telescope" />
             <option value="$PROJECT_DIR$/gnu-scientific-lib" />
             <option value="$PROJECT_DIR$/server" />

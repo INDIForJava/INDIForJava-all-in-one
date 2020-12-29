@@ -13,35 +13,17 @@ package org.indilib.i4j.client;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.BLOBEnables;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.protocol.DefBlobVector;
-import org.indilib.i4j.protocol.DefLightVector;
-import org.indilib.i4j.protocol.DefNumberVector;
-import org.indilib.i4j.protocol.DefSwitchVector;
-import org.indilib.i4j.protocol.DefTextVector;
-import org.indilib.i4j.protocol.DefVector;
-import org.indilib.i4j.protocol.DelProperty;
-import org.indilib.i4j.protocol.EnableBLOB;
-import org.indilib.i4j.protocol.INDIProtocol;
-import org.indilib.i4j.protocol.SetBlobVector;
-import org.indilib.i4j.protocol.SetLightVector;
-import org.indilib.i4j.protocol.SetNumberVector;
-import org.indilib.i4j.protocol.SetSwitchVector;
-import org.indilib.i4j.protocol.SetTextVector;
-import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 /**
  * A class representing a INDI Device.

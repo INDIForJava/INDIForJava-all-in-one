@@ -39,39 +39,9 @@ package org.indilib.i4j.driver.telescope;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyStates.ALERT;
-import static org.indilib.i4j.Constants.PropertyStates.BUSY;
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
-import static org.indilib.i4j.Constants.PropertyStates.OK;
-import static org.indilib.i4j.properties.INDIStandardElement.DEC;
-import static org.indilib.i4j.properties.INDIStandardElement.ELEV;
-import static org.indilib.i4j.properties.INDIStandardProperty.EQUATORIAL_EOD_COORD;
-import static org.indilib.i4j.properties.INDIStandardProperty.GEOGRAPHIC_COORD;
-import static org.indilib.i4j.properties.INDIStandardElement.LAT;
-import static org.indilib.i4j.properties.INDIStandardElement.LONG;
-import static org.indilib.i4j.properties.INDIStandardElement.OFFSET;
-import static org.indilib.i4j.properties.INDIStandardElement.RA;
-import static org.indilib.i4j.properties.INDIStandardProperty.TIME_UTC;
-import static org.indilib.i4j.properties.INDIStandardElement.UTC;
-
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDIElementAndValue;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.driver.INDITextElement;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
@@ -83,6 +53,15 @@ import org.indilib.i4j.driver.serial.INDISerialPortExtension;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.indilib.i4j.Constants.PropertyStates.*;
+import static org.indilib.i4j.properties.INDIStandardElement.*;
+import static org.indilib.i4j.properties.INDIStandardProperty.*;
 
 /**
  * A class that acts as a abstract INDI for Java Driver for any Telescope. All

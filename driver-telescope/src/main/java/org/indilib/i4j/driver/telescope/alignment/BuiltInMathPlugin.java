@@ -22,25 +22,20 @@ package org.indilib.i4j.driver.telescope.alignment;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.sourceforge.novaforjava.JulianDay;
 import net.sourceforge.novaforjava.Transform;
 import net.sourceforge.novaforjava.api.LnEquPosn;
 import net.sourceforge.novaforjava.api.LnHrzPosn;
 import net.sourceforge.novaforjava.api.LnLnlatPosn;
-
-import org.gnu.savannah.gsl.CBLAS_TRANSPOSE;
-import org.gnu.savannah.gsl.Gsl;
-import org.gnu.savannah.gsl.GslMatrix;
-import org.gnu.savannah.gsl.GslPermutation;
-import org.gnu.savannah.gsl.GslVector;
+import org.gnu.savannah.gsl.*;
 import org.gnu.savannah.gsl.util.IntegerRef;
 import org.indilib.i4j.driver.telescope.alignment.WrappedQuickHull3D.Face;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The default math plugin for the sync calculation.

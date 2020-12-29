@@ -22,19 +22,15 @@ package org.indilib.i4j.driver.telescope;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
-
-import java.util.Date;
-
 import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDIDriverExtension;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.SwitchEvent;
+
+import java.util.Date;
+
+import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 
 /**
  * This park extension should be enabled for every telescope that supports a

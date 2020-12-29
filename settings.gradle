@@ -7,4 +7,5 @@ include 'driver-focuser'
 include 'driver-filterwheel'
 include 'driver-telescope'
 include 'gnu-scientific-lib'
+include 'driver-serial-extension'
 

@@ -22,28 +22,23 @@ package org.indilib.i4j.driver.telescope.simulator;
  * #L%
  */
 
-import java.util.Date;
-
 import net.sourceforge.novaforjava.JulianDay;
 import net.sourceforge.novaforjava.api.LnDate;
 import net.sourceforge.novaforjava.api.LnHrzPosn;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.telescope.INDIDirection;
 import org.indilib.i4j.driver.telescope.INDITelescope;
 import org.indilib.i4j.driver.telescope.INDITelescopeMoveImplementation;
 import org.indilib.i4j.driver.telescope.INDITelescopeSyncInterface;
-import org.indilib.i4j.driver.telescope.alignment.AlignmentDatabaseEntry;
-import org.indilib.i4j.driver.telescope.alignment.DoubleRef;
-import org.indilib.i4j.driver.telescope.alignment.MathPluginManagement;
-import org.indilib.i4j.driver.telescope.alignment.MountAlignment;
-import org.indilib.i4j.driver.telescope.alignment.TelescopeDirectionVector;
+import org.indilib.i4j.driver.telescope.alignment.*;
 import org.indilib.i4j.driver.telescope.mount.AxisWithEncoder;
 import org.indilib.i4j.driver.telescope.mount.Mount;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * An telescope simulator that has "real" encoders and can sync. So a template

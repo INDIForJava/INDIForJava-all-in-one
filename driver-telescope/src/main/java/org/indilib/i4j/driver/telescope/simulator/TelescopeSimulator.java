@@ -21,20 +21,10 @@ package org.indilib.i4j.driver.telescope.simulator;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-import static org.indilib.i4j.Constants.PropertyStates.BUSY;
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
-import static org.indilib.i4j.Constants.PropertyStates.OK;
-
-import java.util.Date;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
@@ -46,6 +36,10 @@ import org.indilib.i4j.driver.telescope.INDITelescopeSyncInterface;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+
+import static org.indilib.i4j.Constants.PropertyStates.*;
 
 /**
  * This is the scope simulator class, basicly a copy of the c++ version. it will

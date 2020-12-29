@@ -22,11 +22,11 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import java.util.Iterator;
-import java.util.ServiceLoader;
-
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.INDIException;
+
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 /**
  * The view createtion factory, uses the service loader pattern to get the

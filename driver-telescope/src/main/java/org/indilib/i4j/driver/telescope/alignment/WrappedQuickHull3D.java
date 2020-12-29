@@ -22,13 +22,12 @@ package org.indilib.i4j.driver.telescope.alignment;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gnu.savannah.gsl.GslMatrix;
-
 import com.github.quickhull3d.Point3d;
 import com.github.quickhull3d.QuickHull3D;
+import org.gnu.savannah.gsl.GslMatrix;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wrapper around the QuickHull3D class with some helper functions to make the

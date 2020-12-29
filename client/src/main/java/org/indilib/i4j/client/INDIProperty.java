@@ -13,15 +13,6 @@ package org.indilib.i4j.client;
  * <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
  */
 
-import static org.indilib.i4j.INDIDateFormat.dateFormat;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.indilib.i4j.Constants;
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
@@ -32,6 +23,11 @@ import org.indilib.i4j.protocol.DefVector;
 import org.indilib.i4j.protocol.NewVector;
 import org.indilib.i4j.protocol.OneElement;
 import org.indilib.i4j.protocol.SetVector;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 /**
  * A class representing a INDI Property. The subclasses

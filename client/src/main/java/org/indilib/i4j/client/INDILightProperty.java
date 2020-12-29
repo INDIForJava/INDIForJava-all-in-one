@@ -24,12 +24,7 @@ package org.indilib.i4j.client;
 
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.protocol.DefElement;
-import org.indilib.i4j.protocol.DefLight;
-import org.indilib.i4j.protocol.DefLightVector;
-import org.indilib.i4j.protocol.NewVector;
-import org.indilib.i4j.protocol.OneLight;
-import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -22,19 +22,7 @@ package org.indilib.i4j.driver.telescope;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyStates.BUSY;
-import static org.indilib.i4j.Constants.PropertyStates.IDLE;
-import static org.indilib.i4j.Constants.PropertyStates.OK;
-
-import java.util.Date;
-
-import org.indilib.i4j.driver.INDIDriverExtension;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
@@ -43,6 +31,10 @@ import org.indilib.i4j.driver.telescope.INDITelescope.TelescopeMotionNS;
 import org.indilib.i4j.driver.telescope.INDITelescope.TelescopeMotionWE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+
+import static org.indilib.i4j.Constants.PropertyStates.*;
 
 /**
  * This extention handles the basic remote manual movement of the scope. it

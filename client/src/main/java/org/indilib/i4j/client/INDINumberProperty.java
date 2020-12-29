@@ -23,13 +23,7 @@ package org.indilib.i4j.client;
  */
 
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.protocol.DefElement;
-import org.indilib.i4j.protocol.DefNumber;
-import org.indilib.i4j.protocol.DefNumberVector;
-import org.indilib.i4j.protocol.NewNumberVector;
-import org.indilib.i4j.protocol.NewVector;
-import org.indilib.i4j.protocol.OneNumber;
-import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.*;
 
 /**
  * A class representing a INDI Number Property.

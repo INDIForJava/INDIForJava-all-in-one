@@ -23,13 +23,7 @@ package org.indilib.i4j.client;
  */
 
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.protocol.DefElement;
-import org.indilib.i4j.protocol.DefText;
-import org.indilib.i4j.protocol.DefTextVector;
-import org.indilib.i4j.protocol.NewTextVector;
-import org.indilib.i4j.protocol.NewVector;
-import org.indilib.i4j.protocol.OneText;
-import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.*;
 
 /**
  * A class representing a INDI Text Property.

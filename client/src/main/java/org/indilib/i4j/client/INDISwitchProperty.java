@@ -28,13 +28,7 @@ import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.properties.INDIStandardProperty;
-import org.indilib.i4j.protocol.DefElement;
-import org.indilib.i4j.protocol.DefSwitch;
-import org.indilib.i4j.protocol.DefSwitchVector;
-import org.indilib.i4j.protocol.NewSwitchVector;
-import org.indilib.i4j.protocol.NewVector;
-import org.indilib.i4j.protocol.OneSwitch;
-import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.*;
 
 /**
  * A class representing a INDI Switch Property.

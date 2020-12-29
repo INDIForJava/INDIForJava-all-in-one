@@ -23,13 +23,7 @@ package org.indilib.i4j.client;
  */
 
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.protocol.DefBlob;
-import org.indilib.i4j.protocol.DefBlobVector;
-import org.indilib.i4j.protocol.DefElement;
-import org.indilib.i4j.protocol.NewBlobVector;
-import org.indilib.i4j.protocol.NewVector;
-import org.indilib.i4j.protocol.OneBlob;
-import org.indilib.i4j.protocol.SetVector;
+import org.indilib.i4j.protocol.*;
 
 /**
  * A class representing a INDI BLOB Property.

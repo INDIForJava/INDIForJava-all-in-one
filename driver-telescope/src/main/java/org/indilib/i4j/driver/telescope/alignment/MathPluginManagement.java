@@ -22,29 +22,19 @@ package org.indilib.i4j.driver.telescope.alignment;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyStates.OK;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.ServiceLoader;
-
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
-import org.indilib.i4j.driver.INDIDriverExtension;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.driver.INDITextElement;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.driver.telescope.INDITelescope;
+
+import java.util.*;
+
+import static org.indilib.i4j.Constants.PropertyStates.OK;
 
 /**
  * This driver extension is used to configure and select a math plugin to use

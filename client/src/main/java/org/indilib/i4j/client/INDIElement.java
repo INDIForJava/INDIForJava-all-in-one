@@ -22,11 +22,11 @@ package org.indilib.i4j.client;
  * #L%
  */
 
-import java.util.ArrayList;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.protocol.DefElement;
 import org.indilib.i4j.protocol.OneElement;
+
+import java.util.ArrayList;
 
 /**
  * A class representing a INDI Element. The subclasses
