@@ -12,7 +12,10 @@
             <option value="$PROJECT_DIR$/client" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/driver" />
+            <option value="$PROJECT_DIR$/driver-filterwheel" />
             <option value="$PROJECT_DIR$/driver-focuser" />
+            <option value="$PROJECT_DIR$/driver-telescope" />
+            <option value="$PROJECT_DIR$/gnu-scientific-lib" />
             <option value="$PROJECT_DIR$/server" />
           </set>
         </option>

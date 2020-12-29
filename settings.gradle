@@ -4,4 +4,7 @@ include 'core'
 include 'driver'
 include 'client'
 include 'driver-focuser'
+include 'driver-filterwheel'
+include 'driver-telescope'
+include 'gnu-scientific-lib'
 

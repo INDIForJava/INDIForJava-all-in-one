@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+group 'org.indilib.i4j'
+version '2.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api project(path: ':driver')
+    implementation 'net.sourceforge.novaforjava:novaforjava:0.15.0.0'
+    implementation project(path: ':gnu-scientific-lib')
+}
+
+test {
+    useJUnitPlatform()
+}
