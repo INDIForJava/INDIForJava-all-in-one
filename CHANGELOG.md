@@ -1,43 +1,42 @@
-TO TAKE INTO ACCOUNT FOR THE 1.50 RELEASE:
+# INDIForJava library changelog
 
+- Version 2.0 (2020-2021):
+  - Work in progress...
+
+
+- Version 1.5 (prior to October 13, 2016):
   - In the client library some methods in the class INDIDevice have been renamed to comply wth code style recommendations: BLOBsEnable, BLOBsEnableNever, BLOBsEnableAlso, BLOBsEnableOnly... This change will break some existing client code. Fixing it is trivial, just changing the names.  However, we must clearly say so in the docs, maybe some small tutorial, etc.
   - A complete refactoring was done, you probably have to adapt your code a migration guide will be provided. 
   - See the sourceforce tickes for the details.
   - See http://indiforjava.sourceforge.net/stage/migration.html for migration descriptions
   - use the SNAPSHOT dependency from sonatype for the current state (deployed every monday):
-
-	<dependencies>
-		<dependency>
-			<artifactId>i4j-xxxx</artifactId>
-			<groupId>org.indilib.i4j</groupId>
-			<version>1.50-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-	<repositories>
-		<repository>
-			<id>sonatype-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>    
-  
-
-Note that this project uses code and resources from other free software packages. Particularly, it uses:
-
-  + The Silk icon set 1.3 (http://www.famfamfam.com/lab/icons/silk/) by Mark James
-  + Icons from Glypish (http://glyphish.com) 
-
-Please check their websites for more information about their work and usage licenses.
-
-Special thanks to:
-  + Alexander Tuschen, Romain Fafet and Gerrit Viola for their input, testing and code.
-
-Known issues / bugs:
-  - The Android UI is a first try will be replaced soon.
-
-The rest of this file describes the main changes in the INDI for Java Libraries. Minor fixes are not listed.
+  ````
+      <dependencies>
+          <dependency>
+              <artifactId>i4j-xxxx</artifactId>
+              <groupId>org.indilib.i4j</groupId>
+              <version>1.50-SNAPSHOT</version>
+          </dependency>
+      </dependencies>
+      <repositories>
+          <repository>
+              <id>sonatype-snapshots</id>
+              <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+              <snapshots>
+                  <enabled>true</enabled>
+              </snapshots>
+          </repository>
+      </repositories>
+  ````
+  - Note that this project uses code and resources from other free software packages. Particularly, it uses:
+    - The Silk icon set 1.3 (http://www.famfamfam.com/lab/icons/silk/) by Mark James
+    - Icons from Glypish (http://glyphish.com)
+  - Please check their websites for more information about their work and usage licenses.
+  - Special thanks to:
+    - Alexander Tuschen, Romain Fafet and Gerrit Viola for their input, testing and code.
+  - Known issues / bugs:
+    - The Android UI is a first try will be replaced soon.
+  - The rest of this file describes the main changes in the INDI for Java Libraries. Minor fixes are not listed.
 
 - Version 1.38 (July 22, 2014):
 

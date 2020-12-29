@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="i4j-driver" />
+        <module name="i4j-driver-nexstar-gt" />
+        <module name="i4j-fits-utils" />
+        <module name="i4j-driver-serialextension" />
+        <module name="i4j-client-ui" />
+        <module name="i4j-driver-telescope" />
+        <module name="i4j-protocol" />
+        <module name="i4j-server" />
+        <module name="i4j-driver-serial-switch" />
+        <module name="i4j-client-examples" />
+        <module name="i4j-driver-raspberry-camera" />
+        <module name="i4j-server-api" />
+        <module name="i4j-base" />
+        <module name="org.gnu.savannah.gsl" />
+        <module name="i4j-driver-active-device-extension" />
+        <module name="i4j-server-main" />
+        <module name="i4j-driver-nmea-0183" />
+        <module name="i4j-driver-filterwheel" />
+        <module name="i4j-driver-focuser" />
+        <module name="i4j-driver-sqm" />
+        <module name="i4j-driver-examples" />
+        <module name="i4j-driver-junit" />
+        <module name="i4j-stellarium-proxy" />
+        <module name="i4j-nbp-integration" />
+        <module name="i4j-client" />
+        <module name="i4j-driver-guider" />
+        <module name="i4j-driver-raspberrypigpio" />
+        <module name="i4j-driver-seletek" />
+        <module name="i4j-driver-qhyfilterwheel" />
+        <module name="i4j-driver-ccd" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="i4j" target="1.7" />
+      <module name="i4j-all-in-one" target="1.7" />
+      <module name="i4j-base" target="1.7" />
+      <module name="i4j-client" target="1.7" />
+      <module name="i4j-client-examples" target="1.7" />
+      <module name="i4j-client-ui" target="1.7" />
+      <module name="i4j-driver" target="1.7" />
+      <module name="i4j-driver-active-device-extension" target="1.7" />
+      <module name="i4j-driver-ccd" target="1.7" />
+      <module name="i4j-driver-examples" target="1.7" />
+      <module name="i4j-driver-filterwheel" target="1.7" />
+      <module name="i4j-driver-focuser" target="1.7" />
+      <module name="i4j-driver-guider" target="1.7" />
+      <module name="i4j-driver-junit" target="1.7" />
+      <module name="i4j-driver-nexstar-gt" target="1.7" />
+      <module name="i4j-driver-nmea-0183" target="1.7" />
+      <module name="i4j-driver-qhyfilterwheel" target="1.7" />
+      <module name="i4j-driver-raspberry-camera" target="1.7" />
+      <module name="i4j-driver-raspberrypigpio" target="1.7" />
+      <module name="i4j-driver-seletek" target="1.7" />
+      <module name="i4j-driver-serial-switch" target="1.7" />
+      <module name="i4j-driver-serialextension" target="1.7" />
+      <module name="i4j-driver-sqm" target="1.7" />
+      <module name="i4j-driver-telescope" target="1.7" />
+      <module name="i4j-fits-utils" target="1.7" />
+      <module name="i4j-nbp-integration" target="1.7" />
+      <module name="i4j-protocol" target="1.7" />
+      <module name="i4j-server" target="1.7" />
+      <module name="i4j-server-api" target="1.7" />
+      <module name="i4j-server-main" target="1.7" />
+      <module name="i4j-stellarium-proxy" target="1.7" />
+      <module name="org.gnu.savannah.gsl" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

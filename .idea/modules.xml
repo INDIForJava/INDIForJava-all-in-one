@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/i4j.iml" filepath="$PROJECT_DIR$/i4j.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-all-in-one/i4j-all-in-one.iml" filepath="$PROJECT_DIR$/i4j-all-in-one/i4j-all-in-one.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-base/i4j-base.iml" filepath="$PROJECT_DIR$/i4j-base/i4j-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-client/i4j-client.iml" filepath="$PROJECT_DIR$/i4j-client/i4j-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-client-examples/i4j-client-examples.iml" filepath="$PROJECT_DIR$/i4j-client-examples/i4j-client-examples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-client-ui/i4j-client-ui.iml" filepath="$PROJECT_DIR$/i4j-client-ui/i4j-client-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver/i4j-driver.iml" filepath="$PROJECT_DIR$/i4j-driver/i4j-driver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-active-device-extension/i4j-driver-active-device-extension.iml" filepath="$PROJECT_DIR$/i4j-driver-active-device-extension/i4j-driver-active-device-extension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-ccd/i4j-driver-ccd.iml" filepath="$PROJECT_DIR$/i4j-driver-ccd/i4j-driver-ccd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-examples/i4j-driver-examples.iml" filepath="$PROJECT_DIR$/i4j-driver-examples/i4j-driver-examples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-filterwheel/i4j-driver-filterwheel.iml" filepath="$PROJECT_DIR$/i4j-driver-filterwheel/i4j-driver-filterwheel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-focuser/i4j-driver-focuser.iml" filepath="$PROJECT_DIR$/i4j-driver-focuser/i4j-driver-focuser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-guider/i4j-driver-guider.iml" filepath="$PROJECT_DIR$/i4j-driver-guider/i4j-driver-guider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-junit/i4j-driver-junit.iml" filepath="$PROJECT_DIR$/i4j-driver-junit/i4j-driver-junit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-nexstar-gt/i4j-driver-nexstar-gt.iml" filepath="$PROJECT_DIR$/i4j-driver-nexstar-gt/i4j-driver-nexstar-gt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-nmea-0183/i4j-driver-nmea-0183.iml" filepath="$PROJECT_DIR$/i4j-driver-nmea-0183/i4j-driver-nmea-0183.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-qhyfilterwheel/i4j-driver-qhyfilterwheel.iml" filepath="$PROJECT_DIR$/i4j-driver-qhyfilterwheel/i4j-driver-qhyfilterwheel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-raspberry-camera/i4j-driver-raspberry-camera.iml" filepath="$PROJECT_DIR$/i4j-driver-raspberry-camera/i4j-driver-raspberry-camera.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-raspberrypigpio/i4j-driver-raspberrypigpio.iml" filepath="$PROJECT_DIR$/i4j-driver-raspberrypigpio/i4j-driver-raspberrypigpio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-seletek/i4j-driver-seletek.iml" filepath="$PROJECT_DIR$/i4j-driver-seletek/i4j-driver-seletek.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-serial-switch/i4j-driver-serial-switch.iml" filepath="$PROJECT_DIR$/i4j-driver-serial-switch/i4j-driver-serial-switch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-serialextension/i4j-driver-serialextension.iml" filepath="$PROJECT_DIR$/i4j-driver-serialextension/i4j-driver-serialextension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-sqm/i4j-driver-sqm.iml" filepath="$PROJECT_DIR$/i4j-driver-sqm/i4j-driver-sqm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-driver-telescope/i4j-driver-telescope.iml" filepath="$PROJECT_DIR$/i4j-driver-telescope/i4j-driver-telescope.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-fits-utils/i4j-fits-utils.iml" filepath="$PROJECT_DIR$/i4j-fits-utils/i4j-fits-utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-nbp-integration/i4j-nbp-integration.iml" filepath="$PROJECT_DIR$/i4j-nbp-integration/i4j-nbp-integration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-protocol/i4j-protocol.iml" filepath="$PROJECT_DIR$/i4j-protocol/i4j-protocol.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-server/i4j-server.iml" filepath="$PROJECT_DIR$/i4j-server/i4j-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-server-api/i4j-server-api.iml" filepath="$PROJECT_DIR$/i4j-server-api/i4j-server-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-server-main/i4j-server-main.iml" filepath="$PROJECT_DIR$/i4j-server-main/i4j-server-main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j-stellarium-proxy/i4j-stellarium-proxy.iml" filepath="$PROJECT_DIR$/i4j-stellarium-proxy/i4j-stellarium-proxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gsl/org.gnu.savannah.gsl.iml" filepath="$PROJECT_DIR$/gsl/org.gnu.savannah.gsl.iml" />
+    </modules>
+  </component>
+</project>
