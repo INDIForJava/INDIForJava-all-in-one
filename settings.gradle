@@ -8,4 +8,7 @@ include 'driver-filterwheel'
 include 'driver-telescope'
 include 'gnu-scientific-lib'
 include 'driver-serial-extension'
+include 'driver-ccd'
+include 'driver-raspberrypigpio'
+include 'fits-utils'
 

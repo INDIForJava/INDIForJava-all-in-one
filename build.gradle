@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-library'
 }
 
 group 'org.indilib.i4j'
@@ -10,7 +11,14 @@ repositories {
 }
 
 dependencies {
-
+    api project(path: ':core')
+    api project(path: ':driver')
+    api project(path: ':driver-focuser')
+    api project(path: ':driver-ccd')
+    api project(path: ':driver-filterwheel')
+    api project(path: ':driver-telescope')
+    api project(path: ':client')
+    api project(path: ':server')
 }
 
 test {
