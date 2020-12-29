@@ -38,8 +38,8 @@
         <module name="i4j-driver-ccd" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="i4j" target="1.7" />
+    <bytecodeTargetLevel target="8">
+      <module name="i4j" target="1.8" />
       <module name="i4j-all-in-one" target="1.7" />
       <module name="i4j-base" target="1.7" />
       <module name="i4j-client" target="1.7" />

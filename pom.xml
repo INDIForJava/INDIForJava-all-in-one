@@ -8,18 +8,18 @@
 	</parent>
 	<artifactId>i4j</artifactId>
 	<groupId>org.indilib.i4j</groupId>
-	<version>1.50-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>INDI for Java</name>
+	<name>INDIForJava</name>
 	<description>A Java library implementing the INDI distributed control protocol (http://indilib.org). Designed to easily implement new INDI Clients (graphical and not graphical ones), INDI Drivers and INDI Servers.</description>
 	<url>http://www.indilib.org/develop/indiforjava.html</url>
 	<organization>
-		<name>indiforjava</name>
+		<name>INDIForJava</name>
 	</organization>
 	<scm>
-		<connection>scm:git:http://git.code.sf.net/p/indiforjava/code.git</connection>
-		<developerConnection>scm:git:https://git.code.sf.net/p/indiforjava/code.git</developerConnection>
-		<url>http://sourceforge.net/p/indiforjava/code.git/ci/master/tree/</url>
+		<connection>scm:git:https://github.com/marcocipriani01/INDIForJava.git</connection>
+		<developerConnection>scm:git:https://github.com/marcocipriani01/INDIForJava.git</developerConnection>
+		<url>https://github.com/marcocipriani01/INDIForJava/tree/main</url>
 	</scm>
 	<distributionManagement>
 		<repository>
@@ -42,12 +42,21 @@
 	<inceptionYear>2012</inceptionYear>
 	<developers>
 		<developer>
+			<id>marcocipriani01</id>
+			<name>Marco Cipriani</name>
+			<email>marco [dot] cipriani [dot] 01 [at] gmail [dot] com</email>
+			<url>http://marcocipriani01.github.io/</url>
+			<roles>
+				<role>Project Admin</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
 			<id>Zerjillo</id>
 			<name>Sergio Alonso</name>
 			<email>zerjioi [at] ugr [dot] es</email>
 			<url>http://zerjio.com</url>
 			<roles>
-				<role>Project Admin</role>
 				<role>Developer</role>
 			</roles>
 			<organization>Software Engineering Department, University of Granada</organization>
@@ -71,8 +80,8 @@
 		</developer>
 	</developers>
 	<issueManagement>
-		<system>sourceforge</system>
-		<url>https://sourceforge.net/p/indiforjava/tickets/</url>
+		<system>github</system>
+		<url>https://github.com/marcocipriani01/INDIForJava/issues</url>
 	</issueManagement>
 	<licenses>
 		<license>
@@ -95,8 +104,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -355,7 +364,7 @@
 				<configuration>
 					<linkXref>true</linkXref>
 					<sourceEncoding>UTF-8</sourceEncoding>
-					<targetJdk>1.7</targetJdk>
+					<targetJdk>8</targetJdk>
 					<skipEmptyReport>false</skipEmptyReport>
 					<minimumTokens>50</minimumTokens>
 				</configuration>

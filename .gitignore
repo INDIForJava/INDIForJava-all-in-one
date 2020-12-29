@@ -1,18 +1,11 @@
-<<<<<<< HEAD
 /target/
 /.classpath
 /.project
 /.settings/
-=======
 /gen/
 /nbandroid/
 /bin/
 /target
-/.settings/
-/.classpath
-/.project
->>>>>>> indiforjava-i4jandroidui/master
-/LICENSE.txt
 /i4j-base/nbactions.xml
 /i4j-client/nbactions.xml
 /i4j-driver-seletek/nbactions.xml
