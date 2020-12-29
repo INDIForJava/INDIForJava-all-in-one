@@ -45,6 +45,7 @@ import org.indilib.i4j.protocol.SetVector;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.url.INDIURLStreamHandler;
+import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,10 @@ import org.slf4j.LoggerFactory;
  * @author Richard van Nieuwenhoven
  */
 public class INDIServerConnection implements INDIProtocolParser {
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
      * The logger to log to.
