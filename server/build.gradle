@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+group 'org.indilib.i4j'
+version '2.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api project(path: ':core')
+    api project(path: ':driver')
+    implementation 'org.jboss:jandex:2.2.2.Final'
+    implementation 'org.glassfish.tyrus:tyrus-server:2.0.0'
+}
+
+test {
+    useJUnitPlatform()
+}

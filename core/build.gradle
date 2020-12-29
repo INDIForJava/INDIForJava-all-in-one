@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+group 'org.indilib.i4j'
+version '2.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api 'org.slf4j:slf4j-api:1.7.30'
+    api 'org.glassfish.tyrus:tyrus-client:2.0.0'
+    implementation ('com.thoughtworks.xstream:xstream:1.4.7') {
+        exclude group: 'xmlpull', module: 'xmlpull'
+        //exclude group: 'xpp3', module: 'xpp3'
+    }
+    implementation 'commons-codec:commons-codec:1.10'
+}
+
+test {
+    useJUnitPlatform()
+}
