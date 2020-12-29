@@ -1,8 +1,25 @@
 # INDIForJava library changelog
 
 - Version 2.0 (2020-2021):
-  - Work in progress...
-
+  - Moved from Maven/Eclipse to Gradle and IntelliJ
+  - Fixed some minor bugs in the client and driver modules
+  - Merged `i4j-base` and `i4j-protocol` into the `core` module
+  - Merged `i4j-server-api` and `i4j-server` into the `server` module
+  - The overall structure of the library is simplified
+  - All the dependencies have been updated
+  - Dropped support for the following modules:
+    - `i4j-android-ui`: will be replaced by a native Android library extracted from the IPARCOS project
+    - `i4j-client-fx`: deprecated
+    - `i4j-driver-guider`: was no longer maintained, replaced by PHD2 and other guiders
+    - `i4j-driver-nexstar-gt`: replaced by the native [INDI NexStar driver](https://www.indilib.org/telescopes/celestron/celestron-nexstar.html)
+    - `i4j-driver-nmea-0183`: replaced by the native [INDI NMEA driver](https://indilib.org/aux/gps-nmea.html)
+    - `i4j-driver-qhyfilterwheel`: replaced by the native [INDI QHY driver](https://www.indilib.org/ccds/qhy.html)
+    - `i4j-driver-raspberry-camera`: replaced by the native [INDI RPi Camera driver](https://www.indilib.org/raspberry-pi/raspberry-pi-camera.html)
+    - `i4j-driver-seletek`: replaced by the native [INDI drivers](https://www.indilib.org/focusers/armadillo-and-platypus-controllers.html)
+    - `i4j-driver-serial-switch`: deprecated
+    - `i4j-driver-sqm`: deprecated, cannot update driver without hardware for testing.
+    - `i4j-stellarium-proxy`: no longer required since [Stellarium 0.17.0](https://www.indilib.org/forum/general/2923-stellarium-0-17-0-now-with-indi.html)
+    - `i4j-nbp-integration`: NetBeans integration is no longer supported.
 
 - Version 1.5 (prior to October 13, 2016):
   - In the client library some methods in the class INDIDevice have been renamed to comply wth code style recommendations: BLOBsEnable, BLOBsEnableNever, BLOBsEnableAlso, BLOBsEnableOnly... This change will break some existing client code. Fixing it is trivial, just changing the names.  However, we must clearly say so in the docs, maybe some small tutorial, etc.
