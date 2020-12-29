@@ -10,28 +10,25 @@ package org.indilib.i4j.driver.focuser;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.driver.*;
+import org.indilib.i4j.properties.INDIStandardProperty;
+import org.indilib.i4j.protocol.api.INDIConnection;
+
 import java.util.Date;
 
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.protocol.api.INDIConnection;
 import static org.indilib.i4j.properties.INDIStandardProperty.ABS_FOCUS_POSITION;
 
 /**
@@ -50,10 +47,13 @@ import static org.indilib.i4j.properties.INDIStandardProperty.ABS_FOCUS_POSITION
  * at the beginning of <code>processNewSwitchValue</code> and
  * <code>processNewNumberValue</code> to handle the generic focuser properties
  * correctly.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public abstract class INDIFocuserDriver extends INDIDriver {
+
+    protected static final String CONTROL_GROUP = "Control";
+    protected static final String CONFIG_GROUP = "Configuration";
 
     /**
      * The last position to which the focuser has been sent (but it may have not
@@ -64,33 +64,33 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     /**
      * The <code>FOCUS_SPEED</code> property.
      */
-    private INDINumberProperty focusSpeedP;
+    protected INDINumberProperty focusSpeedP;
 
     /**
      * The <code>FOCUS_SPEED_VALUE</code> element.
      */
-    private INDINumberElement focusSpeedValueE;
+    protected INDINumberElement focusSpeedValueE;
 
     /**
      * The <code>ABS_FOCUS_POSITION</code> property.
      */
-    private INDINumberProperty absFocusPositionP;
+    protected INDINumberProperty absFocusPositionP;
 
     /**
      * The <code>FOCUS_ABSOLUTE_POSITION</code> element.
      */
-    private INDINumberElement focusAbsolutePositionE;
+    protected INDINumberElement focusAbsolutePositionE;
 
     /**
      * The <code>stop_focusing</code> property (not standard, but very useful).
      */
-    private INDISwitchProperty stopFocusingP;
+    protected INDISwitchProperty stopFocusingP;
 
     /**
      * Constructs a INDIFocuserDriver with a particular <code>inputStream</code>
      * from which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
-     * 
+     *
      * @param connection
      *            the indi connection to the server.
      */
@@ -102,8 +102,8 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * Initializes the standard properties. MUST BE CALLED BY SUBDRIVERS.
      */
     protected void initializeStandardProperties() {
-        absFocusPositionP = newNumberProperty().name(ABS_FOCUS_POSITION).label("Absolute").group("Control").create();
-        focusAbsolutePositionE = absFocusPositionP.newElement().name("FOCUS_ABSOLUTE_POSITION").label("Focus Position").step(1d).numberFormat("%.0f")//
+        absFocusPositionP = newNumberProperty().name(ABS_FOCUS_POSITION).label("Absolute").group(CONTROL_GROUP).create();
+        focusAbsolutePositionE = absFocusPositionP.newElement().name("FOCUS_ABSOLUTE_POSITION").label("Focus Position").step(1).numberFormat("%.0f")
                 .numberValue(getInitialAbsPos()).minimum(getMinimumAbsPos()).maximum(getMaximumAbsPos()).create();
 
         desiredAbsPosition = getInitialAbsPos();
@@ -115,7 +115,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * Gets the maximum speed of the focuser. Note that 0 is the minimum speed
      * for any focuser. Must be overloaded if the driver uses the
      * <code>FOCUS_SPEED</code> property.
-     * 
+     *
      * @return The maximum speed of the focuser
      */
     protected int getMaximumSpeed() {
@@ -132,7 +132,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     /**
      * Returns the maximum value that the <code>FOCUS_ABSOLUTE_POSITION</code>
      * element can have.
-     * 
+     *
      * @return The maximum value
      */
     public abstract int getMaximumAbsPos();
@@ -140,7 +140,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     /**
      * Returns the minimum value that the <code>FOCUS_ABSOLUTE_POSITION</code>
      * element can have.
-     * 
+     *
      * @return The minimum value
      */
     public abstract int getMinimumAbsPos();
@@ -148,7 +148,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     /**
      * Returns the initial value that the <code>FOCUS_ABSOLUTE_POSITION</code>
      * element shuld have.
-     * 
+     *
      * @return The initial position
      */
     public abstract int getInitialAbsPos();
@@ -173,7 +173,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showSpeedProperty() {
         if (focusSpeedP == null) {
-            focusSpeedP = newNumberProperty().saveable(true).name("FOCUS_SPEED").label("Focus Speed").group("Configuration").create();
+            focusSpeedP = newNumberProperty().saveable(true).name("FOCUS_SPEED").label("Focus Speed").group(CONFIG_GROUP).create();
             focusSpeedValueE = focusSpeedP.getElement("FOCUS_SPEED_VALUE");
             if (focusSpeedValueE == null) {
                 focusSpeedValueE = focusSpeedP.newElement().name("").label("").numberValue(getMaximumSpeed()).maximum(getMaximumSpeed()).step(1).numberFormat("%.0f").create();
@@ -189,8 +189,8 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showStopFocusingProperty() {
         if (stopFocusingP == null) {
-            stopFocusingP = newSwitchProperty().name("stop_focusing").label("Stop").group("Control").create();
-            stopFocusingP.newElement().name("Stop Focusing").create();
+            stopFocusingP = newSwitchProperty().name(INDIStandardProperty.FOCUS_ABORT_MOTION).label("Stop focuser").group(CONTROL_GROUP).create();
+            stopFocusingP.newElement().name("ABORT").label("Stop").create();
         }
         addProperty(stopFocusingP);
     }
@@ -211,23 +211,20 @@ public abstract class INDIFocuserDriver extends INDIDriver {
 
     /**
      * Gets the value of the <code>FOCUS_SPEED_VALUE</code> element.
-     * 
+     *
      * @return The current speed value
      */
     protected int getCurrentSpeed() {
         if (focusSpeedValueE != null) {
-            int speed = focusSpeedValueE.getValue().intValue();
-
-            return speed;
+            return focusSpeedValueE.getValue().intValue();
         }
-
         return -1;
     }
 
     /**
      * Gets the desired absolute position (which may not have been reached by
      * the focuser).
-     * 
+     *
      * @return The desired absolute position
      */
     protected int getDesiredAbsPosition() {
@@ -269,7 +266,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * Should be called by the drivers when the focuser its moving. It can be
      * called with any frequency, but a less than one second is preferred to
      * notify the clients of the movement of the focuser.
-     * 
+     *
      * @param currentPos
      *            The current position of the focuser.
      */
@@ -283,7 +280,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     /**
      * Should be called by the drivers when the focuser speed changes (if for
      * example the device has a potentiometer to control the speed).
-     * 
+     *
      * @param currentSpeed
      *            The current speed of the focuser.
      */
