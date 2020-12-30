@@ -1,20 +1,19 @@
 package org.indilib.i4j.fits;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.Array;
-
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.header.Standard;
 import nom.tam.fits.header.extra.MaxImDLExt;
-
 import org.indilib.i4j.fits.debayer.AdaptiveDebayerAlgorithm;
 import org.indilib.i4j.fits.debayer.DebayerPattern;
 import org.indilib.i4j.fits.debayer.ImagePixels;
 import org.indilib.i4j.fits.debayer.RGBImagePixels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.Array;
 
 /*
  * #%L

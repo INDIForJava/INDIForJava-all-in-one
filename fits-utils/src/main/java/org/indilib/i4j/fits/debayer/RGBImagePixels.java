@@ -1,6 +1,6 @@
 package org.indilib.i4j.fits.debayer;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /*

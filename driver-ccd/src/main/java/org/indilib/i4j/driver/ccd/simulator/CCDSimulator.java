@@ -22,17 +22,7 @@ package org.indilib.i4j.driver.ccd.simulator;
  * #L%
  */
 
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
-
-import javax.imageio.ImageIO;
-
 import nom.tam.fits.BasicHDU;
-
 import org.indilib.i4j.INDIException;
 import org.indilib.i4j.driver.ccd.Capability;
 import org.indilib.i4j.driver.ccd.CcdFrame;
@@ -43,6 +33,14 @@ import org.indilib.i4j.driver.ccd.INDICCDImage.PixelIterator;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * This driver simulates a ccd dirver by sending always sending the same pictute

@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -43,17 +43,20 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * A class representing a INDI Server. It is in charge of dealing with several
- * Drivers and Clients which interexchange messages. Check the INDI
- * documentation to better understand its pourpose. It has the appropriate
+ * Drivers and Clients which inter-exchange messages. Check the INDI
+ * documentation to better understand its purpose. It has the appropriate
  * methods to load / unload several kinds of Drivers: Java Drivers (created with
  * the INDI for Java Driver library, Native Drivers (probably created with the
  * original INDI Library and launched as external processes) and Network Devices
  * (which consist on other INDI Servers).
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -68,32 +71,27 @@ public final class INDIServer implements INDIServerInterface {
      * Logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIServer.class);
-
+    /**
+     * the list with listeners to server events.
+     */
+    private final List<INDIServerEventHandler> eventHandlers = Collections.synchronizedList(new ArrayList<>());
+    /**
+     * The basis acceptor, normally a socket acceptor the basic indi protocol.
+     */
+    private final INDIServerAcceptor baseAcceptor;
+    /**
+     * the list with additional loaded acceptors.
+     */
+    private final List<INDIServerAcceptor> additionalAcceptors = new ArrayList<>();
     /**
      * A list of clients (and devices if they are snooping) connected to the
      * server.
      */
     private List<INDIDeviceListener> clients;
-
     /**
      * A list of Devices loaded by the server.
      */
     private List<INDIDevice> devices;
-
-    /**
-     * the list with listeners to server events.
-     */
-    private List<INDIServerEventHandler> eventHandlers = Collections.synchronizedList(new ArrayList<INDIServerEventHandler>());
-
-    /**
-     * The basis acceptor, normally a socket acceptor the basic indi protocol.
-     */
-    private INDIServerAcceptor baseAcceptor;
-
-    /**
-     * the list with additional loaded acceptors.
-     */
-    private List<INDIServerAcceptor> additionalAcceptors = new ArrayList<INDIServerAcceptor>();
 
     /**
      * Constructs a new Server. The Server begins to listen to the default port.
@@ -105,9 +103,8 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * Constructs a new Server. The Server begins to listen to a particular
      * port.
-     * 
-     * @param listeningPort
-     *            The port to which the Server will listen.
+     *
+     * @param listeningPort The port to which the Server will listen.
      */
     protected INDIServer(Integer listeningPort) {
         baseAcceptor = new INDIServerSocketAcceptor() {
@@ -124,16 +121,6 @@ public final class INDIServer implements INDIServerInterface {
     @Override
     public void addEventHandler(INDIServerEventHandler eventHandler) {
         eventHandlers.add(eventHandler);
-    }
-
-    @Override
-    public synchronized void destroyJavaDriver(String className) throws INDIException {
-        Class<?> driverclass = loadDriverClassByName(className);
-        if (driverclass != null) {
-            destroyJavaDriver(driverclass);
-        } else {
-            throw new INDIException("No driver found with name " + className);
-        }
     }
 
     @Override
@@ -165,7 +152,7 @@ public final class INDIServer implements INDIServerInterface {
 
     @Override
     public List<INDIDeviceInterface> getDevices() {
-        return new ArrayList<INDIDeviceInterface>(devices);
+        return new ArrayList<>(devices);
     }
 
     @Override
@@ -184,16 +171,6 @@ public final class INDIServer implements INDIServerInterface {
     }
 
     @Override
-    public synchronized void loadJavaDriver(String className) throws INDIException {
-        Class<?> driverclass = loadDriverClassByName(className);
-        if (driverclass != null) {
-            loadJavaDriver(driverclass);
-        } else {
-            throw new INDIException("No driver found with name " + className);
-        }
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public synchronized void loadJavaDriversFromJAR(String jarFileName) throws INDIException {
         IndexView jarIndex = Util.extendClasspath(new File(jarFileName));
@@ -209,7 +186,6 @@ public final class INDIServer implements INDIServerInterface {
                     loadJavaDriver(clazz);
                 }
             }
-
         }
     }
 
@@ -257,42 +233,41 @@ public final class INDIServer implements INDIServerInterface {
                 try {
                     ((INDIClient) indiDeviceListener).disconnect();
                 } catch (Exception e) {
-                    LOG.warn("problem during client diskonnect", e);
+                    LOG.warn("problem during client disconnect", e);
                 }
             }
         }
     }
 
     /**
-     * @return a static list to iterate without the problem of concurent
-     *         modifications.
+     * @return a static list to iterate without the problem of concurrent
+     * modifications.
      */
     private INDIDeviceListener[] staticCopyOfClients() {
-        return clients.toArray(new INDIDeviceListener[clients.size()]);
+        return clients.toArray(new INDIDeviceListener[0]);
     }
 
     /**
-     * @return a static list to iterate without the problem of concurent
-     *         modifications.
+     * @return a static list to iterate without the problem of concurrent
+     * modifications.
      */
     private INDIDevice[] staticCopyOfDevices() {
-        return devices.toArray(new INDIDevice[devices.size()]);
+        return devices.toArray(new INDIDevice[0]);
     }
 
     /**
-     * @return a static list to iterate without the problem of concurent
-     *         modifications.
+     * @return a static list to iterate without the problem of concurrent
+     * modifications.
      */
     private INDIServerEventHandler[] staticCopyOfEventHandlers() {
-        return eventHandlers.toArray(new INDIServerEventHandler[eventHandlers.size()]);
+        return eventHandlers.toArray(new INDIServerEventHandler[0]);
     }
 
     /**
      * send the notification to all event handlers that a client connection was
      * broken.
-     * 
-     * @param client
-     *            the client who's connection broke.
+     *
+     * @param client the client who's connection broke.
      */
     protected void connectionWithClientBroken(INDIClient client) {
         for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
@@ -303,9 +278,8 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * send the notification to all event handlers that a client connection was
      * establisched.
-     * 
-     * @param client
-     *            the client who's connection was estebisched.
+     *
+     * @param client the client who's connection was established.
      */
     protected void connectionWithClientEstablished(INDIClient client) {
         for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
@@ -316,9 +290,8 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * send the notification to all event handlers that a driver was
      * disconnected.
-     * 
-     * @param device
-     *            the device that was disconnected.
+     *
+     * @param device the device that was disconnected.
      */
     protected void driverDisconnected(INDIDevice device) {
         for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
@@ -328,13 +301,12 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Gets a list of Clients that listen to a Device.
-     * 
-     * @param deviceName
-     *            The name of the Device.
+     *
+     * @param deviceName The name of the Device.
      * @return A list of Clients that specifically listen to a Device.
      */
     protected List<INDIDeviceListener> getClientsListeningToDevice(String deviceName) {
-        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+        List<INDIDeviceListener> list = new ArrayList<>();
         for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToDevice(deviceName)) {
                 list.add(c);
@@ -345,15 +317,13 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Gets a list of Clients that listen to a Property.
-     * 
-     * @param deviceName
-     *            The name of the Device of the Property.
-     * @param propertyName
-     *            The name of the Property.
+     *
+     * @param deviceName   The name of the Device of the Property.
+     * @param propertyName The name of the Property.
      * @return A list of Clients that listen to a Property.
      */
     protected List<INDIDeviceListener> getClientsListeningToProperty(String deviceName, String propertyName) {
-        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+        List<INDIDeviceListener> list = new ArrayList<>();
         for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToProperty(deviceName, propertyName)) {
                 list.add(c);
@@ -364,17 +334,14 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Gets a list of Clients that listen to Property updates.
-     * 
-     * @param deviceName
-     *            The name of the Device of the Property.
-     * @param propertyName
-     *            The name of the Property.
-     * @param isBLOB
-     *            If the Property is a BLOB one.
+     *
+     * @param deviceName   The name of the Device of the Property.
+     * @param propertyName The name of the Property.
+     * @param isBLOB       If the Property is a BLOB one.
      * @return A list of Clients that listen to a Property.
      */
     protected List<INDIDeviceListener> getClientsListeningToPropertyUpdates(String deviceName, String propertyName, boolean isBLOB) {
-        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+        List<INDIDeviceListener> list = new ArrayList<>();
         for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToProperty(deviceName, propertyName)) {
                 if (isBLOB) {
@@ -394,14 +361,13 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * Gets a list of Clients that specifically listen to a Property of a
      * Device.
-     * 
-     * @param deviceName
-     *            The name of the Device.
+     *
+     * @param deviceName The name of the Device.
      * @return A list of Clients that specifically listen to a Property of a
-     *         Device.
+     * Device.
      */
     protected List<INDIDeviceListener> getClientsListeningToSingleProperties(String deviceName) {
-        List<INDIDeviceListener> list = new ArrayList<INDIDeviceListener>();
+        List<INDIDeviceListener> list = new ArrayList<>();
         for (INDIDeviceListener c : staticCopyOfClients()) {
             if (c.listensToSingleProperty(deviceName)) {
                 list.add(c);
@@ -412,9 +378,8 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Gets a Device given its name.
-     * 
-     * @param deviceName
-     *            The name of the Device to get.
+     *
+     * @param deviceName The name of the Device to get.
      * @return The Device with name <code>deviceName</code>.
      */
     protected INDIDevice getDevice(String deviceName) {
@@ -430,11 +395,9 @@ public final class INDIServer implements INDIServerInterface {
      * Does nothing since the enableBLOB message is not usually useful for
      * Devices. The control of when to send the BLOB values is automatically
      * done by the Server.
-     * 
-     * @param client
-     *            The Client sending the message.
-     * @param xml
-     *            The message
+     *
+     * @param client The Client sending the message.
+     * @param xml    The message
      */
     protected void notifyClientListenersEnableBLOB(INDIClient client, INDIProtocol<?> xml) {
         /*
@@ -445,11 +408,9 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends the <code>getProperties</code> message to the appropriate Devices.
-     * 
-     * @param client
-     *            The Client sending the message.
-     * @param xml
-     *            The message
+     *
+     * @param client The Client sending the message.
+     * @param xml    The message
      */
     protected void notifyClientListenersGetProperties(INDIDeviceListener client, INDIProtocol<?> xml) {
         String device = xml.getDevice();
@@ -465,11 +426,9 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends the <code>newXXXVector</code> message to the appropriate Devices.
-     * 
-     * @param client
-     *            The Client sending the message.
-     * @param xml
-     *            The message
+     *
+     * @param client The Client sending the message.
+     * @param xml    The message
      */
     protected void notifyClientListenersNewXXXVector(INDIClient client, INDIProtocol<?> xml) {
         String device = xml.getDevice();
@@ -482,11 +441,9 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends the <code>defXXXVector</code> message to the appropriate Clients.
-     * 
-     * @param device
-     *            The Device sending the message.
-     * @param xml
-     *            The message
+     *
+     * @param device The Device sending the message.
+     * @param xml    The message
      */
     protected void notifyDeviceListenersDefXXXVector(INDIDevice device, INDIProtocol<?> xml) {
         String deviceName = xml.getDevice();
@@ -498,11 +455,9 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends the <code>delProperty</code> message to the appropriate Clients.
-     * 
-     * @param device
-     *            The Device sending the message.
-     * @param xml
-     *            The message
+     *
+     * @param device The Device sending the message.
+     * @param xml    The message
      */
     protected void notifyDeviceListenersDelProperty(INDIDevice device, INDIProtocol<?> xml) {
         String deviceName = xml.getDevice();
@@ -513,11 +468,9 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends the <code>message</code> message to the appropriate Clients..
-     * 
-     * @param device
-     *            The Device sending the message.
-     * @param xml
-     *            The message
+     *
+     * @param device The Device sending the message.
+     * @param xml    The message
      */
     protected void notifyDeviceListenersMessage(INDIDevice device, INDIProtocol<?> xml) {
         String deviceName = xml.getDevice();
@@ -533,11 +486,9 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends the <code>setXXXVector</code> message to the appropriate Clients.
-     * 
-     * @param device
-     *            The Device sending the message.
-     * @param xml
-     *            The message
+     *
+     * @param device The Device sending the message.
+     * @param xml    The message
      */
     protected void notifyDeviceListenersSetXXXVector(INDIDevice device, INDIProtocol<?> xml) {
         String deviceName = xml.getDevice();
@@ -556,9 +507,8 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * Removes a Client from the List of clients. Called by the clients when the
      * connection is broken.
-     * 
-     * @param client
-     *            The Client to remove.
+     *
+     * @param client The Client to remove.
      */
     protected void removeClient(INDIClient client) {
         clients.remove(client);
@@ -568,10 +518,9 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Removes a Device from the list of devices. Called by the Devices to be
-     * removed when connection brokes
-     * 
-     * @param device
-     *            The Device to be removed.
+     * removed when connection breaks
+     *
+     * @param device The Device to be removed.
      */
     protected void removeDevice(INDIDevice device) {
         String[] names = device.getNames();
@@ -586,9 +535,8 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends a XML message to all the Clients.
-     * 
-     * @param xml
-     *            The message to send.
+     *
+     * @param xml The message to send.
      */
     protected void sendXMLMessageToAllClients(INDIProtocol<?> xml) {
         for (INDIDeviceListener c : staticCopyOfClients()) {
@@ -600,9 +548,8 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Sends a XML message to all the Devices.
-     * 
-     * @param xml
-     *            The message to send.
+     *
+     * @param xml The message to send.
      */
     protected void sendXMLMessageToAllDevices(INDIProtocol<?> xml) {
         for (INDIDevice d : staticCopyOfDevices()) {
@@ -611,14 +558,13 @@ public final class INDIServer implements INDIServerInterface {
     }
 
     /**
-     * Must return <code>true</code> is the Client that stablished this
+     * Must return <code>true</code> is the Client that established this
      * connection must be allowed in the Server. Otherwise the connection will
      * be closed.
-     * 
-     * @param clientSocket
-     *            The socket created with a possible client.
+     *
+     * @param clientSocket The socket created with a possible client.
      * @return <code>true</code> if the Client is allowed to connect to the
-     *         server. <code>false</code> otherwise.
+     * server. <code>false</code> otherwise.
      */
     private boolean acceptClient(INDIConnection clientSocket) {
         for (INDIServerEventHandler handler : staticCopyOfEventHandlers()) {
@@ -632,9 +578,8 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * Adds a Device to the list of devices, starts its reading process and asks
      * for the properties.
-     * 
-     * @param device
-     *            The device to add.
+     *
+     * @param device The device to add.
      */
     private void addDevice(INDIDevice device) {
         devices.add(device);
@@ -651,9 +596,8 @@ public final class INDIServer implements INDIServerInterface {
      * Destroys the Devices with a particular identifier. Note that the Devices
      * will be removed from the list when their listening thread ends (which may
      * occur in the near future in another Thread).
-     * 
-     * @param deviceIdentifier
-     *            The device identifier.
+     *
+     * @param deviceIdentifier The device identifier.
      */
     private synchronized void destroyIdentifiedDrivers(String deviceIdentifier) {
         for (INDIDevice device : getDevicesWithIdentifier(deviceIdentifier)) {
@@ -663,11 +607,10 @@ public final class INDIServer implements INDIServerInterface {
 
     /**
      * Removes a Java Driver by its class.
-     * 
-     * @param cls
-     *            The class of the Java Driver to remove.
+     *
+     * @param cls The class of the Java Driver to remove.
      */
-    private synchronized void destroyJavaDriver(Class<?> cls) {
+    public synchronized void destroyJavaDriver(Class<?> cls) {
         LOG.info("Removing driver " + cls.getName());
 
         destroyIdentifiedDrivers(DRIVER_CLASS_ID_PREFIX + cls.getName());
@@ -676,34 +619,32 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * find the driver class by class name (the name is case insensitive and the
      * simple name may be used.
-     * 
-     * @param className
-     *            the name of the class
+     *
+     * @param className the name of the class
      * @return the found driver class
      */
     private String findDriverClassByName(String className) {
-        String driverclassName = null;
+        String driverClassName = null;
         for (ClassInfo subclass : Util.classPathIndex().getAllKnownSubclasses(DotName.createSimple(INDIDriver.class.getName()))) {
             if (!Modifier.isAbstract(subclass.flags())) {
                 if (className.equalsIgnoreCase(subclass.toString()) || subclass.toString().endsWith("." + className)) {
-                    driverclassName = subclass.toString();
+                    driverClassName = subclass.toString();
                 }
             }
         }
-        return driverclassName;
+        return driverClassName;
     }
 
     /**
      * Gets a list of devices with a particular identifier. Note that may be
      * more than one in the case of Java Drivers as there might be more than one
      * in a single JAR file.
-     * 
-     * @param deviceIdentifier
-     *            The device identifier.
+     *
+     * @param deviceIdentifier The device identifier.
      * @return A list of devices with a particular identifier.
      */
     private List<INDIDevice> getDevicesWithIdentifier(String deviceIdentifier) {
-        List<INDIDevice> found = new ArrayList<INDIDevice>();
+        List<INDIDevice> found = new ArrayList<>();
         for (INDIDevice device : staticCopyOfDevices()) {
             if (device.isDevice(deviceIdentifier)) {
                 found.add(device);
@@ -713,11 +654,11 @@ public final class INDIServer implements INDIServerInterface {
     }
 
     /**
-     * Inits the Server and launches the listening thread.
+     * Initializes the Server and launches the listening thread.
      */
     private void initServer() {
-        devices = Collections.synchronizedList(new ArrayList<INDIDevice>());
-        clients = Collections.synchronizedList(new ArrayList<INDIDeviceListener>());
+        devices = Collections.synchronizedList(new ArrayList<>());
+        clients = Collections.synchronizedList(new ArrayList<>());
 
         startListeningToClients();
     }
@@ -725,47 +666,40 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * load the driver by class name (the name is case insensitive and the
      * simple name may be used.
-     * 
-     * @param className
-     *            the name of the class
+     *
+     * @param className the name of the class
      * @return the found driver class
-     * @throws INDIException
-     *             when something serius went wrong.
+     * @throws INDIException when something serious went wrong.
      */
     private Class<?> loadDriverClassByName(String className) throws INDIException {
-        String driverclassName = findDriverClassByName(className);
-        Class<?> driverclass;
+        String driverClassName = findDriverClassByName(className);
+        Class<?> driverClass;
         try {
-            driverclass = Thread.currentThread().getContextClassLoader().loadClass(driverclassName);
+            driverClass = Thread.currentThread().getContextClassLoader().loadClass(driverClassName);
         } catch (Exception e) {
             throw new INDIException("Could not create driver" + className, e);
         }
-        return driverclass;
+        return driverClass;
     }
 
     /**
      * Loads a particular Java Driver that is already in the classpath.
-     * 
-     * @param cls
-     *            The Class of the driver to load.
-     * @throws INDIException
-     *             If there is any problem instantiating the Driver.
+     *
+     * @param cls The Class of the driver to load.
+     * @throws INDIException If there is any problem instantiating the Driver.
      */
-    private synchronized void loadJavaDriver(Class<?> cls) throws INDIException {
+    public synchronized void loadJavaDriver(Class<?> cls) throws INDIException {
         loadJavaDriver(cls, DRIVER_CLASS_ID_PREFIX + cls.getName());
     }
 
     /**
      * Loads a particular Java Driver.
-     * 
-     * @param cls
-     *            The Class of the driver to load.
-     * @param identifier
-     *            A UNIQUE identifier. Please note that if there are repeated
-     *            identifiers strange things may happen. MUST BE CHECKED IN THE
-     *            FUTURE.
-     * @throws INDIException
-     *             If there is any problem instantiating the Driver.
+     *
+     * @param cls        The Class of the driver to load.
+     * @param identifier A UNIQUE identifier. Please note that if there are repeated
+     *                   identifiers strange things may happen. MUST BE CHECKED IN THE
+     *                   FUTURE.
+     * @throws INDIException If there is any problem instantiating the Driver.
      */
     private synchronized void loadJavaDriver(Class<?> cls, String identifier) throws INDIException {
         INDIJavaDevice newDevice = new INDIJavaDevice(this, cls, identifier);
@@ -776,9 +710,8 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * Notifies the listening clients that some particular Devices have been
      * removed by sending <code>delProperty</code> messages.
-     * 
-     * @param deviceNames
-     *            The names of the Devices that have been removed.
+     *
+     * @param deviceNames The names of the Devices that have been removed.
      */
     private void notifyClientsDeviceRemoved(String[] deviceNames) {
         for (String deviceName : deviceNames) {
@@ -812,16 +745,13 @@ public final class INDIServer implements INDIServerInterface {
 
     @Override
     public void activateAcceptor(String name, Object... arguments) {
-        Iterator<INDIServerAcceptor> acceptors = ServiceLoader.load(INDIServerAcceptor.class).iterator();
-        while (acceptors.hasNext()) {
-            INDIServerAcceptor indiServerAcceptor = acceptors.next();
+        for (INDIServerAcceptor indiServerAcceptor : ServiceLoader.load(INDIServerAcceptor.class)) {
             if (indiServerAcceptor.getName().equalsIgnoreCase(name)) {
                 additionalAcceptors.add(indiServerAcceptor);
                 indiServerAcceptor.setArguments(arguments);
                 indiServerAcceptor.start();
             }
         }
-
     }
 
     @Override
@@ -839,9 +769,8 @@ public final class INDIServer implements INDIServerInterface {
     /**
      * test if the server accepts the connection and when it does, wrap a client
      * around it and add it to the clients.
-     * 
-     * @param clientConnection
-     *            the client connection to check
+     *
+     * @param clientConnection the client connection to check
      * @return true if the client was accepted.
      */
     protected boolean acceptINDIConnection(INDIConnection clientConnection) {

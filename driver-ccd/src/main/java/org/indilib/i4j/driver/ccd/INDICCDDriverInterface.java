@@ -1,8 +1,8 @@
 package org.indilib.i4j.driver.ccd;
 
-import java.util.Map;
-
 import nom.tam.fits.BasicHDU;
+
+import java.util.Map;
 
 /*
  * #%L

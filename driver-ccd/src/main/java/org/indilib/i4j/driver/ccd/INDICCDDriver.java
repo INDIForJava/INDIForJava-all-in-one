@@ -22,32 +22,11 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
-import static org.indilib.i4j.properties.INDIStandardElement.UPLOAD_BOTH;
-import static org.indilib.i4j.properties.INDIStandardElement.UPLOAD_CLIENT;
-import static org.indilib.i4j.properties.INDIStandardElement.UPLOAD_DIR;
-import static org.indilib.i4j.properties.INDIStandardElement.UPLOAD_LOCAL;
-import static org.indilib.i4j.properties.INDIStandardElement.UPLOAD_PREFIX;
-import static org.indilib.i4j.properties.INDIStandardProperty.UPLOAD_MODE;
-import static org.indilib.i4j.properties.INDIStandardProperty.UPLOAD_SETTINGS;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.FileUtils;
 import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.driver.INDITextElement;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectExtension;
 import org.indilib.i4j.driver.annotation.InjectProperty;
@@ -59,6 +38,14 @@ import org.indilib.i4j.driver.event.TextEvent;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.indilib.i4j.properties.INDIStandardElement.*;
+import static org.indilib.i4j.properties.INDIStandardProperty.UPLOAD_MODE;
+import static org.indilib.i4j.properties.INDIStandardProperty.UPLOAD_SETTINGS;
 
 /**
  * This is the abstract cdd driver, all ccd drivers should subclass it. the

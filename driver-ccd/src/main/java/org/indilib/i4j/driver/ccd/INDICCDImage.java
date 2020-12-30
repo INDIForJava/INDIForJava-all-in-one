@@ -22,24 +22,14 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
-import static nom.tam.fits.header.Standard.BITPIX;
-import static nom.tam.fits.header.Standard.DATAMAX;
-import static nom.tam.fits.header.Standard.DATAMIN;
-import static nom.tam.fits.header.Standard.HISTORY;
-import static nom.tam.fits.header.Standard.NAXIS;
-import static nom.tam.fits.header.Standard.NAXISn;
-import static nom.tam.fits.header.Standard.SIMPLE;
+import nom.tam.fits.*;
 
 import java.io.DataOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import nom.tam.fits.BasicHDU;
-import nom.tam.fits.Fits;
-import nom.tam.fits.FitsException;
-import nom.tam.fits.FitsFactory;
-import nom.tam.fits.HeaderCardException;
+import static nom.tam.fits.header.Standard.*;
 
 /**
  * This class represends an captured ccd images. it will handle any needed

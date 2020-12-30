@@ -22,9 +22,18 @@ package org.indilib.i4j.driver.raspberrypi;
  * #L%
  */
 
-import static org.indilib.i4j.Constants.PropertyPermissions.RO;
-import static org.indilib.i4j.Constants.PropertyStates.OK;
-import static org.indilib.i4j.Constants.SwitchStatus.ON;
+import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pi4j.system.SystemInfo;
+import org.indilib.i4j.Constants.LightStates;
+import org.indilib.i4j.Constants.PropertyStates;
+import org.indilib.i4j.INDIException;
+import org.indilib.i4j.driver.*;
+import org.indilib.i4j.driver.connection.INDIConnectionHandler;
+import org.indilib.i4j.protocol.api.INDIConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,41 +44,9 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import org.indilib.i4j.Constants.LightStates;
-import org.indilib.i4j.Constants.PropertyStates;
-import org.indilib.i4j.INDIException;
-import org.indilib.i4j.driver.INDIBLOBElementAndValue;
-import org.indilib.i4j.driver.INDIBLOBProperty;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDILightProperty;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDIProperty;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchOneOfManyProperty;
-import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.driver.INDITextElement;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
-import org.indilib.i4j.driver.connection.INDIConnectionHandler;
-import org.indilib.i4j.protocol.api.INDIConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPin;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import com.pi4j.system.SystemInfo;
+import static org.indilib.i4j.Constants.PropertyPermissions.RO;
+import static org.indilib.i4j.Constants.PropertyStates.OK;
+import static org.indilib.i4j.Constants.SwitchStatus.ON;
 
 /**
  * A class that acts as a INDI for Java Driver for the Raspberry Pi GPIO port.

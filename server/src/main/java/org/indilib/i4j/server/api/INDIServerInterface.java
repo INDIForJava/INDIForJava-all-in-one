@@ -46,15 +46,14 @@ public interface INDIServerInterface {
     void addEventHandler(INDIServerEventHandler eventHandler);
 
     /**
-     * deaktivate the java driver by it's name. the name is case insensitiv and
-     * the simple name may be used (if it is unique)
+     * deactivate the java driver by it's name.
      * 
-     * @param className
-     *            the class name
+     * @param cls
+     *            the class
      * @throws INDIException
      *             if the classes could not be loded or not started.
      */
-    void destroyJavaDriver(String className) throws INDIException;
+    void destroyJavaDriver(Class<?> cls) throws INDIException;
 
     /**
      * Destroys a Native Driver.
@@ -101,15 +100,14 @@ public interface INDIServerInterface {
     boolean isServerRunning();
 
     /**
-     * start a java driver class by it's name. the name is case insensitiv and
-     * the simple name may be used (if it is unique)
+     * start a java driver class by its class.
      * 
-     * @param className
-     *            the class name
+     * @param cls
+     *            the class
      * @throws INDIException
-     *             if the classes could not be loded or not started.
+     *             if the classes could not be loaded or not started.
      */
-    void loadJavaDriver(String className) throws INDIException;
+    void loadJavaDriver(Class<?> cls) throws INDIException;
 
     /**
      * add the jar to the classpath and load all drivers defined in it.
@@ -117,7 +115,7 @@ public interface INDIServerInterface {
      * @param jarFileName
      *            the file name of the jar
      * @throws INDIException
-     *             if the classes could not be loded or not started.
+     *             if the classes could not be loaded or not started.
      */
     void loadJavaDriversFromJAR(String jarFileName) throws INDIException;
 

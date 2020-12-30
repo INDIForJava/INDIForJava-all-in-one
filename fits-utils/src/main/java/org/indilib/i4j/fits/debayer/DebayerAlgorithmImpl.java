@@ -22,10 +22,7 @@ package org.indilib.i4j.fits.debayer;
  * #L%
  */
 
-import static org.indilib.i4j.fits.debayer.DebayerPattern.BGGR;
-import static org.indilib.i4j.fits.debayer.DebayerPattern.GBRG;
-import static org.indilib.i4j.fits.debayer.DebayerPattern.GRBG;
-import static org.indilib.i4j.fits.debayer.DebayerPattern.RGGB;
+import static org.indilib.i4j.fits.debayer.DebayerPattern.*;
 
 /**
  * abstract class with the common stuff of the different debayering algorithems.

@@ -22,54 +22,35 @@ package org.indilib.i4j.driver.ccd;
  * #L%
  */
 
-import static nom.tam.fits.header.ObservationDurationDescription.EXPOSURE;
-import static nom.tam.fits.header.Standard.DATE_OBS;
-import static nom.tam.fits.header.Standard.INSTRUME;
-import static nom.tam.fits.header.extra.NOAOExt.PIXSIZEn;
-import static nom.tam.fits.header.extra.NOAOExt.TIMESYS;
-import static nom.tam.fits.header.extra.SBFitsExt.DARKTIME;
-import static nom.tam.fits.header.extra.SBFitsExt.IMAGETYP;
-import static nom.tam.fits.header.extra.SBFitsExt.XBINNING;
-import static nom.tam.fits.header.extra.SBFitsExt.XPIXSZ;
-import static nom.tam.fits.header.extra.SBFitsExt.YBINNING;
-import static nom.tam.fits.header.extra.SBFitsExt.YPIXSZ;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.zip.DeflaterOutputStream;
-
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Fits;
 import nom.tam.fits.HeaderCardException;
-
 import org.indilib.i4j.Constants.PropertyPermissions;
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchRules;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.INDIBLOBValue;
-import org.indilib.i4j.driver.INDIBLOBElement;
-import org.indilib.i4j.driver.INDIBLOBProperty;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDIDriverExtension;
-import org.indilib.i4j.driver.INDINumberElement;
-import org.indilib.i4j.driver.INDINumberElementAndValue;
-import org.indilib.i4j.driver.INDINumberProperty;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchElementAndValue;
-import org.indilib.i4j.driver.INDISwitchProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.driver.event.NumberEvent;
 import org.indilib.i4j.driver.event.SwitchEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.zip.DeflaterOutputStream;
+
+import static nom.tam.fits.header.ObservationDurationDescription.EXPOSURE;
+import static nom.tam.fits.header.Standard.DATE_OBS;
+import static nom.tam.fits.header.Standard.INSTRUME;
+import static nom.tam.fits.header.extra.NOAOExt.PIXSIZEn;
+import static nom.tam.fits.header.extra.NOAOExt.TIMESYS;
+import static nom.tam.fits.header.extra.SBFitsExt.*;
 
 /**
  * This is the extension for handling one ccd chip image.

@@ -20,10 +20,10 @@ import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 /**
  * This class represents an INDI XML protocol element.
  * 
- * @param <T>
- *            type for the builder
+ * @param <T> type for the builder
  * @author Richard van Nieuwenhoven
  */
+@SuppressWarnings("unused")
 public abstract class INDIProtocol<T> {
 
     static {
@@ -69,7 +69,7 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * set the max message atttribute.
+     * set the max message attribute.
      * 
      * @param newMessage
      *            the new message value
@@ -86,7 +86,7 @@ public abstract class INDIProtocol<T> {
      * set the timestamp attribute of the element.
      * 
      * @param newTimestamp
-     *            the new attibute timestamp value
+     *            the new attribute timestamp value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -236,7 +236,7 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * @return is this a n ewproperties.
+     * @return is this a new properties.
      */
     public boolean isNewLightVector() {
         return false;
@@ -403,7 +403,7 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * set the device element atttribute.
+     * set the device element attribute.
      * 
      * @param newDevice
      *            the new device value
@@ -449,11 +449,12 @@ public abstract class INDIProtocol<T> {
     }
 
     /**
-     * thrim all strings in the structure so all places working with the object
+     * Trim all strings in the structure so all places working with the object
      * do not have to trim any stings.
      * 
      * @return myself
      */
+    @SuppressWarnings("unchecked")
     public T trim() {
         this.name = trim(this.name);
         this.device = trim(this.device);
