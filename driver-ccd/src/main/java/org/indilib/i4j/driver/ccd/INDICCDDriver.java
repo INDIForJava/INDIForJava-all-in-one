@@ -207,7 +207,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
         Boolean rc = setTemperature(temperatureTemp.getValue());
         if (rc == null) {
             temperature.setState(PropertyStates.ALERT);
-        } else if (rc.booleanValue()) {
+        } else if (rc) {
             temperature.setState(PropertyStates.OK);
         } else {
             temperature.setState(PropertyStates.BUSY);

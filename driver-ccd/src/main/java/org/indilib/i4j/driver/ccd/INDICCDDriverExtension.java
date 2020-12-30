@@ -192,7 +192,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     protected INDINumberElement imageBinY;
 
     /**
-     * Some informations about the ccd sensor itself.
+     * Some information about the ccd sensor itself.
      */
     @InjectProperty(name = "CCD_INFO", label = "CCD Information", group = INDICCDDriver.IMAGE_INFO_TAB, permission = PropertyPermissions.RO)
     protected INDINumberProperty imagePixelSize;
@@ -545,11 +545,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      */
     private void newCompressedValue(INDISwitchElementAndValue[] elementsAndValues) {
         compress.setValues(elementsAndValues);
-        if (compressCompress.isOn()) {
-            sendCompressed = true;
-        } else {
-            sendCompressed = false;
-        }
+        sendCompressed = compressCompress.isOn();
         updateProperty(compress);
     }
 
@@ -612,7 +608,6 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
             imageBin.setState(PropertyStates.ALERT);
         }
         updateProperty(imageBin);
-        return;
     }
 
     /**
