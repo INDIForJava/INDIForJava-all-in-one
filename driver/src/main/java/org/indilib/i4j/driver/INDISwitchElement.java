@@ -36,7 +36,7 @@ import org.indilib.i4j.protocol.OneSwitch;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public class INDISwitchElement extends INDIElement {
+public class INDISwitchElement extends INDIElement<INDISwitchElement> {
 
     /**
      * Serialization id.
@@ -82,7 +82,7 @@ public class INDISwitchElement extends INDIElement {
      */
     @Override
     public void setValue(Object newValue) {
-        SwitchStatus ss = null;
+        SwitchStatus ss;
         try {
             ss = (SwitchStatus) newValue;
         } catch (ClassCastException e) {

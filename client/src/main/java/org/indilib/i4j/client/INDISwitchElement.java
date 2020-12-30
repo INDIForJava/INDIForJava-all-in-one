@@ -159,7 +159,7 @@ public class INDISwitchElement extends INDIElement {
 
     @Override
     public void setDesiredValue(Object desiredValue) throws INDIValueException {
-        SwitchStatus ss = null;
+        SwitchStatus ss;
         try {
             ss = (SwitchStatus) desiredValue;
         } catch (ClassCastException e) {

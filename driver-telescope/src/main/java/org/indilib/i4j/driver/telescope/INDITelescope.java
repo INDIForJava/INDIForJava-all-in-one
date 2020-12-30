@@ -696,7 +696,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * @param double2
      *            the other value
      * @return true if the 2 doubles are equal up to the precision
-     *         {@link EQUALITY_PRECISION}.
+     *         {@link #EQUALITY_PRECISION}.
      */
     protected boolean eq(double double1, double double2) {
         return Math.abs(double1 - double2) < EQUALITY_PRECISION;

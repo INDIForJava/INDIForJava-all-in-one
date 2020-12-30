@@ -237,7 +237,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
             plugin = plugins.get(alignmentSubsystemCurrentMathPluginElement.getValue());
             if (plugin != null) {
                 plugin.create();
-                alignmentSubsystemMathPlugins.setOnlyOneSwitchOn(alignmentSubsystemMathPlugins.getElement(plugin.id()));
+                alignmentSubsystemMathPlugins.setOnlyOneSwitchOn((INDISwitchElement) alignmentSubsystemMathPlugins.getElement(plugin.id()));
             } else {
                 message = "MathPluginManagement - cannot load plugin " + alignmentSubsystemCurrentMathPluginElement.getValue() + "\n";
             }

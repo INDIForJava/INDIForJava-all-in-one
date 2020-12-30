@@ -1,0 +1,5 @@
+Manifest-Version: 2.0
+Specification-Vendor: INDIForJava
+Name: org/indilib/i4j
+Specification-Title: INDIForJava
+Specification-Version: 2.0

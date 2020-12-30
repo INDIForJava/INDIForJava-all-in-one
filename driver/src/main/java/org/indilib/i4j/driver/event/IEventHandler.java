@@ -41,7 +41,7 @@ import java.util.Date;
  *            the value type the property uses.
  * @author Richard van Nieuwenhoven
  */
-public interface IEventHandler<Prop extends INDIProperty<Elem>, Elem extends INDIElement, Type> {
+public interface IEventHandler<Prop extends INDIProperty<Elem>, Elem extends INDIElement<?>, Type> {
 
     /**
      * The property got an new value from the client, if there is any processing

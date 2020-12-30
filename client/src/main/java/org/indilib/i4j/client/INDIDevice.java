@@ -41,22 +41,22 @@ public class INDIDevice {
     /**
      * The name of the Device.
      */
-    private String name;
+    private final String name;
 
     /**
      * The Server Connection to which this Device Belongs.
      */
-    private INDIServerConnection server;
+    private final INDIServerConnection server;
 
     /**
      * The collection of properties for this Device.
      */
-    private Map<String, INDIProperty<?>> properties;
+    private final Map<String, INDIProperty<?>> properties;
 
     /**
      * The list of Listeners of this Device.
      */
-    private List<INDIDeviceListener> listeners;
+    private final List<INDIDeviceListener> listeners;
 
     /**
      * A UI component that can be used in graphical interfaces for this Device.
@@ -92,9 +92,9 @@ public class INDIDevice {
         this.name = name;
         this.server = server;
 
-        properties = new LinkedHashMap<String, INDIProperty<?>>();
+        properties = new LinkedHashMap<>();
 
-        listeners = new ArrayList<INDIDeviceListener>();
+        listeners = new ArrayList<>();
 
         timestamp = new Date();
         message = "";
@@ -558,20 +558,19 @@ public class INDIDevice {
      * @return the list of Properties belonging to the device
      */
     public List<INDIProperty<?>> getAllProperties() {
-        return new ArrayList<INDIProperty<?>>(properties.values());
+        return new ArrayList<>(properties.values());
     }
 
     /**
      * Gets a list of properties belonging to a group.
-     * 
+     *
      * @param groupName
      *            the name of the group
      * @return the list of Properties belonging to the group
      */
     public List<INDIProperty<?>> getPropertiesOfGroup(String groupName) {
-        ArrayList<INDIProperty<?>> props = new ArrayList<INDIProperty<?>>();
-
-        for (INDIProperty<?> p : props) {
+        ArrayList<INDIProperty<?>> props = new ArrayList<>();
+        for (INDIProperty<?> p : properties.values()) {
             if (p.getGroup().compareTo(groupName) == 0) {
                 props.add(p);
             }
@@ -640,7 +639,7 @@ public class INDIDevice {
      * @return the <code>List</code> of Properties belonging to this Device.
      */
     public List<INDIProperty<?>> getPropertiesAsList() {
-        return new ArrayList<INDIProperty<?>>(properties.values());
+        return new ArrayList<>(properties.values());
     }
 
     /**
@@ -653,6 +652,6 @@ public class INDIDevice {
         for (INDIProperty<?> indiProperty : properties.values()) {
             names.add(indiProperty.getName());
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 }

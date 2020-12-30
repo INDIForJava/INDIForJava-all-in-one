@@ -627,7 +627,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      */
     private void createInputPin(int pin, PinPullResistance pull) {
         pins[pin] = gpio.provisionDigitalInputPin(PINS_ARRAY[pin], pull);
-        ((GpioPinDigitalInput) pins[pin]).addListener(this);
+        pins[pin].addListener(this);
 
         INDILightProperty lp = newLightProperty()//
                 .name("gpiopin_" + pin).label("Pin " + pin + " (" + pinsNamesE[pin].getValue() + ")").group(INDIDriver.GROUP_MAIN_CONTROL).create();

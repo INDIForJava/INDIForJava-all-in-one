@@ -44,12 +44,12 @@ public abstract class INDIElement {
     /**
      * The property to which this Element belongs.
      */
-    private INDIProperty<?> property;
+    private final INDIProperty<?> property;
 
     /**
      * The name of the Element.
      */
-    private String name;
+    private final String name;
 
     /**
      * The label of the Element.
@@ -59,7 +59,7 @@ public abstract class INDIElement {
     /**
      * The list of listeners of this Element.
      */
-    private ArrayList<INDIElementListener> listeners;
+    private final ArrayList<INDIElementListener> listeners;
 
     /**
      * Constructs an instance of <code>INDIElement</code>. Called by its

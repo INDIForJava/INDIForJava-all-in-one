@@ -78,12 +78,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * the driver streamConnection (in out xml stream of messages).
      */
-    private INDIConnection connection;
+    private final INDIConnection connection;
 
     /**
      * A list of Properties for this Driver.
      */
-    private Map<String, INDIProperty<?>> properties;
+    private final Map<String, INDIProperty<?>> properties;
 
     /**
      * The protokol reader thread that reads asynchron from the input stream,
@@ -99,7 +99,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * A list of subdrivers.
      */
-    private List<INDIDriver> subdrivers;
+    private final List<INDIDriver> subDrivers;
 
     /**
      * Constructs a INDIDriver with a particular <code>inputStream</code> from
@@ -111,7 +111,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     protected INDIDriver(INDIConnection connection) {
         this.connection = connection;
-        subdrivers = new ArrayList<INDIDriver>();
+        subDrivers = new ArrayList<INDIDriver>();
         started = false;
         properties = new LinkedHashMap<>();
         INDIPropertyInjector.initialize(this, this);
@@ -509,7 +509,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The subdriver to register.
      */
     protected void registerSubdriver(INDIDriver driver) {
-        subdrivers.add(driver);
+        subDrivers.add(driver);
     }
 
     /**
@@ -552,7 +552,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *            The subdriver to unregister.
      */
     protected void unregisterSubdriver(INDIDriver driver) {
-        subdrivers.remove(driver);
+        subDrivers.remove(driver);
     }
 
     /**
@@ -600,8 +600,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *         this name.
      */
     private INDIDriver getSubdriver(String name) {
-        for (int i = 0; i < subdrivers.size(); i++) {
-            INDIDriver d = subdrivers.get(i);
+        for (int i = 0; i < subDrivers.size(); i++) {
+            INDIDriver d = subDrivers.get(i);
 
             if (d.getName().compareTo(name) == 0) {
                 return d;

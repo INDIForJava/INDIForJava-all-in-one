@@ -71,7 +71,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
     /**
      * the simulated axis, that will update its position itself.
      */
-    class SimulatedAxisWithEncoder extends AxisWithEncoder {
+    static class SimulatedAxisWithEncoder extends AxisWithEncoder {
 
         /**
          * when was the last update (in system millisecond time).
@@ -120,7 +120,6 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
                     LOG.error("interrupted exception");
                 }
             }
-
         }
 
         @Override
@@ -140,7 +139,7 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
     private SimulatedMount mount = new SimulatedMount();
 
     /**
-     * The math plugin for the calculation from eqn to hoziontal.
+     * The math plugin for the calculation from eqn to horizontal.
      */
     @InjectExtension
     private MathPluginManagement mathPluginManagement;

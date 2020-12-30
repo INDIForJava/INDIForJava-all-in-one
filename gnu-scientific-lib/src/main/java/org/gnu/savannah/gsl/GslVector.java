@@ -75,7 +75,7 @@ public class GslVector {
         {
             GslVector s = new GslVector(n);
 
-            s.data = new DoubleArray(this.data, 1 * this.stride * offset);
+            s.data = new DoubleArray(this.data, this.stride * offset);
             s.size = n;
             s.stride = this.stride;
             s.block = this.block;
@@ -103,7 +103,7 @@ public class GslVector {
         {
             GslVector s = new GslVector(1);
 
-            s.data = new DoubleArray(this.data, 1 * this.stride * offset);
+            s.data = new DoubleArray(this.data, this.stride * offset);
             s.size = n;
             s.stride = this.stride * stride;
             s.block = this.block;
@@ -125,7 +125,7 @@ public class GslVector {
         }
 
         if (i != j) {
-            int s = 1 * stride;
+            int s = stride;
             int k;
 
             for (k = 0; k < 1; k++) {
@@ -148,7 +148,7 @@ public class GslVector {
             int k;
 
             for (k = 0; k < 1; k++) {
-                if (this.data.get(1 * stride * j + k) != 0.0) {
+                if (this.data.get(stride * j + k) != 0.0) {
                     return false;
                 }
             }
@@ -167,7 +167,7 @@ public class GslVector {
             int k;
 
             for (k = 0; k < 1; k++) {
-                if (this.data.get(1 * stride * j + k) <= 0.0) {
+                if (this.data.get(stride * j + k) <= 0.0) {
                     return false;
                 }
             }
@@ -186,7 +186,7 @@ public class GslVector {
             int k;
 
             for (k = 0; k < 1; k++) {
-                if (this.data.get(1 * stride * j + k) >= 0.0) {
+                if (this.data.get(stride * j + k) >= 0.0) {
                     return false;
                 }
             }
@@ -205,7 +205,7 @@ public class GslVector {
             int k;
 
             for (k = 0; k < 1; k++) {
-                if (this.data.get(1 * stride * j + k) < 0.0) {
+                if (this.data.get(stride * j + k) < 0.0) {
                     return false;
                 }
             }
@@ -220,7 +220,7 @@ public class GslVector {
 
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer("gsl_vector(");
+        StringBuilder result = new StringBuilder("gsl_vector(");
         for (int i = 0; i < size; i++) {
             if (i != 0) {
                 result.append(',');

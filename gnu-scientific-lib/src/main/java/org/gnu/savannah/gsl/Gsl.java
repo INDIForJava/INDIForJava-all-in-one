@@ -1061,6 +1061,7 @@ public class Gsl {
      *            permutation p
      * @param signum
      *            gives the sign of the permutation
+     * @return the result
      */
 
     public static GslErrno gsl_linalg_LU_decomp(GslMatrix A, GslPermutation p, IntegerRef signum) {

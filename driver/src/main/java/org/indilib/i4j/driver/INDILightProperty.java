@@ -53,7 +53,7 @@ public class INDILightProperty extends INDIProperty<INDILightElement> {
 
     @Override
     public INDILightElement getElement(String name) {
-        return super.getElement(name);
+        return (INDILightElement) super.getElement(name);
     }
 
     @Override

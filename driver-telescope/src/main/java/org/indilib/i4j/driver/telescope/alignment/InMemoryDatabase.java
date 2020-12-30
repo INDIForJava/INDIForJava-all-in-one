@@ -99,7 +99,7 @@ public class InMemoryDatabase {
      */
     private File getDataBaseFile(String deviceName) {
         File base = new File(FileUtils.getI4JBaseDirectory(), DATABASE_FILE);
-        StringBuffer deviceNameFile = new StringBuffer(deviceName);
+        StringBuilder deviceNameFile = new StringBuilder(deviceName);
         deviceNameFile.append('-');
         deviceNameFile.append(base.getName());
         for (int index = 0; index < deviceNameFile.length(); index++) {
@@ -108,8 +108,7 @@ public class InMemoryDatabase {
                 deviceNameFile.setCharAt(index, '-');
             }
         }
-        File current = new File(base.getParentFile(), deviceNameFile.toString());
-        return current;
+        return new File(base.getParentFile(), deviceNameFile.toString());
     }
 
     /**
@@ -142,6 +141,7 @@ public class InMemoryDatabase {
      *            The name of the current device.
      * @return True if successful
      */
+    @SuppressWarnings("unchecked")
     protected boolean loadDatabase(String deviceName) {
         File db = getDataBaseFile(deviceName);
         if (db.getParentFile().mkdirs()) {

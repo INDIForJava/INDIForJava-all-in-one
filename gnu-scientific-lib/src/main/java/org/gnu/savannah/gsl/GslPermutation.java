@@ -105,22 +105,22 @@ public class GslPermutation {
             {
                 int a;
 
-                double t[] = new double[1];
+                double[] t = new double[1];
 
                 for (a = 0; a < 1; a++)
-                    t[a] = data.get(i * stride * 1 + a);
+                    t[a] = data.get(i * stride + a);
 
                 while (pk != i) {
                     for (a = 0; a < 1; a++) {
-                        double r1 = data.get(pk * stride * 1 + a);
-                        data.set(k * stride * 1 + a, r1);
+                        double r1 = data.get(pk * stride + a);
+                        data.set(k * stride + a, r1);
                     }
                     k = pk;
                     pk = p[k];
                 }
 
                 for (a = 0; a < 1; a++)
-                    data.set(k * stride * 1 + a, t[a]);
+                    data.set(k * stride + a, t[a]);
             }
         }
 

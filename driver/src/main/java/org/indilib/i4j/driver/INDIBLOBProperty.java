@@ -52,7 +52,7 @@ public class INDIBLOBProperty extends INDIProperty<INDIBLOBElement> {
 
     @Override
     public INDIBLOBElement getElement(String name) {
-        return super.getElement(name);
+        return (INDIBLOBElement) super.getElement(name);
     }
 
     @Override

@@ -24,10 +24,7 @@ package org.indilib.i4j;
 
 import org.indilib.i4j.protocol.OneBlob;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -73,7 +70,7 @@ public class INDIBLOBValue implements Serializable {
      *            the &lt;oneBLOB&gt; XML element
      */
     public INDIBLOBValue(final OneBlob xml) {
-        int size = 0;
+        int size;
         String f;
 
         try {

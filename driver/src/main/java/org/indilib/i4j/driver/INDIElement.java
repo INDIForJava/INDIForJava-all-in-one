@@ -37,7 +37,7 @@ import java.io.Serializable;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public abstract class INDIElement implements Serializable {
+public abstract class INDIElement<T extends INDIElement<?>> implements Serializable {
 
     /**
      * 
@@ -47,17 +47,17 @@ public abstract class INDIElement implements Serializable {
     /**
      * The name of the Element.
      */
-    private String name;
+    private final String name;
 
     /**
      * The label of the Element.
      */
-    private String label;
+    private final String label;
 
     /**
      * The Property to which this Element belongs.
      */
-    private INDIProperty property;
+    private final INDIProperty<T> property;
 
     /**
      * Constructs an instance of <code>INDIElement</code> with properties from
@@ -66,8 +66,7 @@ public abstract class INDIElement implements Serializable {
      * @param builder
      *            the builder to get the setting from.
      */
-    @SuppressWarnings("unchecked")
-    protected INDIElement(INDIElementBuilder<? extends INDIElement> builder) {
+    protected INDIElement(INDIElementBuilder<T> builder) {
         property = builder.indiProperty();
         name = builder.name();
         if (name.isEmpty()) {

@@ -35,7 +35,7 @@ import org.indilib.i4j.protocol.OneLight;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public class INDILightElement extends INDIElement {
+public class INDILightElement extends INDIElement<INDILightElement> {
 
     /**
      * Serialization id.
@@ -71,7 +71,7 @@ public class INDILightElement extends INDIElement {
 
     @Override
     public void setValue(Object newValue) {
-        LightStates ns = null;
+        LightStates ns;
         try {
             ns = (LightStates) newValue;
         } catch (ClassCastException e) {

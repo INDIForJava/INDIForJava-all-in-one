@@ -53,7 +53,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
 
     @Override
     public INDITextElement getElement(String name) {
-        return super.getElement(name);
+        return (INDITextElement) super.getElement(name);
     }
 
     @Override

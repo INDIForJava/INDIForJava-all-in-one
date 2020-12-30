@@ -56,7 +56,7 @@ public abstract class SwitchEvent implements IEventHandler<INDISwitchProperty, I
     public final void processNewValue(INDISwitchProperty valueProperty, Date date, INDIElementAndValue<INDISwitchElement, SwitchStatus>[] elementsAndValues) {
         property = valueProperty;
         if (elementsAndValues instanceof INDISwitchElementAndValue[]) {
-            processNewValue(date, INDISwitchElementAndValue[].class.cast(elementsAndValues));
+            processNewValue(date, (INDISwitchElementAndValue[]) elementsAndValues);
         } else {
             LOG.error("illegal value for process new value");
         }

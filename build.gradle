@@ -1,24 +1,101 @@
-plugins {
-    id 'java'
-    id 'java-library'
+allprojects {
+    apply plugin: 'java-library'
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
+        withJavadocJar()
+        withSourcesJar()
+    }
+    group 'org.indilib.i4j'
+    version '2.0-SNAPSHOT'
 }
 
-group 'org.indilib.i4j'
-version '2.0-SNAPSHOT'
+subprojects {
+    jar {
+        archivesBaseName = rootProject.name + '.' + project.name
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest {
+            from '../META-INF/MANIFEST.MF'
+        }
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+}
+
+jar {
+    archivesBaseName = project.name + '.bundle'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        from 'META-INF/MANIFEST.MF'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task jarModules {
+    group 'build'
+    dependsOn(':driver-focuser:jar')
+    dependsOn(':driver-ccd:jar')
+    dependsOn(':driver-filterwheel:jar')
+    dependsOn(':driver-raspberrypigpio:jar')
+    dependsOn(':driver-telescope:jar')
+    dependsOn(':client:jar')
+    dependsOn(':server:jar')
+}
+
+task jarCores {
+    group 'build'
+    dependsOn(':core:jar')
+    dependsOn(':fits-utils:jar')
+    dependsOn(':gnu-scientific-lib:jar')
+}
+
+task allSourcesAndDocs {
+    group 'documentation'
+    subprojects.each {
+        it.afterEvaluate {
+            def sourcesTask = it.tasks.findByName('sourcesJar')
+            if (sourcesTask) {
+                dependsOn(sourcesTask)
+            }
+            def javadocJar = it.tasks.findByName('javadocJar')
+            if (javadocJar) {
+                dependsOn(javadocJar)
+            }
+        }
+    }
+}
+
+task cleanAll {
+    group 'build'
+    subprojects.each {
+        it.afterEvaluate {
+            def cleanTask = it.tasks.findByName('clean')
+            if (cleanTask) {
+                dependsOn(cleanTask)
+            }
+        }
+    }
+    dependsOn(clean)
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    api project(path: ':core')
-    api project(path: ':driver')
-    api project(path: ':driver-focuser')
-    api project(path: ':driver-ccd')
-    api project(path: ':driver-filterwheel')
-    api project(path: ':driver-telescope')
-    api project(path: ':client')
-    api project(path: ':server')
+    api project(':core')
+    api project(':driver')
+    api project(':driver-focuser')
+    api project(':driver-ccd')
+    api project(':fits-utils')
+    api project(':driver-filterwheel')
+    api project(':driver-telescope')
+    api project(':client')
+    api project(':server')
 }
 
 test {

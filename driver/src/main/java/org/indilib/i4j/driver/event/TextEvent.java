@@ -55,7 +55,7 @@ public abstract class TextEvent implements IEventHandler<INDITextProperty, INDIT
     public final void processNewValue(INDITextProperty valueProperty, Date date, INDIElementAndValue<INDITextElement, String>[] elementsAndValues) {
         property = valueProperty;
         if (elementsAndValues instanceof INDITextElementAndValue[]) {
-            processNewValue(date, INDITextElementAndValue[].class.cast(elementsAndValues));
+            processNewValue(date, (INDITextElementAndValue[]) elementsAndValues);
         } else {
             LOG.error("illegal value for process new value");
         }

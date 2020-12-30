@@ -147,7 +147,7 @@ public class INDIJavaDevice extends INDIDevice {
 
     @Override
     public String[] getNames() {
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
     @Override

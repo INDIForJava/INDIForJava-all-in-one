@@ -81,12 +81,12 @@ public class GslMatrix {
         }
 
         if (i != j) {
-            int row1Offset = 1 * i * tda;
-            int row2Offset = 1 * j * tda;
+            int row1Offset = i * tda;
+            int row2Offset = j * tda;
 
             int k;
 
-            for (k = 0; k < 1 * size2; k++) {
+            for (k = 0; k < size2; k++) {
                 double tmp = data.get(row1Offset + k);
                 data.set(row1Offset + k, data.get(row2Offset + k));
                 data.set(row2Offset + k, tmp);
@@ -118,7 +118,7 @@ public class GslMatrix {
             GslVector v = new GslVector(this.size1);
 
             // should referense same data
-            v.data = new DoubleArray(this.data, j * 1);
+            v.data = new DoubleArray(this.data, j);
             v.size = this.size1;
             v.stride = this.tda;
             v.block = this.block;
@@ -136,7 +136,7 @@ public class GslMatrix {
         int tda = this.tda;
         for (i = 0; i < p; i++) {
             for (j = 0; j < q; j++) {
-                data.set(1 * (i * tda + j), 0d);
+                data.set((i * tda + j), 0d);
             }
         }
     }
@@ -153,8 +153,8 @@ public class GslMatrix {
         for (i = 0; i < size1; i++) {
             for (j = i + 1; j < size2; j++) {
                 for (k = 0; k < 1; k++) {
-                    int e1 = (i * this.tda + j) * 1 + k;
-                    int e2 = (j * this.tda + i) * 1 + k;
+                    int e1 = (i * this.tda + j) + k;
+                    int e2 = (j * this.tda + i) + k;
                     {
                         double tmp = this.data.get(e1);
                         this.data.set(e1, this.data.get(e2));
@@ -180,19 +180,15 @@ public class GslMatrix {
         }
 
         if (i != j) {
-            int col1Offset = 1 * i;
-            int col2Offset = 1 * j;
-
             int p;
-
             for (p = 0; p < size1; p++) {
                 int k;
-                int n = p * 1 * this.tda;
+                int n = p * this.tda;
 
                 for (k = 0; k < 1; k++) {
-                    double tmp = data.get(col1Offset + n + k);
-                    data.set(col1Offset + n + k, data.get(col2Offset + n + k));
-                    data.set(col2Offset + n + k, tmp);
+                    double tmp = data.get(i + n + k);
+                    data.set(i + n + k, data.get(j + n + k));
+                    data.set(j + n + k, tmp);
                 }
             }
         }
@@ -220,7 +216,7 @@ public class GslMatrix {
         {
             GslMatrix s = new GslMatrix(1, 1);
 
-            s.data = new DoubleArray(this.data, 1 * (i * this.tda + j));
+            s.data = new DoubleArray(this.data, (i * this.tda + j));
             s.size1 = n1;
             s.size2 = n2;
             s.tda = this.tda;
@@ -242,7 +238,7 @@ public class GslMatrix {
         {
             GslVector v = new GslVector(1);
 
-            v.data = new DoubleArray(this.data, i * 1 * this.tda);
+            v.data = new DoubleArray(this.data, i * this.tda);
             v.size = this.size2;
             v.stride = 1;
             v.block = this.block;
@@ -263,7 +259,7 @@ public class GslMatrix {
         for (i = 0; i < size1; i++) {
             for (j = 0; j < size2; j++) {
                 for (k = 0; k < 1; k++) {
-                    if (this.data.get((i * tda + j) * 1 + k) != 0.0) {
+                    if (this.data.get((i * tda + j) + k) != 0.0) {
                         return false;
                     }
                 }
@@ -283,7 +279,7 @@ public class GslMatrix {
         for (i = 0; i < size1; i++) {
             for (j = 0; j < size2; j++) {
                 for (k = 0; k < 1; k++) {
-                    if (this.data.get((i * tda + j) * 1 + k) <= 0.0) {
+                    if (this.data.get((i * tda + j) + k) <= 0.0) {
                         return false;
                     }
                 }
@@ -303,7 +299,7 @@ public class GslMatrix {
         for (i = 0; i < size1; i++) {
             for (j = 0; j < size2; j++) {
                 for (k = 0; k < 1; k++) {
-                    if (this.data.get((i * tda + j) * 1 + k) >= 0.0) {
+                    if (this.data.get((i * tda + j) + k) >= 0.0) {
                         return false;
                     }
                 }
@@ -323,7 +319,7 @@ public class GslMatrix {
         for (i = 0; i < size1; i++) {
             for (j = 0; j < size2; j++) {
                 for (k = 0; k < 1; k++) {
-                    if (this.data.get((i * tda + j) * 1 + k) < 0.0) {
+                    if (this.data.get((i * tda + j) + k) < 0.0) {
                         return false;
                     }
                 }
@@ -335,7 +331,7 @@ public class GslMatrix {
 
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer("gsl_matrix(\n");
+        StringBuilder result = new StringBuilder("gsl_matrix(\n");
         for (int i = 0; i < size1; i++) {
             if (i != 0) {
                 result.append('\n');
@@ -344,7 +340,7 @@ public class GslMatrix {
                 if (j != 0) {
                     result.append(",\t");
                 }
-                double value = this.data.get((i * tda + j) * 1);
+                double value = this.data.get((i * tda + j));
                 result.append(value);
             }
         }

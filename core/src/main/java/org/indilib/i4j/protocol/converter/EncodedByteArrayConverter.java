@@ -31,6 +31,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * The cunking of the normal xstream base64 encoder is not good in our case so
  * we use the commons encoding one.
@@ -40,7 +42,7 @@ import org.apache.commons.codec.binary.Base64;
 public class EncodedByteArrayConverter implements Converter, SingleValueConverter {
 
     @Override
-    public boolean canConvert(@SuppressWarnings("rawtypes") Class type) {
+    public boolean canConvert(Class type) {
         return type.isArray() && type.getComponentType().equals(byte.class);
     }
 
@@ -57,7 +59,7 @@ public class EncodedByteArrayConverter implements Converter, SingleValueConverte
 
     @Override
     public String toString(Object obj) {
-        return new String(Base64.encodeBase64((byte[]) obj), Charsets.UTF_8);
+        return new String(Base64.encodeBase64((byte[]) obj), StandardCharsets.UTF_8);
     }
 
     @Override

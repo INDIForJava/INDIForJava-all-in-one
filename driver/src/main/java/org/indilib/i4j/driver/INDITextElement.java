@@ -33,7 +33,7 @@ import org.indilib.i4j.protocol.OneText;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public class INDITextElement extends INDIElement {
+public class INDITextElement extends INDIElement<INDITextElement> {
 
     /**
      * Serialization id.
@@ -69,14 +69,12 @@ public class INDITextElement extends INDIElement {
 
     @Override
     public void setValue(Object newValue) {
-        String v = null;
-
+        String v;
         try {
             v = (String) newValue;
         } catch (ClassCastException e) {
             throw new IllegalArgumentException("Value for a Text Element must be a String");
         }
-
         value = v;
     }
 

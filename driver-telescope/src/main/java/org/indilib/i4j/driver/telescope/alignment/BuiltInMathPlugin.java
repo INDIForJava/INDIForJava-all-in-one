@@ -596,16 +596,16 @@ public class BuiltInMathPlugin implements IMathPlugin {
             int vnum1 = currentFace.vnum(1);
             int vnum2 = currentFace.vnum(2);
             if (0 == vnum0 || 0 == vnum1 || 0 == vnum2) {
-                LOG.debug("Celestial to telescope - Ignoring actual face %d", actualFaces);
+                LOG.debug("Celestial to telescope - Ignoring actual face {}", actualFaces);
             } else {
-                LOG.debug("Celestial to telescope - Processing actual face %d v1 %d v2 %d v3 %d", //
-                        actualFaces, //
-                        vnum0, //
-                        vnum1, //
+                LOG.debug("Celestial to telescope - Processing actual face {} v1 {} v2 {} v3 {}",
+                        actualFaces,
+                        vnum0,
+                        vnum1,
                         vnum2);
-                if (rayTriangleIntersection(scaledActualVector, //
-                        actualDirectionCosines.get(vnum0 - 1), //
-                        actualDirectionCosines.get(vnum1 - 1), //
+                if (rayTriangleIntersection(scaledActualVector,
+                        actualDirectionCosines.get(vnum0 - 1),
+                        actualDirectionCosines.get(vnum1 - 1),
                         actualDirectionCosines.get(vnum2 - 1))) {
                     break;
                 }

@@ -139,7 +139,7 @@ public class ImagePixels {
      * value is used to scale the pixel values).
      * 
      * @param kernel
-     *            the multy dimensional array.
+     *            the multi-dimensional array.
      */
     public void setPixel(Object kernel) {
         if (kernel instanceof byte[][]) {
@@ -147,18 +147,18 @@ public class ImagePixels {
             int pixelIndex = 0;
             byte[][] other = (byte[][]) kernel;
             for (byte[] element : other) {
-                for (int index2 = 0; index2 < element.length; index2++) {
-                    pixel[pixelIndex++] = (element[index2] & UNSIGNED_BYTE_MASK) / range;
+                for (byte b : element) {
+                    pixel[pixelIndex++] = (b & UNSIGNED_BYTE_MASK) / range;
                 }
             }
         } else if (kernel instanceof int[][]) {
             double range = Math.pow(2, INTEGER_BITS);
-            double offset = -Integer.MIN_VALUE;
+            double offset = Integer.MIN_VALUE;
             int pixelIndex = 0;
             int[][] other = (int[][]) kernel;
             for (int[] element : other) {
-                for (int index2 = 0; index2 < element.length; index2++) {
-                    pixel[pixelIndex++] = (offset + element[index2]) / range;
+                for (int i : element) {
+                    pixel[pixelIndex++] = (offset + i) / range;
                 }
             }
         } else if (kernel instanceof short[][]) {
@@ -167,8 +167,8 @@ public class ImagePixels {
             int pixelIndex = 0;
             short[][] other = (short[][]) kernel;
             for (short[] element : other) {
-                for (int index2 = 0; index2 < element.length; index2++) {
-                    pixel[pixelIndex++] = (offset + element[index2]) / range;
+                for (short i : element) {
+                    pixel[pixelIndex++] = (offset + i) / range;
                 }
             }
         } else {

@@ -479,7 +479,7 @@ public abstract class INDICCDImage {
      */
     private void convertToFits() throws FitsException {
         f = new Fits();
-        BasicHDU imageFits = FitsFactory.HDUFactory(getImageData());
+        BasicHDU<?> imageFits = FitsFactory.HDUFactory(getImageData());
         addFitsAttributes(imageFits);
         f.addHDU(imageFits);
     }
@@ -492,7 +492,7 @@ public abstract class INDICCDImage {
      * @throws HeaderCardException
      *             if the header got illegal
      */
-    private void addFitsAttributes(BasicHDU imageFits) throws HeaderCardException {
+    private void addFitsAttributes(BasicHDU<?> imageFits) throws HeaderCardException {
         imageFits.addValue(HISTORY, "FITS image created by i4j");
         imageFits.addValue(SIMPLE, "T");
         imageFits.addValue(BITPIX, bpp);
@@ -509,11 +509,11 @@ public abstract class INDICCDImage {
         if (extraFitsHeaders != null) {
             for (Entry<String, Object> header : extraFitsHeaders.entrySet()) {
                 if (header.getValue() instanceof Double) {
-                    imageFits.addValue(header.getKey(), ((Double) header.getValue()).doubleValue(), "");
+                    imageFits.addValue(header.getKey(), (Double) header.getValue(), "");
                 } else if (header.getValue() instanceof Boolean) {
-                    imageFits.addValue(header.getKey(), ((Boolean) header.getValue()).booleanValue(), "");
+                    imageFits.addValue(header.getKey(), (Boolean) header.getValue(), "");
                 } else if (header.getValue() instanceof Integer) {
-                    imageFits.addValue(header.getKey(), ((Integer) header.getValue()).intValue(), "");
+                    imageFits.addValue(header.getKey(), (Integer) header.getValue(), "");
                 } else if (header.getValue() != null) {
                     String stringValue = header.getValue().toString();
                     if (stringValue.length() > MAX_FITS_HEADERCARD_VALUE_LENGTH) {
@@ -532,7 +532,7 @@ public abstract class INDICCDImage {
      */
     public Map<String, Object> getExtraFitsHeaders() {
         if (extraFitsHeaders == null) {
-            extraFitsHeaders = new HashMap<String, Object>();
+            extraFitsHeaders = new HashMap<>();
         }
         return extraFitsHeaders;
     }
@@ -590,16 +590,16 @@ public abstract class INDICCDImage {
      *            start in x
      * @param top
      *            start in y
-     * @param subwidth
+     * @param subWidth
      *            width in pixel
-     * @param subheigth
+     * @param subHeigth
      *            height in pixel
      * @param extension
      *            the file extension (currently only fits allowed.
      * @throws FitsException
      *             if the file could not be written.
      */
-    public void write(DataOutputStream os, int left, int top, int subwidth, int subheigth, String extension) throws FitsException {
+    public void write(DataOutputStream os, int left, int top, int subWidth, int subHeigth, String extension) throws FitsException {
         if ("fits".equals(extension)) {
             asFitsImage().write(os);
         } else {

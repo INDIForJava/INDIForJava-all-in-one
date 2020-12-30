@@ -34,7 +34,7 @@ import org.indilib.i4j.protocol.OneElement;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public class INDIBLOBElement extends INDIElement {
+public class INDIBLOBElement extends INDIElement<INDIBLOBElement> {
 
     /**
      * Serialization id.
@@ -70,7 +70,7 @@ public class INDIBLOBElement extends INDIElement {
 
     @Override
     public void setValue(Object newValue) {
-        INDIBLOBValue b = null;
+        INDIBLOBValue b;
         try {
             b = (INDIBLOBValue) newValue;
         } catch (ClassCastException e) {

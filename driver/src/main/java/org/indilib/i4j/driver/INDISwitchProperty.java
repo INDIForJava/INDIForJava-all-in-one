@@ -48,7 +48,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     /**
      * The current Rule for this Switch Property.
      */
-    private SwitchRules rule;
+    private final SwitchRules rule;
 
     /**
      * Constructs an instance of a <code>INDISwitchProperty</code>. Called by
@@ -74,7 +74,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     public void resetAllSwitches() {
         for (INDIElement element : this) {
             if (element.getValue() == SwitchStatus.ON) {
-                ((INDISwitchElement) element).setValue(SwitchStatus.OFF);
+                element.setValue(SwitchStatus.OFF);
             }
         }
     }
@@ -141,7 +141,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      */
     public int getSelectedCount() {
         int selectedCount = 0;
-        for (INDISwitchElement el : this) {
+        for (INDIElement<INDISwitchElement> el : this) {
             if (el.getValue() == SwitchStatus.ON) {
                 selectedCount++;
             }

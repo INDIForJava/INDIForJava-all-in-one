@@ -391,7 +391,7 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
         INDIDirection da = new INDIDirection();
         INDIDirection delta = new INDIDirection();
 
-        double dt = 0d;
+        double dt;
         int nsGuideDir = -1, weGuideDir = -1;
 
         /* update elapsed time since last poll, don't presume exactly POLLMS */

@@ -46,7 +46,7 @@ import static org.indilib.i4j.INDIDateFormat.dateFormat;
  *            der element type in this property.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public abstract class INDIProperty<Element extends INDIElement> implements Serializable, Iterable<Element> {
+public abstract class INDIProperty<Element extends INDIElement<?>> implements Serializable, Iterable<INDIElement<Element>> {
 
     /**
      * Serialization id.
@@ -66,7 +66,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     /**
      * This Property name.
      */
-    private String name;
+    private final String name;
 
     /**
      * This Property label.
@@ -76,7 +76,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     /**
      * The group to which this Property might be assigned.
      */
-    private String group;
+    private final String group;
 
     /**
      * The current state of this Property.
@@ -96,7 +96,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     /**
      * A list of Elements for this Property.
      */
-    private LinkedHashMap<String, Element> elements;
+    private final LinkedHashMap<String, INDIElement<Element>> elements;
 
     /**
      * <code>true</code> if property has completely init (sent to any client).
@@ -141,7 +141,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         this.permission = builder.permission();
         this.timeout = builder.timeout();
         this.saveable = builder.saveable();
-        this.elements = new LinkedHashMap<String, Element>();
+        this.elements = new LinkedHashMap<>();
         isInit = false;
     }
 
@@ -278,11 +278,11 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * the same name and it is already being init [not sended to clients]).
      * Drivers must not call this method directly as it is called when
      * constructing the Element.
-     * 
+     *
      * @param element
      *            the Element to be added.
      */
-    protected void addElement(Element element) {
+    protected void addElement(INDIElement<Element> element) {
         if (this instanceof INDITextProperty && !(element instanceof INDITextElement)) {
             throw new IllegalArgumentException("Text Element cannot be added to Text Property");
         }
@@ -318,7 +318,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      *         <code>null</code> if there is no Element with that
      *         <code>name</code>.
      */
-    public Element getElement(String elementName) {
+    public INDIElement<Element> getElement(String elementName) {
         return elements.get(elementName);
     }
 
@@ -327,8 +327,8 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @return the <code>List</code> of Elements belonging to this Property.
      */
-    public List<Element> getElementsAsList() {
-        return new ArrayList<Element>(elements.values());
+    public List<INDIElement<Element>> getElementsAsList() {
+        return new ArrayList<>(elements.values());
     }
 
     /**
@@ -336,8 +336,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * 
      * @return the <code>List</code> of Elements belonging to this Property.
      */
+    @SuppressWarnings("unchecked")
     public Element firstElement() {
-        return elements.values().iterator().next();
+        return (Element) elements.values().iterator().next();
     }
 
     /**
@@ -348,7 +349,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     public String[] getElementNames() {
         String[] names = new String[size()];
         int index = 0;
-        for (Element l : this) {
+        for (INDIElement<Element> l : this) {
             names[index] = l.getName();
         }
         return names;
@@ -361,11 +362,11 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      * @return a String representation of the property and its values.
      */
     public String getNameStateAndValuesAsString() {
-        StringBuffer aux = new StringBuffer(getName());
+        StringBuilder aux = new StringBuilder(getName());
         aux.append(" - ");
         aux.append(getState());
         aux.append("\n");
-        for (Element element : this) {
+        for (INDIElement<Element> element : this) {
             aux.append("  ");
             aux.append(element.getNameAndValueAsString());
             aux.append("\n");
@@ -403,7 +404,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         xml.setTimeout(Integer.toString(getTimeout()));
         xml.setTimestamp(dateFormat().getCurrentTimestamp());
         xml.setMessage(message);
-        for (Element element : this) {
+        for (INDIElement<Element> element : this) {
             xml.getElements().add(element.getXMLDefElement());
         }
         // The property now is initialized. No further changes allowed
@@ -449,7 +450,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
         if (message == null) {
             result.setMessage(message);
         }
-        for (Element element : this) {
+        for (INDIElement<Element> element : this) {
             result.getElements().add(element.getXMLOneElement(includeMinMax));
         }
         return result;
@@ -557,14 +558,11 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
                 prop = (INDIProperty<?>) ois.readObject();
 
                 ois.close();
-            } catch (InvalidClassException ex) {
+            } catch (IOException ex) {
                 LOG.warn("property could not be loaded from file, because it is not compatible to the current version (reverting to default values) : " + file.getName());
                 return null;
             } catch (ClassNotFoundException ex) {
                 throw new INDIException("Problem when loading a property from file " + file.getName() + " - ClassNotFoundException");
-            } catch (IOException ex) {
-                LOG.warn("property could not be loaded from file, because it is not compatible to the current version (reverting to default values) : " + file.getName());
-                return null;
             }
             prop.setDriver(driver);
         }
@@ -582,9 +580,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
      */
     public void setValues(INDIElementAndValue<Element, ?>[] elementsAndValues) {
         for (INDIElementAndValue<Element, ?> elementsAndValue : elementsAndValues) {
-            INDIElement element = elementsAndValue.getElement();
-
-            element.setValue(elementsAndValue.getValue());
+            elementsAndValue.getElement().setValue(elementsAndValue.getValue());
         }
     }
 
@@ -618,7 +614,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Seria
     protected abstract Class<Element> elementClass();
 
     @Override
-    public Iterator<Element> iterator() {
+    public Iterator<INDIElement<Element>> iterator() {
         return elements.values().iterator();
     }
 

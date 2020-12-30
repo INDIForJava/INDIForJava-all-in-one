@@ -121,7 +121,7 @@ public class WrappedQuickHull3D {
      * build the hull and calculate the faces.
      */
     public void build() {
-        quickHull3D.build(points.toArray(new Point3d[points.size()]));
+        quickHull3D.build(points.toArray(new Point3d[0]));
         vnums = quickHull3D.getVertexPointIndices();
         int[][] faceIndexs = quickHull3D.getFaces();
         faces = new Face[faceIndexs.length];

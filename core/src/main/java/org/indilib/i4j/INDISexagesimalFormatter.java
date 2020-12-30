@@ -44,7 +44,7 @@ public class INDISexagesimalFormatter implements Serializable {
      * length and fractionLength in the form length.fractionLength. Valid
      * fractionLengths are 3, 5, 6, 8 and 9. For example %5.3m.
      */
-    private String format;
+    private final String format;
 
     /**
      * The length of the format.
@@ -178,14 +178,11 @@ public class INDISexagesimalFormatter implements Serializable {
     public final double parseSexagesimal2(final String number) {
         String newNumber = number.replace(' ', ':');
         newNumber = newNumber.replace(';', ':');
-
-        if (newNumber.indexOf(":") == -1) { // If there are no separators maybe
+        if (!newNumber.contains(":")) { // If there are no separators maybe
             // they have sent just a single
             // double
             try {
-                double n = Double.parseDouble(newNumber);
-
-                return n;
+                return Double.parseDouble(newNumber);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Sexagesimal number format not correct (not even single number)");
             }
@@ -261,7 +258,7 @@ public class INDISexagesimalFormatter implements Serializable {
             throw new IllegalArgumentException("Too many components for the sexagesimal formatter");
         }
 
-        double degrees = 0;
+        double degrees;
         double minutes = 0;
         double seconds = 0;
 
@@ -304,7 +301,7 @@ public class INDISexagesimalFormatter implements Serializable {
         }
 
         double res = degrees;
-        if (Double.valueOf(degrees).compareTo(ZERO_NEG) > 0) {
+        if (Double.compare(degrees, ZERO_NEG) > 0) {
             res += minutes / MINUTES_PER_HOUR + seconds / SECONDS_PER_HOUR;
         } else {
             res -= minutes / MINUTES_PER_HOUR + seconds / SECONDS_PER_HOUR;

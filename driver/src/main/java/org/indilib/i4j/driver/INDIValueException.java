@@ -39,7 +39,7 @@ public class INDIValueException extends INDIException {
     /**
      * The element that produced the exception.
      */
-    private INDIElement element;
+    private final INDIElement<?> element;
 
     /**
      * Constructs an instance of <code>INDIValueException</code> with the
@@ -50,7 +50,7 @@ public class INDIValueException extends INDIException {
      * @param msg
      *            the detail message.
      */
-    public INDIValueException(INDIElement element, String msg) {
+    public INDIValueException(INDIElement<?> element, String msg) {
         super(msg);
         this.element = element;
     }
@@ -60,7 +60,7 @@ public class INDIValueException extends INDIException {
      * 
      * @return the <code>INDIElement</code> that produced the exception
      */
-    public INDIElement getINDIElement() {
+    public INDIElement<?> getINDIElement() {
         return element;
     }
 }

@@ -1,11 +1,3 @@
-plugins {
-    id 'java'
-    id 'java-library'
-}
-
-group 'org.indilib.i4j'
-version '2.0-SNAPSHOT'
-
 repositories {
     mavenCentral()
     maven {
@@ -15,7 +7,7 @@ repositories {
 
 dependencies {
     api project(path: ':driver')
-    implementation 'com.pi4j:pi4j-core:1.3-SNAPSHOT'
+    api 'com.pi4j:pi4j-core:1.3-SNAPSHOT'
 }
 
 test {

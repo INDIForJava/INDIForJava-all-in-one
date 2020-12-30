@@ -37,7 +37,7 @@ import java.util.Locale;
  * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public class INDINumberElement extends INDIElement {
+public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Serialization id.
@@ -280,7 +280,7 @@ public class INDINumberElement extends INDIElement {
      * @param number
      *            The number to be parsed.
      * @return the parsed number
-     * @throw IllegalArgumentException if the <code>number</code> is not
+     * @throws IllegalArgumentException if the <code>number</code> is not
      *        correctly formatted.
      */
     private double parseNumber(String number) {

@@ -135,14 +135,12 @@ public class INDITextElement extends INDIElement {
 
     @Override
     public void setDesiredValue(Object desiredValue) throws INDIValueException {
-        String v = null;
-
+        String v;
         try {
             v = (String) desiredValue;
         } catch (ClassCastException e) {
             throw new INDIValueException(this, "Value for a Text Element must be a String");
         }
-
         this.desiredValue = v;
     }
 

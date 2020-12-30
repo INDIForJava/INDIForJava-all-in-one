@@ -137,13 +137,9 @@ public final class Util {
             }
             Class<URLClassLoader> sysClass = URLClassLoader.class;
 
-            Method method = sysClass.getDeclaredMethod("addURL", new Class[]{
-                URL.class
-            });
+            Method method = sysClass.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
-            method.invoke(sysLoader, new Object[]{
-                udir
-            });
+            method.invoke(sysLoader, udir);
             return reindex(sysLoader.getURLs(), udir);
         } catch (Exception e) {
             throw new IllegalStateException("Could not include jar in the system classpath!", e);

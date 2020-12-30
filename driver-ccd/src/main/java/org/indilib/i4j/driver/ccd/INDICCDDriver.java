@@ -227,11 +227,11 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
         updateProperty(upload);
         if (uploadClient.isOn()) {
-            LOG.debug(String.format("Upload settings set to client only."));
+            LOG.debug("Upload settings set to client only.");
         } else if (uploadLocal.isOn()) {
-            LOG.debug(String.format("Upload settings set to local only."));
+            LOG.debug("Upload settings set to local only.");
         } else {
-            LOG.debug(String.format("Upload settings set to client and local."));
+            LOG.debug("Upload settings set to client and local.");
         }
     }
 

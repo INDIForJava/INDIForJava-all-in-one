@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *            property class to build.
  * @author Richard van Nieuwenhoven
  */
-public class INDIElementBuilder<ElementClass extends INDIElement> {
+public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * Logger to log to.
@@ -53,7 +53,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     /**
      * the property to create an element for.
      */
-    private INDIProperty<?> indiProperty;
+    private final INDIProperty<ElementClass> indiProperty;
 
     /**
      * the name of the element (mandatory).
@@ -119,7 +119,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
      * @param indiProperty
      *            the property to create an element for.
      */
-    public INDIElementBuilder(Class<ElementClass> clazz, INDIProperty<?> indiProperty) {
+    public INDIElementBuilder(Class<ElementClass> clazz, INDIProperty<ElementClass> indiProperty) {
         this.clazz = clazz;
         this.indiProperty = indiProperty;
     }
@@ -221,7 +221,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     /**
      * @return the indi proerty to connect this element.
      */
-    public INDIProperty<?> indiProperty() {
+    public INDIProperty<ElementClass> indiProperty() {
         return indiProperty;
     }
 
@@ -382,7 +382,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement> {
     /**
      * set the index replacement for the lowercase 'n' character.
      * 
-     * @param index
+     * @param nIndex
      *            the new index value.
      * @return the builder itself.
      */

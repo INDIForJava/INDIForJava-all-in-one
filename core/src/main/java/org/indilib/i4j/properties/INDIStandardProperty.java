@@ -33,7 +33,7 @@ import static org.indilib.i4j.properties.INDIStandardElement.*;
  * repository. We use enum instead of constants to be better able to trace the
  * references.
  * 
- * @see http://indilib.org/develop/developer-manual/101-standard-properties.html
+ * @see <a href="http://indilib.org/develop/developer-manual/101-standard-properties.html">Standard properties</a>
  * @author Richard van Nieuwenhoven
  */
 public enum INDIStandardProperty {
@@ -54,7 +54,7 @@ public enum INDIStandardProperty {
      */
     TIME_LST(LST),
     /**
-     * text property of the UTC Time & Offset.
+     * text property of the UTC Time and Offset.
      */
     TIME_UTC(UTC, OFFSET),
     /**

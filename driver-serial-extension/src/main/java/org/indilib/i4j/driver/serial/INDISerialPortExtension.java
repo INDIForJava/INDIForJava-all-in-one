@@ -43,7 +43,7 @@ import static org.indilib.i4j.properties.INDIStandardProperty.DEVICE_PORT;
  * extension handles the connection for the driver so the driver does only have
  * to know the connection specification and then work with the input- and
  * output-streams. TODO: reading and writing to the serial port should also be
- * encapulated. This will be done as soon as there are more drivers using this
+ * encapsulated. This will be done as soon as there are more drivers using this
  * extension.
  */
 public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
@@ -449,11 +449,11 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
                     Thread.sleep(MILLISECONDS_TO_WAIT_BEFORE_SKIPPING_BYTES);
                     // now consume them all
                     byte[] buffer = serialPort.readBytes();
-                    StringBuffer string = new StringBuffer();
+                    StringBuilder string = new StringBuilder();
                     for (byte b : buffer) {
-                        String hexString = Integer.toHexString(b & UNSIGNED_BYTE_HELPER);
+                        StringBuilder hexString = new StringBuilder(Integer.toHexString(b & UNSIGNED_BYTE_HELPER));
                         while (hexString.length() < 2) {
-                            hexString = "0" + hexString;
+                            hexString.insert(0, "0");
                         }
                         string.append(hexString);
                     }

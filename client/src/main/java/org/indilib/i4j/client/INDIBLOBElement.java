@@ -138,7 +138,7 @@ public class INDIBLOBElement extends INDIElement {
 
     @Override
     public void setDesiredValue(Object desiredValue) throws INDIValueException {
-        INDIBLOBValue b = null;
+        INDIBLOBValue b;
         try {
             b = (INDIBLOBValue) desiredValue;
         } catch (ClassCastException e) {

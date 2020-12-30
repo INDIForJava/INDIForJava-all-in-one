@@ -318,9 +318,6 @@ public enum INDIStandardElement {
      */
     LONG,
     /**
-     * number property of the Weather conditions.
-     */
-    /**
      * number element of the Local sidereal time HH:MM:SS.
      */
     LST,

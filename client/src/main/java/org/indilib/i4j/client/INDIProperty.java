@@ -492,7 +492,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
         for (Element l : this) {
             names.add(l.getName());
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
     /**
@@ -502,7 +502,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * @return a String representation of the property and its values.
      */
     public String getNameStateAndValuesAsString() {
-        StringBuffer aux = new StringBuffer(getName()).append(" - ").append(getState()).append("\n");
+        StringBuilder aux = new StringBuilder(getName()).append(" - ").append(getState()).append("\n");
         for (Element l : this) {
             aux.append("  ").append(l.getNameAndValueAsString()).append("\n");
         }

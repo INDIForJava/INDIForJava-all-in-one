@@ -56,7 +56,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
     /**
      * The Server that listens to this Device.
      */
-    private INDIServer server;
+    private final INDIServer server;
 
     /**
      * Constructs a new <code>INDIDevice</code>.

@@ -514,7 +514,6 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     }
 
     /**
-     * @brief getExposureStartTime
      * @return exposure start time in ISO 8601 format.
      */
     private String getExposureStartTime() {
@@ -645,7 +644,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      *            The new Elements and Values
      */
     private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
-        String message = null;
+        String message;
         if (capability().canSubFrame()) {
             imageFrame.setValues(elementsAndValues);
             imageFrame.setState(PropertyStates.OK);

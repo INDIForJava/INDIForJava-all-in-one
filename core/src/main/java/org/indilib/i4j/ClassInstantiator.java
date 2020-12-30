@@ -102,9 +102,9 @@ public final class ClassInstantiator {
      * @throws INDIException
      *             If no suitable constructor is found.
      */
-    private static Constructor getSuitableConstructor(final Constructor[] constructors, final Object[] arguments) throws INDIException {
-        for (Constructor c : constructors) {
-            Class[] cClassParam = c.getParameterTypes();
+    private static Constructor<?> getSuitableConstructor(final Constructor<?>[] constructors, final Object[] arguments) throws INDIException {
+        for (Constructor<?> c : constructors) {
+            Class<?>[] cClassParam = c.getParameterTypes();
             boolean match = true;
             if (cClassParam.length != arguments.length) {
                 match = false;
@@ -112,12 +112,10 @@ public final class ClassInstantiator {
             for (int h = 0; h < arguments.length; h++) {
                 if (!cClassParam[h].isInstance(arguments[h])) {
                     match = false;
+                    break;
                 }
             }
-
-            if (match) {
-                return c;
-            }
+            if (match) return c;
         }
 
         throw new INDIException("No suitable class to instantiate. Probably some libraries are missing in the classpath.");

@@ -166,7 +166,7 @@ public final class INDIProtocolFactory {
             }
 
             @Override
-            public void writeFieldsToStream(@SuppressWarnings("rawtypes") Map fields) throws NotActiveException {
+            public void writeFieldsToStream(Map fields) throws NotActiveException {
                 throw new NotActiveException("not in call to writeObject");
             }
 

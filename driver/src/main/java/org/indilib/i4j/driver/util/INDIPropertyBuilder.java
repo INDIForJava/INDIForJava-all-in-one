@@ -209,7 +209,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     /**
      * set the index replacement for the lowercase 'n' character.
      * 
-     * @param index
+     * @param nIndex
      *            the new index value.
      * @return the builder itself.
      */

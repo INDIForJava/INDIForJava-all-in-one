@@ -197,7 +197,7 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
 
     @Override
     public boolean isLocalURL(URL url) {
-        boolean hostEqual = false;
+        boolean hostEqual;
         boolean portEqual;
         String hostName = url.getHost();
         if (hostName == null || hostName.isEmpty()) {

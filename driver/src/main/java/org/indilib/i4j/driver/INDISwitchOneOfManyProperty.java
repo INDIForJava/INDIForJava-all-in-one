@@ -67,9 +67,9 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      * @return The selected element
      */
     private INDISwitchElement getSelectedElement() {
-        for (INDISwitchElement e : this) {
+        for (INDIElement<INDISwitchElement> e : this) {
             if (e.getValue() == SwitchStatus.ON) {
-                return e;
+                return (INDISwitchElement) e;
             }
         }
         return null; // Should never happen
@@ -82,7 +82,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      */
     public int getSelectedIndex() {
         int index = 0;
-        for (INDISwitchElement e : this) {
+        for (INDIElement<INDISwitchElement> e : this) {
             if (e.getValue() == SwitchStatus.ON) {
                 return index;
             }
@@ -105,7 +105,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
     public int getSelectedIndex(INDISwitchElementAndValue[] ev) {
         INDISwitchElementAndValue indiSwitchElementAndValue = getSelectedElement(ev);
         int index = 0;
-        for (INDISwitchElement e : this) {
+        for (INDIElement<INDISwitchElement> e : this) {
             if (e == indiSwitchElementAndValue.getElement()) {
                 return index;
             }
@@ -142,7 +142,7 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      */
     public String getSelectedValue(INDISwitchElementAndValue[] ev) {
         INDISwitchElementAndValue indiSwitchElementAndValue = getSelectedElement(ev);
-        for (INDISwitchElement e : this) {
+        for (INDIElement<INDISwitchElement> e : this) {
             if (e == indiSwitchElementAndValue.getElement()) {
                 return e.getName();
             }

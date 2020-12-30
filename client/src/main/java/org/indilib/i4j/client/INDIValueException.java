@@ -39,7 +39,7 @@ public class INDIValueException extends INDIException {
     /**
      * The element that produced the exception.
      */
-    private INDIElement element;
+    private final INDIElement element;
 
     /**
      * Constructs an instance of <code>INDIValueException</code> with the
