@@ -26,28 +26,43 @@ import org.indilib.i4j.server.api.INDIServerAccess;
 import org.indilib.i4j.server.api.INDIServerInterface;
 
 /**
- * The standart implementation of the server access api. this class instanciates
+ * The standard implementation of the server access api. this class creates
  * a server if no server was already running.
  * 
  * @author Richard van Nieuwenhoven
+ * @author marcocipriani01
  */
 public class INDIServerAccessImpl implements INDIServerAccess {
 
     /**
-     * the currently running indi server.
+     * The currently running indi server.
      */
     private static INDIServerInterface server;
 
     @Override
     public INDIServerInterface createOrGet(String host, Integer port) {
-        if (server == null || !server.isServerRunning()) {
-            server = new INDIServer(port);
-        }
+        if (!isRunning()) server = new INDIServer(port);
         return server;
     }
 
     @Override
     public INDIServerInterface get() {
         return server;
+    }
+
+    @Override
+    public INDIServerInterface restart(String host, int port) {
+        if (isRunning()) server.stopServer();
+        return createOrGet(host, port);
+    }
+
+    @Override
+    public boolean isRunning() {
+        return (server != null) && server.isServerRunning();
+    }
+
+    @Override
+    public void stop() {
+        if (isRunning()) server.stopServer();
     }
 }
