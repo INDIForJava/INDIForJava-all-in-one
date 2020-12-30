@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/client" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/driver" />
+            <option value="$PROJECT_DIR$/driver-active-extension" />
             <option value="$PROJECT_DIR$/driver-ccd" />
             <option value="$PROJECT_DIR$/driver-filterwheel" />
             <option value="$PROJECT_DIR$/driver-focuser" />

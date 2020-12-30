@@ -4,7 +4,8 @@ repositories {
 
 dependencies {
     api project(path: ':driver')
-    implementation 'gov.nasa.gsfc.heasarc:nom-tam-fits:1.15.2'
+    api project(path: ':client')
+    api project(path: ':server')
 }
 
 test {

@@ -11,3 +11,5 @@ include 'driver-serial-extension'
 include 'driver-ccd'
 include 'driver-raspberrypigpio'
 include 'fits-utils'
+include 'driver-active-extension'
+
