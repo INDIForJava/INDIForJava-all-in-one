@@ -104,7 +104,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      *            The <code>INDIDevice</code> to which this Property belongs.
      */
     protected INDIProperty(DefVector<?> xml, INDIDevice device) {
-
         this.device = device;
         name = xml.getName();
         if (name.isEmpty()) { // If no name, ignore
@@ -122,25 +121,19 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
         setState(sta);
         if (this instanceof INDITextProperty || this instanceof INDINumberProperty //
                 || this instanceof INDISwitchProperty || this instanceof INDIBLOBProperty) {
-
             permission = Constants.parsePropertyPermission(xml.getPerm());
-
             String to = xml.getTimeout();
-
-            if (!to.isEmpty()) {
+            if ((to != null) && (!to.isEmpty())) {
                 setTimeout(to);
             } else {
                 timeout = 0;
             }
         }
-
         if (this.getClass() == INDILightProperty.class) {
             timeout = 0;
             permission = PropertyPermissions.RO;
         }
-
         this.elements = new LinkedHashMap<>();
-
         this.listeners = new ArrayList<>();
     }
 
@@ -179,8 +172,10 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
                 setState(sta);
             }
             String to = xml.getTimeout();
-            if (!(to.length() == 0)) {
+            if ((to != null) && (!to.isEmpty())) {
                 setTimeout(to);
+            } else {
+                timeout = 0;
             }
             for (OneElement<?> element : xml.getElements()) {
                 if (childNodesType.isAssignableFrom(element.getClass())) {
@@ -222,7 +217,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
     private void setTimeout(String newTimeout) {
         try {
             timeout = Integer.parseInt(newTimeout);
-
             if (timeout < 0) {
                 throw new IllegalArgumentException("Illegal timeout for the Property");
             }

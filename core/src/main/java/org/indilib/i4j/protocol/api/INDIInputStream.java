@@ -34,10 +34,10 @@ import java.io.IOException;
 public interface INDIInputStream {
 
     /**
-     * closes the underlaying input stream.
+     * closes the underlying input stream.
      * 
      * @throws IOException
-     *             when something went wrong with the underlaying input stream.
+     *             when something went wrong with the underlying input stream.
      */
     void close() throws IOException;
 
@@ -45,8 +45,8 @@ public interface INDIInputStream {
      * @return the next indi protocol object from the stream. (blocking till the
      *         next is available or null at end of stream)
      * @throws IOException
-     *             if something went wrong with the desiralisation or the
-     *             underlaying stream.
+     *             if something went wrong with the deserialization or the
+     *             underlying stream.
      */
     INDIProtocol<?> readObject() throws IOException;
 }
