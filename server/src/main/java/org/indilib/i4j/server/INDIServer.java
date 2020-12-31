@@ -171,19 +171,17 @@ public final class INDIServer implements INDIServerInterface {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public synchronized void loadJavaDriversFromJAR(String jarFileName) throws INDIException {
         IndexView jarIndex = Util.extendClasspath(new File(jarFileName));
         if (jarIndex != null) {
             for (ClassInfo subclass : jarIndex.getAllKnownSubclasses(DotName.createSimple(INDIDriver.class.getName()))) {
                 if (!Modifier.isAbstract(subclass.flags())) {
-                    Class<INDIDriver> clazz;
                     try {
-                        clazz = (Class<INDIDriver>) Thread.currentThread().getContextClassLoader().loadClass(subclass.name().toString());
-                    } catch (ClassNotFoundException e) {
+                        Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(subclass.name().toString());
+                        if (clazz.isInstance(INDIDriver.class)) loadJavaDriver(clazz);
+                    } catch (Exception e) {
                         throw new INDIException("could not load diver class " + subclass.toString(), e);
                     }
-                    loadJavaDriver(clazz);
                 }
             }
         }

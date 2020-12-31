@@ -222,13 +222,7 @@ public enum INDIDeviceDescriptor {
                 matches.add(new Match(device, points));
             }
         }
-        Collections.sort(matches, new Comparator<Match>() {
-
-            @Override
-            public int compare(Match o1, Match o2) {
-                return o1.matchPoints - o2.matchPoints;
-            }
-        });
+        matches.sort(Comparator.comparingInt(o -> o.matchPoints));
         INDIDeviceDescriptor[] result = new INDIDeviceDescriptor[matches.size()];
         for (int index = 0; index < result.length; index++) {
             result[index] = matches.get(index).descriptor;
@@ -247,7 +241,7 @@ public enum INDIDeviceDescriptor {
     private static Set<String> unfifyPropertyNames(Collection<String> properties) {
         Set<String> indexedProperties = new HashSet<>();
         for (String string : properties) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             for (char character : string.toCharArray()) {
                 if (Character.isDigit(character)) {
                     buffer.append('n');

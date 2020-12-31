@@ -39,7 +39,7 @@ import java.util.List;
 public class InMemoryDatabase {
 
     /**
-     * tollerance between locations. a to big difference will delete all sync
+     * tolerance between locations. a to big difference will delete all sync
      * points.
      */
     private static final double LOCATION_TOLERANCE = 0.01d;
@@ -73,10 +73,10 @@ public class InMemoryDatabase {
     /**
      * list of callbacks, to call when the database was loaded.
      */
-    private List<LoadDatabaseCallback> callbacks = new ArrayList<LoadDatabaseCallback>();
+    private final List<LoadDatabaseCallback> callbacks = new ArrayList<>();
 
     /**
-     * the complete list of sync points. (this is the database contens).
+     * the complete list of sync points. (this is the database contents).
      */
     private List<AlignmentDatabaseEntry> mySyncPoints = new ArrayList<>();
 
@@ -152,8 +152,12 @@ public class InMemoryDatabase {
             return true;
         }
         try (ObjectInputStream out = new ObjectInputStream(new FileInputStream(db))) {
-            mySyncPoints = (List<AlignmentDatabaseEntry>) out.readObject();
-            return true;
+            Object readObject = out.readObject();
+            if (readObject.getClass().isAssignableFrom(mySyncPoints.getClass())) {
+                mySyncPoints = (List<AlignmentDatabaseEntry>) readObject;
+                return true;
+            }
+            return false;
         } catch (IOException | ClassNotFoundException e) {
             LOG.error("could not load sync points to alignment database", e);
             return false;

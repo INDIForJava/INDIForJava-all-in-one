@@ -52,7 +52,7 @@ public class INDIWebsocketEndpoint {
     /**
      * the currently open connections.
      */
-    private Map<Session, INDIWebSocketConnection> connections = new HashMap<Session, INDIWebSocketConnection>();
+    private Map<Session, INDIWebSocketConnection> connections = new HashMap<>();
 
     /**
      * a new websocket connection was establisched, create a indiconnection

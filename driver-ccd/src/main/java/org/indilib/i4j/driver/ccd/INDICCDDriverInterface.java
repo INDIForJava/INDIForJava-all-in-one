@@ -99,6 +99,6 @@ public interface INDICCDDriverInterface {
      *            the orignal header with the existing attributes.
      * @return null or a map with the new header attributes.
      */
-    Map<String, Object> getExtraFITSKeywords(BasicHDU fitsHeader);
+    Map<String, Object> getExtraFITSKeywords(BasicHDU<?> fitsHeader);
 
 }

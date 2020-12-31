@@ -120,10 +120,7 @@ public class INDIBLOBElement extends INDIElement {
         if (valueToCheck == null) {
             throw new IllegalArgumentException("null value");
         }
-        if (!(valueToCheck instanceof INDIBLOBValue)) {
-            return false;
-        }
-        return true;
+        return valueToCheck instanceof INDIBLOBValue;
     }
 
     @Override

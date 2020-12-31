@@ -66,27 +66,16 @@ public final class ClassInstantiator {
          * 0; i < argumentClasses.length; i++) { argumentClasses[i] =
          * arguments[i].getClass(); }
          */
-
         for (String className : possibleClassNames) {
             try {
-                Class theClass = Class.forName(className);
-                Constructor[] constructors = theClass.getConstructors();
-
-                Constructor constructor = getSuitableConstructor(constructors, arguments);
-                Object obj = constructor.newInstance(arguments);
-
-                return obj; // If the object could be instantiated return it.
-            } catch (ClassNotFoundException ex) {
-                LOG.error("Could not instantiate", ex);
-            } catch (InstantiationException ex) {
-                LOG.error("Could not instantiate", ex);
-            } catch (IllegalAccessException ex) {
-                LOG.error("Could not instantiate", ex);
-            } catch (InvocationTargetException ex) {
+                Class<?> theClass = Class.forName(className);
+                Constructor<?>[] constructors = theClass.getConstructors();
+                Constructor<?> constructor = getSuitableConstructor(constructors, arguments);
+                return constructor.newInstance(arguments); // If the object could be instantiated return it.
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                 LOG.error("Could not instantiate", ex);
             }
         }
-
         throw new INDIException("No suitable class to instantiate. Probably some libraries are missing in the classpath.");
     }
 

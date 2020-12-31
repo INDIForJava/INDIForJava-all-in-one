@@ -63,10 +63,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * 
      * @param server
      *            The Server that listens to this Device
-     * @throws INDIException
-     *             If there is an error connecting or instantiating the Device.
      */
-    protected INDIDevice(INDIServer server) throws INDIException {
+    protected INDIDevice(INDIServer server) {
         this.server = server;
     }
 

@@ -164,8 +164,11 @@ public final class Util {
                 LOG.error("could not scan " + file.getAbsolutePath());
             }
         } else if (file.isDirectory()) {
-            for (File child : file.listFiles()) {
-                index(child, indexer);
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File child : files) {
+                    index(child, indexer);
+                }
             }
         }
     }
@@ -187,14 +190,16 @@ public final class Util {
         List<IndexView> indexes = new ArrayList<>();
         for (URL url : urLs) {
             File file = Util.toFile(url.toURI());
-            if (file.isDirectory()) {
-                index(file, indexer);
-                indexes.add(indexer.complete());
-            } else if (file.getName().endsWith("jar")) {
-                Result result = JarIndexer.createJarIndex(file, indexer, false, false, false);
-                indexes.add(result.getIndex());
-                if (currentUrl != null && url.toString().equalsIgnoreCase(currentUrl.toString())) {
-                    jarIndex = result.getIndex();
+            if (file != null) {
+                if (file.isDirectory()) {
+                    index(file, indexer);
+                    indexes.add(indexer.complete());
+                } else if (file.getName().endsWith("jar")) {
+                    Result result = JarIndexer.createJarIndex(file, indexer, false, false, false);
+                    indexes.add(result.getIndex());
+                    if (currentUrl != null && url.toString().equalsIgnoreCase(currentUrl.toString())) {
+                        jarIndex = result.getIndex();
+                    }
                 }
             }
         }

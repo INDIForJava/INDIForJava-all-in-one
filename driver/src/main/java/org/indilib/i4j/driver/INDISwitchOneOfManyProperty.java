@@ -57,8 +57,10 @@ public class INDISwitchOneOfManyProperty extends INDISwitchProperty {
      */
     public String getSelectedValue() {
         INDISwitchElement e = getSelectedElement();
-
-        return e.getName();
+        if (e != null) {
+            return e.getName();
+        }
+        return null;
     }
 
     /**

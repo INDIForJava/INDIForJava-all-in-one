@@ -605,7 +605,7 @@ public abstract class INDIProperty<Element extends INDIElement<?>> implements Se
      * @return a new Element builder.
      */
     public INDIElementBuilder<Element> newElement() {
-        return new INDIElementBuilder<Element>(elementClass(), this);
+        return new INDIElementBuilder<>(elementClass(), this);
     }
 
     /**

@@ -51,17 +51,15 @@ public class INDIOutputStreamImpl extends OutputStream implements INDIOutputStre
     /**
      * The xstream serializer.
      */
-    private CustomObjectOutputStream out;
+    private final CustomObjectOutputStream out;
 
     /**
      * Constructor of the indi output stream.
      * 
      * @param out
      *            the underlaying stream
-     * @throws IOException
-     *             when something went wrong with the underlaying output stream.
      */
-    protected INDIOutputStreamImpl(CustomObjectOutputStream out) throws IOException {
+    protected INDIOutputStreamImpl(CustomObjectOutputStream out) {
         this.out = out;
     }
 

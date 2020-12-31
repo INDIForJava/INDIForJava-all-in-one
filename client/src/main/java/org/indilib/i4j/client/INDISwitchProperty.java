@@ -225,7 +225,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
      */
     @Override
     public String getValuesAsString() {
-        StringBuffer aux = new StringBuffer();
+        StringBuilder aux = new StringBuilder();
         int n = 0;
         for (INDISwitchElement element : this) {
             if (element.getValue() == SwitchStatus.ON) {

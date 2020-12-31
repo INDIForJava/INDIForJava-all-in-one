@@ -541,7 +541,7 @@ public class INDIDevice {
      * @return the list of group names for all the properties of the device.
      */
     public List<String> getGroupNames() {
-        ArrayList<String> groupNames = new ArrayList<String>();
+        ArrayList<String> groupNames = new ArrayList<>();
         for (INDIProperty<?> p : properties.values()) {
             String groupName = p.getGroup();
 

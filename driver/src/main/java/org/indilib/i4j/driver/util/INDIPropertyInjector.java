@@ -64,13 +64,13 @@ public final class INDIPropertyInjector {
      * threadlocal var that will be emptied as soon as de the driver is
      * instanciated.
      */
-    private static ThreadLocal<INDIPropertyInjector> current = new ThreadLocal<INDIPropertyInjector>();
+    private static ThreadLocal<INDIPropertyInjector> current = new ThreadLocal<>();
 
     /**
      * current map of properties already injected in the driver or its
      * extensions.
      */
-    private Map<String, INDIProperty<?>> properties = new HashMap<String, INDIProperty<?>>();
+    private Map<String, INDIProperty<?>> properties = new HashMap<>();
 
     /**
      * the current driver that is being injected.

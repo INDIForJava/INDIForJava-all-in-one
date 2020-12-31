@@ -22,6 +22,8 @@ package org.gnu.savannah.gsl.util;
  * #L%
  */
 
+import java.util.Arrays;
+
 public class DoubleArray {
 
     private final double[] data;
@@ -63,7 +65,7 @@ public class DoubleArray {
 
     @Override
     public int hashCode() {
-        return data.hashCode() + offset;
+        return Arrays.hashCode(data) + offset;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class DoubleArray {
 
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer("[");
+        StringBuilder result = new StringBuilder("[");
         for (int i = offset; i < data.length; i++) {
             if (i != 0) {
                 result.append(',');

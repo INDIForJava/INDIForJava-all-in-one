@@ -166,17 +166,13 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
             }
         });
         serialPortInterface = (INDISerialPortInterface) driver;
-        shutdownHook = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    if (serialPort != null) {
-                        serialPort.closePort();
-                    }
-                } catch (Exception e) {
-                    LOG.error("exception during close of the seiral port", e);
+        shutdownHook = new Thread(() -> {
+            try {
+                if (serialPort != null) {
+                    serialPort.closePort();
                 }
+            } catch (Exception e) {
+                LOG.error("exception during close of the seiral port", e);
             }
         }, "serial port close hook");
         Runtime.getRuntime().addShutdownHook(shutdownHook);

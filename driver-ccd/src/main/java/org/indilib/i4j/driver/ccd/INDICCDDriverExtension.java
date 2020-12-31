@@ -460,7 +460,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
      * @throws HeaderCardException
      *             if the header becomes invalid.
      */
-    private void addFITSKeywords(BasicHDU fitsHeader) throws HeaderCardException {
+    private void addFITSKeywords(BasicHDU<?> fitsHeader) throws HeaderCardException {
         fitsHeader.addValue(EXPOSURE, exposureDuration);
 
         if (currentFrameType == CcdFrame.DARK_FRAME) {

@@ -139,9 +139,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
             permission = PropertyPermissions.RO;
         }
 
-        this.elements = new LinkedHashMap<String, Element>();
+        this.elements = new LinkedHashMap<>();
 
-        this.listeners = new ArrayList<INDIPropertyListener>();
+        this.listeners = new ArrayList<>();
     }
 
     /**
@@ -392,7 +392,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      *         Property.
      */
     public List<Element> getElementsAsList() {
-        return new ArrayList<Element>(elements.values());
+        return new ArrayList<>(elements.values());
     }
 
     /**
@@ -453,7 +453,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * Notifies all the listeners about the changes in the Property.
      */
     private void notifyListeners() {
-        for (INDIPropertyListener l : new ArrayList<INDIPropertyListener>(listeners)) {
+        for (INDIPropertyListener l : new ArrayList<>(listeners)) {
             l.propertyChanged(this);
         }
     }
@@ -515,7 +515,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * @return A String representation of the value of the Property.
      */
     public String getValuesAsString() {
-        StringBuffer aux = new StringBuffer("[");
+        StringBuilder aux = new StringBuilder("[");
         for (Element l : this) {
             if (aux.length() > 1) {
                 aux.append(',');

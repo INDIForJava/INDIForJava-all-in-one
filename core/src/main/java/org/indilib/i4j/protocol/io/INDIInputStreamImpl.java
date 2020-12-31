@@ -60,10 +60,8 @@ public class INDIInputStreamImpl extends InputStream implements INDIInputStream 
      * 
      * @param in
      *            the object input stream
-     * @throws IOException
-     *             when something with the underlaying stream went wrong.
      */
-    protected INDIInputStreamImpl(ObjectInputStream in) throws IOException {
+    protected INDIInputStreamImpl(ObjectInputStream in) {
         this.in = in;
     }
 
@@ -88,7 +86,7 @@ public class INDIInputStreamImpl extends InputStream implements INDIInputStream 
             return readObject;
         } catch (EOFException e) {
             return null;
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new IOException("could not deserialize xml", e);
         }
     }

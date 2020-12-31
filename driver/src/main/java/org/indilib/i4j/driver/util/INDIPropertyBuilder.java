@@ -330,7 +330,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     }
 
     /**
-     * @return the instanciated property filled with all collected settings.
+     * @return the instantiated property filled with all collected settings.
      */
     public PropertyClass create() {
         applyNIndex();
@@ -360,9 +360,9 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
         if (name != null && nIndex >= 0) {
             int indexOfIndex = name.indexOf('n');
             if (indexOfIndex >= 0) {
-                String newName = name.substring(0, indexOfIndex) + Integer.toString(nIndex);
+                String newName = name.substring(0, indexOfIndex) + nIndex;
                 if (indexOfIndex != name.length() - 1) {
-                    newName = newName + name.substring(indexOfIndex + 1);
+                    name = newName + name.substring(indexOfIndex + 1);
                 }
                 if (this.label != null) {
                     this.label = this.label.replace("%n", Integer.toString(nIndex));
@@ -399,10 +399,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
      * @return true if the group is the default group.
      */
     public boolean isDefaultGroup() {
-        if (group.isEmpty() || group.equals(InjectProperty.UNSORTED_GROUP)) {
-            return true;
-        }
-        return false;
+        return group.isEmpty() || group.equals(InjectProperty.UNSORTED_GROUP);
     }
 
 }

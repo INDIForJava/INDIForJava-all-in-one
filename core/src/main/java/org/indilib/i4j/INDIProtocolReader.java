@@ -45,7 +45,7 @@ public class INDIProtocolReader extends Thread {
     /**
      * The parser to which the messages will be sent.
      */
-    private INDIProtocolParser parser;
+    private final INDIProtocolParser parser;
 
     /**
      * Used to friendly stop the reader.
@@ -77,13 +77,15 @@ public class INDIProtocolReader extends Thread {
                 parser.processProtokolMessage(readObject);
                 readObject = inputStream.readObject();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("could not parse indi stream", e);
         } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                LOG.error("Could not close Doc", e);
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    LOG.error("Could not close Doc", e);
+                }
             }
             parser.finishReader();
         }

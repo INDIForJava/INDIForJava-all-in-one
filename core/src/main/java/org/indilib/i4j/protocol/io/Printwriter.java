@@ -58,14 +58,9 @@ final class Printwriter extends PrettyPrintWriter {
         super(writer, XML_QUIRKS, new char[0], new XmlFriendlyNameCoder());
         try {
             tagIsEmpty = PrettyPrintWriter.class.getDeclaredField("tagIsEmpty");
-            final Field field = tagIsEmpty;
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-
-                @Override
-                public Object run() {
-                    field.setAccessible(true);
-                    return null;
-                }
+            AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+                tagIsEmpty.setAccessible(true);
+                return null;
             });
         } catch (Exception e) {
             throw new IllegalStateException("this should not happen, did the super class change?", e);

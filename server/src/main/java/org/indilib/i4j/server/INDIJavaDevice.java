@@ -92,7 +92,7 @@ public class INDIJavaDevice extends INDIDevice {
         super(server);
 
         // name = null;
-        names = new ArrayList<String>();
+        names = new ArrayList<>();
         this.identifier = identifier;
         this.driverClass = driverClass;
 
@@ -102,23 +102,10 @@ public class INDIJavaDevice extends INDIDevice {
         try {
             Constructor<?> c = driverClass.getConstructor(INDIConnection.class);
             driver = (INDIDriver) c.newInstance(connections.second());
-        } catch (InstantiationException ex) {
-            LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-        } catch (IllegalAccessException ex) {
-            LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-        } catch (NoSuchMethodException ex) {
-            LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-        } catch (InvocationTargetException ex) {
-            LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-            throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
-        } catch (ClassCastException ex) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassCastException ex) {
             LOG.error("Problem instantiating driver (not an INDI for Java Driver?)", ex);
             throw new INDIException("Problem instantiating driver (not an INDI for Java Driver?)", ex);
         }
-
         driver.startListening();
     }
 

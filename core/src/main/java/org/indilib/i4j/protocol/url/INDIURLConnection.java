@@ -139,7 +139,7 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
      * @return the map with query keys and there list with values.(never null)
      */
     public static Map<String, List<String>> splitQuery(URL url) {
-        final Map<String, List<String>> queryPairs = new LinkedHashMap<String, List<String>>();
+        final Map<String, List<String>> queryPairs = new LinkedHashMap<>();
         try {
             if (url != null && url.getQuery() != null) {
                 final String[] pairs = url.getQuery().split("&");
@@ -147,7 +147,7 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
                     final int idx = pair.indexOf("=");
                     final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
                     if (!queryPairs.containsKey(key)) {
-                        queryPairs.put(key, new LinkedList<String>());
+                        queryPairs.put(key, new LinkedList<>());
                     }
                     final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
                     queryPairs.get(key).add(value);

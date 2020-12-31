@@ -83,7 +83,7 @@ public class INDINetworkDevice extends INDIDevice {
     protected INDINetworkDevice(INDIServer server, String host, int port) throws INDIException {
         super(server);
 
-        names = new ArrayList<String>();
+        names = new ArrayList<>();
 
         this.host = host;
         this.port = port;

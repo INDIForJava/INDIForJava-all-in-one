@@ -119,7 +119,7 @@ public abstract class SetVector<T> extends INDIProtocol<T> {
      * set the timeout attribute of the element.
      * 
      * @param newTimeout
-     *            the new attibute timeout value
+     *            the new attribute timeout value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")

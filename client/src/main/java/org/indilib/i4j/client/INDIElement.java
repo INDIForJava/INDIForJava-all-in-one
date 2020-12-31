@@ -89,7 +89,7 @@ public abstract class INDIElement {
             label = name;
         }
 
-        listeners = new ArrayList<INDIElementListener>();
+        listeners = new ArrayList<>();
     }
 
     /**

@@ -77,12 +77,12 @@ public class INDIServerConnection implements INDIProtocolParser {
     /**
      * The set of the devices associated to this Connection.
      */
-    private final Map<String, INDIDevice> devices = new LinkedHashMap<String, INDIDevice>();
+    private final Map<String, INDIDevice> devices = new LinkedHashMap<>();
 
     /**
      * The list of Listeners of this Connection.
      */
-    private List<INDIServerConnectionListener> listeners = new ArrayList<INDIServerConnectionListener>();
+    private List<INDIServerConnectionListener> listeners = new ArrayList<>();
 
     /**
      * Constructs an instance of <code>INDIServerConnection</code>. The
@@ -530,10 +530,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     public void addINDIDeviceListenerToAllDevices(INDIDeviceListener listener) {
         List<INDIDevice> l = getDevicesAsList();
-
-        for (int i = 0; i < l.size(); i++) {
-            INDIDevice d = l.get(i);
-
+        for (INDIDevice d : l) {
             d.addINDIDeviceListener(listener);
         }
     }
@@ -546,10 +543,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     public void removeINDIDeviceListenerFromAllDevices(INDIDeviceListener listener) {
         List<INDIDevice> l = getDevicesAsList();
-
-        for (int i = 0; i < l.size(); i++) {
-            INDIDevice d = l.get(i);
-
+        for (INDIDevice d : l) {
             d.removeINDIDeviceListener(listener);
         }
     }
@@ -561,13 +555,10 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     public String[] getDeviceNames() {
         List<INDIDevice> l = getDevicesAsList();
-
         String[] names = new String[l.size()];
-
         for (int i = 0; i < l.size(); i++) {
             names[i] = l.get(i).getName();
         }
-
         return names;
     }
 
@@ -577,7 +568,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      * @return the <code>List</code> of Devices belonging to this Connection.
      */
     public List<INDIDevice> getDevicesAsList() {
-        return new ArrayList<INDIDevice>(devices.values());
+        return new ArrayList<>(devices.values());
     }
 
     /**
@@ -591,11 +582,9 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     public void addINDIDeviceListener(String deviceName, INDIDeviceListener listener) {
         INDIDevice d = getDevice(deviceName);
-
         if (d == null) {
             return;
         }
-
         d.addINDIDeviceListener(listener);
     }
 
@@ -610,11 +599,9 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     public void removeINDIDeviceListener(String deviceName, INDIDeviceListener listener) {
         INDIDevice d = getDevice(deviceName);
-
         if (d == null) {
             return;
         }
-
         d.removeINDIDeviceListener(listener);
     }
 
@@ -626,10 +613,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     private void notifyListenersNewDevice(INDIDevice device) {
         ArrayList<INDIServerConnectionListener> lCopy = new ArrayList<>(listeners);
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIServerConnectionListener l = lCopy.get(i);
-
+        for (INDIServerConnectionListener l : lCopy) {
             l.newDevice(this, device);
         }
     }
@@ -642,10 +626,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     private void notifyListenersRemoveDevice(INDIDevice device) {
         ArrayList<INDIServerConnectionListener> lCopy = new ArrayList<>(listeners);
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIServerConnectionListener l = lCopy.get(i);
-
+        for (INDIServerConnectionListener l : lCopy) {
             l.removeDevice(this, device);
         }
     }
@@ -655,9 +636,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     private void notifyListenersConnectionLost() {
         ArrayList<INDIServerConnectionListener> lCopy = new ArrayList<>(listeners);
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIServerConnectionListener l = lCopy.get(i);
+        for (INDIServerConnectionListener l : lCopy) {
             l.connectionLost(this);
         }
     }
@@ -672,10 +651,7 @@ public class INDIServerConnection implements INDIProtocolParser {
      */
     protected void notifyListenersNewMessage(Date timestamp, String message) {
         ArrayList<INDIServerConnectionListener> lCopy = new ArrayList<>(listeners);
-
-        for (int i = 0; i < lCopy.size(); i++) {
-            INDIServerConnectionListener l = lCopy.get(i);
-
+        for (INDIServerConnectionListener l : lCopy) {
             l.newMessage(this, timestamp, message);
         }
     }

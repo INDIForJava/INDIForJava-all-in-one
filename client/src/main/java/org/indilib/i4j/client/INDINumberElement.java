@@ -372,7 +372,7 @@ public class INDINumberElement extends INDIElement {
         double d;
 
         if (valueToCheck instanceof Double) {
-            d = ((Double) valueToCheck).doubleValue();
+            d = (Double) valueToCheck;
         } else {
             if (valueToCheck instanceof String) {
                 String val = (String) valueToCheck;
@@ -412,7 +412,7 @@ public class INDINumberElement extends INDIElement {
         if (desiredValue instanceof String) {
             setDesiredValueAsString((String) desiredValue);
         } else if (desiredValue instanceof Double) {
-            setDesiredValueAsdouble(((Double) desiredValue).doubleValue());
+            setDesiredValueAsdouble((Double) desiredValue);
         } else {
             throw new INDIValueException(this, "Value for a Number Element must be a String or a Double");
         }
@@ -433,7 +433,7 @@ public class INDINumberElement extends INDIElement {
             throw new INDIValueException(this, getName() + " ; " + "Number (" + newDesiredValue + ") not in range [" + min + ", " + max + "]");
         }
 
-        desiredValue = new Double(dd);
+        desiredValue = dd;
     }
 
     /**
@@ -445,13 +445,10 @@ public class INDINumberElement extends INDIElement {
      *             if the desired value not in range
      */
     private void setDesiredValueAsdouble(double newDesiredValue) throws INDIValueException {
-        double dd = newDesiredValue;
-
-        if (dd < min || dd > max) {
+        if (newDesiredValue < min || newDesiredValue > max) {
             throw new INDIValueException(this, getName() + " ; " + "Number (" + value + ") not in range [" + min + ", " + max + "]");
         }
-
-        desiredValue = new Double(dd);
+        desiredValue = newDesiredValue;
     }
 
     @Override
@@ -469,10 +466,8 @@ public class INDINumberElement extends INDIElement {
      */
     @Override
     protected OneNumber getXMLOneElementNewValue() {
-        OneNumber xml = new OneNumber().setName(getName()).setTextContent(Double.toString(desiredValue.doubleValue()));
-
+        OneNumber xml = new OneNumber().setName(getName()).setTextContent(Double.toString(desiredValue));
         desiredValue = null;
-
         return xml;
     }
 

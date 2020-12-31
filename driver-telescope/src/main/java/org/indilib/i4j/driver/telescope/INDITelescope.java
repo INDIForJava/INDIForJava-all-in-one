@@ -607,14 +607,14 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
         }
         Double offset;
         try {
-            offset = Double.valueOf(NumberFormat.getNumberInstance().parse(offsetString).doubleValue());
+            offset = NumberFormat.getNumberInstance().parse(offsetString).doubleValue();
         } catch (ParseException e1) {
             offset = null;
         }
         Date utc = extractISOTime(utcString);
         if (utc != null && offset != null) {
             time.setValues(elementsAndValues);
-            if (updateTime(utc, offset.doubleValue())) {
+            if (updateTime(utc, offset)) {
                 time.setState(OK);
 
             } else {

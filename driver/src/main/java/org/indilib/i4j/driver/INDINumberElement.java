@@ -236,7 +236,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
         if (newValue instanceof String) {
             setValueAsString((String) newValue);
         } else if (newValue instanceof Double) {
-            setValueAsdouble(((Double) newValue).doubleValue());
+            setValueAsdouble((Double) newValue);
         } else if (newValue instanceof Integer) {
             setValueAsdouble(((Integer) newValue).doubleValue());
         } else if (newValue instanceof Float) {

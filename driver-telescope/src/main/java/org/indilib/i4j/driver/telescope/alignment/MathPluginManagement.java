@@ -165,9 +165,7 @@ public class MathPluginManagement extends INDIDriverExtension<INDITelescope> {
     private void enumeratePlugins() {
         plugins = new HashMap<>();
         ServiceLoader<IMathPlugin> loader = ServiceLoader.load(IMathPlugin.class, Thread.currentThread().getContextClassLoader());
-        Iterator<IMathPlugin> iter = loader.iterator();
-        while (iter.hasNext()) {
-            IMathPlugin iMathPlugin = iter.next();
+        for (IMathPlugin iMathPlugin : loader) {
             plugins.put(iMathPlugin.id(), iMathPlugin);
         }
     }

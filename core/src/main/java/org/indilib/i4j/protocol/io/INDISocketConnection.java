@@ -156,7 +156,7 @@ public class INDISocketConnection implements INDIConnection {
             LOG.warn("ouputStream close problem", e);
         }
         try {
-            if (socket != null && !socket.isClosed()) {
+            if (!socket.isClosed()) {
                 socket.close();
             }
         } catch (Exception e) {

@@ -361,7 +361,7 @@ public class CCDSimulator extends INDICCDDriver {
     }
 
     @Override
-    public Map<String, Object> getExtraFITSKeywords(BasicHDU fitsHeader) {
+    public Map<String, Object> getExtraFITSKeywords(BasicHDU<?> fitsHeader) {
         return null;
     }
 

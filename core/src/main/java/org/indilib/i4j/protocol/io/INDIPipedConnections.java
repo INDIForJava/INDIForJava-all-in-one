@@ -247,8 +247,8 @@ public final class INDIPipedConnections {
      * create the piped connection pair.
      */
     public INDIPipedConnections() {
-        LinkedBlockingQueue<INDIProtocol<?>> firstToSecondQueue = new LinkedBlockingQueue<INDIProtocol<?>>();
-        LinkedBlockingQueue<INDIProtocol<?>> secondToFirstQueue = new LinkedBlockingQueue<INDIProtocol<?>>();
+        LinkedBlockingQueue<INDIProtocol<?>> firstToSecondQueue = new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<INDIProtocol<?>> secondToFirstQueue = new LinkedBlockingQueue<>();
         first = new INDIPipedConnection(firstToSecondQueue, secondToFirstQueue);
         second = new INDIPipedConnection(secondToFirstQueue, firstToSecondQueue);
     }

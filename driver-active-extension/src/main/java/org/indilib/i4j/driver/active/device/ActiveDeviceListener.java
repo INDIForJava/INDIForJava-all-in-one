@@ -91,11 +91,7 @@ public class ActiveDeviceListener implements INDIDeviceListener, INDIPropertyLis
 
     @Override
     public void propertyChanged(INDIProperty<?> property) {
-        Set<String> deviceProperties = properties.get(property.getDevice());
-        if (deviceProperties == null) {
-            deviceProperties = new HashSet<>();
-            properties.put(property.getDevice(), deviceProperties);
-        }
+        Set<String> deviceProperties = properties.computeIfAbsent(property.getDevice(), k -> new HashSet<>());
         if (!deviceProperties.add(property.getName())) {
             detectDevives(property.getDevice(), deviceProperties);
         }
@@ -120,6 +116,7 @@ public class ActiveDeviceListener implements INDIDeviceListener, INDIPropertyLis
         for (INDIDeviceDescriptor indiDeviceDescriptor : deviceType) {
             if (activeDevicesElement.getName().equals(indiDeviceDescriptor.name())) {
                 detected = true;
+                break;
             }
         }
         if (detected) {
@@ -138,7 +135,7 @@ public class ActiveDeviceListener implements INDIDeviceListener, INDIPropertyLis
      */
     private void fillActiveDeviveProperty() {
         boolean somethingChanged = false;
-        StringBuffer message = new StringBuffer("available devices on this server \n");
+        StringBuilder message = new StringBuilder("available devices on this server \n");
         INDIDeviceDescriptor descriptor = INDIDeviceDescriptor.valueOf(activeDevicesElement.getName());
         INDIDevice currentDevice = null;
         message.append(descriptor.name());

@@ -111,7 +111,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     protected INDIDriver(INDIConnection connection) {
         this.connection = connection;
-        subDrivers = new ArrayList<INDIDriver>();
+        subDrivers = new ArrayList<>();
         started = false;
         properties = new LinkedHashMap<>();
         INDIPropertyInjector.initialize(this, this);
@@ -175,8 +175,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * 
      * @return A List of all the Properties in the Driver.
      */
-    public List<INDIProperty> getPropertiesAsList() {
-        return new ArrayList<INDIProperty>(properties.values());
+    public List<INDIProperty<?>> getPropertiesAsList() {
+        return new ArrayList<>(properties.values());
     }
 
     /**
@@ -230,7 +230,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @return a new property builder.
      */
     public <PropertyClass extends INDIProperty<?>> INDIPropertyBuilder<PropertyClass> newProperty(Class<PropertyClass> clazz) {
-        return new INDIPropertyBuilder<PropertyClass>(clazz).driver(this);
+        return new INDIPropertyBuilder<>(clazz).driver(this);
     }
 
     /**
@@ -362,12 +362,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Sends all the properties to the clients.
      */
     public void sendAllProperties() {
-        List<INDIProperty> props = getPropertiesAsList();
-
-        for (int i = 0; i < props.size(); i++) {
-            sendDefXXXVectorMessage(props.get(i), null);
+        List<INDIProperty<?>> props = getPropertiesAsList();
+        for (INDIProperty<?> prop : props) {
+            sendDefXXXVectorMessage(prop, null);
         }
-
         propertiesRequested();
     }
 
@@ -600,14 +598,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *         this name.
      */
     private INDIDriver getSubdriver(String name) {
-        for (int i = 0; i < subDrivers.size(); i++) {
-            INDIDriver d = subDrivers.get(i);
-
+        for (INDIDriver d : subDrivers) {
             if (d.getName().compareTo(name) == 0) {
                 return d;
             }
         }
-
         return null;
     }
 
@@ -661,7 +656,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
             return new INDIElementAndValue[0];
         }
 
-        List<INDIElementAndValue> list = new ArrayList<INDIElementAndValue>();
+        List<INDIElementAndValue> list = new ArrayList<>();
 
         for (OneElement<?> node : xml.getElements()) {
             if (oneType.isAssignableFrom(node.getClass())) {

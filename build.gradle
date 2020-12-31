@@ -14,6 +14,7 @@ allprojects {
 subprojects {
     jar {
         archivesBaseName = rootProject.name + '.' + project.name
+        destinationDirectory =  file("$rootDir/build/libs")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         manifest {
             from '../META-INF/MANIFEST.MF'
@@ -43,7 +44,6 @@ task jarModules {
     dependsOn(':driver-raspberrypigpio:jar')
     dependsOn(':driver-telescope:jar')
     dependsOn(':client:jar')
-    dependsOn(':server:jar')
 }
 
 task jarCores {

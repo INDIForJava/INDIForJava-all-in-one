@@ -84,7 +84,7 @@ public final class FitsImage {
      */
     public static BufferedImage asJavaImage(Fits fitsImage) {
         try {
-            BasicHDU oneImage = fitsImage.getHDU(0);
+            BasicHDU<?> oneImage = fitsImage.getHDU(0);
             String bayerpat = oneImage.getHeader().getStringValue(MaxImDLExt.BAYERPAT);
             int height = oneImage.getHeader().getIntValue(Standard.NAXISn.n(1));
             int width = oneImage.getHeader().getIntValue(Standard.NAXISn.n(2));

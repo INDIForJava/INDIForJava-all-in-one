@@ -66,9 +66,9 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     protected INDIDeviceListener() {
         listenToAllDevices = false;
 
-        devicesToListen = new ArrayList<DevicePropertyBLOBEnableTuple>();
-        propertiesToListen = new ArrayList<DevicePropertyBLOBEnableTuple>();
-        bLOBEnableRules = new ArrayList<DevicePropertyBLOBEnableTuple>();
+        devicesToListen = new ArrayList<>();
+        propertiesToListen = new ArrayList<>();
+        bLOBEnableRules = new ArrayList<>();
     }
 
     /**

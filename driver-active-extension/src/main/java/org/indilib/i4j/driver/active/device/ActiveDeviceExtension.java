@@ -254,12 +254,7 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
     }
 
     public void add(INDIDeviceDescriptor deviceType, ElementMapping mapping) {
-        List<ElementMapping> mappings = elementMappings.get(deviceType);
-        if (mappings == null) {
-            mappings = new LinkedList<>();
-            elementMappings.put(deviceType, mappings);
-        }
+        List<ElementMapping> mappings = elementMappings.computeIfAbsent(deviceType, k -> new LinkedList<>());
         mappings.add(mapping);
-
     }
 }

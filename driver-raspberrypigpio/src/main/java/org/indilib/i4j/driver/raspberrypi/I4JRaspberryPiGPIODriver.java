@@ -790,10 +790,10 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
         long accum = seconds;
 
         int weeks = (int) TimeUnit.SECONDS.toDays(accum) / DAY_TO_WEEK_DIVIDER;
-        accum -= weeks * SECONDS_PER_WEEK;
+        accum -= (long) weeks * SECONDS_PER_WEEK;
 
         int days = (int) TimeUnit.SECONDS.toDays(accum);
-        accum -= days * SECONDS_PER_DAY;
+        accum -= (long) days * SECONDS_PER_DAY;
 
         long hours = TimeUnit.SECONDS.toHours(accum);
         accum -= hours * SECONDS_PER_HOUR;

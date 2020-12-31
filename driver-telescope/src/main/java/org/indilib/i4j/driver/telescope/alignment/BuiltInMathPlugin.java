@@ -206,7 +206,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Actual direction cosines for the 4+ case.
      */
-    private List<TelescopeDirectionVector> actualDirectionCosines = new ArrayList<TelescopeDirectionVector>();
+    private List<TelescopeDirectionVector> actualDirectionCosines = new ArrayList<>();
 
     /**
      * the in memory alignment database.
@@ -614,7 +614,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
         }
         GslMatrix transform;
         if (currentFace == null) {
-            List<AlignmentDatabaseEntryDistance> nearestMap = new ArrayList<AlignmentDatabaseEntryDistance>();
+            List<AlignmentDatabaseEntryDistance> nearestMap = new ArrayList<>();
             for (AlignmentDatabaseEntry entry : syncPoints) {
                 LnEquPosn raDec = new LnEquPosn();
                 LnHrzPosn actualPoint = new LnHrzPosn();
@@ -825,9 +825,9 @@ public class BuiltInMathPlugin implements IMathPlugin {
             int vnum1 = currentFace.vnum(1);
             int vnum2 = currentFace.vnum(2);
             if (0 == vnum0 || 0 == vnum1 || 0 == vnum2) {
-                LOG.debug("Telescope to celestial - Ignoring apparent face %d", apparentFaces);
+                LOG.debug("Telescope to celestial - Ignoring apparent face {}", apparentFaces);
             } else {
-                LOG.debug("Telescope to celestial - Processing apparent face %d v1 %d v2 %d v3 %d", //
+                LOG.debug("Telescope to celestial - Processing apparent face {} v1 {} v2 {} v3 {}", //
                         apparentFaces, //
                         vnum0, //
                         vnum1, //
@@ -847,7 +847,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
             // Find the three nearest points and build a transform
 
-            List<AlignmentDatabaseEntryDistance> nearestMap = new ArrayList<AlignmentDatabaseEntryDistance>();
+            List<AlignmentDatabaseEntryDistance> nearestMap = new ArrayList<>();
             for (AlignmentDatabaseEntry entry : syncPoints) {
 
                 nearestMap.add(new AlignmentDatabaseEntryDistance(entry.telescopeDirection.minus(apparentTelescopeDirectionVector).length(), entry));

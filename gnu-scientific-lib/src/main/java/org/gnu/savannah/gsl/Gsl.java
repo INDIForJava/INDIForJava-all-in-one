@@ -1577,7 +1577,6 @@ public class Gsl {
 
             V.swapColumns(0, 1);
 
-            return;
         } else if (d1 == 0.0) {
             /* Eliminate off-diagonal element in [d0,f0;0,0] */
 
@@ -1597,7 +1596,6 @@ public class Gsl {
                 V.set(i, 1, s.value * Vip + c.value * Viq);
             }
 
-            return;
         } else {
             /* Make columns orthogonal, A = [d0, f0; 0, d1] * G */
 
@@ -1659,7 +1657,6 @@ public class Gsl {
                 U.set(i, 1, s.value * Uip + c.value * Uiq);
             }
 
-            return;
         }
     }
 
