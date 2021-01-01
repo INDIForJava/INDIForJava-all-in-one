@@ -10,12 +10,12 @@ package org.indilib.i4j.properties;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -32,9 +32,9 @@ import static org.indilib.i4j.properties.INDIStandardElement.*;
  * find numerous uses of the standard properties in the INDI library driver
  * repository. We use enum instead of constants to be better able to trace the
  * references.
- * 
- * @see <a href="http://indilib.org/develop/developer-manual/101-standard-properties.html">Standard properties</a>
+ *
  * @author Richard van Nieuwenhoven
+ * @see <a href="http://indilib.org/develop/developer-manual/101-standard-properties.html">Standard properties</a>
  */
 public enum INDIStandardProperty {
     /**
@@ -69,6 +69,10 @@ public enum INDIStandardProperty {
      * Equatorial astrometric J2000 coordinate.
      */
     EQUATORIAL_COORD(RA, DEC),
+    /**
+     * Slew Target. Read Only property set once requested EQUATORIAL_EOD_COORD is accepted by driver.
+     */
+    TARGET_EOD_COORD(RA, DEC),
     /**
      * Weather conditions.
      */
@@ -115,9 +119,17 @@ public enum INDIStandardProperty {
      */
     TELESCOPE_PARK(PARK, UNPARK),
     /**
+     * Updates TELESCOPE_PARK_POSITION values
+     */
+    TELESCOPE_PARK_OPTION(PARK_CURRENT, PARK_DEFAULT, PARK_WRITE_DATA),
+    /**
      * Stop telescope rapidly, but gracefully.
      */
     TELESCOPE_ABORT_MOTION(ABORT_MOTION),
+    /**
+     * GEM Pier Side
+     */
+    TELESCOPE_PIER_SIDE(PIER_EAST, PIER_WEST),
     /**
      * tracking speed of the scope.
      */
@@ -181,6 +193,35 @@ public enum INDIStandardProperty {
      */
     CCDn,
     /**
+     * Turn ON/OFF video stream.
+     */
+    CCD_VIDEO_STREAM(STREAM_ON, STREAM_OFF),
+    /**
+     * Streaming exposure.
+     */
+    STREAMING_EXPOSURE(STREAMING_EXPOSURE_VALUE, STREAMING_DIVISOR_VALUE),
+    /**
+     * Straming FPS
+     */
+    FPS(EST_FPS, AVG_FPS),
+    /**
+     * Recorders are responsible for recording the video stream to a file. The recording file directory and name can be set via the RECORD_FILE property which is composed of RECORD_FILE_DIR and RECORD_FILE_NAME elements. You can specify a record directory name together with a file name. You may use special character sequences to generate dynamic names:
+     * <p>
+     * _D_ is replaced with the date ('YYYY-MM-DD')
+     * _H_ is replaced with the time ('hh-mm-ss')
+     * _T_ is replaced with a timestamp
+     * _F_ is replaced with the filter name currently in use
+     */
+    RECORD_FILE(RECORD_FILE_DIR, RECORD_FILE_NAME),
+    /**
+     * Set the desired duration in seconds or total frames required for the recording.
+     */
+    RECORD_OPTIONS(RECORD_DURATION, RECORD_FRAME_TOTAL),
+    /**
+     * Start or Stop the stream recording to a file.
+     */
+    RECORD_STREAM(RECORD_ON, RECORD_DURATION_ON, RECORD_FRAME_ON, RECORD_OFF),
+    /**
      * The filter wheel's current slot number. Important: Filter numbers start
      * from 1 to N.
      */
@@ -211,7 +252,18 @@ public enum INDIStandardProperty {
      * Absolute position.
      */
     ABS_FOCUS_POSITION(FOCUS_ABSOLUTE_POSITION),
-
+    /**
+     * Sync focuser position.
+     */
+    FOCUS_SYNC(FOCUS_SYNC_VALUE),
+    /**
+     * Reverse focuser directions.
+     */
+    FOCUS_REVERSE_MOTION(ENABLED, DISABLED),
+    /**
+     * Focuser max position.
+     */
+    FOCUS_MAX(FOCUS_MAX_VALUE),
     /**
      * abort the focuser motion.
      */
@@ -278,7 +330,7 @@ public enum INDIStandardProperty {
      */
     ACTIVE_DEVICES(ACTIVE_TELESCOPE, ACTIVE_CCD, ACTIVE_FILTER, ACTIVE_FOCUSER, ACTIVE_DOME, ACTIVE_LOCATION, ACTIVE_WEATHER, ACTIVE_TIME, ACTIVE_SWITCH),
     /**
-     * generic SWICH property.
+     * generic SWITCH property.
      */
     SWITCH_MODULE(SWITCHn);
 
@@ -289,9 +341,8 @@ public enum INDIStandardProperty {
 
     /**
      * constructor.
-     * 
-     * @param elements
-     *            standard elements of the property.
+     *
+     * @param elements standard elements of the property.
      */
     INDIStandardProperty(INDIStandardElement... elements) {
         this.elements = elements;

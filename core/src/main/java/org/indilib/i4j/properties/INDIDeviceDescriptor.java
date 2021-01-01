@@ -27,7 +27,7 @@ import java.util.*;
 import static org.indilib.i4j.properties.INDIStandardProperty.*;
 
 /**
- * This enumeration list allows the detectction what kind of device a device is
+ * This enumeration list allows the detection what kind of device a device is
  * depending on the available properties.
  * 
  * @author Richard van Nieuwenhoven
@@ -164,7 +164,7 @@ public enum INDIDeviceDescriptor {
      * @param propertyDescription
      *            the properties that describe a device.
      */
-    private INDIDeviceDescriptor(Description... propertyDescription) {
+    INDIDeviceDescriptor(Description... propertyDescription) {
         this.propertyDescription = propertyDescription;
     }
 

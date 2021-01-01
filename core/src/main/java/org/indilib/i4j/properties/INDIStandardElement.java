@@ -10,12 +10,12 @@ package org.indilib.i4j.properties;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,11 +23,19 @@ package org.indilib.i4j.properties;
  */
 
 /**
- * statndard element names.
- * 
+ * Standard element names.
+ *
  * @author Richard van Nieuwenhoven
  */
 public enum INDIStandardElement {
+    /**
+     * "Enabled" element.
+     */
+    ENABLED,
+    /**
+     * "Disabled" element.
+     */
+    DISABLED,
     /**
      * Abort CCD exposure/any motion.
      */
@@ -154,6 +162,64 @@ public enum INDIStandardElement {
      */
     COOLER_OFF,
     /**
+     * Turn on video stream
+     */
+    STREAM_ON,
+    /**
+     * Turn off video stream
+     */
+    STREAM_OFF,
+    /**
+     * Frame exposure values in seconds when streaming.
+     * This is advisory only as some streaming devices cannot control the exposure duration.
+     */
+    STREAMING_EXPOSURE_VALUE,
+    /**
+     * The divisor is used to skip frames as way to throttle the stream down. By default, a divisor value of 1 does not skip any frames. A value of two would skip every other frame (thereby cutting the FPS in half).
+     * A frame is skipped when the number of captured frames % divisor is equal to zero.
+     */
+    STREAMING_DIVISOR_VALUE,
+    /**
+     * Instant frame rate.
+     */
+    EST_FPS,
+    /**
+     * Average FPS over 1 second.
+     */
+    AVG_FPS,
+    /**
+     * Directory to save the file. It defaults to $HOME/indi__D_
+     */
+    RECORD_FILE_DIR,
+    /**
+     * Recording file name. It defaults to indi_record__T_
+     */
+    RECORD_FILE_NAME,
+    /**
+     * Duration in seconds.
+     */
+    RECORD_DURATION,
+    /**
+     * Total number of frames required
+     */
+    RECORD_FRAME_TOTAL,
+    /**
+     * Start recording. Do not stop unless asked to.
+     */
+    RECORD_ON,
+    /**
+     * Start recording until the duration set in RECORD_OPTIONS has elapsed.
+     */
+    RECORD_DURATION_ON,
+    /**
+     * Start recording until the number of frames set in RECOR_OPTIONS has been captured.
+     */
+    RECORD_FRAME_ON,
+    /**
+     * Stops recording.
+     */
+    RECORD_OFF,
+    /**
      * Turn cooler on.
      */
     COOLER_ON,
@@ -249,6 +315,14 @@ public enum INDIStandardElement {
      */
     FOCUS_ABSOLUTE_POSITION,
     /**
+     * Sync focuser position value.
+     */
+    FOCUS_SYNC_VALUE,
+    /**
+     * Focuser max position.
+     */
+    FOCUS_MAX_VALUE,
+    /**
      * Focus inward.
      */
     FOCUS_INWARD,
@@ -337,6 +411,26 @@ public enum INDIStandardElement {
      * Move the telescope toward West.
      */
     MOTION_WEST,
+    /**
+     * Use current coordinates/encoders as home park position.
+     */
+    PARK_CURRENT,
+    /**
+     * Use driver's default park position.
+     */
+    PARK_DEFAULT,
+    /**
+     * Write TELESCOPE_PARK_POSITION and current parking status to file ($HOME/.indi/ParkData.xml)
+     */
+    PARK_WRITE_DATA,
+    /**
+     * Mount on the East side of pier (Pointing West).
+     */
+    PIER_EAST,
+    /**
+     * Mount on the West side of pier (Pointing East).
+     */
+    PIER_WEST,
     /**
      * property is no General Element.
      */
@@ -497,6 +591,5 @@ public enum INDIStandardElement {
     /**
      * Top-most pixel position.
      */
-    Y,
-
+    Y
 }
