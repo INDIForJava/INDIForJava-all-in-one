@@ -24,6 +24,7 @@ package org.indilib.i4j.driver.focuser;
 
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.driver.*;
+import org.indilib.i4j.properties.INDIStandardElement;
 import org.indilib.i4j.properties.INDIStandardProperty;
 import org.indilib.i4j.protocol.api.INDIConnection;
 
@@ -49,50 +50,42 @@ import static org.indilib.i4j.properties.INDIStandardProperty.ABS_FOCUS_POSITION
  * correctly.
  *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
+ * @author marcocipriani01
  */
+@SuppressWarnings("unused")
 public abstract class INDIFocuserDriver extends INDIDriver {
-
-    protected static final String CONTROL_GROUP = "Control";
-    protected static final String CONFIG_GROUP = "Configuration";
-
-    /**
-     * The last position to which the focuser has been sent (but it may have not
-     * yet reached).
-     */
-    private int desiredAbsPosition;
 
     /**
      * The <code>FOCUS_SPEED</code> property.
      */
     protected INDINumberProperty focusSpeedP;
-
     /**
      * The <code>FOCUS_SPEED_VALUE</code> element.
      */
-    protected INDINumberElement focusSpeedValueE;
-
+    protected INDINumberElement focusSpeedE;
     /**
      * The <code>ABS_FOCUS_POSITION</code> property.
      */
     protected INDINumberProperty absFocusPositionP;
-
     /**
      * The <code>FOCUS_ABSOLUTE_POSITION</code> element.
      */
-    protected INDINumberElement focusAbsolutePositionE;
-
+    protected INDINumberElement absFocusPositionE;
     /**
      * The <code>stop_focusing</code> property (not standard, but very useful).
      */
     protected INDISwitchProperty stopFocusingP;
+    /**
+     * The last position to which the focuser has been sent (but it may have not yet reached).
+     */
+    private int desiredAbsPosition;
 
     /**
      * Constructs a INDIFocuserDriver with a particular <code>inputStream</code>
      * from which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
      *
-     * @param connection
-     *            the indi connection to the server.
+     * @param connection the indi connection to the server.
      */
     public INDIFocuserDriver(INDIConnection connection) {
         super(connection);
@@ -102,12 +95,11 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * Initializes the standard properties. MUST BE CALLED BY SUBDRIVERS.
      */
     protected void initializeStandardProperties() {
-        absFocusPositionP = newNumberProperty().name(ABS_FOCUS_POSITION).label("Absolute").group(CONTROL_GROUP).create();
-        focusAbsolutePositionE = absFocusPositionP.newElement().name("FOCUS_ABSOLUTE_POSITION").label("Focus Position").step(1).numberFormat("%.0f")
+        absFocusPositionP = newNumberProperty().name(ABS_FOCUS_POSITION).label("Absolute").group(INDIDriver.GROUP_MAIN_CONTROL).create();
+        absFocusPositionE = absFocusPositionP.newElement().name(INDIStandardElement.FOCUS_ABSOLUTE_POSITION)
+                .label("Focus Position").step(1).numberFormat("%.0f")
                 .numberValue(getInitialAbsPos()).minimum(getMinimumAbsPos()).maximum(getMaximumAbsPos()).create();
-
         desiredAbsPosition = getInitialAbsPos();
-
         addProperty(absFocusPositionP);
     }
 
@@ -123,10 +115,29 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     }
 
     /**
+     * Gets the focuser speed element step. Override in subclasses.
+     *
+     * @return Gets the focuser speed element step.
+     */
+    protected int getSpeedStep() {
+        return 1;
+    }
+
+    /**
+     * Gets the focuser speed element initial value. Override in subclasses.
+     *
+     * @return the focuser speed element initial value.
+     */
+    protected int getInitialSpeed() {
+        return 0;
+    }
+
+    /**
      * Called when the <code>FOCUS_SPEED</code> property has been changed. Must
      * be overloaded if the driver uses the <code>FOCUS_SPEED</code> property.
      */
     public void speedHasBeenChanged() {
+
     }
 
     /**
@@ -147,7 +158,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
 
     /**
      * Returns the initial value that the <code>FOCUS_ABSOLUTE_POSITION</code>
-     * element shuld have.
+     * element should have.
      *
      * @return The initial position
      */
@@ -165,6 +176,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * property.
      */
     public void stopHasBeenRequested() {
+
     }
 
     /**
@@ -173,13 +185,11 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showSpeedProperty() {
         if (focusSpeedP == null) {
-            focusSpeedP = newNumberProperty().saveable(true).name("FOCUS_SPEED").label("Focus Speed").group(CONFIG_GROUP).create();
-            focusSpeedValueE = focusSpeedP.getElement("FOCUS_SPEED_VALUE");
-            if (focusSpeedValueE == null) {
-                focusSpeedValueE = focusSpeedP.newElement().name("").label("").numberValue(getMaximumSpeed()).maximum(getMaximumSpeed()).step(1).numberFormat("%.0f").create();
-            }
+            focusSpeedP = newNumberProperty().name(INDIStandardProperty.FOCUS_SPEED)
+                    .label("Focus Speed").group(INDIDriver.GROUP_OPTIONS).create();
+            focusSpeedE = focusSpeedP.newElement().name(INDIStandardElement.FOCUS_SPEED_VALUE).label("Focus Speed")
+                    .numberValue(getMaximumSpeed()).maximum(getMaximumSpeed()).step(getSpeedStep()).numberFormat("%.0f").create();
         }
-
         addProperty(focusSpeedP);
     }
 
@@ -189,8 +199,9 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void showStopFocusingProperty() {
         if (stopFocusingP == null) {
-            stopFocusingP = newSwitchProperty().name(INDIStandardProperty.FOCUS_ABORT_MOTION).label("Stop focuser").group(CONTROL_GROUP).create();
-            stopFocusingP.newElement().name("ABORT").label("Stop").create();
+            stopFocusingP = newSwitchProperty().name(INDIStandardProperty.FOCUS_ABORT_MOTION)
+                    .label("Stop focuser").group(INDIDriver.GROUP_MAIN_CONTROL).create();
+            stopFocusingP.newElement().name(INDIStandardElement.ABORT).label("Stop").create();
         }
         addProperty(stopFocusingP);
     }
@@ -215,9 +226,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * @return The current speed value
      */
     protected int getCurrentSpeed() {
-        if (focusSpeedValueE != null) {
-            return focusSpeedValueE.getValue().intValue();
-        }
+        if (focusSpeedE != null) return focusSpeedE.getValue().intValue();
         return -1;
     }
 
@@ -237,9 +246,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void finalPositionReached() {
         absFocusPositionP.setState(PropertyStates.OK);
-
         updateProperty(absFocusPositionP);
-
     }
 
     /**
@@ -247,7 +254,6 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void desiredSpeedSet() {
         focusSpeedP.setState(PropertyStates.OK);
-
         updateProperty(focusSpeedP);
     }
 
@@ -257,9 +263,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      */
     protected void stopped() {
         stopFocusingP.setState(PropertyStates.OK);
-
         updateProperty(stopFocusingP);
-
     }
 
     /**
@@ -267,28 +271,22 @@ public abstract class INDIFocuserDriver extends INDIDriver {
      * called with any frequency, but a less than one second is preferred to
      * notify the clients of the movement of the focuser.
      *
-     * @param currentPos
-     *            The current position of the focuser.
+     * @param currentPos The current position of the focuser.
      */
     protected void positionChanged(int currentPos) {
-        focusAbsolutePositionE.setValue("" + currentPos);
-
+        absFocusPositionE.setValueAsDouble(currentPos);
         updateProperty(absFocusPositionP);
-
     }
 
     /**
      * Should be called by the drivers when the focuser speed changes (if for
      * example the device has a potentiometer to control the speed).
      *
-     * @param currentSpeed
-     *            The current speed of the focuser.
+     * @param currentSpeed The current speed of the focuser.
      */
     protected void speedChanged(int currentSpeed) {
-        focusSpeedValueE.setValue("" + currentSpeed);
-
+        focusSpeedE.setValueAsDouble(currentSpeed);
         updateProperty(focusSpeedP);
-
     }
 
     @Override
@@ -296,9 +294,7 @@ public abstract class INDIFocuserDriver extends INDIDriver {
         if (property == stopFocusingP) {
             stopFocusingP.setState(PropertyStates.BUSY);
             stopFocusingP.firstElement().setOff();
-
             updateProperty(stopFocusingP);
-
             stopHasBeenRequested();
         }
     }
@@ -307,42 +303,28 @@ public abstract class INDIFocuserDriver extends INDIDriver {
     public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
         if (property == absFocusPositionP) {
             int newVal = elementsAndValues[0].getValue().intValue();
-
             if (newVal >= getMinimumAbsPos() && newVal <= getMaximumAbsPos()) {
-                if (focusAbsolutePositionE.getValue().intValue() != newVal) {
+                if (absFocusPositionE.getValue().intValue() != newVal) {
                     absFocusPositionP.setState(PropertyStates.BUSY);
-
                     desiredAbsPosition = newVal;
-
                     updateProperty(absFocusPositionP);
-
                     absolutePositionHasBeenChanged();
                 } else {
                     absFocusPositionP.setState(PropertyStates.OK);
-
                     updateProperty(absFocusPositionP);
-
                 }
             }
-        }
-
-        if (property == focusSpeedP) {
+        } else if (property == focusSpeedP) {
             int newVal = elementsAndValues[0].getValue().intValue();
-
             if (newVal >= 0 && newVal <= getMaximumSpeed()) {
-                if (focusSpeedValueE.getValue().intValue() != newVal) {
+                if (focusSpeedE.getValue().intValue() != newVal) {
                     focusSpeedP.setState(PropertyStates.BUSY);
-
-                    focusSpeedValueE.setValue("" + newVal);
-
+                    focusSpeedE.setValue(newVal);
                     updateProperty(focusSpeedP);
-
                     speedHasBeenChanged();
                 } else {
                     focusSpeedP.setState(PropertyStates.OK);
-
                     updateProperty(focusSpeedP);
-
                 }
             }
         }

@@ -10,12 +10,12 @@ package org.indilib.i4j.driver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -47,7 +47,7 @@ import static org.indilib.i4j.INDIDateFormat.dateFormat;
  * A class representing a Driver in the INDI Protocol. INDI Drivers should
  * extend this class. It is in charge of stablishing the connection to the
  * clients and parsing / formating any incoming / leaving messages.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -57,7 +57,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * The property tab for the main controls of the driver.
      */
     public static final String GROUP_MAIN_CONTROL = "Main Control";
-
+    /**
+     * The property tab for the connection options.
+     */
+    public static final String GROUP_CONNECTION = "Connection";
     /**
      * The property tab for the options of the driver.
      */
@@ -67,47 +70,40 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * The logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIDriver.class);
-
+    /**
+     * the driver streamConnection (in out xml stream of messages).
+     */
+    private final INDIConnection connection;
+    /**
+     * A list of Properties for this Driver.
+     */
+    private final Map<String, INDIProperty<?>> properties;
+    /**
+     * A list of subdrivers.
+     */
+    private final List<INDIDriver> subDrivers;
     /**
      * the connection extension that controls the connect and disconnect
      * property.
      */
     @InjectExtension
     protected INDIConnectionExtension connectionExtension;
-
     /**
-     * the driver streamConnection (in out xml stream of messages).
-     */
-    private final INDIConnection connection;
-
-    /**
-     * A list of Properties for this Driver.
-     */
-    private final Map<String, INDIProperty<?>> properties;
-
-    /**
-     * The protokol reader thread that reads asynchron from the input stream,
-     * and reacts on the comming indi protokol messages.
+     * The protocol reader thread that reads asynchronously from the input stream,
+     * and reacts on the coming indi protocol messages.
      */
     private INDIProtocolReader reader;
-
     /**
      * To know if the driver has already been started or not.
      */
     private boolean started;
 
     /**
-     * A list of subdrivers.
-     */
-    private final List<INDIDriver> subDrivers;
-
-    /**
      * Constructs a INDIDriver with a particular <code>inputStream</code> from
      * which to read the incoming messages (from clients) and a
      * <code>outputStream</code> to write the messages to the clients.
-     * 
-     * @param connection
-     *            The indi connection streams.
+     *
+     * @param connection The indi connection streams.
      */
     protected INDIDriver(INDIConnection connection) {
         this.connection = connection;
@@ -121,9 +117,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Adds a new Property to the Device. A message about it will be send to the
      * clients. Drivers must call this method if they want to define a new
      * Property.
-     * 
-     * @param property
-     *            The Property to be added.
+     *
+     * @param property The Property to be added.
      */
     public void addProperty(INDIProperty<?> property) {
         addProperty(property, null);
@@ -150,7 +145,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Gets the name of the Driver.
-     * 
+     *
      * @return The name of the Driver.
      */
     public abstract String getName();
@@ -158,7 +153,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * Gets the <code>INDIOutputStream</code> of the driver (useful for
      * subdrivers).
-     * 
+     *
      * @return The <code>INDIOutputStream</code> of the driver.
      */
     public INDIOutputStream getOutputStream() {
@@ -172,7 +167,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Gets a list of all the Properties in the Driver.
-     * 
+     *
      * @return A List of all the Properties in the Driver.
      */
     public List<INDIProperty<?>> getPropertiesAsList() {
@@ -183,7 +178,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * A method that should be implemented when the driver is being destroyed to
      * stop threads, kill sub-drivers, etc. By default it calls
      * <code>removeDevice</code>.
-     * 
+     *
      * @see #removeDevice
      */
     public void isBeingDestroyed() {
@@ -193,9 +188,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Gets the started or not state of the Driver.
-     * 
+     *
      * @return <code>true</code> if the Driver has already started to listen to
-     *         messages. <code>false</code> otherwise.
+     * messages. <code>false</code> otherwise.
      */
     public boolean isStarted() {
         return started;
@@ -223,10 +218,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     /**
-     * @param clazz
-     *            the property class.
-     * @param <PropertyClass>
-     *            the property class.
+     * @param clazz           the property class.
+     * @param <PropertyClass> the property class.
      * @return a new property builder.
      */
     public <PropertyClass extends INDIProperty<?>> INDIPropertyBuilder<PropertyClass> newProperty(Class<PropertyClass> clazz) {
@@ -254,14 +247,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * incorrect BLOB Message received will be discarded and this method will
      * not be called.It is not abstract anymore because of the alternative way
      * to attach event handler directly to the properties.
-     * 
-     * @param property
-     *            The BLOB Property asked to change.
-     * @param timestamp
-     *            The timestamp of the received message
-     * @param elementsAndValues
-     *            An array of pairs of BLOB Elements and its requested values to
-     *            be parsed.
+     *
+     * @param property          The BLOB Property asked to change.
+     * @param timestamp         The timestamp of the received message
+     * @param elementsAndValues An array of pairs of BLOB Elements and its requested values to
+     *                          be parsed.
      */
     public void processNewBLOBValue(INDIBLOBProperty property, Date timestamp, INDIBLOBElementAndValue[] elementsAndValues) {
     }
@@ -273,14 +263,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * incorrect Number Message received will be discarded and this method will
      * not be called.It is not abstract anymore because of the alternative way
      * to attach event handler directly to the properties.
-     * 
-     * @param property
-     *            The Number Property asked to change.
-     * @param timestamp
-     *            The timestamp of the received message
-     * @param elementsAndValues
-     *            An array of pairs of Number Elements and its requested values
-     *            to be parsed.
+     *
+     * @param property          The Number Property asked to change.
+     * @param timestamp         The timestamp of the received message
+     * @param elementsAndValues An array of pairs of Number Elements and its requested values
+     *                          to be parsed.
      */
     public void processNewNumberValue(INDINumberProperty property, Date timestamp, INDINumberElementAndValue[] elementsAndValues) {
 
@@ -293,14 +280,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * incorrect Switch Message received will be discarded and this method will
      * not be called.It is not abstract anymore because of the alternative way
      * to attach event handler directly to the properties.
-     * 
-     * @param property
-     *            The Switch Property asked to change.
-     * @param timestamp
-     *            The timestamp of the received message
-     * @param elementsAndValues
-     *            An array of pairs of Switch Elements and its requested values
-     *            to be parsed.
+     *
+     * @param property          The Switch Property asked to change.
+     * @param timestamp         The timestamp of the received message
+     * @param elementsAndValues An array of pairs of Switch Elements and its requested values
+     *                          to be parsed.
      */
     public void processNewSwitchValue(INDISwitchProperty property, Date timestamp, INDISwitchElementAndValue[] elementsAndValues) {
     }
@@ -312,14 +296,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * incorrect Text Message received will be discarded and this method will
      * not be called. It is not abstract anymore because of the alternative way
      * to attach event handler directly to the properties.
-     * 
-     * @param property
-     *            The Text Property asked to change.
-     * @param timestamp
-     *            The timestamp of the received message
-     * @param elementsAndValues
-     *            An array of pairs of Text Elements and its requested values to
-     *            be parsed.
+     *
+     * @param property          The Text Property asked to change.
+     * @param timestamp         The timestamp of the received message
+     * @param elementsAndValues An array of pairs of Text Elements and its requested values to
+     *                          be parsed.
      */
     public void processNewTextValue(INDITextProperty property, Date timestamp, INDITextElementAndValue[] elementsAndValues) {
     }
@@ -350,9 +331,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Removes a Property from the Device. A XML message about it will be send
      * to the clients. Drivers must call this method if they want to remove a
      * Property.
-     * 
-     * @param property
-     *            The property to be removed
+     *
+     * @param property The property to be removed
      */
     public void removeProperty(INDIProperty<?> property) {
         removeProperty(property, null);
@@ -386,10 +366,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Notifies the clients about the property and its values. Drivres must call
      * this method when the values of the Elements of the property are updated
      * in order to notify the clients.
-     * 
-     * @param property
-     *            The Property whose values have change and about which the
-     *            clients must be notified.
+     *
+     * @param property The Property whose values have change and about which the
+     *                 clients must be notified.
      * @return true if the update was successful.
      */
     public boolean updateProperty(INDIProperty<?> property) {
@@ -398,17 +377,14 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Notifies the clients about the property and its values with an additional
-     * <code>message</code>. Drivres must call this method when the values of
+     * <code>message</code>. Drivers must call this method when the values of
      * the Elements of the property are updated in order to notify the clients.
-     * 
-     * @param property
-     *            The Property whose values have change and about which the
-     *            clients must be notified.
-     * @param includeMinMax
-     *            sould the Min Max Step values be included.
-     * @param message
-     *            The message to be sended to the clients with the udpate
-     *            message.
+     *
+     * @param property      The Property whose values have change and about which the
+     *                      clients must be notified.
+     * @param includeMinMax should the Min Max Step values be included.
+     * @param message       The message to be sended to the clients with the update
+     *                      message.
      * @return true if the update was successful.
      */
     public boolean updateProperty(INDIProperty<?> property, boolean includeMinMax, String message) {
@@ -429,7 +405,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         } else {
             if (connectionExtension.isActive() && !connectionExtension.isConnected()) {
                 // ok, this is normal behavior when a property is set but nobody
-                // has yet conneted the driver.
+                // has yet connected the driver.
                 return true;
             }
             LOG.debug("The Property is not from this driver " + getName() + ". Maybe you forgot to add it? " + property.getName());
@@ -441,13 +417,11 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Notifies the clients about the property and its values with an additional
      * <code>message</code>. Drivres must call this method when the values of
      * the Elements of the property are updated in order to notify the clients.
-     * 
-     * @param property
-     *            The Property whose values have change and about which the
-     *            clients must be notified.
-     * @param message
-     *            The message to be sended to the clients with the udpate
-     *            message.
+     *
+     * @param property The Property whose values have change and about which the
+     *                 clients must be notified.
+     * @param message  The message to be sended to the clients with the udpate
+     *                 message.
      * @return true if the update was successful.
      */
     public boolean updateProperty(INDIProperty<?> property, String message) {
@@ -458,12 +432,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Adds a new Property to the Device with a <code>message</code> to the
      * client. A message about it will be send to the clients. Drivers must call
      * this method if they want to define a new Property.
-     * 
-     * @param property
-     *            The Property to be added.
-     * @param message
-     *            The message to be sended to the clients with the definition
-     *            message.
+     *
+     * @param property The Property to be added.
+     * @param message  The message to be sended to the clients with the definition
+     *                 message.
      */
     protected void addProperty(INDIProperty<?> property, String message) {
         if (!properties.containsValue(property)) {
@@ -482,13 +454,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Gets a Property of the Driver given its name.
-     * 
-     * @param propertyName
-     *            The name of the Property to be retrieved.
+     *
+     * @param propertyName The name of the Property to be retrieved.
      * @return The Property with <code>propertyName</code> name.
-     *         <code>null</code> if there is no property with that name.
+     * <code>null</code> if there is no property with that name.
      */
-    protected INDIProperty getProperty(String propertyName) {
+    protected INDIProperty<?> getProperty(String propertyName) {
         return properties.get(propertyName);
     }
 
@@ -502,9 +473,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Registers a subdriver that may receive messages.
-     * 
-     * @param driver
-     *            The subdriver to register.
+     *
+     * @param driver The subdriver to register.
      */
     protected void registerSubdriver(INDIDriver driver) {
         subDrivers.add(driver);
@@ -515,10 +485,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * message about it will be send to the clients. Drivers must call this
      * method if they want to remove the entire device from the clients. It
      * should be used if the Driver is ending.
-     * 
-     * @param message
-     *            The message to be sended to the clients. It can be
-     *            <code>null</code> if there is nothing special to say.
+     *
+     * @param message The message to be sended to the clients. It can be
+     *                <code>null</code> if there is nothing special to say.
      */
     protected void removeDevice(String message) {
         sendDelPropertyMessage(message);
@@ -528,12 +497,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Removes a Property from the Device with a <code>message</code>. A XML
      * message about it will be send to the clients. Drivers must call this
      * method if they want to remove a Property.
-     * 
-     * @param property
-     *            The property to be removed
-     * @param message
-     *            A message that will be included in the XML message to the
-     *            client.
+     *
+     * @param property The property to be removed
+     * @param message  A message that will be included in the XML message to the
+     *                 client.
      */
     protected void removeProperty(INDIProperty<?> property, String message) {
         if (properties.containsValue(property)) {
@@ -545,9 +512,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Unregister a subdriver that may not receive any other message.
-     * 
-     * @param driver
-     *            The subdriver to unregister.
+     *
+     * @param driver The subdriver to unregister.
      */
     protected void unregisterSubdriver(INDIDriver driver) {
         subDrivers.remove(driver);
@@ -558,24 +524,20 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * specified can be empty (first device of the specified type will fit. a
      * name the device with the specified name will be used. or an device url to
      * a local or external server.
-     * 
-     * @param element
-     *            the element to fill with data from an other driver.
-     * @param deviceType
-     *            the type of the device we want to observe
-     * @param elementName
-     *            the element name in that device.
+     *
+     * @param element     the element to fill with data from an other driver.
+     * @param deviceType  the type of the device we want to observe
+     * @param elementName the element name in that device.
      */
-    protected void wireElement(INDIElement element, String deviceType, String elementName) {
+    protected void wireElement(INDIElement<?> element, String deviceType, String elementName) {
 
     }
 
     /**
      * Returns the subdriver to which a xml message is sent (if any).
      * <code>null</code> if it is not directed to any subdriver.
-     * 
-     * @param xml
-     *            The XML message
+     *
+     * @param xml The XML message
      * @return The subdriver to which the message is directed.
      */
     private INDIDriver getSubdriver(INDIProtocol<?> xml) {
@@ -591,11 +553,10 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * Gets a device by its name. Returns <code>null</code> if there is no
      * subdriver with that name.
-     * 
-     * @param name
-     *            The name of the subdriver to return
+     *
+     * @param name The name of the subdriver to return
      * @return The subdriver or <code>null</code> if there is no subdrive with
-     *         this name.
+     * this name.
      */
     private INDIDriver getSubdriver(String name) {
         for (INDIDriver d : subDrivers) {
@@ -608,24 +569,18 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Processes a &lt;getProperties&gt; message.
-     * 
-     * @param xml
-     *            The XML message
+     *
+     * @param xml The XML message
      */
     private void processGetProperties(GetProperties xml) {
         if (xml.getVersion() == null || xml.getVersion().trim().isEmpty()) {
             LOG.error("getProperties: no version specified");
-
             return;
         }
-
         if (xml.getName() != null && !xml.getName().trim().isEmpty()) {
             String propertyName = xml.getName();
             INDIProperty<?> p = getProperty(propertyName);
-
-            if (p != null) {
-                sendDefXXXVectorMessage(p, null);
-            }
+            if (p != null) sendDefXXXVectorMessage(p, null);
         } else { // Send all of them
             sendAllProperties();
         }
@@ -634,15 +589,12 @@ public abstract class INDIDriver implements INDIProtocolParser {
     /**
      * Returns an array of Elements and its corresponded requested values from a
      * XML message.
-     * 
-     * @param property
-     *            The property from which to parse the Elements.
-     * @param xml
-     *            The XML message
+     *
+     * @param property The property from which to parse the Elements.
+     * @param xml      The XML message
      * @return An array of Elements and its corresponding requested values
      */
-    private INDIElementAndValue[] processINDIElements(INDIProperty property, NewVector<?> xml) {
-
+    private INDIElementAndValue[] processINDIElements(INDIProperty<?> property, NewVector<?> xml) {
         Class<?> oneType;
         if (property instanceof INDITextProperty) {
             oneType = OneText.class;
@@ -655,46 +607,34 @@ public abstract class INDIDriver implements INDIProtocolParser {
         } else {
             return new INDIElementAndValue[0];
         }
-
         List<INDIElementAndValue> list = new ArrayList<>();
-
         for (OneElement<?> node : xml.getElements()) {
             if (oneType.isAssignableFrom(node.getClass())) {
                 INDIElementAndValue ev = processOneXXX(property, node);
-
                 if (ev != null) {
                     list.add(ev);
                 }
             }
-
         }
-
         return list.toArray(new INDIElementAndValue[0]);
     }
 
     /**
      * Parses a &lt;newBLOBVector&gt; XML message.
-     * 
-     * @param xml
-     *            The &lt;newBLOBVector&gt; XML message to be parsed.
+     *
+     * @param xml The &lt;newBLOBVector&gt; XML message to be parsed.
      */
     private void processNewBLOBVector(NewBlobVector xml) {
-        INDIProperty prop = processNewXXXVector(xml);
-
+        INDIProperty<?> prop = processNewXXXVector(xml);
         if (prop == null) {
             return;
         }
-
         if (!(prop instanceof INDIBLOBProperty)) {
             return;
         }
-
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
-
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
-
         INDIBLOBElementAndValue[] newEvs = new INDIBLOBElementAndValue[evs.length];
-
         for (int i = 0; i < newEvs.length; i++) {
             newEvs[i] = (INDIBLOBElementAndValue) evs[i];
         }
@@ -707,31 +647,23 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Parses a &lt;newNumberVector&gt; XML message.
-     * 
-     * @param xml
-     *            The &lt;newNumberVector&gt; XML message to be parsed.
+     *
+     * @param xml The &lt;newNumberVector&gt; XML message to be parsed.
      */
     private void processNewNumberVector(NewNumberVector xml) {
-        INDIProperty prop = processNewXXXVector(xml);
-
+        INDIProperty<?> prop = processNewXXXVector(xml);
         if (prop == null) {
             return;
         }
-
         if (!(prop instanceof INDINumberProperty)) {
             return;
         }
-
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
-
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
-
         INDINumberElementAndValue[] newEvs = new INDINumberElementAndValue[evs.length];
-
         for (int i = 0; i < newEvs.length; i++) {
             newEvs[i] = (INDINumberElementAndValue) evs[i];
         }
-
         IEventHandler handler = prop.getEventHandler();
         if (handler != null) {
             handler.processNewValue(prop, timestamp, newEvs);
@@ -743,62 +675,46 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Parses a &lt;newSwitchVector&gt; XML message. If the switch is the
      * standard CONNECTION property it will analyze the message and call the
      * apropriate methods.
-     * 
-     * @param xml
-     *            The &lt;newSwitchVector&gt; XML message to be parsed.
+     *
+     * @param xml The &lt;newSwitchVector&gt; XML message to be parsed.
      */
     private void processNewSwitchVector(NewSwitchVector xml) {
-        INDIProperty prop = processNewXXXVector(xml);
-
+        INDIProperty<?> prop = processNewXXXVector(xml);
         if (prop == null) {
             return;
         }
-
         if (!(prop instanceof INDISwitchProperty)) {
             return;
         }
-
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
-
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
-
         INDISwitchElementAndValue[] newEvs = new INDISwitchElementAndValue[evs.length];
-
         for (int i = 0; i < newEvs.length; i++) {
             newEvs[i] = (INDISwitchElementAndValue) evs[i];
         }
-
         IEventHandler handler = prop.getEventHandler();
         if (handler != null) {
             handler.processNewValue(prop, timestamp, newEvs);
         }
         processNewSwitchValue((INDISwitchProperty) prop, timestamp, newEvs);
-
     }
 
     /**
      * Parses a &lt;newTextVector&gt; XML message.
-     * 
-     * @param xml
-     *            The &lt;newTextVector&gt; XML message to be parsed.
+     *
+     * @param xml The &lt;newTextVector&gt; XML message to be parsed.
      */
     private void processNewTextVector(NewTextVector xml) {
-        INDIProperty prop = processNewXXXVector(xml);
-
+        INDIProperty<?> prop = processNewXXXVector(xml);
         if (prop == null) {
             return;
         }
-
         if (!(prop instanceof INDITextProperty)) {
             return;
         }
-
         INDIElementAndValue[] evs = processINDIElements(prop, xml);
-
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
-
         INDITextElementAndValue[] newEvs = new INDITextElementAndValue[evs.length];
-
         for (int i = 0; i < newEvs.length; i++) {
             newEvs[i] = (INDITextElementAndValue) evs[i];
         }
@@ -811,59 +727,45 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Processes a &lt;newXXXVector&gt; message.
-     * 
-     * @param xml
-     *            The XML message
+     *
+     * @param xml The XML message
      * @return The INDI Property to which the <code>xml</code> message refers.
      */
     private INDIProperty processNewXXXVector(NewVector<?> xml) {
         if (!xml.hasDevice() || !xml.hasName()) {
             return null;
         }
-
         String devName = xml.getDevice();
         String propName = xml.getName();
-
         if (devName.compareTo(getName()) != 0) { // If the message is not for
-                                                 // this device
+            // this device
             return null;
         }
-
-        INDIProperty prop = getProperty(propName);
-
-        return prop;
+        return getProperty(propName);
     }
 
     /**
      * Processes a XML &lt;oneXXX&gt; message for a property.
-     * 
-     * @param property
-     *            The property from which to parse the Element.
-     * @param xml
-     *            The &lt;oneXXX&gt; XML message
+     *
+     * @param property The property from which to parse the Element.
+     * @param xml      The &lt;oneXXX&gt; XML message
      * @return A Element and its corresponding requested value
      */
-    private INDIElementAndValue processOneXXX(INDIProperty property, OneElement<?> xml) {
+    private INDIElementAndValue processOneXXX(INDIProperty<?> property, OneElement<?> xml) {
         if (!xml.hasName()) {
             return null;
         }
-
         String elName = xml.getName();
-
-        INDIElement el = property.getElement(elName);
-
+        INDIElement<?> el = property.getElement(elName);
         if (el == null) {
             return null;
         }
-
         Object value;
-
         try {
             value = el.parseOneValue(xml);
         } catch (IllegalArgumentException e) {
             return null;
         }
-
         if (el instanceof INDITextElement) {
             return new INDITextElementAndValue((INDITextElement) el, (String) value);
         } else if (el instanceof INDISwitchElement) {
@@ -873,7 +775,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
         } else if (el instanceof INDIBLOBElement) {
             return new INDIBLOBElementAndValue((INDIBLOBElement) el, (INDIBLOBValue) value);
         }
-
         return null;
     }
 
@@ -881,34 +782,29 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * Notifies the clients about a new property with a <code>message</code>.
      * The <code>message</code> can be <code>null</code> if there is nothing to
      * special to say.
-     * 
-     * @param property
-     *            The property that will be notified.
-     * @param message
-     *            The extra message text for the client.
+     *
+     * @param property The property that will be notified.
+     * @param message  The extra message text for the client.
      */
-    private void sendDefXXXVectorMessage(INDIProperty property, String message) {
+    private void sendDefXXXVectorMessage(INDIProperty<?> property, String message) {
         sendXML(property.getXMLPropertyDefinition(message));
     }
 
     /**
      * Sends a message to the client to remove a Property with a
      * <code>message</code>.
-     * 
-     * @param property
-     *            The property that is being removed.
-     * @param message
-     *            The optional message (can be <code>null</code>).
+     *
+     * @param property The property that is being removed.
+     * @param message  The optional message (can be <code>null</code>).
      */
-    private void sendDelPropertyMessage(INDIProperty property, String message) {
+    private void sendDelPropertyMessage(INDIProperty<?> property, String message) {
         sendXML(new DelProperty().setDevice(this.getName()).setName(property.getName()).setTimestamp(dateFormat().getCurrentTimestamp()).setMessage(message));
     }
 
     /**
      * Sends a mesage to the client to remove the entire device.
-     * 
-     * @param message
-     *            A optional message (can be <code>null</code>).
+     *
+     * @param message A optional message (can be <code>null</code>).
      */
     private void sendDelPropertyMessage(String message) {
         sendXML(new DelProperty().setDevice(this.getName()).setTimestamp(dateFormat().getCurrentTimestamp()).setMessage(message));
@@ -916,9 +812,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
 
     /**
      * Sends a XML message to the clients.
-     * 
-     * @param xml
-     *            The message to be sended.
+     *
+     * @param xml The message to be sended.
      */
     private void sendXML(INDIProtocol<?> xml) {
         try {
@@ -927,5 +822,4 @@ public abstract class INDIDriver implements INDIProtocolParser {
             throw new IllegalStateException("could not write to output stream", e);
         }
     }
-
 }

@@ -31,7 +31,7 @@ package org.indilib.i4j.driver;
  *            the type for this element and value holder.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
-public class INDIElementAndValue<Element extends INDIElement, Type> {
+public class INDIElementAndValue<Element extends INDIElement<?>, Type> {
 
     /**
      * The Number element.

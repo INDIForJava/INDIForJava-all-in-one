@@ -225,7 +225,6 @@ public class INDINumberElement extends INDIElement {
      */
     private String getNumberAsString(double number) {
         String aux;
-
         if (numberFormat.endsWith("m")) {
             aux = sFormatter.format(number);
         } else {
@@ -233,7 +232,6 @@ public class INDINumberElement extends INDIElement {
             aux = formatter.format(getNumberFormat(), number).toString();
             formatter.close();
         }
-
         return aux;
     }
 
@@ -305,7 +303,6 @@ public class INDINumberElement extends INDIElement {
      */
     private void setValue(String valueS) {
         value = parseNumber(valueS);
-
         if (value < min || value > max) {
             String message = this.getProperty().getName() + " ; " + getName() + " ; " + "Number (" + valueS + ") not in range [" + min + ", " + max + "]";
             LOG.error(message);
@@ -345,7 +342,6 @@ public class INDINumberElement extends INDIElement {
         }
         uiComponent = INDIViewCreator.getDefault().createNumberElementView(this, getProperty().getPermission());
         addINDIElementListener(uiComponent);
-
         return uiComponent;
     }
 
@@ -368,9 +364,7 @@ public class INDINumberElement extends INDIElement {
         if (valueToCheck == null) {
             throw new INDIValueException(this, "null value");
         }
-
         double d;
-
         if (valueToCheck instanceof Double) {
             d = (Double) valueToCheck;
         } else {
@@ -385,15 +379,11 @@ public class INDINumberElement extends INDIElement {
                 throw new INDIValueException(this, "The number value is not correct (not Double nor String)");
             }
         }
-
         if (d < min) {
             throw new INDIValueException(this, "Number less than minimum (" + getMinAsString() + ")");
-        }
-
-        if (d > max) {
+        } else if (d > max) {
             throw new INDIValueException(this, "Number greater than maximum (" + getMaxAsString() + ")");
         }
-
         return true;
     }
 
