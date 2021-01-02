@@ -1,4 +1,4 @@
-<img src="assets/logo.png" width="100" style="margin-bottom: 8px" alt="INDIForJava logo"/>
+<img src="res/logo.png" width="100" style="margin-bottom: 8px" alt="INDIForJava logo"/>
 
 ## The INDIForJava project
 
