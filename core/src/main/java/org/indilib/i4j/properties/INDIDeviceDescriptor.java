@@ -10,12 +10,12 @@ package org.indilib.i4j.properties;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,7 +29,7 @@ import static org.indilib.i4j.properties.INDIStandardProperty.*;
 /**
  * This enumeration list allows the detection what kind of device a device is
  * depending on the available properties.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public enum INDIDeviceDescriptor {
@@ -81,88 +81,15 @@ public enum INDIDeviceDescriptor {
     UNKNOWN();
 
     /**
-     * Description of a property that should be availabe or missing in a device.
-     */
-    private static final class Description {
-
-        /**
-         * should the property be there or not.
-         */
-        private final boolean present;
-
-        /**
-         * name of the property.
-         */
-        private final String name;
-
-        /**
-         * @return if the property should be there or just not.
-         */
-        private boolean isPresent() {
-            return present;
-        }
-
-        /**
-         * constructor.
-         * 
-         * @param name
-         *            the name of the property.
-         * @param present
-         *            should it be present or not present.
-         */
-        private Description(String name, boolean present) {
-            this.name = name;
-            this.present = present;
-        }
-    }
-
-    /**
-     * a match during the search for devices.
-     */
-    private static class Match {
-
-        /**
-         * the matching descriptor.
-         */
-        private final INDIDeviceDescriptor descriptor;
-
-        /**
-         * how good does the device match? the higher the better.
-         */
-        private final int matchPoints;
-
-        /**
-         * constructor for the Match.
-         * 
-         * @param descriptor
-         *            the matching descriptor.
-         * @param matchPoints
-         *            how good does the device match? the higher the better.
-         */
-        public Match(INDIDeviceDescriptor descriptor, int matchPoints) {
-            this.descriptor = descriptor;
-            this.matchPoints = matchPoints;
-        }
-    }
-
-    /**
      * properties that describe a device.
      */
     private final Description[] propertyDescription;
 
     /**
-     * @return properties that describe a device.
-     */
-    private Description[] getPropertyDescription() {
-        return propertyDescription;
-    }
-
-    /**
      * construct a device description based on avaiable and not available
      * properties.
-     * 
-     * @param propertyDescription
-     *            the properties that describe a device.
+     *
+     * @param propertyDescription the properties that describe a device.
      */
     INDIDeviceDescriptor(Description... propertyDescription) {
         this.propertyDescription = propertyDescription;
@@ -170,9 +97,8 @@ public enum INDIDeviceDescriptor {
 
     /**
      * the property that should be present in a device.
-     * 
-     * @param property
-     *            the property
+     *
+     * @param property the property
      * @return the description.
      */
     private static Description present(INDIStandardProperty property) {
@@ -181,9 +107,8 @@ public enum INDIDeviceDescriptor {
 
     /**
      * the property that should be missing in a device.
-     * 
-     * @param property
-     *            the property
+     *
+     * @param property the property
      * @return the description.
      */
     private static Description missing(INDIStandardProperty property) {
@@ -193,9 +118,8 @@ public enum INDIDeviceDescriptor {
     /**
      * Analyze a list of properties and depending on the presence or not
      * Presence of properties try to detect the type of device something is.
-     * 
-     * @param properties
-     *            the available list of properties.
+     *
+     * @param properties the available list of properties.
      * @return the enumeration that describes the device type.
      */
     public static INDIDeviceDescriptor[] detectDeviceType(Collection<String> properties) {
@@ -233,9 +157,8 @@ public enum INDIDeviceDescriptor {
     /**
      * take the list of strings and rename each to a naming that is compatible
      * with the device list. So all upper cases and all digits to a small 'n'.
-     * 
-     * @param properties
-     *            the list of properties to convert
+     *
+     * @param properties the list of properties to convert
      * @return the new unified list.
      */
     private static Set<String> unfifyPropertyNames(Collection<String> properties) {
@@ -252,5 +175,73 @@ public enum INDIDeviceDescriptor {
             indexedProperties.add(buffer.toString());
         }
         return indexedProperties;
+    }
+
+    /**
+     * @return properties that describe a device.
+     */
+    private Description[] getPropertyDescription() {
+        return propertyDescription;
+    }
+
+    /**
+     * Description of a property that should be availabe or missing in a device.
+     */
+    private static final class Description {
+
+        /**
+         * should the property be there or not.
+         */
+        private final boolean present;
+
+        /**
+         * name of the property.
+         */
+        private final String name;
+
+        /**
+         * constructor.
+         *
+         * @param name    the name of the property.
+         * @param present should it be present or not present.
+         */
+        private Description(String name, boolean present) {
+            this.name = name;
+            this.present = present;
+        }
+
+        /**
+         * @return if the property should be there or just not.
+         */
+        private boolean isPresent() {
+            return present;
+        }
+    }
+
+    /**
+     * a match during the search for devices.
+     */
+    private static class Match {
+
+        /**
+         * the matching descriptor.
+         */
+        private final INDIDeviceDescriptor descriptor;
+
+        /**
+         * how good does the device match? the higher the better.
+         */
+        private final int matchPoints;
+
+        /**
+         * constructor for the Match.
+         *
+         * @param descriptor  the matching descriptor.
+         * @param matchPoints how good does the device match? the higher the better.
+         */
+        public Match(INDIDeviceDescriptor descriptor, int matchPoints) {
+            this.descriptor = descriptor;
+            this.matchPoints = matchPoints;
+        }
     }
 }

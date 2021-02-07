@@ -10,12 +10,12 @@ package org.indilib.i4j.client;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,7 +29,7 @@ import org.indilib.i4j.protocol.OneText;
 
 /**
  * A class representing a INDI Text Element.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDITextElement extends INDIElement {
@@ -53,12 +53,10 @@ public class INDITextElement extends INDIElement {
     /**
      * Constructs an instance of <code>INDITextElement</code>. Usually called
      * from a <code>INDIProperty</code>.
-     * 
-     * @param xml
-     *            A XML Element <code>&lt;defText&gt;</code> describing the Text
-     *            Element.
-     * @param property
-     *            The <code>INDIProperty</code> to which the Element belongs.
+     *
+     * @param xml      A XML Element <code>&lt;defText&gt;</code> describing the Text
+     *                 Element.
+     * @param property The <code>INDIProperty</code> to which the Element belongs.
      */
     protected INDITextElement(DefText xml, INDITextProperty property) {
         super(xml, property);
@@ -77,9 +75,8 @@ public class INDITextElement extends INDIElement {
      * Element.
      * <p>
      * This method will notify the change of the value to the listeners.
-     * 
-     * @param xml
-     *            A XML Element &lt;oneText&gt; describing the Element.
+     *
+     * @param xml A XML Element &lt;oneText&gt; describing the Element.
      */
     @Override
     protected void setValue(OneElement<?> xml) {
@@ -102,13 +99,11 @@ public class INDITextElement extends INDIElement {
     /**
      * Checks if a desired value would be correct to be applied to the Text
      * Element.
-     * 
-     * @param valueToCheck
-     *            The value to be checked.
+     *
+     * @param valueToCheck The value to be checked.
      * @return <code>true</code> if the <code>valueToCheck</code> is a
-     *         <code>String</code>. <code>false</code> otherwise.
-     * @throws INDIValueException
-     *             if <code>valueToCheck</code> is <code>null</code>.
+     * <code>String</code>. <code>false</code> otherwise.
+     * @throws INDIValueException if <code>valueToCheck</code> is <code>null</code>.
      */
     @Override
     public boolean checkCorrectValue(Object valueToCheck) throws INDIValueException {
@@ -152,9 +147,9 @@ public class INDITextElement extends INDIElement {
     /**
      * Returns the XML code &lt;oneText&gt; representing this Text Element with
      * a new desired value (a <code>String</code>). Resets the desired value.
-     * 
+     *
      * @return the XML code <code>&lt;oneText&gt;</code> representing the Text
-     *         Element with a new value.
+     * Element with a new value.
      * @see #setDesiredValue
      */
     @Override

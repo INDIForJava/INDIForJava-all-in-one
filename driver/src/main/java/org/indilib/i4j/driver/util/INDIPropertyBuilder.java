@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -34,9 +34,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Builder utility to build a property.
- * 
- * @param <PropertyClass>
- *            property class to build.
+ *
+ * @param <PropertyClass> property class to build.
  * @author Richard van Nieuwenhoven
  */
 public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
@@ -45,17 +44,14 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
      * Logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIPropertyBuilder.class);
-
-    /**
-     * The Driver to which this property is associated.
-     */
-    private INDIDriver driver;
-
     /**
      * class to build.
      */
     private final Class<PropertyClass> propertyClazz;
-
+    /**
+     * The Driver to which this property is associated.
+     */
+    private INDIDriver driver;
     /**
      * the permissions for the property, defaults to RW.
      */
@@ -106,9 +102,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * default constructor of the property builder.
-     * 
-     * @param propertyClazz
-     *            the property class to build.
+     *
+     * @param propertyClazz the property class to build.
      */
     public INDIPropertyBuilder(Class<PropertyClass> propertyClazz) {
         this.propertyClazz = propertyClazz;
@@ -158,7 +153,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * @return the tab group to use for this property (mandatory if it is not in
-     *         a group).
+     * a group).
      */
     public String group() {
         return group;
@@ -166,7 +161,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * @return should the value of this property be saved in a property file?
-     *         defaults to false.
+     * defaults to false.
      */
     public boolean saveable() {
         return saveable;
@@ -174,7 +169,7 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * @return if this property is a switch property what rule should apply?
-     *         defaults to ONE_OF_MANY.
+     * defaults to ONE_OF_MANY.
      */
     public SwitchRules switchRule() {
         return switchRule;
@@ -182,9 +177,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set the permissions for the property, defaults to RW.
-     * 
-     * @param permissionValue
-     *            the new permission value.
+     *
+     * @param permissionValue the new permission value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> permission(PropertyPermissions permissionValue) {
@@ -196,9 +190,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set the timeout for the property defaults to 60.
-     * 
-     * @param timeoutValue
-     *            the new timeout value.
+     *
+     * @param timeoutValue the new timeout value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> timeout(int timeoutValue) {
@@ -208,9 +201,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set the index replacement for the lowercase 'n' character.
-     * 
-     * @param nIndex
-     *            the new index value.
+     *
+     * @param nIndex the new index value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> nIndex(int nIndex) {
@@ -220,9 +212,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set name of the property (mandatory).
-     * 
-     * @param nameValue
-     *            the new name value.
+     *
+     * @param nameValue the new name value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> name(String nameValue) {
@@ -234,9 +225,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set name of the property (mandatory).
-     * 
-     * @param nameValue
-     *            the new name value.
+     *
+     * @param nameValue the new name value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> name(INDIStandardProperty nameValue) {
@@ -248,9 +238,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set label of the property (mandatory).
-     * 
-     * @param labelValue
-     *            the new label value.
+     *
+     * @param labelValue the new label value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> label(String labelValue) {
@@ -262,9 +251,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set the initial state of the property.
-     * 
-     * @param stateValue
-     *            the new state value.
+     *
+     * @param stateValue the new state value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> state(PropertyStates stateValue) {
@@ -277,9 +265,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     /**
      * set the tab group to use for this property (mandatory if it is not in a
      * group).
-     * 
-     * @param groupValue
-     *            the new group value.
+     *
+     * @param groupValue the new group value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> group(String groupValue) {
@@ -292,9 +279,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     /**
      * set should the value of this property be saved in a property file?
      * defaults to false.
-     * 
-     * @param saveableValue
-     *            the new saveable value.
+     *
+     * @param saveableValue the new saveable value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> saveable(boolean saveableValue) {
@@ -305,9 +291,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
     /**
      * set if this property is a switch property what rule should apply?
      * defaults to ONE_OF_MANY.
-     * 
-     * @param switchRuleValue
-     *            the new switchRule value.
+     *
+     * @param switchRuleValue the new switchRule value.
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> switchRule(SwitchRules switchRuleValue) {
@@ -319,9 +304,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set the driver property.
-     * 
-     * @param driverValue
-     *            the new driver value
+     *
+     * @param driverValue the new driver value
      * @return the builder itself.
      */
     public INDIPropertyBuilder<PropertyClass> driver(INDIDriver driverValue) {
@@ -373,9 +357,8 @@ public class INDIPropertyBuilder<PropertyClass extends INDIProperty<?>> {
 
     /**
      * set the injection values into the builder.
-     * 
-     * @param injectProperty
-     *            the annotation to take the settings from.
+     *
+     * @param injectProperty the annotation to take the settings from.
      * @return the builder itself
      */
     public INDIPropertyBuilder<PropertyClass> set(InjectProperty injectProperty) {

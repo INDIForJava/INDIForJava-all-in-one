@@ -10,12 +10,12 @@ package org.indilib.i4j.fits.debayer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,7 +24,7 @@ package org.indilib.i4j.fits.debayer;
 
 /**
  * Image pixel representation, stored as an single array of doubles.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class ImagePixels {
@@ -65,6 +65,18 @@ public class ImagePixels {
     private final int height;
 
     /**
+     * constructor for the image.
+     *
+     * @param width  width of the image.
+     * @param height height of the image.
+     */
+    public ImagePixels(int width, int height) {
+        this.width = width;
+        this.height = height;
+        pixel = new double[width * height];
+    }
+
+    /**
      * @return the image width;
      */
     public int getWidth() {
@@ -79,28 +91,11 @@ public class ImagePixels {
     }
 
     /**
-     * constructor for the image.
-     * 
-     * @param width
-     *            width of the image.
-     * @param height
-     *            height of the image.
-     */
-    public ImagePixels(int width, int height) {
-        this.width = width;
-        this.height = height;
-        pixel = new double[width * height];
-    }
-
-    /**
      * set the pixel to the specified value.
-     * 
-     * @param x
-     *            the x coordinate.
-     * @param y
-     *            the y coordinate.
-     * @param value
-     *            the pixel value.
+     *
+     * @param x     the x coordinate.
+     * @param y     the y coordinate.
+     * @param value the pixel value.
      */
     public void setPixel(int x, int y, double value) {
         if (value < 0) {
@@ -117,11 +112,9 @@ public class ImagePixels {
 
     /**
      * get the pixel value of the coordinates.
-     * 
-     * @param x
-     *            the x coordinate.
-     * @param y
-     *            the y coordinate.
+     *
+     * @param x the x coordinate.
+     * @param y the y coordinate.
      * @return the pixel value.
      */
     public double getPixel(int x, int y) {
@@ -137,9 +130,8 @@ public class ImagePixels {
     /**
      * set all pixels to the image from a multy dimensional array. (the maximum
      * value is used to scale the pixel values).
-     * 
-     * @param kernel
-     *            the multi-dimensional array.
+     *
+     * @param kernel the multi-dimensional array.
      */
     public void setPixel(Object kernel) {
         if (kernel instanceof byte[][]) {
@@ -153,7 +145,7 @@ public class ImagePixels {
             }
         } else if (kernel instanceof int[][]) {
             double range = Math.pow(2, INTEGER_BITS);
-            double offset = Integer.MIN_VALUE;
+            double offset = -((double) Integer.MIN_VALUE);
             int pixelIndex = 0;
             int[][] other = (int[][]) kernel;
             for (int[] element : other) {
@@ -163,7 +155,7 @@ public class ImagePixels {
             }
         } else if (kernel instanceof short[][]) {
             double range = Math.pow(2, SHORT_BITS);
-            double offset = -Short.MIN_VALUE;
+            double offset = -((double) Short.MIN_VALUE);
             int pixelIndex = 0;
             short[][] other = (short[][]) kernel;
             for (short[] element : other) {

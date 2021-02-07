@@ -25,12 +25,12 @@ import java.lang.reflect.Array;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,8 +38,8 @@ import java.lang.reflect.Array;
  */
 
 /**
- * Utility funktions for fits images.
- * 
+ * Utility functions for fits images.
+ *
  * @author Richard van Nieuwenhoven
  */
 public final class FitsImage {
@@ -53,15 +53,15 @@ public final class FitsImage {
      * utility class.
      */
     private FitsImage() {
+
     }
 
     /**
      * convert the bytes to a fits image.
-     * 
-     * @param bytes
-     *            the bytes to convert
+     *
+     * @param bytes the bytes to convert
      * @return the fits image or null if the image could not be read or the
-     *         format is not correct.
+     * format is not correct.
      */
     public static Fits asImage(byte[] bytes) {
         try {
@@ -77,9 +77,8 @@ public final class FitsImage {
     /**
      * convert a fits image to a java displayable image, debayer it if
      * Necessary.
-     * 
-     * @param fitsImage
-     *            the image to convert
+     *
+     * @param fitsImage the image to convert
      * @return the java buffered image
      */
     public static BufferedImage asJavaImage(Fits fitsImage) {
@@ -117,5 +116,4 @@ public final class FitsImage {
             return null;
         }
     }
-
 }

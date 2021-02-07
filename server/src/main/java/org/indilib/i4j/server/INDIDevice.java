@@ -23,7 +23,6 @@ package org.indilib.i4j.server;
  */
 
 import org.indilib.i4j.Constants;
-import org.indilib.i4j.INDIException;
 import org.indilib.i4j.INDIProtocolReader;
 import org.indilib.i4j.protocol.*;
 import org.indilib.i4j.protocol.api.INDIInputStream;
@@ -137,7 +136,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
     protected abstract boolean hasName(String name);
 
     @Override
-    public void processProtokolMessage(INDIProtocol<?> child) {
+    public void processProtocolMessage(INDIProtocol<?> child) {
 
         if (child instanceof GetProperties) {
             processGetProperties((GetProperties) child);

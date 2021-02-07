@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -47,7 +47,7 @@ import java.util.Map;
  * and then the subclass fields. The fields are injected in the order defined in
  * the class. The order is relevant because elements are injected in the first
  * preceding property
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public final class INDIPropertyInjector {
@@ -65,18 +65,15 @@ public final class INDIPropertyInjector {
      * instanciated.
      */
     private static ThreadLocal<INDIPropertyInjector> current = new ThreadLocal<>();
-
+    /**
+     * the current driver that is being injected.
+     */
+    private final INDIDriver driver;
     /**
      * current map of properties already injected in the driver or its
      * extensions.
      */
     private Map<String, INDIProperty<?>> properties = new HashMap<>();
-
-    /**
-     * the current driver that is being injected.
-     */
-    private final INDIDriver driver;
-
     /**
      * the last created property, used for all following elements.
      */
@@ -101,13 +98,21 @@ public final class INDIPropertyInjector {
     private Rename[] currentRenamings;
 
     /**
+     * Constructor with driver. this is private because it should only used
+     * Internally.
+     *
+     * @param driver the inidriver
+     */
+    private INDIPropertyInjector(INDIDriver driver) {
+        this.driver = driver;
+    }
+
+    /**
      * Inject all property/element and extension fields in the object
      * recursively.
-     * 
-     * @param driver
-     *            the current driver instance
-     * @param object
-     *            the current injection object - can be a driver or an extension
+     *
+     * @param driver the current driver instance
+     * @param object the current injection object - can be a driver or an extension
      */
     public static void initialize(INDIDriver driver, Object object) {
         INDIPropertyInjector original = current.get();
@@ -126,24 +131,11 @@ public final class INDIPropertyInjector {
     }
 
     /**
-     * Constructor with driver. this is private because it should only used
-     * Internally.
-     * 
-     * @param driver
-     *            the inidriver
-     */
-    private INDIPropertyInjector(INDIDriver driver) {
-        this.driver = driver;
-    }
-
-    /**
      * find an indi property in the collected properties till now with a
      * specified name. is the name is empty take the last scanned property.
-     * 
-     * @param name
-     *            the name of the property to find.
-     * @param lastScannedProperty
-     *            the last scanned property.
+     *
+     * @param name                the name of the property to find.
+     * @param lastScannedProperty the last scanned property.
      * @return the found property.
      */
     private INDIProperty<?> findNamedProperty(String name, INDIProperty<?> lastScannedProperty) {
@@ -158,11 +150,9 @@ public final class INDIPropertyInjector {
 
     /**
      * get the value of a field by reflection.
-     * 
-     * @param object
-     *            the object to get the field from
-     * @param field
-     *            the field
+     *
+     * @param object the object to get the field from
+     * @param field  the field
      * @return the value of the field in the specified object
      */
     private Object getFieldValue(Object object, Field field) {
@@ -177,11 +167,9 @@ public final class INDIPropertyInjector {
     /**
      * Now we process the hirachie top to bottom (that's why the recursion is
      * first and than the processing.
-     * 
-     * @param instance
-     *            the instance to inject
-     * @param clazz
-     *            the current class.
+     *
+     * @param instance the instance to inject
+     * @param clazz    the current class.
      */
     private void initializeAnnotatedClass(Object instance, Class<?> clazz) {
         if (clazz != null) {
@@ -198,11 +186,9 @@ public final class INDIPropertyInjector {
      * inject the field value of the instance, if it is annotated with an
      * InjectElement annotation. select the appropriate value from the type and
      * the annotations.
-     * 
-     * @param instance
-     *            the instance to fill
-     * @param field
-     *            the current field.
+     *
+     * @param instance the instance to fill
+     * @param field    the current field.
      */
     private void initializeAnnotatedElement(Object instance, Field field) {
         InjectElement elem = field.getAnnotation(InjectElement.class);
@@ -221,9 +207,8 @@ public final class INDIPropertyInjector {
 
     /**
      * start method for the recursion, fill the object instance top down.
-     * 
-     * @param instance
-     *            the instance to fill.
+     *
+     * @param instance the instance to fill.
      */
     private void initializeAnnotatedProperties(Object instance) {
         initializeAnnotatedClass(instance, instance.getClass());
@@ -233,11 +218,9 @@ public final class INDIPropertyInjector {
      * inject the field value of the instance, if it is annotated with an
      * InjectProperty annotation. select the appropriate value from the type and
      * the annotations.
-     * 
-     * @param instance
-     *            the instance to fill
-     * @param field
-     *            the current field.
+     *
+     * @param instance the instance to fill
+     * @param field    the current field.
      */
     private void initializeAnnotatedProperty(Object instance, Field field) {
         InjectProperty prop = field.getAnnotation(InjectProperty.class);
@@ -259,9 +242,8 @@ public final class INDIPropertyInjector {
 
     /**
      * Apply any defined renaming to the name.
-     * 
-     * @param name
-     *            the name to start with
+     *
+     * @param name the name to start with
      * @return the name changed with prefix and renamings
      */
     private String rename(String name) {
@@ -281,11 +263,9 @@ public final class INDIPropertyInjector {
     /**
      * If the field is a driver extension, the context is set for the injection
      * of the extension, after construction the context is reset.
-     * 
-     * @param instance
-     *            the instance in which the extension will be injected
-     * @param field
-     *            the field that specifies the extension.
+     *
+     * @param instance the instance in which the extension will be injected
+     * @param field    the field that specifies the extension.
      */
     private void initializeDriverExtension(Object instance, Field field) {
         if (INDIDriverExtension.class.isAssignableFrom(field.getType())) {
@@ -317,13 +297,11 @@ public final class INDIPropertyInjector {
 
     /**
      * search the constructor that has a driver as a parameter and call it.
-     * 
-     * @param instance
-     *            the instance in which the extension will be injected
-     * @param field
-     *            the field that specifies the extension.
+     *
+     * @param instance the instance in which the extension will be injected
+     * @param field    the field that specifies the extension.
      * @return the newly instantiated extension or the existing one if it was
-     *         already set
+     * already set
      */
     private INDIDriverExtension<?> instanciateDriverExtension(Object instance, Field field) {
         INDIDriverExtension<?> driverExtension = null;
@@ -345,13 +323,10 @@ public final class INDIPropertyInjector {
 
     /**
      * set the value of a field by reflection.
-     * 
-     * @param object
-     *            the object defining the field
-     * @param field
-     *            the field to set
-     * @param fieldValue
-     *            the value to set the field to
+     *
+     * @param object     the object defining the field
+     * @param field      the field to set
+     * @param fieldValue the value to set the field to
      */
     private void setFieldValue(Object object, Field field, Object fieldValue) {
         field.setAccessible(true);

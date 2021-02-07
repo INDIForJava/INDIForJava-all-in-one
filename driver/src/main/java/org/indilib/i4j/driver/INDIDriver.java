@@ -58,10 +58,6 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     public static final String GROUP_MAIN_CONTROL = "Main Control";
     /**
-     * The property tab for the connection options.
-     */
-    public static final String GROUP_CONNECTION = "Connection";
-    /**
      * The property tab for the options of the driver.
      */
     public static final String GROUP_OPTIONS = "Options";
@@ -306,24 +302,20 @@ public abstract class INDIDriver implements INDIProtocolParser {
     }
 
     @Override
-    public void processProtokolMessage(INDIProtocol<?> xml) {
-        INDIDriver subd = getSubdriver(xml);
-
-        if (subd != null) {
-            subd.processProtokolMessage(xml);
-        } else {
-
-            if (xml instanceof GetProperties) {
-                processGetProperties((GetProperties) xml);
-            } else if (xml instanceof NewTextVector) {
-                processNewTextVector((NewTextVector) xml);
-            } else if (xml instanceof NewSwitchVector) {
-                processNewSwitchVector((NewSwitchVector) xml);
-            } else if (xml instanceof NewNumberVector) {
-                processNewNumberVector((NewNumberVector) xml);
-            } else if (xml instanceof NewBlobVector) {
-                processNewBLOBVector((NewBlobVector) xml);
-            }
+    public void processProtocolMessage(INDIProtocol<?> xml) {
+        INDIDriver subDriver = getSubdriver(xml);
+        if (subDriver != null) {
+            subDriver.processProtocolMessage(xml);
+        } else if (xml instanceof GetProperties) {
+            processGetProperties((GetProperties) xml);
+        } else if (xml instanceof NewTextVector) {
+            processNewTextVector((NewTextVector) xml);
+        } else if (xml instanceof NewSwitchVector) {
+            processNewSwitchVector((NewSwitchVector) xml);
+        } else if (xml instanceof NewNumberVector) {
+            processNewNumberVector((NewNumberVector) xml);
+        } else if (xml instanceof NewBlobVector) {
+            processNewBLOBVector((NewBlobVector) xml);
         }
     }
 
@@ -476,7 +468,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *
      * @param driver The subdriver to register.
      */
-    protected void registerSubdriver(INDIDriver driver) {
+    protected void registerSubDriver(INDIDriver driver) {
         subDrivers.add(driver);
     }
 
@@ -515,7 +507,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      *
      * @param driver The subdriver to unregister.
      */
-    protected void unregisterSubdriver(INDIDriver driver) {
+    protected void unregisterSubDriver(INDIDriver driver) {
         subDrivers.remove(driver);
     }
 
@@ -541,12 +533,8 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @return The subdriver to which the message is directed.
      */
     private INDIDriver getSubdriver(INDIProtocol<?> xml) {
-        if (!xml.hasDevice()) {
-            return null;
-        }
-
+        if (!xml.hasDevice()) return null;
         String deviceName = xml.getDevice();
-
         return getSubdriver(deviceName);
     }
 
@@ -560,9 +548,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     private INDIDriver getSubdriver(String name) {
         for (INDIDriver d : subDrivers) {
-            if (d.getName().compareTo(name) == 0) {
-                return d;
-            }
+            if (d.getName().compareTo(name) == 0) return d;
         }
         return null;
     }
@@ -594,7 +580,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml      The XML message
      * @return An array of Elements and its corresponding requested values
      */
-    private INDIElementAndValue[] processINDIElements(INDIProperty<?> property, NewVector<?> xml) {
+    private INDIElementAndValue<?, ?>[] processINDIElements(INDIProperty<?> property, NewVector<?> xml) {
         Class<?> oneType;
         if (property instanceof INDITextProperty) {
             oneType = OneText.class;
@@ -607,16 +593,14 @@ public abstract class INDIDriver implements INDIProtocolParser {
         } else {
             return new INDIElementAndValue[0];
         }
-        List<INDIElementAndValue> list = new ArrayList<>();
+        List<INDIElementAndValue<?, ?>> list = new ArrayList<>();
         for (OneElement<?> node : xml.getElements()) {
             if (oneType.isAssignableFrom(node.getClass())) {
-                INDIElementAndValue ev = processOneXXX(property, node);
-                if (ev != null) {
-                    list.add(ev);
-                }
+                INDIElementAndValue<?, ?> ev = processOneXXX(property, node);
+                if (ev != null) list.add(ev);
             }
         }
-        return list.toArray(new INDIElementAndValue[0]);
+        return list.toArray(new INDIElementAndValue<?, ?>[0]);
     }
 
     /**
@@ -626,13 +610,9 @@ public abstract class INDIDriver implements INDIProtocolParser {
      */
     private void processNewBLOBVector(NewBlobVector xml) {
         INDIProperty<?> prop = processNewXXXVector(xml);
-        if (prop == null) {
-            return;
-        }
-        if (!(prop instanceof INDIBLOBProperty)) {
-            return;
-        }
-        INDIElementAndValue[] evs = processINDIElements(prop, xml);
+        if (prop == null) return;
+        if (!(prop instanceof INDIBLOBProperty)) return;
+        INDIElementAndValue<?, ?>[] evs = processINDIElements(prop, xml);
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
         INDIBLOBElementAndValue[] newEvs = new INDIBLOBElementAndValue[evs.length];
         for (int i = 0; i < newEvs.length; i++) {
@@ -658,7 +638,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (!(prop instanceof INDINumberProperty)) {
             return;
         }
-        INDIElementAndValue[] evs = processINDIElements(prop, xml);
+        INDIElementAndValue<?, ?>[] evs = processINDIElements(prop, xml);
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
         INDINumberElementAndValue[] newEvs = new INDINumberElementAndValue[evs.length];
         for (int i = 0; i < newEvs.length; i++) {
@@ -686,7 +666,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (!(prop instanceof INDISwitchProperty)) {
             return;
         }
-        INDIElementAndValue[] evs = processINDIElements(prop, xml);
+        INDIElementAndValue<?, ?>[] evs = processINDIElements(prop, xml);
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
         INDISwitchElementAndValue[] newEvs = new INDISwitchElementAndValue[evs.length];
         for (int i = 0; i < newEvs.length; i++) {
@@ -712,7 +692,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
         if (!(prop instanceof INDITextProperty)) {
             return;
         }
-        INDIElementAndValue[] evs = processINDIElements(prop, xml);
+        INDIElementAndValue<?, ?>[] evs = processINDIElements(prop, xml);
         Date timestamp = dateFormat().parseTimestamp(xml.getTimestamp());
         INDITextElementAndValue[] newEvs = new INDITextElementAndValue[evs.length];
         for (int i = 0; i < newEvs.length; i++) {
@@ -731,7 +711,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml The XML message
      * @return The INDI Property to which the <code>xml</code> message refers.
      */
-    private INDIProperty processNewXXXVector(NewVector<?> xml) {
+    private INDIProperty<?> processNewXXXVector(NewVector<?> xml) {
         if (!xml.hasDevice() || !xml.hasName()) {
             return null;
         }
@@ -751,7 +731,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
      * @param xml      The &lt;oneXXX&gt; XML message
      * @return A Element and its corresponding requested value
      */
-    private INDIElementAndValue processOneXXX(INDIProperty<?> property, OneElement<?> xml) {
+    private INDIElementAndValue<?, ?> processOneXXX(INDIProperty<?> property, OneElement<?> xml) {
         if (!xml.hasName()) {
             return null;
         }

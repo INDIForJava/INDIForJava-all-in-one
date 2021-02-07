@@ -10,12 +10,12 @@ package org.indilib.i4j;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -32,7 +32,7 @@ import java.io.IOException;
 /**
  * A class that reads from a input stream and sends the read messages to a
  * parser.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDIProtocolReader extends Thread {
@@ -54,11 +54,9 @@ public class INDIProtocolReader extends Thread {
 
     /**
      * Creates the reader.
-     * 
-     * @param parser
-     *            The parser to which the readed messages will be sent.
-     * @param name
-     *            the thread name to use.
+     *
+     * @param parser The parser to which the readed messages will be sent.
+     * @param name   the thread name to use.
      */
     public INDIProtocolReader(final INDIProtocolParser parser, String name) {
         super(name);
@@ -72,10 +70,9 @@ public class INDIProtocolReader extends Thread {
     public final void run() {
         INDIInputStream inputStream = parser.getInputStream();
         try {
-            INDIProtocol<?> readObject = inputStream.readObject();
-            while (!stop && readObject != null) {
-                parser.processProtokolMessage(readObject);
-                readObject = inputStream.readObject();
+            for(INDIProtocol<?> readObject = inputStream.readObject();
+                !this.stop && readObject != null; readObject = inputStream.readObject()) {
+                parser.processProtocolMessage(readObject);
             }
         } catch (Exception e) {
             LOG.error("could not parse indi stream", e);
@@ -94,9 +91,8 @@ public class INDIProtocolReader extends Thread {
     /**
      * Sets the stop parameter. If set to <code>true</code> the reader will
      * gracefully stop after the next read.
-     * 
-     * @param stop
-     *            The stop parameter
+     *
+     * @param stop The stop parameter
      */
     public final void setStop(final boolean stop) {
         this.stop = stop;

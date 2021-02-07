@@ -10,12 +10,12 @@ package org.indilib.i4j.protocol.io;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,7 +38,7 @@ import java.util.Map;
 
 /**
  * Xstream definitions factory for the indi protocol.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public final class INDIProtocolFactory {
@@ -68,12 +68,6 @@ public final class INDIProtocolFactory {
      */
     private static final XStream XSTREAM;
 
-    /**
-     * untility class never instanciated.
-     */
-    private INDIProtocolFactory() {
-    }
-
     static {
         STREAM_DRIVER = new XppDriver() {
 
@@ -84,52 +78,56 @@ public final class INDIProtocolFactory {
         };
         XSTREAM = new XStream(STREAM_DRIVER);
         XSTREAM.processAnnotations(new Class<?>[]{
-            DefBlob.class,
-            DefBlobVector.class,
-            DefElement.class,
-            DefLight.class,
-            DefLightVector.class,
-            DefNumber.class,
-            DefNumberVector.class,
-            DefSwitch.class,
-            DefSwitchVector.class,
-            DefText.class,
-            DefTextVector.class,
-            DefVector.class,
-            DelProperty.class,
-            EnableBLOB.class,
-            GetProperties.class,
-            INDIProtocol.class,
-            Message.class,
-            NewBlobVector.class,
-            NewLightVector.class,
-            NewNumberVector.class,
-            NewSwitchVector.class,
-            NewTextVector.class,
-            NewVector.class,
-            OneBlob.class,
-            OneElement.class,
-            OneLight.class,
-            OneNumber.class,
-            OneText.class,
-            OneSwitch.class,
-            SetBlobVector.class,
-            SetLightVector.class,
-            SetNumberVector.class,
-            SetSwitchVector.class,
-            SetTextVector.class,
-            SetVector.class
+                DefBlob.class,
+                DefBlobVector.class,
+                DefElement.class,
+                DefLight.class,
+                DefLightVector.class,
+                DefNumber.class,
+                DefNumberVector.class,
+                DefSwitch.class,
+                DefSwitchVector.class,
+                DefText.class,
+                DefTextVector.class,
+                DefVector.class,
+                DelProperty.class,
+                EnableBLOB.class,
+                GetProperties.class,
+                INDIProtocol.class,
+                Message.class,
+                NewBlobVector.class,
+                NewLightVector.class,
+                NewNumberVector.class,
+                NewSwitchVector.class,
+                NewTextVector.class,
+                NewVector.class,
+                OneBlob.class,
+                OneElement.class,
+                OneLight.class,
+                OneNumber.class,
+                OneText.class,
+                OneSwitch.class,
+                SetBlobVector.class,
+                SetLightVector.class,
+                SetNumberVector.class,
+                SetSwitchVector.class,
+                SetTextVector.class,
+                SetVector.class
         });
     }
 
     /**
+     * untility class never instanciated.
+     */
+    private INDIProtocolFactory() {
+    }
+
+    /**
      * create an indi protocol input stream around an input stream.
-     * 
-     * @param in
-     *            the underlaying input stream where the xml will be read.
+     *
+     * @param in the underlaying input stream where the xml will be read.
      * @return the resultung indi input stream
-     * @throws IOException
-     *             when something went wrong with the underlaying intput stream.
+     * @throws IOException when something went wrong with the underlaying intput stream.
      */
     public static INDIInputStream createINDIInputStream(InputStream in) throws IOException {
         return new INDIInputStreamImpl(XSTREAM.createObjectInputStream(inputStreamWithRootTag(new BufferedInputStream(new MinimalBlockinInputStream(in), BUFFER_SIZE))));
@@ -137,12 +135,10 @@ public final class INDIProtocolFactory {
 
     /**
      * create an indi protocol output stream around an output stream.
-     * 
-     * @param out
-     *            the underlaying output stream where the xml will be written.
+     *
+     * @param out the underlaying output stream where the xml will be written.
      * @return the resultung indi output stream
-     * @throws IOException
-     *             when something went wrong with the underlaying output stream.
+     * @throws IOException when something went wrong with the underlaying output stream.
      */
     public static INDIOutputStream createINDIOutputStream(OutputStream out) throws IOException {
         final StatefulWriter statefulWriter = new StatefulWriter(STREAM_DRIVER.createWriter(new BufferedOutputStream(out, BUFFER_SIZE)));
@@ -181,21 +177,19 @@ public final class INDIProtocolFactory {
     /**
      * create an combined inputstream around the input stream parameter that
      * creates a root tag around the xml parts in the input stream.
-     * 
-     * @param in
-     *            the underlaying input stream where the xml's will be read.
+     *
+     * @param in the underlaying input stream where the xml's will be read.
      * @return the resultung input stream
      */
     private static InputStream inputStreamWithRootTag(final InputStream in) {
         Enumeration<InputStream> streamEnum = new Enumeration<InputStream>() {
 
-            private int index = 0;
-
             private final InputStream[] streams = {
-                new ByteArrayInputStream(OPEN_BYTES),
-                in,
-                new ByteArrayInputStream(CLOSE_BYTES)
+                    new ByteArrayInputStream(OPEN_BYTES),
+                    in,
+                    new ByteArrayInputStream(CLOSE_BYTES)
             };
+            private int index = 0;
 
             @Override
             public boolean hasMoreElements() {
@@ -212,9 +206,8 @@ public final class INDIProtocolFactory {
 
     /**
      * nice toString for the protocol objects.
-     * 
-     * @param protocol
-     *            the protocol object.
+     *
+     * @param protocol the protocol object.
      * @return the toString.
      */
     public static String toString(INDIProtocol<?> protocol) {
@@ -223,9 +216,8 @@ public final class INDIProtocolFactory {
 
     /**
      * simple toXml for the protocol objects.
-     * 
-     * @param protocol
-     *            the protocol object.
+     *
+     * @param protocol the protocol object.
      * @return the toString.
      */
     public static String toXml(INDIProtocol<?> protocol) {

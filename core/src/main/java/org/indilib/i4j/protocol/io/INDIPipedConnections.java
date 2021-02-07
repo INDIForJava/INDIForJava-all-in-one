@@ -10,12 +10,12 @@ package org.indilib.i4j.protocol.io;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,13 +38,51 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Create two connected INDI protocol streams that have a blocking connection,
  * reading a protokol object will block until one becomes available.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public final class INDIPipedConnections {
 
+    /**
+     * the logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDIPipedConnections.class);
+
     static {
         INDIURLStreamHandlerFactory.init();
+    }
+
+    /**
+     * the first connection that is internaly connected to the second.
+     */
+    private final INDIPipedConnection first;
+    /**
+     * the second connection that is internaly connected to the first.
+     */
+    private final INDIPipedConnection second;
+
+    /**
+     * create the piped connection pair.
+     */
+    public INDIPipedConnections() {
+        LinkedBlockingQueue<INDIProtocol<?>> firstToSecondQueue = new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<INDIProtocol<?>> secondToFirstQueue = new LinkedBlockingQueue<>();
+        first = new INDIPipedConnection(firstToSecondQueue, secondToFirstQueue);
+        second = new INDIPipedConnection(secondToFirstQueue, firstToSecondQueue);
+    }
+
+    /**
+     * @return the first connection that is internaly connected to the second.
+     */
+    public INDIConnection first() {
+        return first;
+    }
+
+    /**
+     * @return the second connection that is internaly connected to the first.
+     */
+    public INDIConnection second() {
+        return second;
     }
 
     /**
@@ -60,23 +98,22 @@ public final class INDIPipedConnections {
         /**
          * the input stream of the connection.
          */
-        private INDIInputStream inputStream;
+        private final INDIInputStream inputStream;
 
         /**
          * the output stream of the connection.
          */
-        private INDIOutputStream outputStream;
+        private final INDIOutputStream outputStream;
 
         /**
          * constructor of the piped connection with the in and out blocking
          * queue s as a parameter.
-         * 
-         * @param inputQueue
-         *            the blocking input queue
-         * @param outputQueue
-         *            the blocking output queue
+         *
+         * @param inputQueue  the blocking input queue
+         * @param outputQueue the blocking output queue
          */
-        public INDIPipedConnection(final LinkedBlockingQueue<INDIProtocol<?>> inputQueue, final LinkedBlockingQueue<INDIProtocol<?>> outputQueue) {
+        public INDIPipedConnection(final LinkedBlockingQueue<INDIProtocol<?>> inputQueue,
+                                   final LinkedBlockingQueue<INDIProtocol<?>> outputQueue) {
             inputStream = new INDIPipedInputStream(inputQueue, this);
             outputStream = new INDIPipedOutputStream(outputQueue, this);
         }
@@ -134,11 +171,9 @@ public final class INDIPipedConnections {
 
         /**
          * constructor of the wrapper.
-         * 
-         * @param inputQueue
-         *            the wrapped blocking queue.
-         * @param connection
-         *            the parent connection this end is part of.
+         *
+         * @param inputQueue the wrapped blocking queue.
+         * @param connection the parent connection this end is part of.
          */
         private INDIPipedInputStream(LinkedBlockingQueue<INDIProtocol<?>> inputQueue, INDIPipedConnection connection) {
             this.inputQueue = inputQueue;
@@ -151,7 +186,7 @@ public final class INDIPipedConnections {
         }
 
         @Override
-        public INDIProtocol<?> readObject() throws IOException {
+        public INDIProtocol<?> readObject() {
             if (connection.isClosed()) {
                 return null;
             }
@@ -186,11 +221,9 @@ public final class INDIPipedConnections {
 
         /**
          * constructor of the wrapper.
-         * 
-         * @param outputQueue
-         *            the wrapped blocking queue.
-         * @param connection
-         *            the parent connection this end is part of.
+         *
+         * @param outputQueue the wrapped blocking queue.
+         * @param connection  the parent connection this end is part of.
          */
         private INDIPipedOutputStream(LinkedBlockingQueue<INDIProtocol<?>> outputQueue, INDIPipedConnection connection) {
             this.outputQueue = outputQueue;
@@ -227,44 +260,4 @@ public final class INDIPipedConnections {
     private static final class INDIProtokolEndMarker extends INDIProtocol<Object> {
 
     }
-
-    /**
-     * the logger to log to.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(INDIPipedConnections.class);
-
-    /**
-     * the first connection that is internaly connected to the second.
-     */
-    private final INDIPipedConnection first;
-
-    /**
-     * the second connection that is internaly connected to the first.
-     */
-    private final INDIPipedConnection second;
-
-    /**
-     * create the piped connection pair.
-     */
-    public INDIPipedConnections() {
-        LinkedBlockingQueue<INDIProtocol<?>> firstToSecondQueue = new LinkedBlockingQueue<>();
-        LinkedBlockingQueue<INDIProtocol<?>> secondToFirstQueue = new LinkedBlockingQueue<>();
-        first = new INDIPipedConnection(firstToSecondQueue, secondToFirstQueue);
-        second = new INDIPipedConnection(secondToFirstQueue, firstToSecondQueue);
-    }
-
-    /**
-     * @return the first connection that is internaly connected to the second.
-     */
-    public INDIConnection first() {
-        return first;
-    }
-
-    /**
-     * @return the second connection that is internaly connected to the first.
-     */
-    public INDIConnection second() {
-        return second;
-    }
-
 }

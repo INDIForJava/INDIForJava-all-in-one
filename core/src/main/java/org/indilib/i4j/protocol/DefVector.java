@@ -21,9 +21,8 @@ import java.util.List;
 
 /**
  * This class represents an INDI XML protocol element.
- * 
- * @param <T>
- *            type for the builder
+ *
+ * @param <T> type for the builder
  * @author Richard van Nieuwenhoven
  */
 public abstract class DefVector<T> extends INDIProtocol<T> {
@@ -111,9 +110,8 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
 
     /**
      * set the group element atttribute.
-     * 
-     * @param newGroup
-     *            the new group value
+     *
+     * @param newGroup the new group value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -124,9 +122,8 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
 
     /**
      * set the label element atttribute.
-     * 
-     * @param newLabel
-     *            the new label value
+     *
+     * @param newLabel the new label value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -137,9 +134,8 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
 
     /**
      * set the perm element atttribute.
-     * 
-     * @param newPerm
-     *            the new perm value
+     *
+     * @param newPerm the new perm value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -150,9 +146,8 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
 
     /**
      * set the state element atttribute.
-     * 
-     * @param newState
-     *            the new state value
+     *
+     * @param newState the new state value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -163,9 +158,8 @@ public abstract class DefVector<T> extends INDIProtocol<T> {
 
     /**
      * set the timeout element atttribute.
-     * 
-     * @param newTimeout
-     *            the new timeout value
+     *
+     * @param newTimeout the new timeout value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")

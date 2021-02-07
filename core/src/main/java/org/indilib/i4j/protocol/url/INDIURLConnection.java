@@ -10,12 +10,12 @@ package org.indilib.i4j.protocol.url;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -44,7 +44,7 @@ import java.util.Map;
  * This class represents a indi connection to a server over an url referense.
  * The url is decoded to get the connection data. Future extentions could also
  * handle the selection of device and property as part of the url path.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class INDIURLConnection extends URLConnection implements INDIConnection {
@@ -60,12 +60,40 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
 
     /**
      * constructor using the url.
-     * 
-     * @param url
-     *            the connection specification.
+     *
+     * @param url the connection specification.
      */
     protected INDIURLConnection(URL url) {
         super(url);
+    }
+
+    /**
+     * helper method to parse an url for its query parameters. This method does
+     * not take all possibilities in account but it is good anouth for indi
+     * urls.
+     *
+     * @param url the url to parse the query
+     * @return the map with query keys and there list with values.(never null)
+     */
+    public static Map<String, List<String>> splitQuery(URL url) {
+        final Map<String, List<String>> queryPairs = new LinkedHashMap<>();
+        try {
+            if (url != null && url.getQuery() != null) {
+                final String[] pairs = url.getQuery().split("&");
+                for (String pair : pairs) {
+                    final int idx = pair.indexOf("=");
+                    final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+                    if (!queryPairs.containsKey(key)) {
+                        queryPairs.put(key, new LinkedList<>());
+                    }
+                    final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
+                    queryPairs.get(key).add(value);
+                }
+            }
+            return queryPairs;
+        } catch (UnsupportedEncodingException e) {
+            return queryPairs;
+        }
     }
 
     @Override
@@ -114,8 +142,7 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
 
     /**
      * @return the initialized socket connection.
-     * @throws IOException
-     *             is the connection could not be initialized.
+     * @throws IOException is the connection could not be initialized.
      */
     private INDIConnection getSocketConnection() throws IOException {
         connect();
@@ -126,36 +153,6 @@ public class INDIURLConnection extends URLConnection implements INDIConnection {
     public void close() throws IOException {
         if (socketConnection != null) {
             socketConnection.close();
-        }
-    }
-
-    /**
-     * helper method to parse an url for its query parameters. This method does
-     * not take all possibilities in account but it is good anouth for indi
-     * urls.
-     * 
-     * @param url
-     *            the url to parse the query
-     * @return the map with query keys and there list with values.(never null)
-     */
-    public static Map<String, List<String>> splitQuery(URL url) {
-        final Map<String, List<String>> queryPairs = new LinkedHashMap<>();
-        try {
-            if (url != null && url.getQuery() != null) {
-                final String[] pairs = url.getQuery().split("&");
-                for (String pair : pairs) {
-                    final int idx = pair.indexOf("=");
-                    final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
-                    if (!queryPairs.containsKey(key)) {
-                        queryPairs.put(key, new LinkedList<>());
-                    }
-                    final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
-                    queryPairs.get(key).add(value);
-                }
-            }
-            return queryPairs;
-        } catch (UnsupportedEncodingException e) {
-            return queryPairs;
         }
     }
 

@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -33,9 +33,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Builder utility to build a element for a property.
- * 
- * @param <ElementClass>
- *            property class to build.
+ *
+ * @param <ElementClass> property class to build.
  * @author Richard van Nieuwenhoven
  */
 public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
@@ -110,25 +109,22 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
      * an empty string.
      */
     private SwitchStatus switchValue = SwitchStatus.OFF;
-
-    /**
-     * constructor for the property builder.
-     * 
-     * @param clazz
-     *            the class of the element.
-     * @param indiProperty
-     *            the property to create an element for.
-     */
-    public INDIElementBuilder(Class<ElementClass> clazz, INDIProperty<ElementClass> indiProperty) {
-        this.clazz = clazz;
-        this.indiProperty = indiProperty;
-    }
-
     /**
      * the default value of the element when it is a light field, defaults to an
      * empty string.
      */
     private LightStates state = LightStates.IDLE;
+
+    /**
+     * constructor for the property builder.
+     *
+     * @param clazz        the class of the element.
+     * @param indiProperty the property to create an element for.
+     */
+    public INDIElementBuilder(Class<ElementClass> clazz, INDIProperty<ElementClass> indiProperty) {
+        this.clazz = clazz;
+        this.indiProperty = indiProperty;
+    }
 
     /**
      * @return the name of the element (mandatory).
@@ -156,7 +152,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the default value of the element when it is a number field,
-     *         defaults to 0.
+     * defaults to 0.
      */
     public double numberValue() {
         return numberValue;
@@ -164,7 +160,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the default value of the element when it is a text field,
-     *         defaults to an empty string.
+     * defaults to an empty string.
      */
     public String textValue() {
         return textValue;
@@ -172,7 +168,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the minimal value of the element when it is a number field,
-     *         defaults to 0.
+     * defaults to 0.
      */
     public double minimum() {
         return minimum;
@@ -180,7 +176,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the maximal value of the element when it is a number field,
-     *         defaults to 0.
+     * defaults to 0.
      */
     public double maximum() {
         return maximum;
@@ -188,7 +184,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the step value of the element when it is a number field, defaults
-     *         to 0.
+     * to 0.
      */
     public double step() {
         return step;
@@ -196,7 +192,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the number format value of the element when it is a number field,
-     *         defaults to %g.
+     * defaults to %g.
      */
     public String numberFormat() {
         return numberFormat;
@@ -204,7 +200,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the default value of the element when it is a switch field,
-     *         defaults to an empty string.
+     * defaults to an empty string.
      */
     public SwitchStatus switchValue() {
         return switchValue;
@@ -212,7 +208,7 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * @return the default value of the element when it is a light field,
-     *         defaults to an empty string.
+     * defaults to an empty string.
      */
     public LightStates state() {
         return state;
@@ -227,9 +223,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * set the name of the element (mandatory).
-     * 
-     * @param nameValue
-     *            the new value
+     *
+     * @param nameValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> name(String nameValue) {
@@ -241,9 +236,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * set the name of the element (mandatory).
-     * 
-     * @param nameValue
-     *            the new value
+     *
+     * @param nameValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> name(INDIStandardElement nameValue) {
@@ -255,9 +249,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * set the label of the element (mandatory).
-     * 
-     * @param labelValue
-     *            the new value
+     *
+     * @param labelValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> label(String labelValue) {
@@ -270,9 +263,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the default value of the element when it is a number field, defaults
      * to 0.
-     * 
-     * @param newNumberValue
-     *            the new value
+     *
+     * @param newNumberValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> numberValue(double newNumberValue) {
@@ -283,9 +275,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the default value of the element when it is a text field, defaults to
      * an empty string.
-     * 
-     * @param newTextValue
-     *            the new value
+     *
+     * @param newTextValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> textValue(String newTextValue) {
@@ -298,9 +289,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the minimal value of the element when it is a number field, defaults
      * to 0.
-     * 
-     * @param minimumValue
-     *            the new value
+     *
+     * @param minimumValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> minimum(double minimumValue) {
@@ -311,9 +301,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the maximal value of the element when it is a number field, defaults
      * to 0.
-     * 
-     * @param maximumValue
-     *            the new value
+     *
+     * @param maximumValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> maximum(double maximumValue) {
@@ -324,9 +313,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the step value of the element when it is a number field, defaults to
      * 0.
-     * 
-     * @param stepValue
-     *            the new value
+     *
+     * @param stepValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> step(double stepValue) {
@@ -337,9 +325,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the number format value of the element when it is a number field,
      * defaults to %g.
-     * 
-     * @param numberFormatValue
-     *            the new value
+     *
+     * @param numberFormatValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> numberFormat(String numberFormatValue) {
@@ -352,9 +339,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the default value of the element when it is a switch field, defaults
      * to an empty string.
-     * 
-     * @param newSwitchValue
-     *            the new value
+     *
+     * @param newSwitchValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> switchValue(SwitchStatus newSwitchValue) {
@@ -367,9 +353,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
     /**
      * set the default value of the element when it is a light field, defaults
      * to an empty string.
-     * 
-     * @param stateValue
-     *            the new value
+     *
+     * @param stateValue the new value
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> state(LightStates stateValue) {
@@ -381,9 +366,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * set the index replacement for the lowercase 'n' character.
-     * 
-     * @param nIndex
-     *            the new index value.
+     *
+     * @param nIndex the new index value.
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> nIndex(int nIndex) {
@@ -443,9 +427,8 @@ public class INDIElementBuilder<ElementClass extends INDIElement<?>> {
 
     /**
      * copy all settings from the injection.
-     * 
-     * @param elem
-     *            intection to copy the settings.
+     *
+     * @param elem intection to copy the settings.
      * @return the builder itself.
      */
     public INDIElementBuilder<ElementClass> set(InjectElement elem) {

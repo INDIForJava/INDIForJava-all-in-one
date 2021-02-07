@@ -10,12 +10,12 @@ package org.indilib.i4j.protocol.websocket;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -42,19 +42,19 @@ import java.nio.ByteBuffer;
 
 /**
  * Indi protocol connection around a websocket entpoint on a websocket server.
- * 
+ *
  * @author Ricard van Nieuwenhoven
  */
 public class INDIWebSocketConnection implements INDIConnection {
-
-    static {
-        INDIURLStreamHandlerFactory.init();
-    }
 
     /**
      * Logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIWebSocketConnection.class);
+
+    static {
+        INDIURLStreamHandlerFactory.init();
+    }
 
     /**
      * the indi protocol input stream.
@@ -73,9 +73,8 @@ public class INDIWebSocketConnection implements INDIConnection {
 
     /**
      * constructor around an existing session.
-     * 
-     * @param session
-     *            the web socket session to connecto to
+     *
+     * @param session the web socket session to connecto to
      */
     public INDIWebSocketConnection(Session session) {
 
@@ -100,9 +99,8 @@ public class INDIWebSocketConnection implements INDIConnection {
 
     /**
      * create a indiinputstream around the websocket.
-     * 
-     * @throws IOException
-     *             if some streams where instable.
+     *
+     * @throws IOException if some streams where instable.
      */
     protected void createINDIInputStream() throws IOException {
         PipedInputStream bytesIn = new PipedInputStream();
@@ -131,9 +129,8 @@ public class INDIWebSocketConnection implements INDIConnection {
 
     /**
      * create an indi output stream around a websocket endpoint.
-     * 
-     * @throws IOException
-     *             if some streams where instable.
+     *
+     * @throws IOException if some streams where instable.
      */
     protected void createINDIOutPutStream() throws IOException {
         ouputStream = INDIProtocolFactory.createINDIOutputStream(new OutputStream() {

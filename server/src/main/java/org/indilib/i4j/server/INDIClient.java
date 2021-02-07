@@ -126,7 +126,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     }
 
     @Override
-    public void processProtokolMessage(INDIProtocol<?> message) {
+    public void processProtocolMessage(INDIProtocol<?> message) {
         if (message instanceof GetProperties) {
             processGetProperties((GetProperties) message);
         } else if (message instanceof NewVector) {
