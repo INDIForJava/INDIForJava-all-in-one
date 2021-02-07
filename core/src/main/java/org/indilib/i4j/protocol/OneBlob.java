@@ -43,7 +43,6 @@ public class OneBlob extends OneElement<OneBlob> {
      * The byte content of the blob. Attention the textContent should not be
      * used in the blob!
      */
-    @XStreamConverter(org.indilib.i4j.protocol.converter.EncodedByteArrayConverter.class)
     private byte[] byteContent;
 
     /**
