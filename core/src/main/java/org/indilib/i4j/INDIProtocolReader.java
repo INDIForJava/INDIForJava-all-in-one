@@ -69,20 +69,22 @@ public class INDIProtocolReader extends Thread {
     @Override
     public final void run() {
         INDIInputStream inputStream = parser.getInputStream();
+        if (inputStream == null) {
+            parser.finishReader();
+            return;
+        }
         try {
-            for(INDIProtocol<?> readObject = inputStream.readObject();
-                !this.stop && readObject != null; readObject = inputStream.readObject()) {
+            for (INDIProtocol<?> readObject = inputStream.readObject();
+                 !this.stop && readObject != null; readObject = inputStream.readObject()) {
                 parser.processProtocolMessage(readObject);
             }
         } catch (Exception e) {
             LOG.error("could not parse indi stream", e);
         } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    LOG.error("Could not close Doc", e);
-                }
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                LOG.error("Could not close Doc", e);
             }
             parser.finishReader();
         }

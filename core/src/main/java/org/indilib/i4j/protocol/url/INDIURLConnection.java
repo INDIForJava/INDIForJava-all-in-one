@@ -22,6 +22,7 @@ package org.indilib.i4j.protocol.url;
  * #L%
  */
 
+import com.thoughtworks.xstream.XStreamException;
 import org.indilib.i4j.protocol.api.INDIConnection;
 import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.indilib.i4j.protocol.api.INDIOutputStream;

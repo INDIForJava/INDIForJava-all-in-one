@@ -108,7 +108,7 @@ public class INDINativeDevice extends INDIDevice {
     public INDIInputStream getInputStream() {
         try {
             return processConnection.getINDIInputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalStateException("could not get output stream from driver");
         }
     }

@@ -23,6 +23,7 @@ package org.indilib.i4j.protocol.io;
  */
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -70,7 +71,6 @@ public final class INDIProtocolFactory {
 
     static {
         STREAM_DRIVER = new XppDriver() {
-
             @Override
             public HierarchicalStreamWriter createWriter(Writer out) {
                 return new Printwriter(out);
@@ -143,7 +143,6 @@ public final class INDIProtocolFactory {
     public static INDIOutputStream createINDIOutputStream(OutputStream out) throws IOException {
         final StatefulWriter statefulWriter = new StatefulWriter(STREAM_DRIVER.createWriter(new BufferedOutputStream(out, BUFFER_SIZE)));
         return new INDIOutputStreamImpl(new CustomObjectOutputStream(new CustomObjectOutputStream.StreamCallback() {
-
             @Override
             public void close() {
                 if (statefulWriter.state() != StatefulWriter.STATE_CLOSED) {
@@ -171,24 +170,21 @@ public final class INDIProtocolFactory {
                 XSTREAM.marshal(object, statefulWriter);
             }
         }));
-
     }
 
     /**
-     * create an combined inputstream around the input stream parameter that
+     * create an combined input stream around the input stream parameter that
      * creates a root tag around the xml parts in the input stream.
      *
-     * @param in the underlaying input stream where the xml's will be read.
-     * @return the resultung input stream
+     * @param in the underlying input stream where the xml's will be read.
+     * @return the resulting input stream
      */
     private static InputStream inputStreamWithRootTag(final InputStream in) {
         Enumeration<InputStream> streamEnum = new Enumeration<InputStream>() {
 
             private final InputStream[] streams = {
-                    new ByteArrayInputStream(OPEN_BYTES),
-                    in,
-                    new ByteArrayInputStream(CLOSE_BYTES)
-            };
+                    new ByteArrayInputStream(OPEN_BYTES), in,
+                    new ByteArrayInputStream(CLOSE_BYTES)};
             private int index = 0;
 
             @Override

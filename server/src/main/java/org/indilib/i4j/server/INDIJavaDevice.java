@@ -127,7 +127,7 @@ public class INDIJavaDevice extends INDIDevice {
     public INDIInputStream getInputStream() {
         try {
             return driverConnection.getINDIInputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalStateException("could not get input stream from driver");
         }
     }

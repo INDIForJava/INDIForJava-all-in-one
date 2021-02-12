@@ -114,7 +114,7 @@ public class INDINetworkDevice extends INDIDevice {
     public INDIInputStream getInputStream() {
         try {
             return socketConnection.getINDIInputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.warn("could not open input stream", e);
         }
         return null;

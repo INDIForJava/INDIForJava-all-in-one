@@ -586,7 +586,7 @@ public class INDIServerConnection implements INDIProtocolParser {
     public INDIInputStream getInputStream() {
         try {
             return connection.getINDIInputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

@@ -133,7 +133,7 @@ public abstract class INDIDriver implements INDIProtocolParser {
     public INDIInputStream getInputStream() {
         try {
             return connection.getINDIInputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("could not get input stream", e);
             return null;
         }

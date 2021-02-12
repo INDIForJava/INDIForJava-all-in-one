@@ -104,7 +104,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     public INDIInputStream getInputStream() {
         try {
             return connection.getINDIInputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("could not open input stream to indi-connection", e);
             return null;
         }
