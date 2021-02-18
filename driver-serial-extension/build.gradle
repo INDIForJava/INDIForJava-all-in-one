@@ -1,12 +1,4 @@
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api 'io.github.java-native:jssc:2.9.2'
     api project(path: ':driver')
-}
-
-test {
-    useJUnitPlatform()
 }

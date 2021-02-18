@@ -1,13 +1,5 @@
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(path: ':driver')
     api project(path: ':client')
     api project(path: ':server')
-}
-
-test {
-    useJUnitPlatform()
 }

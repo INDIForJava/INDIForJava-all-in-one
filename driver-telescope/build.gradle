@@ -1,15 +1,7 @@
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(path: ':driver')
     implementation 'net.sourceforge.novaforjava:novaforjava:0.15.0.0'
     implementation 'com.github.quickhull3d:quickhull3d:1.0.0'
     implementation project(path: ':gnu-scientific-lib')
     implementation project(path: ':driver-serial-extension')
-}
-
-test {
-    useJUnitPlatform()
 }

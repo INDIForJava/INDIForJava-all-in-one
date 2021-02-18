@@ -1,13 +1,5 @@
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api 'org.slf4j:slf4j-api:1.7.30'
     api 'org.glassfish.tyrus:tyrus-client:2.0.0'
     implementation('com.thoughtworks.xstream:xstream:1.4.15')
-}
-
-test {
-    useJUnitPlatform()
 }

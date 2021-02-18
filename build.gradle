@@ -1,5 +1,12 @@
 allprojects {
     apply plugin: 'java-library'
+    apply plugin: 'idea'
+    repositories {
+        jcenter()
+    }
+    test {
+        useJUnitPlatform()
+    }
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(8)

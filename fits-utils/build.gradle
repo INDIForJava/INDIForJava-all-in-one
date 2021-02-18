@@ -1,12 +1,4 @@
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.30'
     implementation 'gov.nasa.gsfc.heasarc:nom-tam-fits:1.15.2'
-}
-
-test {
-    useJUnitPlatform()
 }
