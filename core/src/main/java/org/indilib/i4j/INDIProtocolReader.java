@@ -27,8 +27,6 @@ import org.indilib.i4j.protocol.api.INDIInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
  * A class that reads from a input stream and sends the read messages to a
  * parser.
@@ -68,23 +66,25 @@ public class INDIProtocolReader extends Thread {
      */
     @Override
     public final void run() {
-        INDIInputStream inputStream = parser.getInputStream();
-        if (inputStream == null) {
-            parser.finishReader();
-            return;
-        }
+        INDIInputStream inputStream = null;
         try {
+            inputStream = parser.getInputStream();
+            if (inputStream == null) {
+                parser.finishReader();
+                return;
+            }
             for (INDIProtocol<?> readObject = inputStream.readObject();
                  !this.stop && readObject != null; readObject = inputStream.readObject()) {
                 parser.processProtocolMessage(readObject);
             }
         } catch (Exception e) {
             LOG.error("could not parse indi stream", e);
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                LOG.error("Could not close Doc", e);
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception ex) {
+                    LOG.error("Could not close inputStream", ex);
+                }
             }
             parser.finishReader();
         }
