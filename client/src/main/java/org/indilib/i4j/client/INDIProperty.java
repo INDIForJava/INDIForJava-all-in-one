@@ -52,6 +52,14 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      */
     private final String name;
     /**
+     * A list of elements for this Property.
+     */
+    private final Map<String, Element> elements;
+    /**
+     * The list of listeners of this Property.
+     */
+    private final List<INDIPropertyListener> listeners;
+    /**
      * This property label.
      */
     private String label;
@@ -62,7 +70,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
     /**
      * The current state of this Property.
      */
-    private PropertyStates state;
+    private PropertyStates state = PropertyStates.IDLE;
     /**
      * The permission of this Property.
      */
@@ -71,14 +79,6 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * The timeout of this Property.
      */
     private int timeout;
-    /**
-     * A list of elements for this Property.
-     */
-    private final Map<String, Element> elements;
-    /**
-     * The list of listeners of this Property.
-     */
-    private final List<INDIPropertyListener> listeners;
 
     /**
      * Constructs an instance of <code>INDIProperty</code>. Called by its
