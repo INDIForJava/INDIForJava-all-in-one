@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -36,7 +36,7 @@ import static org.indilib.i4j.Constants.PropertyStates.IDLE;
  * This park extension should be enabled for every telescope that supports a
  * "park" position. The telescope-driver should implement the
  * {@link INDITelescopeParkInterface} if it is supported.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescope> {
@@ -67,9 +67,8 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
      * Constructor of the part extension, you should realy know what you are
      * doing if you call this yourself. Better to let it be used by the
      * injector.
-     * 
-     * @param telecopeDriver
-     *            the telescope driver to attact this extention to.
+     *
+     * @param telecopeDriver the telescope driver to attact this extention to.
      */
     public INDITelescopeParkExtension(INDITelescope telecopeDriver) {
         super(telecopeDriver);
@@ -152,9 +151,8 @@ public class INDITelescopeParkExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * set the telescope as parked.
-     * 
-     * @param parked
-     *            the new parked state.
+     *
+     * @param parked the new parked state.
      */
     public void setParked(boolean parked) {
         this.parked = parked;

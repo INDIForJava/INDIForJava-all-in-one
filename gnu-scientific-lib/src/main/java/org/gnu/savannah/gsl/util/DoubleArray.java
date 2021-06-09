@@ -10,12 +10,12 @@ package org.gnu.savannah.gsl.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -50,17 +50,17 @@ public class DoubleArray {
         this.offset = 0;
     }
 
+    public static void arraycopy(DoubleArray data1, int i, DoubleArray data2, int j, int k) {
+        System.arraycopy(data1.data, data1.offset + i, data2.data, data2.offset + j, k);
+
+    }
+
     public void set(int index, double value) {
         data[offset + index] = value;
     }
 
     public double get(int index) {
         return data[offset + index];
-    }
-
-    public static void arraycopy(DoubleArray data1, int i, DoubleArray data2, int j, int k) {
-        System.arraycopy(data1.data, data1.offset + i, data2.data, data2.offset + j, k);
-
     }
 
     @Override

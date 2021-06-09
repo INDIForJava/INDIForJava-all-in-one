@@ -26,7 +26,7 @@ import java.util.Date;
  * This is a convince class the reduce the number of genetics that must be
  * specified for event handler. In this case it handles it for the Number
  * properties.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public abstract class NumberEvent implements IEventHandler<INDINumberProperty, INDINumberElement, Double> {
@@ -55,11 +55,9 @@ public abstract class NumberEvent implements IEventHandler<INDINumberProperty, I
     /**
      * the Simplified call without the property. TODO: should we also exclude
      * the date? it is almost never used.
-     * 
-     * @param date
-     *            the time it was set
-     * @param elementsAndValues
-     *            the new values for the elements of this property
+     *
+     * @param date              the time it was set
+     * @param elementsAndValues the new values for the elements of this property
      */
     public abstract void processNewValue(Date date, INDINumberElementAndValue[] elementsAndValues);
 }

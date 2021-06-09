@@ -91,19 +91,17 @@ public final class INDIPipedConnections {
     private static final class INDIPipedConnection implements INDIConnection {
 
         /**
-         * a closed indicator to indicate the connection was closed.
-         */
-        private boolean closed = false;
-
-        /**
          * the input stream of the connection.
          */
         private final INDIInputStream inputStream;
-
         /**
          * the output stream of the connection.
          */
         private final INDIOutputStream outputStream;
+        /**
+         * a closed indicator to indicate the connection was closed.
+         */
+        private boolean closed = false;
 
         /**
          * constructor of the piped connection with the in and out blocking

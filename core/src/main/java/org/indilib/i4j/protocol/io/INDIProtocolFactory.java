@@ -23,7 +23,6 @@ package org.indilib.i4j.protocol.io;
  */
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;

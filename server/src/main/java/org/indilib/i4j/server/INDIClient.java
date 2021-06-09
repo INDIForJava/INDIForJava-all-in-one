@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -35,11 +35,9 @@ import org.indilib.i4j.server.api.INDIClientInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
  * A class to represent a Client that connects to the Server.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDIClient extends INDIDeviceListener implements INDIClientInterface {
@@ -67,11 +65,9 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
     /**
      * Constructs a new INDIClient that connects to the server and starts
      * listening to it.
-     * 
-     * @param connection
-     *            The socket to communicate with the Client.
-     * @param server
-     *            The Server to which the Client is connected.
+     *
+     * @param connection The socket to communicate with the Client.
+     * @param server     The Server to which the Client is connected.
      */
     public INDIClient(INDIConnection connection, INDIServer server) {
         this.connection = connection;
@@ -88,7 +84,7 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
 
     /**
      * Gets a String representation of the host and port of the Client.
-     * 
+     *
      * @return A String representation of the host and port of the Client.
      */
     @Override
@@ -138,9 +134,8 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
 
     /**
      * notify server of get properties if they are listening.
-     * 
-     * @param xml
-     *            the xml message
+     *
+     * @param xml the xml message
      */
     @Override
     protected void processGetProperties(GetProperties xml) {
@@ -164,9 +159,8 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
 
     /**
      * Adds the appropriate BLOB Enable rules.
-     * 
-     * @param xml
-     *            xml message
+     *
+     * @param xml xml message
      */
     private void processEnableBLOB(EnableBLOB xml) {
         if (!xml.hasDevice()) {
@@ -197,9 +191,8 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
 
     /**
      * notify clients of new XXX Vector if they are listening.
-     * 
-     * @param xml
-     *            the xml messge.
+     *
+     * @param xml the xml messge.
      */
     private void processNewXXXVector(NewVector<?> xml) {
         String device = xml.getDevice();
@@ -213,9 +206,9 @@ public class INDIClient extends INDIDeviceListener implements INDIClientInterfac
         }
 
         if (this.listensToProperty(device, property)) { // If this client does
-                                                        // not listen to the
-                                                        // property avoid
-                                                        // changing it
+            // not listen to the
+            // property avoid
+            // changing it
             server.notifyClientListenersNewXXXVector(this, xml);
         }
     }

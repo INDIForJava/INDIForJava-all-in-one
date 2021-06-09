@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.raspberrypi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -51,7 +51,7 @@ import static org.indilib.i4j.Constants.SwitchStatus.ON;
 /**
  * A class that acts as a INDI for Java Driver for the Raspberry Pi GPIO port.
  * This driver makes use of the Pi4J library (http://pi4j.com/).
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnectionHandler, GpioPinListenerDigital {
@@ -155,70 +155,61 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      * maximum value for the puls wave modulator.
      */
     private static final double MAXIMUM_PWM_VALUE = 1000.0;
-
-    /**
-     * GPIO Pins Config Property.
-     */
-    private INDISwitchOneOfManyProperty[] pinsConfigP;
-
-    /**
-     * GPIO pins names Property.
-     */
-    private INDITextProperty pinsNamesP;
-
-    /**
-     * GPIO pins names Elements.
-     */
-    private INDITextElement[] pinsNamesE;
-
     /**
      * The number of GPIO Pins.
      */
     private static final int NUMBER_OF_PINS = 21;
-
+    /**
+     * An convenience array of the available pins.
+     */
+    private static final Pin[] PINS_ARRAY = new Pin[]{
+            RaspiPin.GPIO_00,
+            RaspiPin.GPIO_01,
+            RaspiPin.GPIO_02,
+            RaspiPin.GPIO_03,
+            RaspiPin.GPIO_04,
+            RaspiPin.GPIO_05,
+            RaspiPin.GPIO_06,
+            RaspiPin.GPIO_07,
+            RaspiPin.GPIO_08,
+            RaspiPin.GPIO_09,
+            RaspiPin.GPIO_10,
+            RaspiPin.GPIO_11,
+            RaspiPin.GPIO_12,
+            RaspiPin.GPIO_13,
+            RaspiPin.GPIO_14,
+            RaspiPin.GPIO_15,
+            RaspiPin.GPIO_16,
+            RaspiPin.GPIO_17,
+            RaspiPin.GPIO_18,
+            RaspiPin.GPIO_19,
+            RaspiPin.GPIO_20
+    };
+    /**
+     * GPIO Pins Config Property.
+     */
+    private INDISwitchOneOfManyProperty[] pinsConfigP;
+    /**
+     * GPIO pins names Property.
+     */
+    private INDITextProperty pinsNamesP;
+    /**
+     * GPIO pins names Elements.
+     */
+    private INDITextElement[] pinsNamesE;
     /**
      * The GPIO Controller.
      */
     private GpioController gpio;
-
     /**
      * The actual pins for the controller.
      */
     private GpioPin[] pins;
-
     /**
      * Each of the controlling pins Properties (Switch for Output, Number for
      * PWM or Light for Input).
      */
     private INDIProperty<?>[] pinsProperties;
-
-    /**
-     * An convenience array of the available pins.
-     */
-    private static final Pin[] PINS_ARRAY = new Pin[]{
-        RaspiPin.GPIO_00,
-        RaspiPin.GPIO_01,
-        RaspiPin.GPIO_02,
-        RaspiPin.GPIO_03,
-        RaspiPin.GPIO_04,
-        RaspiPin.GPIO_05,
-        RaspiPin.GPIO_06,
-        RaspiPin.GPIO_07,
-        RaspiPin.GPIO_08,
-        RaspiPin.GPIO_09,
-        RaspiPin.GPIO_10,
-        RaspiPin.GPIO_11,
-        RaspiPin.GPIO_12,
-        RaspiPin.GPIO_13,
-        RaspiPin.GPIO_14,
-        RaspiPin.GPIO_15,
-        RaspiPin.GPIO_16,
-        RaspiPin.GPIO_17,
-        RaspiPin.GPIO_18,
-        RaspiPin.GPIO_19,
-        RaspiPin.GPIO_20
-    };
-
     /**
      * CPU Temperature Property.
      */
@@ -299,9 +290,8 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
      * particular <code>inputStream</code> from which to read the incoming
      * messages (from clients) and a <code>outputStream</code> to write the
      * messages to the clients.
-     * 
-     * @param connection
-     *            the indi connection to the server.
+     *
+     * @param connection the indi connection to the server.
      */
     public I4JRaspberryPiGPIODriver(INDIConnection connection) {
         super(connection);
@@ -454,7 +444,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
     /**
      * Currently buggy in p4j 0.0.5 so disabled.
-     * 
+     *
      * @return bogo mips
      */
     private String getBogoMIPS() {
@@ -464,7 +454,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
     /**
      * Currently buggy in p4j 0.0.5 so disabled.
-     * 
+     *
      * @return processor description.
      */
     private String getProcessor() {
@@ -527,8 +517,8 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
         if (pin != -1) { // The property isd a pin Config
             if (pinsConfigP[pin].getSelectedIndex() != pinsConfigP[pin].getSelectedIndex(elementsAndValues)) { // The
-                                                                                                               // state
-                                                                                                               // changes
+                // state
+                // changes
                 pinsConfigP[pin].setSelectedIndex(elementsAndValues);
 
                 if (pins[pin] != null) {
@@ -588,9 +578,8 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
     /**
      * Creates an Output Pin (Switch) Property.
-     * 
-     * @param pin
-     *            The pin that is going to be used as output
+     *
+     * @param pin The pin that is going to be used as output
      */
     private void createOutputPin(int pin) {
         pins[pin] = gpio.provisionDigitalOutputPin(PINS_ARRAY[pin], PinState.LOW);
@@ -603,9 +592,8 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
     /**
      * Creates an PWM Pin (Number) Property.
-     * 
-     * @param pin
-     *            The pin that is going to be used as PWM
+     *
+     * @param pin The pin that is going to be used as PWM
      */
     private void createPWMOutputPin(int pin) {
         pins[pin] = gpio.provisionPwmOutputPin(PINS_ARRAY[pin]);
@@ -619,11 +607,9 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
     /**
      * Creates an Input Pin (Light) Property.
-     * 
-     * @param pin
-     *            The pin that is going to be used as input
-     * @param pull
-     *            Pin pull up/down resistance definition.
+     *
+     * @param pin  The pin that is going to be used as input
+     * @param pull Pin pull up/down resistance definition.
      */
     private void createInputPin(int pin, PinPullResistance pull) {
         pins[pin] = gpio.provisionDigitalInputPin(PINS_ARRAY[pin], pull);
@@ -640,9 +626,8 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
 
     /**
      * Updates the Property for an Input pin.
-     * 
-     * @param pin
-     *            The pin to be updated.
+     *
+     * @param pin The pin to be updated.
      */
     private void updateInputPin(int pin) {
         PinState st = ((GpioPinDigitalInput) pins[pin]).getState();
@@ -735,7 +720,7 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     /**
      * Updates the sensor properties. Called periodically by
      * <code>RaspberryPiSensorReaderThread</code>.
-     * 
+     *
      * @see RaspberryPiSensorReaderThread
      */
     protected void setSensors() {
@@ -780,9 +765,8 @@ public class I4JRaspberryPiGPIODriver extends INDIDriver implements INDIConnecti
     /**
      * Converts a number of seconds into a string of the format
      * <em>[X Weeks, ][X Days, ][X Hours, ][X Minutes, ]X seconds</em>.
-     * 
-     * @param seconds
-     *            The number of seconds to be converted.
+     *
+     * @param seconds The number of seconds to be converted.
      * @return A <code>String</code> with the format <em>[X Weeks, ][X Days, ][X
      * Hours, ][X Minutes, ]X seconds</em>
      */

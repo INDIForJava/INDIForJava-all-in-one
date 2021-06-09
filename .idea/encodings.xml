@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/client/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-active-extension/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-ccd/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-ccd/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-filterwheel/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-focuser/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-raspberrypigpio/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-serial-extension/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver-telescope/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/driver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/fits-utils/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gnu-scientific-lib/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

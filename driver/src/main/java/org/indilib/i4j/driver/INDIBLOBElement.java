@@ -10,12 +10,12 @@ package org.indilib.i4j.driver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,7 +31,7 @@ import org.indilib.i4j.protocol.OneElement;
 
 /**
  * A class representing a INDI BLOB Element.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDIBLOBElement extends INDIElement<INDIBLOBElement> {
@@ -49,9 +49,8 @@ public class INDIBLOBElement extends INDIElement<INDIBLOBElement> {
     /**
      * Constructs an instance of a <code>INDIBLOBElement</code> with the
      * settings from the <code>builder</code>.
-     * 
-     * @param builder
-     *            the builder to get the setting from.
+     *
+     * @param builder the builder to get the setting from.
      */
     public INDIBLOBElement(INDIElementBuilder<INDIBLOBElement> builder) {
         super(builder);

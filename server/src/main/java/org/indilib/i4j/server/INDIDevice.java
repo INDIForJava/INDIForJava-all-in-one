@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -36,7 +36,7 @@ import java.io.IOException;
 /**
  * A class that represents a generic INDI Device to which the server connects
  * and parses its messages.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -46,22 +46,19 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * The logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIDevice.class);
-
+    /**
+     * The Server that listens to this Device.
+     */
+    private final INDIServer server;
     /**
      * The reader that reads from the Device.
      */
     private INDIProtocolReader reader;
 
     /**
-     * The Server that listens to this Device.
-     */
-    private final INDIServer server;
-
-    /**
      * Constructs a new <code>INDIDevice</code>.
-     * 
-     * @param server
-     *            The Server that listens to this Device
+     *
+     * @param server The Server that listens to this Device
      */
     protected INDIDevice(INDIServer server) {
         this.server = server;
@@ -94,7 +91,7 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
 
     /**
      * Gets the <code>INDIOutputStream</code> of the Device.
-     * 
+     *
      * @return The <code>INDIOutputStream</code> of the Device.
      */
     public abstract INDIOutputStream getOutputStream();
@@ -106,11 +103,10 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
 
     /**
      * Checks if the Device corresponds to a particular Device Identifier.
-     * 
-     * @param deviceIdentifier
-     *            The Device Identifier to check.
+     *
+     * @param deviceIdentifier The Device Identifier to check.
      * @return <code>true</code> if the Device corresponds to the Device
-     *         Identifier.
+     * Identifier.
      */
     public abstract boolean isDevice(String deviceIdentifier);
 
@@ -118,20 +114,18 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
      * Deals with a possible new Device name. If the device is a single one it
      * just stores the name if none has been previously fixed. In case of a
      * multiple device (like a Network one) it will probably add it to a list.
-     * 
-     * @param possibleNewName
-     *            The new possible new name.
+     *
+     * @param possibleNewName The new possible new name.
      */
     protected abstract void dealWithPossibleNewDeviceName(String possibleNewName);
 
     /**
      * Checks if the Device has a particular name. Specially important for
      * multiple name devices (Network ones).
-     * 
-     * @param name
-     *            The name to check.
+     *
+     * @param name The name to check.
      * @return <code>true</code> if the Device respond to <code>name</code>.
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     protected abstract boolean hasName(String name);
 
@@ -179,9 +173,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
     /**
      * Checks the name in a XML element to detect possible new names in the
      * Driver (specially for multiple possible devices, like the Network one).
-     * 
-     * @param elem
-     *            The XML element from which to extract the name of the Device.
+     *
+     * @param elem The XML element from which to extract the name of the Device.
      */
     private void checkName(INDIProtocol<?> elem) {
         String newName = elem.getDevice();
@@ -193,9 +186,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
 
     /**
      * Processes the <code>defXXXVector</code> XML message.
-     * 
-     * @param xml
-     *            The <code>defXXXVector</code> XML message
+     *
+     * @param xml The <code>defXXXVector</code> XML message
      */
     private void processDefXXXVector(DefVector<?> xml) {
         String device = xml.getDevice();
@@ -221,9 +213,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
 
     /**
      * Processes the <code>delProperty</code> XML message.
-     * 
-     * @param xml
-     *            The <code>delProperty</code> XML message
+     *
+     * @param xml The <code>delProperty</code> XML message
      */
     private void processDelProperty(DelProperty xml) {
         String device = xml.getDevice();
@@ -237,9 +228,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
 
     /**
      * Processes the <code>message</code> XML message.
-     * 
-     * @param xml
-     *            The <code>message</code> XML message
+     *
+     * @param xml The <code>message</code> XML message
      */
     private void processMessage(Message xml) {
         server.notifyDeviceListenersMessage(this, xml);
@@ -247,9 +237,8 @@ public abstract class INDIDevice extends INDIDeviceListener implements INDIDevic
 
     /**
      * Processes the <code>setXXXVector</code> XML message.
-     * 
-     * @param xml
-     *            The <code>setXXXVector</code> XML message
+     *
+     * @param xml The <code>setXXXVector</code> XML message
      */
     private void processSetXXXVector(SetVector<?> xml) {
         String device = xml.getDevice();

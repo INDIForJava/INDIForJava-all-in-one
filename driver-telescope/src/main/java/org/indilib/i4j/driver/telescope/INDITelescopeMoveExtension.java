@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -40,101 +40,61 @@ import static org.indilib.i4j.Constants.PropertyStates.*;
  * This extention handles the basic remote manual movement of the scope. it
  * receives directions over the rate and direction buttons and adapts the scope
  * acourdingly.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescope> {
 
     /**
-     * Default movement implementation that does only report that movements are
-     * not suppored.
+     * The property tab for the motion controls.
      */
-    private class DefaulMoveImplementation implements INDITelescopeMoveInterface {
-
-        @Override
-        public boolean moveNS(TelescopeMotionNS dir) {
-            LOG.error("Mount does not support North/South motion.");
-            getMovementNSS().resetAllSwitches();
-            getMovementNSS().setState(IDLE);
-            updateProperty(getMovementNSS(), "Mount does not support North/South motion.");
-            return false;
-        }
-
-        @Override
-        public boolean moveWE(TelescopeMotionWE dir) {
-            LOG.error("Mount does not support West/East motion.");
-            getMovementWES().resetAllSwitches();
-            getMovementWES().setState(IDLE);
-            updateProperty(getMovementWES(), "Mount does not support West/East motion.");
-            return false;
-        }
-
-        @Override
-        public void update(INDIDirection current, double rate) {
-            // not supported so no movement
-        }
-    }
-
+    protected static final String MOTION_TAB = "Motion";
     /**
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDITelescopeMoveExtension.class);
-
-    /**
-     * The property tab for the motion controls.
-     */
-    protected static final String MOTION_TAB = "Motion";
-
     /**
      * Speed of the telescope motion in arc minutes / second.
      */
     @InjectProperty(name = "TELESCOPE_MOTION_RATE", label = "Motion rate", state = OK, group = MOTION_TAB)
     protected INDINumberProperty movementRateP;
-
     /**
      * Speed of the telescope motion in arc minutes / second.
      */
     @InjectElement(name = "MOTION_RATE", label = "Motion rate ", minimum = 0, maximum = 90d, numberFormat = "%010.6m", numberValue = 5d)
     protected INDINumberElement movementRate;
-
     /**
      * Telescope motion buttons, to move the pointing position over the
      * north/south axis.
      */
     @InjectProperty(name = "TELESCOPE_MOTION_NS", label = "North/South", group = MOTION_TAB)
     protected INDISwitchProperty movementNSS;
-
     /**
      * move the scope pointing position to the north .
      */
     @InjectElement(name = "MOTION_NORTH", label = "North")
     protected INDISwitchElement movementNSSNorth;
-
     /**
      * move the scope pointing position to the south.
      */
     @InjectElement(name = "MOTION_SOUTH", label = "South")
     protected INDISwitchElement movementNSSSouth;
-
     /**
      * Telescope motion buttons, to move the pointing position over the
      * west/east axis.
      */
     @InjectProperty(name = "TELESCOPE_MOTION_WE", label = "West/East", group = MOTION_TAB)
     protected INDISwitchProperty movementWES;
-
     /**
      * move the scope pointing position to the west.
      */
     @InjectElement(name = "MOTION_WEST", label = "West")
     protected INDISwitchElement movementWESWest;
-
     /**
      * move the scope pointing position to the east.
      */
     @InjectElement(name = "MOTION_EAST", label = "East")
     protected INDISwitchElement movementWESEast;
-
     /**
      * the real doing of the moveing is done here.
      */
@@ -142,9 +102,8 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * standard constructor for the move extention.
-     * 
-     * @param driver
-     *            the telescope to with this extention belongs.
+     *
+     * @param driver the telescope to with this extention belongs.
      */
     public INDITelescopeMoveExtension(INDITelescope driver) {
         super(driver);
@@ -180,9 +139,8 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * new values where send from the client for the move north/south property.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
+     *
+     * @param elementsAndValues The new Elements and Values
      */
     private void newMovementNSSValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementNSS.setValues(elementsAndValues);
@@ -196,9 +154,8 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * new values where send from the client for the move west/east property.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
+     *
+     * @param elementsAndValues The new Elements and Values
      */
     private void newMovementWESValue(INDISwitchElementAndValue[] elementsAndValues) {
         movementWES.setValues(elementsAndValues);
@@ -245,7 +202,7 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * @return property for the Speed of the telescope motion in arc minutes /
-     *         second.
+     * second.
      */
     public INDINumberProperty getMovementRateP() {
         return movementRateP;
@@ -253,7 +210,7 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * @return element for the Speed of the telescope motion in arc minutes /
-     *         second.
+     * second.
      */
     public INDINumberElement getMovementRate() {
         return movementRate;
@@ -261,7 +218,7 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * @return Telescope motion buttons, to move the pointing position over the
-     *         north/south axis.
+     * north/south axis.
      */
     public INDISwitchProperty getMovementNSS() {
         return movementNSS;
@@ -269,7 +226,7 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * @return Telescope motion buttons, to move the pointing position over the
-     *         west/east axis.
+     * west/east axis.
      */
     public INDISwitchProperty getMovementWES() {
         return movementWES;
@@ -277,9 +234,8 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * set the move implementation the move extention should use.
-     * 
-     * @param moveImpl
-     *            the implementation
+     *
+     * @param moveImpl the implementation
      */
     public void setMoveImpl(INDITelescopeMoveInterface moveImpl) {
         if (moveImpl == null) {
@@ -290,10 +246,9 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
 
     /**
      * update the movement, telescopes should call this in the read interfall.
-     * 
-     * @param current
-     *            the current direction, adapt this value to the new target
-     *            position.
+     *
+     * @param current the current direction, adapt this value to the new target
+     *                position.
      */
     public void update(INDIDirection current) {
         moveImpl.update(current, movementRate.getValue());
@@ -333,5 +288,35 @@ public class INDITelescopeMoveExtension extends INDIDriverExtension<INDITelescop
     public boolean hasMoveRequest() {
         return movementNSS.getState() == BUSY && movementNSS.getSelectedCount() > 0 || //
                 movementWES.getState() == BUSY && movementWES.getSelectedCount() > 0;
+    }
+
+    /**
+     * Default movement implementation that does only report that movements are
+     * not suppored.
+     */
+    private class DefaulMoveImplementation implements INDITelescopeMoveInterface {
+
+        @Override
+        public boolean moveNS(TelescopeMotionNS dir) {
+            LOG.error("Mount does not support North/South motion.");
+            getMovementNSS().resetAllSwitches();
+            getMovementNSS().setState(IDLE);
+            updateProperty(getMovementNSS(), "Mount does not support North/South motion.");
+            return false;
+        }
+
+        @Override
+        public boolean moveWE(TelescopeMotionWE dir) {
+            LOG.error("Mount does not support West/East motion.");
+            getMovementWES().resetAllSwitches();
+            getMovementWES().setState(IDLE);
+            updateProperty(getMovementWES(), "Mount does not support West/East motion.");
+            return false;
+        }
+
+        @Override
+        public void update(INDIDirection current, double rate) {
+            // not supported so no movement
+        }
     }
 }

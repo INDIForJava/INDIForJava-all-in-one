@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.8">
-      <module name="INDIForJava.nom-tam-fits.main" target="8" />
-      <module name="INDIForJava.nom-tam-fits.test" target="8" />
-      <module name="nom-tam-fits.main" target="8" />
-      <module name="nom-tam-fits.test" target="8" />
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="server" />
+        <module name="driver-ccd" />
+        <module name="driver-raspberrypigpio" />
+        <module name="driver-active-extension" />
+        <module name="core" />
+        <module name="driver-filterwheel" />
+        <module name="driver" />
+        <module name="client" />
+        <module name="org.gnu.savannah.gsl" />
+        <module name="driver-focuser" />
+        <module name="driver-serial-extension" />
+        <module name="fits-utils" />
+        <module name="driver-telescope" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="client" target="8" />
+      <module name="core" target="8" />
+      <module name="driver" target="8" />
+      <module name="driver-active-extension" target="8" />
+      <module name="driver-ccd" target="8" />
+      <module name="driver-filterwheel" target="8" />
+      <module name="driver-focuser" target="8" />
+      <module name="driver-raspberrypigpio" target="8" />
+      <module name="driver-serial-extension" target="8" />
+      <module name="driver-telescope" target="8" />
+      <module name="fits-utils" target="8" />
+      <module name="i4j" target="8" />
+      <module name="org.gnu.savannah.gsl" target="8" />
+      <module name="server" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

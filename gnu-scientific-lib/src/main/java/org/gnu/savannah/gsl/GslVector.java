@@ -10,12 +10,12 @@ package org.gnu.savannah.gsl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,6 +25,12 @@ package org.gnu.savannah.gsl;
 import org.gnu.savannah.gsl.util.DoubleArray;
 
 public class GslVector {
+
+    public int size;
+    public int stride;
+    public DoubleArray data;
+    public GslBlock block;
+    public int owner;
 
     public GslVector(int n) {
         if (n == 0) {
@@ -36,16 +42,6 @@ public class GslVector {
         this.stride = 1;
         this.owner = 1;
     }
-
-    public int size;
-
-    public int stride;
-
-    public DoubleArray data;
-
-    public GslBlock block;
-
-    public int owner;
 
     public double get(int i) {
         return data.get(i * stride);

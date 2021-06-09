@@ -10,12 +10,12 @@ package org.indilib.i4j.fits.debayer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,7 +26,7 @@ import static org.indilib.i4j.fits.debayer.DebayerPattern.*;
 
 /**
  * abstract class with the common stuff of the different debayering algorithems.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public abstract class DebayerAlgorithmImpl implements DebayerAlgorithm {
@@ -98,13 +98,10 @@ public abstract class DebayerAlgorithmImpl implements DebayerAlgorithm {
     /**
      * decode with the green pixels on the outside of the pattern. Attention the
      * interpretation of red and blue pixels will depend on the bayernpattern.
-     * 
-     * @param r
-     *            red result pixels
-     * @param g
-     *            green result pixels
-     * @param b
-     *            blue result pixels
+     *
+     * @param r red result pixels
+     * @param g green result pixels
+     * @param b blue result pixels
      */
     protected abstract void decodeGreenOutside(ImagePixels r, ImagePixels g, ImagePixels b);
 
@@ -132,13 +129,10 @@ public abstract class DebayerAlgorithmImpl implements DebayerAlgorithm {
 
     /**
      * decode with the green pixels in the middle of the pattern. *
-     * 
-     * @param r
-     *            red result pixels
-     * @param g
-     *            green result pixels
-     * @param b
-     *            blue result pixels
+     *
+     * @param r red result pixels
+     * @param g green result pixels
+     * @param b blue result pixels
      */
     protected abstract void decodeGreenMiddle(ImagePixels r, ImagePixels g, ImagePixels b);
 }

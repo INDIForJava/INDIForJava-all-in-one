@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -37,30 +37,27 @@ import java.util.List;
 
 /**
  * Utility class for classpath and url funktions.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public final class Util {
 
     /**
-     * the classpath jandex index.
-     */
-    private static IndexView classPathIndex;
-
-    /**
      * Logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(Util.class);
-
-    /**
-     * the number of entries in the system classpath (to check if they changed).
-     */
-    private static int nrOfSystemClasspathEntries;
-
     /**
      * the scheme for urls to files.
      */
     private static final String SCHEME_FILE = "file";
+    /**
+     * the classpath jandex index.
+     */
+    private static IndexView classPathIndex;
+    /**
+     * the number of entries in the system classpath (to check if they changed).
+     */
+    private static int nrOfSystemClasspathEntries;
 
     /**
      * private accessor for utility class.
@@ -70,11 +67,10 @@ public final class Util {
 
     /**
      * Returns whether the given URI refers to a local file system URI.
-     * 
-     * @param uri
-     *            The URI to check
+     *
+     * @param uri The URI to check
      * @return <code>true</code> if the URI is a local file system location, and
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public static boolean isFileURI(URI uri) {
         return SCHEME_FILE.equalsIgnoreCase(uri.getScheme());
@@ -83,11 +79,10 @@ public final class Util {
     /**
      * Returns the URI as a local file, or <code>null</code> if the given URI
      * does not represent a local file.
-     * 
-     * @param uri
-     *            The URI to return the file for
+     *
+     * @param uri The URI to return the file for
      * @return The local file corresponding to the given URI, or
-     *         <code>null</code>
+     * <code>null</code>
      */
     public static File toFile(URI uri) {
         if (!isFileURI(uri)) {
@@ -117,9 +112,8 @@ public final class Util {
     /**
      * extend the classpath with one file or a directory with classes. (and
      * reindex everything.
-     * 
-     * @param dirOrJar
-     *            the directory or jar file
+     *
+     * @param dirOrJar the directory or jar file
      * @return the index of the jar/directory file.
      */
     protected static IndexView extendClasspath(File dirOrJar) {
@@ -148,11 +142,9 @@ public final class Util {
 
     /**
      * index one file or directory using the specified indexer.
-     * 
-     * @param file
-     *            the file to index.
-     * @param indexer
-     *            the indexer to use.
+     *
+     * @param file    the file to index.
+     * @param indexer the indexer to use.
      */
     private static void index(File file, Indexer indexer) {
         if (file.isFile() && file.getName().endsWith(".class")) {
@@ -175,14 +167,11 @@ public final class Util {
 
     /**
      * reindex the list of urls and return the index of the current url.
-     * 
-     * @param urLs
-     *            the list of all urls
-     * @param currentUrl
-     *            the url for with to return the index
+     *
+     * @param urLs       the list of all urls
+     * @param currentUrl the url for with to return the index
      * @return the index of the current url.
-     * @throws Exception
-     *             if something seriun went wrong.
+     * @throws Exception if something seriun went wrong.
      */
     private static IndexView reindex(URL[] urLs, URL currentUrl) throws Exception {
         Index jarIndex = null;

@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * A class that represent a Network Device (another INDI server).
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -70,15 +70,11 @@ public class INDINetworkDevice extends INDIDevice {
 
     /**
      * Constructs a new Network Device and connects to it.
-     * 
-     * @param server
-     *            The server which listens to this Device.
-     * @param host
-     *            The host to connect for the Device.
-     * @param port
-     *            The port to connect for the Device.
-     * @throws INDIException
-     *             if there is any problem with the connection.
+     *
+     * @param server The server which listens to this Device.
+     * @param host   The host to connect for the Device.
+     * @param port   The port to connect for the Device.
+     * @throws INDIException if there is any problem with the connection.
      */
     protected INDINetworkDevice(INDIServer server, String host, int port) throws INDIException {
         super(server);
@@ -146,7 +142,7 @@ public class INDINetworkDevice extends INDIDevice {
 
     /**
      * Gets a String representation of the Device.
-     * 
+     *
      * @return A String representation of the Device.
      */
     @Override
@@ -156,9 +152,8 @@ public class INDINetworkDevice extends INDIDevice {
 
     /**
      * Deals with a possible new Device name, adding it if it is new.
-     * 
-     * @param possibleNewName
-     *            The new possible new name.
+     *
+     * @param possibleNewName The new possible new name.
      */
     @Override
     protected void dealWithPossibleNewDeviceName(String possibleNewName) {
@@ -169,11 +164,10 @@ public class INDINetworkDevice extends INDIDevice {
 
     /**
      * Checks if the Device has a particular name.
-     * 
-     * @param name
-     *            The name to check.
+     *
+     * @param name The name to check.
      * @return <code>true</code> if the Device respond to <code>name</code>.
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     @Override
     protected boolean hasName(String name) {
@@ -182,7 +176,7 @@ public class INDINetworkDevice extends INDIDevice {
 
     /**
      * Gets a String with the host and port of the connection.
-     * 
+     *
      * @return A String with the host and port of the connection.
      */
     private String getNetworkName() {

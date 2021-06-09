@@ -22,8 +22,6 @@ package org.indilib.i4j.protocol.api;
  * #L%
  */
 
-import com.thoughtworks.xstream.XStreamException;
-
 import java.io.IOException;
 import java.net.URL;
 

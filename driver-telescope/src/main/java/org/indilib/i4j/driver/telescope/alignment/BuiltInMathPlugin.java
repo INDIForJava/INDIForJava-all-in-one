@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope.alignment;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -39,180 +39,103 @@ import java.util.List;
 
 /**
  * The default math plugin for the sync calculation.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
-     * The point database has no entries at all.
-     */
-    private static final int POINT_DB_EMPTY = 0;
-
-    /**
-     * The point database has one single entry.
-     */
-    private static final int POINT_DB_ONE_ENTRY = 1;
-
-    /**
-     * The point database has two entries.
-     */
-    private static final int POINT_DB_TWO_ENTRIES = 2;
-
-    /**
-     * The point database has three entries.
-     */
-    private static final int POINT_DB_THREE_ENTRIES = 3;
-
-    /**
-     * ra coordinates of the north celestrial pole.
-     */
-    private static final double NORTH_CELESTIAL_POLE_RA = 0.0;
-
-    /**
-     * dec coordinates of the north celestrial pole.
-     */
-    private static final double NORTH_CELESTIAL_POLE_DEC = 90.0;
-
-    /**
-     * ra coordinates of the south celestrial pole.
-     */
-    private static final double SOUTH_CELESTIAL_POLE_RA = 0.0;
-
-    /**
-     * dec coordinates of the south celestrial pole.
-     */
-    private static final double SOUTH_CELESTIAL_POLE_DEC = -90.0;
-
-    /**
-     * 3 dimentions.
-     */
-    private static final int DIM_3D = 3;
-
-    /**
-     * number of hours per day.
-     */
-    private static final double HOURS_PER_DAY = 24d;
-
-    /**
-     * number of degrees ind circle.
-     */
-    private static final double DEGREES_IN_CIRCLE = 360d;
-
-    /**
      * It is the difference between the next representable number after 1 and 1.
      */
     public static final double DBL_EPSILON = 2.220446049250313E-16d;
-
-    /**
-     * multiplier to make degrees from hours.
-     */
-    private static final double DEGREES_TO_HOUR = DEGREES_IN_CIRCLE / HOURS_PER_DAY;
-
-    /**
-     * multiplier to make hours from degrees .
-     */
-    private static final double HOUR_TO_DEGREES = HOURS_PER_DAY / DEGREES_IN_CIRCLE;
-
-    /**
-     * Helper class to sort the database entries.
-     */
-    static class AlignmentDatabaseEntryDistance implements Comparable<AlignmentDatabaseEntryDistance> {
-
-        /**
-         * The datebase entry.
-         */
-        private AlignmentDatabaseEntry entry;
-
-        /**
-         * the distance to the current point.
-         */
-        private double distance;
-
-        /**
-         * Constructor for the entry distance.
-         * 
-         * @param distance
-         *            the distance.
-         * @param entry
-         *            the alignment entry
-         */
-        public AlignmentDatabaseEntryDistance(double distance, AlignmentDatabaseEntry entry) {
-            this.distance = distance;
-            this.entry = entry;
-        }
-
-        @Override
-        public int compareTo(AlignmentDatabaseEntryDistance o) {
-            double d = distance - o.distance;
-            if (d > 0) {
-                return 1;
-            } else if (d < 0) {
-                return -1;
-            }
-            return 0;
-        }
-
-        @Override
-        public int hashCode() {
-            return Double.valueOf(distance).hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof AlignmentDatabaseEntryDistance) {
-                return compareTo((AlignmentDatabaseEntryDistance) obj) == 0;
-            }
-            return false;
-        }
-
-    }
-
-    /**
-     * The logger to log to.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(BuiltInMathPlugin.class);
-
     /**
      * The label of the Default math plugin.
      */
     public static final String INBUILT_MATH_PLUGIN_LABEL = "Inbuilt Math Plugin";
-
     /**
      * the internal name of the default math plugin.
      */
     public static final String INBUILT_MATH_PLUGIN_NAME = "INBUILT_MATH_PLUGIN";
-
+    /**
+     * The point database has no entries at all.
+     */
+    private static final int POINT_DB_EMPTY = 0;
+    /**
+     * The point database has one single entry.
+     */
+    private static final int POINT_DB_ONE_ENTRY = 1;
+    /**
+     * The point database has two entries.
+     */
+    private static final int POINT_DB_TWO_ENTRIES = 2;
+    /**
+     * The point database has three entries.
+     */
+    private static final int POINT_DB_THREE_ENTRIES = 3;
+    /**
+     * ra coordinates of the north celestrial pole.
+     */
+    private static final double NORTH_CELESTIAL_POLE_RA = 0.0;
+    /**
+     * dec coordinates of the north celestrial pole.
+     */
+    private static final double NORTH_CELESTIAL_POLE_DEC = 90.0;
+    /**
+     * ra coordinates of the south celestrial pole.
+     */
+    private static final double SOUTH_CELESTIAL_POLE_RA = 0.0;
+    /**
+     * dec coordinates of the south celestrial pole.
+     */
+    private static final double SOUTH_CELESTIAL_POLE_DEC = -90.0;
+    /**
+     * 3 dimentions.
+     */
+    private static final int DIM_3D = 3;
+    /**
+     * number of hours per day.
+     */
+    private static final double HOURS_PER_DAY = 24d;
+    /**
+     * number of degrees ind circle.
+     */
+    private static final double DEGREES_IN_CIRCLE = 360d;
+    /**
+     * multiplier to make degrees from hours.
+     */
+    private static final double DEGREES_TO_HOUR = DEGREES_IN_CIRCLE / HOURS_PER_DAY;
+    /**
+     * multiplier to make hours from degrees .
+     */
+    private static final double HOUR_TO_DEGREES = HOURS_PER_DAY / DEGREES_IN_CIRCLE;
+    /**
+     * The logger to log to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(BuiltInMathPlugin.class);
     /**
      * actual to appenent transformation.
      */
     private GslMatrix actualToApparentTransform;
-
     /**
      * appenrent to aktual transformation.
      */
     private GslMatrix apparentToActualTransform;
-
     /**
      * Actual Convex hull for 4+ sync points case.
      */
     private WrappedQuickHull3D actualConvexHull = new WrappedQuickHull3D();
-
     /**
      * Apperent Convex hull for 4+ sync points case.
      */
     private WrappedQuickHull3D apparentConvexHull = new WrappedQuickHull3D();
-
     /**
      * Actual direction cosines for the 4+ case.
      */
     private List<TelescopeDirectionVector> actualDirectionCosines = new ArrayList<>();
-
     /**
      * the in memory alignment database.
      */
     private InMemoryDatabase inMemoryDatabase;
-
     /**
      * Describe the alignment of a telescope axis. This is normally used to
      * differentiate between equatorial mounts in differnet hemispheres and
@@ -240,6 +163,11 @@ public class BuiltInMathPlugin implements IMathPlugin {
     }
 
     @Override
+    public void setApproximateAlignment(MountAlignment approximateAlignment) {
+        this.approximateAlignment = approximateAlignment;
+    }
+
+    @Override
     public String id() {
         return INBUILT_MATH_PLUGIN_NAME;
     }
@@ -253,9 +181,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * make the dummy third entry and compute a transform matrix. - If three
      * compute a transform matrix. - If four or more compute a convex hull, then
      * matrices for each triangular facet of the hull.
-     * 
-     * @param anInMemoryDatabase
-     *            the database to use
+     *
+     * @param anInMemoryDatabase the database to use
      * @return true if successful
      */
     @Override
@@ -284,7 +211,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Initialize the plugin with more than three points in the database .
-     * 
+     *
      * @return true is successfull.
      */
     private boolean initialiseMoreThanTreePoints() {
@@ -365,7 +292,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Initialize the plugin with three points in the database .
-     * 
+     *
      * @return true is successfull.
      */
     protected boolean initialiseThreePoints() {
@@ -394,7 +321,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Initialize the plugin with two points in the database .
-     * 
+     *
      * @return true is successfull.
      */
     protected boolean initialiseTwoPoints() {
@@ -434,7 +361,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Initialize the plugin with one point in the database .
-     * 
+     *
      * @return true is successfull.
      */
     protected boolean initialiseOnePoint() {
@@ -517,13 +444,8 @@ public class BuiltInMathPlugin implements IMathPlugin {
     }
 
     @Override
-    public void setApproximateAlignment(MountAlignment approximateAlignment) {
-        this.approximateAlignment = approximateAlignment;
-    }
-
-    @Override
     public boolean transformCelestialToTelescope(final double rightAscension, final double declination, final double julianOffset,
-            TelescopeDirectionVector apparentTelescopeDirectionVector) {
+                                                 TelescopeDirectionVector apparentTelescopeDirectionVector) {
         LnLnlatPosn position = new LnLnlatPosn();
 
         // Should check that this the same as the current observing position
@@ -567,16 +489,13 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * transform the Celestial coordinates to telescope coordinates with more
      * than 3 points in the database.
-     * 
-     * @param apparentTelescopeDirectionVector
-     *            corrected telescope direction vector
-     * @param position
-     *            the current position
-     * @param actualVector
-     *            telescope direction vector
+     *
+     * @param apparentTelescopeDirectionVector corrected telescope direction vector
+     * @param position                         the current position
+     * @param actualVector                     telescope direction vector
      */
     protected void transformCelestialToTelescopeWithBigDb(TelescopeDirectionVector apparentTelescopeDirectionVector, LnLnlatPosn position,
-            TelescopeDirectionVector actualVector) {
+                                                          TelescopeDirectionVector actualVector) {
 
         List<AlignmentDatabaseEntry> syncPoints = inMemoryDatabase.getAlignmentDatabase();
         // Scale the actual telescope direction vector to make sure it
@@ -653,11 +572,9 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * transform the Celestial coordinates to telescope coordinates with 1 to 3
      * points in the database.
-     * 
-     * @param apparentTelescopeDirectionVector
-     *            corrected telescope direction vector
-     * @param actualVector
-     *            telescope direction vector
+     *
+     * @param apparentTelescopeDirectionVector corrected telescope direction vector
+     * @param actualVector                     telescope direction vector
      */
     protected void transformCelestialToTelescopeWithSmallDb(TelescopeDirectionVector apparentTelescopeDirectionVector, TelescopeDirectionVector actualVector) {
         GslMatrix multiplyMatrix = actualToApparentTransform;
@@ -667,13 +584,10 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Multyply the vector with the matrix and set the normalized result in the
      * resulting vector.
-     * 
-     * @param resultingVector
-     *            the resulting vector
-     * @param vector
-     *            the vector to multiply
-     * @param multiplyMatrix
-     *            the multiplication matrix
+     *
+     * @param resultingVector the resulting vector
+     * @param vector          the vector to multiply
+     * @param multiplyMatrix  the multiplication matrix
      */
     protected void multiplyVectorWithMatrix(TelescopeDirectionVector resultingVector, TelescopeDirectionVector vector, GslMatrix multiplyMatrix) {
         GslVector gslVector = new GslVector(DIM_3D);
@@ -693,11 +607,9 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * calculate the horizontal coordinates and convert it to a direction
      * vector.
-     * 
-     * @param position
-     *            the current position of the scope.
-     * @param entry
-     *            the syncpoint
+     *
+     * @param position the current position of the scope.
+     * @param entry    the syncpoint
      * @return the telescope direction vector.
      */
     protected TelescopeDirectionVector calculateHorizontalCoordsNormalisedDirectionVector(LnLnlatPosn position, AlignmentDatabaseEntry entry) {
@@ -717,16 +629,13 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * transform the Celestial coordinates to telescope coordinates with no
      * entries in the database.
-     * 
-     * @param apparentTelescopeDirectionVector
-     *            corrected telescope direction vector
-     * @param position
-     *            the current position
-     * @param actualVector
-     *            telescope direction vector
+     *
+     * @param apparentTelescopeDirectionVector corrected telescope direction vector
+     * @param position                         the current position
+     * @param actualVector                     telescope direction vector
      */
     protected void transformCelestialToTelescopeWithEmptyDb(TelescopeDirectionVector apparentTelescopeDirectionVector, LnLnlatPosn position,
-            TelescopeDirectionVector actualVector) {
+                                                            TelescopeDirectionVector actualVector) {
         // 0 sync points
         apparentTelescopeDirectionVector.copyFrom(actualVector);
 
@@ -757,7 +666,7 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     @Override
     public boolean transformTelescopeToCelestial(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
-            DoubleRef declination) {
+                                                 DoubleRef declination) {
 
         LnLnlatPosn position = new LnLnlatPosn();
 
@@ -790,20 +699,15 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Transform the Telescope coordinates to celestrial coordinates using a
      * sync point db with more that 3 points.
-     * 
-     * @param apparentTelescopeDirectionVector
-     *            the vector the scope is pointing.
-     * @param julianOffset
-     *            to be applied to the current julian date.
-     * @param rightAscension
-     *            the resulting right ascension
-     * @param declination
-     *            the resulting declination
-     * @param position
-     *            the current scope position.
+     *
+     * @param apparentTelescopeDirectionVector the vector the scope is pointing.
+     * @param julianOffset                     to be applied to the current julian date.
+     * @param rightAscension                   the resulting right ascension
+     * @param declination                      the resulting declination
+     * @param position                         the current scope position.
      */
     protected void transformTelescopeToCelestialWithBigDb(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
-            DoubleRef declination, LnLnlatPosn position) {
+                                                          DoubleRef declination, LnLnlatPosn position) {
 
         List<AlignmentDatabaseEntry> syncPoints = inMemoryDatabase.getAlignmentDatabase();
 
@@ -895,20 +799,15 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Transform the Telescope coordinates to celestrial coordinates using a
      * sync point db with 1 to 3 points.
-     * 
-     * @param apparentTelescopeDirectionVector
-     *            the vector the scope is pointing.
-     * @param julianOffset
-     *            to be applied to the current julian date.
-     * @param rightAscension
-     *            the resulting right ascension
-     * @param declination
-     *            the resulting declination
-     * @param position
-     *            the current scope position.
+     *
+     * @param apparentTelescopeDirectionVector the vector the scope is pointing.
+     * @param julianOffset                     to be applied to the current julian date.
+     * @param rightAscension                   the resulting right ascension
+     * @param declination                      the resulting declination
+     * @param position                         the current scope position.
      */
     protected void transformTelescopeToCelestialWithSmallDb(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
-            DoubleRef declination, LnLnlatPosn position) {
+                                                            DoubleRef declination, LnLnlatPosn position) {
 
         TelescopeDirectionVector actualTelescopeDirectionVector = new TelescopeDirectionVector();
 
@@ -930,20 +829,15 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Transform the Telescope coordinates to celestrial coordinates using a
      * empty sync point db.
-     * 
-     * @param apparentTelescopeDirectionVector
-     *            the vector the scope is pointing.
-     * @param julianOffset
-     *            to be applied to the current julian date.
-     * @param rightAscension
-     *            the resulting right ascension
-     * @param declination
-     *            the resulting declination
-     * @param position
-     *            the current scope position.
+     *
+     * @param apparentTelescopeDirectionVector the vector the scope is pointing.
+     * @param julianOffset                     to be applied to the current julian date.
+     * @param rightAscension                   the resulting right ascension
+     * @param declination                      the resulting declination
+     * @param position                         the current scope position.
      */
     protected void transformTelescopeToCelestialWithEmptyDb(TelescopeDirectionVector apparentTelescopeDirectionVector, double julianOffset, DoubleRef rightAscension,
-            DoubleRef declination, LnLnlatPosn position) {
+                                                            DoubleRef declination, LnLnlatPosn position) {
 
         LnHrzPosn actualAltAz = new LnHrzPosn();
         LnEquPosn actualRaDec = new LnEquPosn();
@@ -986,11 +880,9 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Log the vector.
-     * 
-     * @param label
-     *            the label to use.
-     * @param vector
-     *            the vector to print
+     *
+     * @param label  the label to use.
+     * @param vector the vector to print
      */
     protected void dump3(String label, GslVector vector) {
         LOG.info(String.format("Vector dump - %s", label));
@@ -999,11 +891,9 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Log the matrix.
-     * 
-     * @param label
-     *            the label to use.
-     * @param matrix
-     *            the matrix to print
+     *
+     * @param label  the label to use.
+     * @param matrix the matrix to print
      */
     protected void dump3x3(String label, GslMatrix matrix) {
         LOG.info(String.format("Matrix dump - %s", label));
@@ -1014,19 +904,15 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Calculate tranformation matrices from the supplied vectors.
-     * 
-     * @param alphaMatrix
-     *            Alpha matrix to the first coordinate in the alpha reference
-     *            frame
-     * @param betaMatrix
-     *            Beta matrix Pointer to the first coordinate in the beta
-     *            reference frame
-     * @param alphaToBeta
-     *            pAlphaToBeta Pointer to a matrix to receive the Alpha to Beta
-     *            transformation matrix
-     * @param betaToAlpha
-     *            pBetaToAlpha Pointer to a matrix to receive the Beta to Alpha
-     *            transformation matrix
+     *
+     * @param alphaMatrix Alpha matrix to the first coordinate in the alpha reference
+     *                    frame
+     * @param betaMatrix  Beta matrix Pointer to the first coordinate in the beta
+     *                    reference frame
+     * @param alphaToBeta pAlphaToBeta Pointer to a matrix to receive the Alpha to Beta
+     *                    transformation matrix
+     * @param betaToAlpha pBetaToAlpha Pointer to a matrix to receive the Beta to Alpha
+     *                    transformation matrix
      */
     private void calculateTransformMatrices(GslMatrix alphaMatrix, GslMatrix betaMatrix, GslMatrix alphaToBeta, GslMatrix betaToAlpha) {
 
@@ -1063,13 +949,10 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Derive the Actual to Apparent transformation matrix.
-     * 
-     * @param alpha1
-     *            first point of the matrix
-     * @param alpha2
-     *            second point of the matrix
-     * @param alpha3
-     *            thrird point of the matrix
+     *
+     * @param alpha1 first point of the matrix
+     * @param alpha2 second point of the matrix
+     * @param alpha3 thrird point of the matrix
      * @return the created matrix.
      */
     protected GslMatrix createActualToApparentMatrix(TelescopeDirectionVector alpha1, TelescopeDirectionVector alpha2, TelescopeDirectionVector alpha3) {
@@ -1090,19 +973,15 @@ public class BuiltInMathPlugin implements IMathPlugin {
      * Test if a ray intersects a triangle in 3d space The order of the vertices
      * determine whether the triangle is facing away from or towards the origin.
      * Intersection with triangles facing the origin will be ignored.
-     * 
-     * @param ray
-     *            Ray The ray vector
-     * @param triangleVertex1
-     *            TriangleVertex1 The first vertex of the triangle
-     * @param triangleVertex2
-     *            TriangleVertex2 The second vertex of the triangle
-     * @param triangleVertex3
-     *            TriangleVertex3 The third vertex of the triangle
+     *
+     * @param ray             Ray The ray vector
+     * @param triangleVertex1 TriangleVertex1 The first vertex of the triangle
+     * @param triangleVertex2 TriangleVertex2 The second vertex of the triangle
+     * @param triangleVertex3 TriangleVertex3 The third vertex of the triangle
      * @return if the rays intersect.
      */
     private boolean rayTriangleIntersection(TelescopeDirectionVector ray, TelescopeDirectionVector triangleVertex1, TelescopeDirectionVector triangleVertex2,
-            TelescopeDirectionVector triangleVertex3) {
+                                            TelescopeDirectionVector triangleVertex3) {
         // Use Möller-Trumbore
 
         // Find vectors for two edges sharing V1
@@ -1154,13 +1033,10 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Multiply matrix A by vector B and put the result in vector C.
-     * 
-     * @param matrixA
-     *            matrix A
-     * @param matrixB
-     *            matrix B
-     * @param vectorC
-     *            the resulting vector
+     *
+     * @param matrixA matrix A
+     * @param matrixB matrix B
+     * @param vectorC the resulting vector
      */
     private void matrixVectorMultiply(GslMatrix matrixA, GslVector matrixB, GslVector vectorC) {
         // Zeroise the output vector
@@ -1171,13 +1047,10 @@ public class BuiltInMathPlugin implements IMathPlugin {
     /**
      * Use gsl blas support to multiply two matrices together and put the result
      * in a third. For our purposes all the matrices should be 3 by 3.
-     * 
-     * @param matrixA
-     *            matrix A
-     * @param matrixB
-     *            matrix B
-     * @param matrixC
-     *            matrix C
+     *
+     * @param matrixA matrix A
+     * @param matrixB matrix B
+     * @param matrixC matrix C
      */
     private void matrixMatrixMultiply(GslMatrix matrixA, GslMatrix matrixB, GslMatrix matrixC) {
         // Zeroise the output matrix
@@ -1188,11 +1061,9 @@ public class BuiltInMathPlugin implements IMathPlugin {
 
     /**
      * Use gsl to compute the inverse of a 3x3 matrix.
-     * 
-     * @param input
-     *            matrix to use
-     * @param inversion
-     *            result matrix
+     *
+     * @param input     matrix to use
+     * @param inversion result matrix
      * @return true if successful.
      */
     private boolean matrixInvert3x3(GslMatrix input, GslMatrix inversion) {
@@ -1212,5 +1083,57 @@ public class BuiltInMathPlugin implements IMathPlugin {
             Gsl.gsl_linalg_LU_invert(decomp, permutation, inversion);
         }
         return retcode;
+    }
+
+    /**
+     * Helper class to sort the database entries.
+     */
+    static class AlignmentDatabaseEntryDistance implements Comparable<AlignmentDatabaseEntryDistance> {
+
+        /**
+         * The datebase entry.
+         */
+        private AlignmentDatabaseEntry entry;
+
+        /**
+         * the distance to the current point.
+         */
+        private double distance;
+
+        /**
+         * Constructor for the entry distance.
+         *
+         * @param distance the distance.
+         * @param entry    the alignment entry
+         */
+        public AlignmentDatabaseEntryDistance(double distance, AlignmentDatabaseEntry entry) {
+            this.distance = distance;
+            this.entry = entry;
+        }
+
+        @Override
+        public int compareTo(AlignmentDatabaseEntryDistance o) {
+            double d = distance - o.distance;
+            if (d > 0) {
+                return 1;
+            } else if (d < 0) {
+                return -1;
+            }
+            return 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Double.valueOf(distance).hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof AlignmentDatabaseEntryDistance) {
+                return compareTo((AlignmentDatabaseEntryDistance) obj) == 0;
+            }
+            return false;
+        }
+
     }
 }

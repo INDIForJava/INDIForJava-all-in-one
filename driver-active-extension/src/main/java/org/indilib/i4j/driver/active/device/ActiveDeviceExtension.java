@@ -10,38 +10,22 @@ package org.indilib.i4j.driver.active.device;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.indilib.i4j.Constants.PropertyStates;
 import org.indilib.i4j.Constants.SwitchStatus;
 import org.indilib.i4j.client.INDIServerConnection;
-import org.indilib.i4j.driver.INDIDriver;
-import org.indilib.i4j.driver.INDIDriverExtension;
-import org.indilib.i4j.driver.INDISwitchElement;
-import org.indilib.i4j.driver.INDISwitchProperty;
-import org.indilib.i4j.driver.INDITextElement;
-import org.indilib.i4j.driver.INDITextElementAndValue;
-import org.indilib.i4j.driver.INDITextProperty;
+import org.indilib.i4j.driver.*;
 import org.indilib.i4j.driver.annotation.InjectElement;
 import org.indilib.i4j.driver.annotation.InjectProperty;
 import org.indilib.i4j.properties.INDIDeviceDescriptor;
@@ -54,13 +38,17 @@ import org.indilib.i4j.server.api.INDIServerInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+
 /**
  * This extension provides the active_device property with all possible values.
  * this special property is used to allow linking together different drivers for
  * information excange.
- * 
- * @author Richard van Nieuwenhoven
  *
+ * @author Richard van Nieuwenhoven
  */
 public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
 
@@ -68,29 +56,25 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
      * The logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(ActiveDeviceExtension.class);
-
+    Map<String, INDIServerConnection> serverConnections;
     /**
      * auto detect button to scan the indi server for telescopes.
      */
     @InjectProperty(name = "autoDetect", label = "auto detect telescope")
     private INDISwitchProperty autoDetectP;
-
     /**
      * auto detect button to scan the indi server for telescopes.
      */
     @InjectElement(switchValue = SwitchStatus.ON)
     private INDISwitchElement autoDetect;
-
     /**
      * the property containing the list with all active devices for the parent.
      */
     private INDITextProperty activeDevices;
-
     /**
      * the list with device types that can be activated.
      */
     private List<INDIDeviceDescriptor> deviceTypes = new LinkedList<>();
-
     /**
      * property/element mappings from an other device to this device.
      */
@@ -98,20 +82,27 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * Constructor for the extension.
-     * 
-     * @param driver
-     *            the driver to connect to.
+     *
+     * @param driver the driver to connect to.
      */
     public ActiveDeviceExtension(INDIDriver driver) {
         super(driver);
     }
 
+    protected static String getDeviceFromUrl(URL parsedUrl) {
+        String indiDeviceName = "";
+        List<String> device = INDIURLConnection.splitQuery(parsedUrl).get("device");
+        if (device != null && !device.isEmpty()) {
+            indiDeviceName = device.get(0);
+        }
+        return indiDeviceName;
+    }
+
     /**
      * select the possible device types that can be connected to the device.
      * This method may only be called before the first connect.
-     * 
-     * @param deviceTypes
-     *            the array of device types
+     *
+     * @param deviceTypes the array of device types
      */
     public void setDeviceTypes(INDIDeviceDescriptor... deviceTypes) {
         this.deviceTypes.clear();
@@ -167,9 +158,8 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * an element was changed now change the driver connection to the linked
      * device.
-     * 
-     * @param element
-     *            the changed element.
+     *
+     * @param element the changed element.
      */
     protected void updateDriverConnection(INDITextElement element) {
         LOG.info("Active devices element changed for " + driver.getName() + " and device type " + element.getName());
@@ -180,8 +170,6 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
     public void disconnect() {
         super.disconnect();
     }
-
-    Map<String, INDIServerConnection> serverConnections;
 
     private void createServerConnection(INDITextElement element) {
         String elementValue = element.getValue();
@@ -227,15 +215,6 @@ public class ActiveDeviceExtension extends INDIDriverExtension<INDIDriver> {
                 driver.updateProperty(activeDevices, e.getMessage());
             }
         }
-    }
-
-    protected static String getDeviceFromUrl(URL parsedUrl) {
-        String indiDeviceName = "";
-        List<String> device = INDIURLConnection.splitQuery(parsedUrl).get("device");
-        if (device != null && !device.isEmpty()) {
-            indiDeviceName = device.get(0);
-        }
-        return indiDeviceName;
     }
 
     private INDIServerInterface initializeLocalServerConnection() {

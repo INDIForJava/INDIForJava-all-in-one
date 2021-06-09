@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.annotation;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -35,12 +35,12 @@ import java.lang.annotation.Target;
 /**
  * Use this annotation on a field in your driver oder extension and a element
  * will be injected in the dirver with the attributes specified.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
-    ElementType.FIELD
+        ElementType.FIELD
 })
 public @interface InjectProperty {
 
@@ -86,19 +86,19 @@ public @interface InjectProperty {
 
     /**
      * @return the tab group to use for this property (mandatory if it is not in
-     *         a group).
+     * a group).
      */
     String group() default UNSORTED_GROUP;
 
     /**
      * @return should the value of this property be saved in a property file?
-     *         defaults to false.
+     * defaults to false.
      */
     boolean saveable() default false;
 
     /**
      * @return if this property is a switch property what rule should apply?
-     *         defaults to ONE_OF_MANY.
+     * defaults to ONE_OF_MANY.
      */
     SwitchRules switchRule() default SwitchRules.ONE_OF_MANY;
 

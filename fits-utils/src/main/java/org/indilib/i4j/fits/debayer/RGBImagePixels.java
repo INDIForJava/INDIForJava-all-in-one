@@ -13,21 +13,22 @@ import java.awt.image.BufferedImage;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 /**
  * This class wrappes a color image consisting of a read a green and a blue
  * image.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class RGBImagePixels {
@@ -64,11 +65,9 @@ public class RGBImagePixels {
 
     /**
      * construct an image of the given size.
-     * 
-     * @param width
-     *            the width of the image
-     * @param height
-     *            the heigth of the image.
+     *
+     * @param width  the width of the image
+     * @param height the heigth of the image.
      */
     public RGBImagePixels(int width, int height) {
         red = new ImagePixels(width, height);
@@ -84,10 +83,28 @@ public class RGBImagePixels {
     }
 
     /**
+     * set the red pixels.
+     *
+     * @param red the new red pixels
+     */
+    public void setRed(ImagePixels red) {
+        this.red = red;
+    }
+
+    /**
      * @return the blue pixels
      */
     public ImagePixels getBlue() {
         return blue;
+    }
+
+    /**
+     * set the blue pixels.
+     *
+     * @param blue the new blue pixels
+     */
+    public void setBlue(ImagePixels blue) {
+        this.blue = blue;
     }
 
     /**
@@ -98,30 +115,9 @@ public class RGBImagePixels {
     }
 
     /**
-     * set the red pixels.
-     * 
-     * @param red
-     *            the new red pixels
-     */
-    public void setRed(ImagePixels red) {
-        this.red = red;
-    }
-
-    /**
-     * set the blue pixels.
-     * 
-     * @param blue
-     *            the new blue pixels
-     */
-    public void setBlue(ImagePixels blue) {
-        this.blue = blue;
-    }
-
-    /**
      * set the green pixels.
-     * 
-     * @param green
-     *            the new green pixels
+     *
+     * @param green the new green pixels
      */
     public void setGreen(ImagePixels green) {
         this.green = green;
@@ -131,9 +127,8 @@ public class RGBImagePixels {
      * create an rgb color array in the requested bit per pixel depth. currently
      * only 8, 16 and 32 bit pixel depth supported. Attention the primitives are
      * used unsigned!
-     * 
-     * @param bitsPerPixel
-     *            the pixel depth to use
+     *
+     * @param bitsPerPixel the pixel depth to use
      * @return the array of color pixels.
      */
     public Object getColors(int bitsPerPixel) {
@@ -189,11 +184,9 @@ public class RGBImagePixels {
 
     /**
      * scale a 0 to 1 double pixel to the new range, rounding it to a long.
-     * 
-     * @param pixel
-     *            the pixel to scale
-     * @param max
-     *            the max value.
+     *
+     * @param pixel the pixel to scale
+     * @param max   the max value.
      * @return the pixel value in the new range.
      */
     private long scalePixel(double pixel, double max) {
@@ -202,13 +195,10 @@ public class RGBImagePixels {
 
     /**
      * scale a 0 to 1 double pixel to the new range, rounding it to a long.
-     * 
-     * @param pixel
-     *            the pixel to scale
-     * @param min
-     *            the max value.
-     * @param max
-     *            the max value.
+     *
+     * @param pixel the pixel to scale
+     * @param min   the max value.
+     * @param max   the max value.
      * @return the pixel value in the new range.
      */
     private long scalePixel(double pixel, double min, double max) {
@@ -217,7 +207,7 @@ public class RGBImagePixels {
 
     /**
      * @return a 8 bit buffered image that represents this image, mainly for
-     *         direkt display
+     * direkt display
      */
     public BufferedImage asImage() {
         double[] redPixel = red.pixel();

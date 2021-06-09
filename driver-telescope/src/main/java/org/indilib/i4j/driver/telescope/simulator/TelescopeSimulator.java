@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope.simulator;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -44,36 +44,31 @@ import static org.indilib.i4j.Constants.PropertyStates.*;
 /**
  * This is the scope simulator class, basicly a copy of the c++ version. it will
  * simulate a scopes behavior for any indi-client.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class TelescopeSimulator extends INDITelescope implements INDITelescopeParkInterface, INDITelescopeSyncInterface {
 
     /**
+     * the tab where the motion control properties will be displayed.
+     */
+    public static final String MOTION_TAB = "Motion Control";
+    /**
      * how many milliseconds per second.
      */
     private static final double MILLISECONDS_PER_SECOND = 1000d;
-
     /**
      * multiplier to create 360 degrees from 24 hours.
      */
     private static final double HOUR_TO_DEGREE = 15d;
-
     /**
      * the simulatet focal length.
      */
     private static final double DEFAULT_FOCAL_LENGTH = 2000d;
-
     /**
      * the simulated aperture.
      */
     private static final double DEFAULT_APERTURE = 203d;
-
-    /**
-     * the tab where the motion control properties will be displayed.
-     */
-    public static final String MOTION_TAB = "Motion Control";
-
     /**
      * The logger for any messages.
      */
@@ -137,118 +132,99 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
      * TODO: replace with something mode java like.
      */
     private static final int GUIDE_EAST = 1;
-
+    /**
+     * The current pointing coordinates.
+     */
+    private final INDIDirection current = new INDIDirection();
+    /**
+     * The target pointing coordinates.
+     */
+    private final INDIDirection target = new INDIDirection();
+    /**
+     * delta of the last update.
+     */
+    private final INDIDirection lastDelta = new INDIDirection();
     /**
      * Guide north south values.<br/>
      * TODO: replace with something mode java like.
      */
     private double[] guiderNSTarget = new double[2];
-
     /**
      * Guide west east values.<br/>
      * TODO: replace with something mode java like.
      */
     private double[] guiderEWTarget = new double[2];
-
-    /**
-     * The current pointing coordinates.
-     */
-    private final INDIDirection current = new INDIDirection();
-
-    /**
-     * The target pointing coordinates.
-     */
-    private final INDIDirection target = new INDIDirection();
-
     /**
      * Simulated periodic error in RA, DEC.
      */
     @InjectProperty(name = "EQUATORIAL_PE", label = "Periodic Error", group = MOTION_TAB, permission = PropertyPermissions.RO)
     private INDINumberProperty eqPen;
-
     /**
      * Simulated periodic error in right ascension.
      */
     @InjectElement(name = "RA_PE", label = "RA (hh:mm:ss)", numberValue = 0.15d, maximum = 24d, numberFormat = "%010.6m")
     private INDINumberElement eqPenRa;
-
     /**
      * Simulated periodic error in declination.
      */
     @InjectElement(name = "DEC_PE", label = "DEC (dd:mm:ss)", numberValue = 0.15d, minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
     private INDINumberElement eqPenDec;
-
     /**
      * Enable client to manually add periodic error northward or southward for
      * simulation purposes.
      */
     @InjectProperty(name = "PE_NS", label = "PE N/S", group = MOTION_TAB)
     private INDISwitchProperty periodicErrorNS;
-
     /**
      * manually add periodic error northward simulation purposes.
      */
     @InjectElement(name = "PE_N", label = "North")
     private INDISwitchElement periodicErrorNSNorth;
-
     /**
      * manually add periodic error southward simulation purposes.
      */
     @InjectElement(name = "PE_S", label = "South")
     private INDISwitchElement periodicErrorNSSouth;
-
     /**
      * Enable client to manually add periodic error westward or easthward for
      * simulation purposes.
      */
     @InjectProperty(name = "PE_WE", label = "PE W/E", group = MOTION_TAB)
     private INDISwitchProperty periodicErrorWE;
-
     /**
      * manually add periodic error westward for simulation purposes.
      */
     @InjectElement(name = "PE_W", label = "West")
     private INDISwitchElement periodicErrorWEWest;
-
     /**
      * manually add periodic error easthward for simulation purposes.
      */
     @InjectElement(name = "PE_E", label = "East")
     private INDISwitchElement periodicErrorWEEast;
-
     /**
      * How fast do we guide compared to sidereal rate.
      */
     @InjectProperty(name = "GUIDE_RATE", label = "Guiding Rate", group = MOTION_TAB, timeout = 0)
     private INDINumberProperty guideRate;
-
     /**
      * How fast do we guide compared to sidereal rate in the west/east axis.
      */
     @InjectElement(name = "GUIDE_RATE_WE", label = "W/E Rate", numberValue = 0.3d, maximum = 1d, step = 0.1d, numberFormat = "%g")
     private INDINumberElement guideRateWE;
-
     /**
      * How fast do we guide compared to sidereal rate in the north/south axis.
      */
     @InjectElement(name = "GUIDE_RATE_NS", label = "N/S Rate", numberValue = 0.3d, maximum = 1d, step = 0.1d, numberFormat = "%g")
     private INDINumberElement guideRateNS;
-
     /**
      * last time value (last pol interval.
      */
     private long lastSystime = -1;
 
     /**
-     * delta of the last update.
-     */
-    private final INDIDirection lastDelta = new INDIDirection();
-
-    /**
      * Standard constructor for the simulated telescope driver.
-     * 
-     * @param connection
-     *            the indi connection to the server.
+     *
+     * @param connection the indi connection to the server.
      */
     public TelescopeSimulator(INDIConnection connection) {
         super(connection);
@@ -287,22 +263,22 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     /**
      * the client send a new value for the Guide rate.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
+     *
+     * @param elementsAndValues The new Elements and Values
      */
     private void newGuideRateValue(INDINumberElementAndValue[] elementsAndValues) {
         guideRate.setValues(elementsAndValues);
         guideRate.setState(OK);
         updateProperty(guideRate);
-    };
+    }
+
+    ;
 
     /**
      * the client send a new value for the periodic error in the north south
      * axis.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
+     *
+     * @param elementsAndValues The new Elements and Values
      */
     private void newPErrNSValue(INDISwitchElementAndValue[] elementsAndValues) {
         periodicErrorNS.setValues(elementsAndValues);
@@ -322,9 +298,8 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     /**
      * the client send a new value for the periodic error in the west east axis.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
+     *
+     * @param elementsAndValues The new Elements and Values
      */
     private void newPErrWEValue(INDISwitchElementAndValue[] elementsAndValues) {
         periodicErrorWE.setValues(elementsAndValues);
@@ -442,15 +417,11 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     /**
      * Ok, we read the scope status and simulate the tracking state.
-     * 
-     * @param delta
-     *            the delta direction
-     * @param dt
-     *            the delta in time
-     * @param nsGuideDir
-     *            the north south guid direction
-     * @param weGuideDir
-     *            the west east guide direction
+     *
+     * @param delta      the delta direction
+     * @param dt         the delta in time
+     * @param nsGuideDir the north south guid direction
+     * @param weGuideDir the west east guide direction
      */
     private void readScopeStatusTracking(INDIDirection delta, double dt, int nsGuideDir, int weGuideDir) {
 
@@ -532,11 +503,9 @@ public class TelescopeSimulator extends INDITelescope implements INDITelescopePa
 
     /**
      * Ok, we read the scope status and simulate the paring state.
-     * 
-     * @param da
-     *            do not know really
-     * @param delta
-     *            the delta direction
+     *
+     * @param da    do not know really
+     * @param delta the delta direction
      */
     private void readScopeStatusParking(INDIDirection da, INDIDirection delta) {
         int nlocked = 0;

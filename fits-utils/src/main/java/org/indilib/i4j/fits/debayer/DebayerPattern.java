@@ -10,12 +10,12 @@ package org.indilib.i4j.fits.debayer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,13 +24,13 @@ package org.indilib.i4j.fits.debayer;
 
 /**
  * This enum represents the different kind of supported bayering patterns.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public enum DebayerPattern {
     /**
      * This pattern represents.
-     * 
+     *
      * <pre>
      * R-G-R-G
      * G-B-G-B
@@ -41,7 +41,7 @@ public enum DebayerPattern {
     RGGB,
     /**
      * This pattern represents.
-     * 
+     *
      * <pre>
      * B-G-B-G
      * G-R-G-R
@@ -52,7 +52,7 @@ public enum DebayerPattern {
     BGGR,
     /**
      * This pattern represents.
-     * 
+     *
      * <pre>
      * G-R-G-R
      * B-G-B-G
@@ -63,7 +63,7 @@ public enum DebayerPattern {
     GRBG,
     /**
      * This pattern represents.
-     * 
+     *
      * <pre>
      * G-B-G-B
      * R-G-R-G

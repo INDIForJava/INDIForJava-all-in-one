@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope.simulator;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -43,7 +43,7 @@ import java.util.Date;
 /**
  * An telescope simulator that has "real" encoders and can sync. So a template
  * vor all real horizontal based scopes.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public class TelescopeAltAzSimulator extends INDITelescope implements INDITelescopeSyncInterface {
@@ -67,88 +67,24 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(TelescopeAltAzSimulator.class);
-
-    /**
-     * the simulated axis, that will update its position itself.
-     */
-    static class SimulatedAxisWithEncoder extends AxisWithEncoder {
-
-        /**
-         * when was the last update (in system millisecond time).
-         */
-        private long updateTime = -1;
-
-        /**
-         * update the encoder simulate the movement acourding to the speed.
-         */
-        public void update() {
-            long now = System.currentTimeMillis();
-            if (updateTime > 0) {
-                double millisecondsPassed = now - updateTime;
-                setPosition((long) (getPosition() + speedInTicksPerSecond * millisecondsPassed / MILLISECONDS_PER_SECOND));
-            }
-            updateTime = now;
-        }
-
-    }
-
-    /**
-     * Simulate a mount with two axis. It will run a thread as long as it is
-     * connected.
-     */
-    class SimulatedMount extends Mount<SimulatedAxisWithEncoder> implements Runnable {
-
-        /**
-         * how many times will the update tread trigger during a scope update
-         * interfall.
-         */
-        private static final long UPDATE_TIMES_PER_INTERFALL = 4L;
-
-        /**
-         * stop the thread.
-         */
-        private boolean stop = false;
-
-        @Override
-        public void run() {
-            while (!stop) {
-                try {
-                    Thread.sleep(updateInterfall() / UPDATE_TIMES_PER_INTERFALL);
-                    horizontalAxis.update();
-                    verticalAxis.update();
-                } catch (InterruptedException e) {
-                    LOG.error("interrupted exception");
-                }
-            }
-        }
-
-        @Override
-        protected SimulatedAxisWithEncoder createHorizontalAxis() {
-            return new SimulatedAxisWithEncoder();
-        }
-
-        @Override
-        protected SimulatedAxisWithEncoder createVerticalAxis() {
-            return new SimulatedAxisWithEncoder();
-        }
-    }
-
     /**
      * the simulated mount.
      */
     private SimulatedMount mount = new SimulatedMount();
-
     /**
      * The math plugin for the calculation from eqn to horizontal.
      */
     @InjectExtension
     private MathPluginManagement mathPluginManagement;
+    /**
+     * Current goto or tracking position.
+     */
+    private INDIDirection gotoDirection = null;
 
     /**
      * constructor for the altaz simulator.
-     * 
-     * @param connection
-     *            the indi connection to the server.
+     *
+     * @param connection the indi connection to the server.
      */
     public TelescopeAltAzSimulator(INDIConnection connection) {
         super(connection);
@@ -180,11 +116,6 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
         mount.stop();
         return true;
     }
-
-    /**
-     * Current goto or tracking position.
-     */
-    private INDIDirection gotoDirection = null;
 
     @Override
     protected void doGoto(double ra, double dec) {
@@ -226,9 +157,8 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
 
     /**
      * convert the millisecond system time in julian date.
-     * 
-     * @param now
-     *            the system time in milliseconds.
+     *
+     * @param now the system time in milliseconds.
      * @return the julian date.
      */
     protected double jdTimeFromCurrentMiliseconds(long now) {
@@ -301,6 +231,71 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
     public void isBeingDestroyed() {
         if (mount != null) {
             mount.stop();
+        }
+    }
+
+    /**
+     * the simulated axis, that will update its position itself.
+     */
+    static class SimulatedAxisWithEncoder extends AxisWithEncoder {
+
+        /**
+         * when was the last update (in system millisecond time).
+         */
+        private long updateTime = -1;
+
+        /**
+         * update the encoder simulate the movement acourding to the speed.
+         */
+        public void update() {
+            long now = System.currentTimeMillis();
+            if (updateTime > 0) {
+                double millisecondsPassed = now - updateTime;
+                setPosition((long) (getPosition() + speedInTicksPerSecond * millisecondsPassed / MILLISECONDS_PER_SECOND));
+            }
+            updateTime = now;
+        }
+
+    }
+
+    /**
+     * Simulate a mount with two axis. It will run a thread as long as it is
+     * connected.
+     */
+    class SimulatedMount extends Mount<SimulatedAxisWithEncoder> implements Runnable {
+
+        /**
+         * how many times will the update tread trigger during a scope update
+         * interfall.
+         */
+        private static final long UPDATE_TIMES_PER_INTERFALL = 4L;
+
+        /**
+         * stop the thread.
+         */
+        private boolean stop = false;
+
+        @Override
+        public void run() {
+            while (!stop) {
+                try {
+                    Thread.sleep(updateInterfall() / UPDATE_TIMES_PER_INTERFALL);
+                    horizontalAxis.update();
+                    verticalAxis.update();
+                } catch (InterruptedException e) {
+                    LOG.error("interrupted exception");
+                }
+            }
+        }
+
+        @Override
+        protected SimulatedAxisWithEncoder createHorizontalAxis() {
+            return new SimulatedAxisWithEncoder();
+        }
+
+        @Override
+        protected SimulatedAxisWithEncoder createVerticalAxis() {
+            return new SimulatedAxisWithEncoder();
         }
     }
 }

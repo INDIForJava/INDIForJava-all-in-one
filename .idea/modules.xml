@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/client/client.iml" filepath="$PROJECT_DIR$/client/client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver/driver.iml" filepath="$PROJECT_DIR$/driver/driver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver-active-extension/driver-active-extension.iml" filepath="$PROJECT_DIR$/driver-active-extension/driver-active-extension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver-ccd/driver-ccd.iml" filepath="$PROJECT_DIR$/driver-ccd/driver-ccd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver-filterwheel/driver-filterwheel.iml" filepath="$PROJECT_DIR$/driver-filterwheel/driver-filterwheel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver-focuser/driver-focuser.iml" filepath="$PROJECT_DIR$/driver-focuser/driver-focuser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver-raspberrypigpio/driver-raspberrypigpio.iml" filepath="$PROJECT_DIR$/driver-raspberrypigpio/driver-raspberrypigpio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver-serial-extension/driver-serial-extension.iml" filepath="$PROJECT_DIR$/driver-serial-extension/driver-serial-extension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/driver-telescope/driver-telescope.iml" filepath="$PROJECT_DIR$/driver-telescope/driver-telescope.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fits-utils/fits-utils.iml" filepath="$PROJECT_DIR$/fits-utils/fits-utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/i4j.iml" filepath="$PROJECT_DIR$/i4j.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gnu-scientific-lib/org.gnu.savannah.gsl.iml" filepath="$PROJECT_DIR$/gnu-scientific-lib/org.gnu.savannah.gsl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
+    </modules>
+  </component>
+</project>

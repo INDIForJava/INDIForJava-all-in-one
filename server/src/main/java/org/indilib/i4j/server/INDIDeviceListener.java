@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -34,7 +34,7 @@ import java.util.List;
  * A class that represents a listener to devices. It is used to include both
  * usual Clients and Devices, as Drivers can also snoop Properties from other
  * Devices according to the INDI protocol.
- * 
+ *
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -73,7 +73,7 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * @return <code>true</code> if the listener listens to all the devices.
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     public boolean listensToAllDevices() {
         return listenToAllDevices;
@@ -81,11 +81,9 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Add a new BLOB Enable rule for a whole Device.
-     * 
-     * @param deviceName
-     *            The Device name
-     * @param enable
-     *            The rule
+     *
+     * @param deviceName The Device name
+     * @param enable     The rule
      */
     protected void addBLOBEnableRule(String deviceName, BLOBEnables enable) {
         DevicePropertyBLOBEnableTuple aux = getBLOBEnableRule(deviceName);
@@ -99,13 +97,10 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Add a new BLOB Enable rule for a particular BLOB Property.
-     * 
-     * @param deviceName
-     *            The Device name
-     * @param propertyName
-     *            The Property name
-     * @param enable
-     *            The rule
+     *
+     * @param deviceName   The Device name
+     * @param propertyName The Property name
+     * @param enable       The rule
      */
     protected void addBLOBEnableRule(String deviceName, String propertyName, BLOBEnables enable) {
         DevicePropertyBLOBEnableTuple aux = getBLOBEnableRule(deviceName, propertyName);
@@ -119,9 +114,8 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Adds a new Device to be listened.
-     * 
-     * @param deviceName
-     *            The Device name to be listened.
+     *
+     * @param deviceName The Device name to be listened.
      */
     protected void addDeviceToListen(String deviceName) {
         devicesToListen.add(new DevicePropertyBLOBEnableTuple(deviceName));
@@ -129,11 +123,9 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Adds a new Property to be listened.
-     * 
-     * @param deviceName
-     *            The Device name owner of the Property
-     * @param propertyName
-     *            The Property name to be listened.
+     *
+     * @param deviceName   The Device name owner of the Property
+     * @param propertyName The Property name to be listened.
      */
     protected void addPropertyToListen(String deviceName, String propertyName) {
         propertiesToListen.add(new DevicePropertyBLOBEnableTuple(deviceName, propertyName));
@@ -142,11 +134,10 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     /**
      * Gets information about if non BLOBs updates should be sended according to
      * the BLOB Enable rules.
-     * 
-     * @param deviceName
-     *            The Device name
+     *
+     * @param deviceName The Device name
      * @return <code>true</code> if non BLOBs are accepted. <code>false</code>
-     *         otherwise.
+     * otherwise.
      */
     protected boolean areNonBLOBsAccepted(String deviceName) {
         DevicePropertyBLOBEnableTuple aux = getBLOBEnableRule(deviceName);
@@ -165,13 +156,11 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     /**
      * Gets information about if BLOB updates should be sended according to the
      * BLOB Enable rules.
-     * 
-     * @param deviceName
-     *            The Device name
-     * @param propertyName
-     *            The Property name
+     *
+     * @param deviceName   The Device name
+     * @param propertyName The Property name
      * @return <code>true</code> if the BLOB is accepted. <code>false</code>
-     *         otherwise.
+     * otherwise.
      */
     protected boolean isBLOBAccepted(String deviceName, String propertyName) {
         DevicePropertyBLOBEnableTuple aux = getBLOBEnableRule(deviceName, propertyName);
@@ -195,11 +184,10 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Determines if the listener listens to a Device.
-     * 
-     * @param deviceName
-     *            The Device name to check.
+     *
+     * @param deviceName The Device name to check.
      * @return <code>true</code> if the listener listens to the Device.
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     protected boolean listensToDevice(String deviceName) {
         if (listenToAllDevices) {
@@ -215,13 +203,11 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Determines if the listener listens to a Property.
-     * 
-     * @param deviceName
-     *            The Device name to which the Property belongs.
-     * @param propertyName
-     *            The Property name to check.
+     *
+     * @param deviceName   The Device name to which the Property belongs.
+     * @param propertyName The Property name to check.
      * @return <code>true</code> if the listener listens to the Property.
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     protected boolean listensToProperty(String deviceName, String propertyName) {
         if (listensToDevice(deviceName)) {
@@ -238,11 +224,10 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     /**
      * Determines if the listener listens to specifically one Property of a
      * Device.
-     * 
-     * @param deviceName
-     *            The Device name to check.
+     *
+     * @param deviceName The Device name to check.
      * @return <code>true</code> if the listener listens specifically to any
-     *         Property of the Device. <code>false</code> otherwise.
+     * Property of the Device. <code>false</code> otherwise.
      */
     protected boolean listensToSingleProperty(String deviceName) {
         for (DevicePropertyBLOBEnableTuple propertyToListen : propertiesToListen) {
@@ -255,9 +240,8 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Processes the <code>getProperties</code> XML message.
-     * 
-     * @param xml
-     *            The <code>getProperties</code> XML message
+     *
+     * @param xml The <code>getProperties</code> XML message
      */
     protected void processGetProperties(GetProperties xml) {
         if (!xml.hasDevice()) {
@@ -273,17 +257,15 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Sends a String (usually containing some XML) to the listener.
-     * 
-     * @param message
-     *            The message to be sent.
+     *
+     * @param message The message to be sent.
      */
     protected abstract void sendXMLMessage(INDIProtocol<?> message);
 
     /**
      * Sets the listenToAllDevices flag.
-     * 
-     * @param listenToAllDevices
-     *            The new value of the flag.
+     *
+     * @param listenToAllDevices The new value of the flag.
      */
     protected void setListenToAllDevices(boolean listenToAllDevices) {
         this.listenToAllDevices = listenToAllDevices;
@@ -291,9 +273,8 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Gets the BLOB Enable rule for a Device (if it exists).
-     * 
-     * @param deviceName
-     *            The Device name.
+     *
+     * @param deviceName The Device name.
      * @return The BLOB Enable rule.
      */
     private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName) {
@@ -302,11 +283,9 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Gets the BLOB Enable rule for a Property (if it exists).
-     * 
-     * @param deviceName
-     *            The Device name.
-     * @param propertyName
-     *            The Property name.
+     *
+     * @param deviceName   The Device name.
+     * @param propertyName The Property name.
      * @return The BLOB Enable rule.
      */
     private DevicePropertyBLOBEnableTuple getBLOBEnableRule(String deviceName, String propertyName) {
@@ -320,11 +299,10 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
 
     /**
      * Checks if it is specifically listening to a particular Device.
-     * 
-     * @param deviceName
-     *            The Device name.
+     *
+     * @param deviceName The Device name.
      * @return <code>true</code> if the listener specifically listens to the
-     *         Device. <code>false</code> otherwise.
+     * Device. <code>false</code> otherwise.
      */
     private boolean listensToParticularDevice(String deviceName) {
         for (DevicePropertyBLOBEnableTuple device : devicesToListen) {
@@ -338,13 +316,11 @@ public abstract class INDIDeviceListener implements INDIProtocolParser {
     /**
      * Checks if it is specifically listening to a particular Property of a
      * Device.
-     * 
-     * @param deviceName
-     *            The Device name.
-     * @param propertyName
-     *            the property to listen to.
+     *
+     * @param deviceName   The Device name.
+     * @param propertyName the property to listen to.
      * @return <code>true</code> if the listener specifically listens to the
-     *         Property of a Device. <code>false</code> otherwise.
+     * Property of a Device. <code>false</code> otherwise.
      */
     private boolean listensToParticularProperty(String deviceName, String propertyName) {
         for (DevicePropertyBLOBEnableTuple propertyToListen : propertiesToListen) {

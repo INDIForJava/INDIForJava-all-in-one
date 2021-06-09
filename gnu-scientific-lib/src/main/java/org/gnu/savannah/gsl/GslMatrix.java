@@ -10,12 +10,12 @@ package org.gnu.savannah.gsl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,6 +25,13 @@ package org.gnu.savannah.gsl;
 import org.gnu.savannah.gsl.util.DoubleArray;
 
 public class GslMatrix {
+
+    public int size1;
+    public int size2;
+    public int tda;
+    public DoubleArray data;
+    public GslBlock block;
+    public int owner;
 
     public GslMatrix(int n1, int n2) {
 
@@ -45,18 +52,6 @@ public class GslMatrix {
         owner = 1;
 
     }
-
-    public int size1;
-
-    public int size2;
-
-    public int tda;
-
-    public DoubleArray data;
-
-    public GslBlock block;
-
-    public int owner;
 
     public double get(int i, int j) {
         return data.get(i * tda + j);

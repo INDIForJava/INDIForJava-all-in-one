@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.ccd;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -50,86 +50,94 @@ import static org.indilib.i4j.properties.INDIStandardProperty.UPLOAD_SETTINGS;
 /**
  * This is the abstract cdd driver, all ccd drivers should subclass it. the
  * initial verion of the Functionality is a port of the c++ driver.
- * 
+ *
  * @author Richard van Nieuwenhoven
  */
 public abstract class INDICCDDriver extends INDIDriver implements INDIConnectionHandler, INDICCDDriverInterface {
 
     /**
-     * The minimum temperature for the ccd chip in degrees celcius.
-     */
-    private static final double MAXIMUM_CCD_TEMPERATURE = 50d;
-
-    /**
-     * The maximum temperature for the ccd chip in degrees celcius.
-     */
-    private static final double MINIMAL_CCD_TEMPERATURE = -50d;
-
-    /**
-     * The logger to log the messages to.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(INDICCDDriver.class);
-
-    /**
      * The property tab for the image settings..
      */
     protected static final String IMAGE_SETTINGS_TAB = "Image Settings";
-
     /**
      * The property tab for the image information.
      */
     protected static final String IMAGE_INFO_TAB = "Image Info";
-
+    /**
+     * The minimum temperature for the ccd chip in degrees celcius.
+     */
+    private static final double MAXIMUM_CCD_TEMPERATURE = 50d;
+    /**
+     * The maximum temperature for the ccd chip in degrees celcius.
+     */
+    private static final double MINIMAL_CCD_TEMPERATURE = -50d;
+    /**
+     * The logger to log the messages to.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(INDICCDDriver.class);
+    /**
+     * a capability object with booleans that specify what this dirver can and
+     * can not do.
+     */
+    private final Capability capability = defineCapabilities();
     /**
      * The temperature of the ccd chip.
      */
     @InjectProperty(name = "CCD_TEMPERATURE", label = "Temperature", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDINumberProperty temperature;
-
     /**
      * The temperature of the ccd chip.
      */
     @InjectElement(name = "CCD_TEMPERATURE_VALUE", label = "Temperature (C)", minimum = MINIMAL_CCD_TEMPERATURE, maximum = MAXIMUM_CCD_TEMPERATURE, numberFormat = "%5.2f")
     protected INDINumberElement temperatureTemp;
-
+    /**
+     * the CCD extention, where the real ccd interfacing happens, this is the
+     * primary ccd.
+     */
+    @InjectExtension(prefix = "CCD_", rename = {
+            @Rename(name = "CCD", to = "CCD1")
+    })
+    protected INDICCDDriverExtension primaryCCD;
+    /**
+     * the CCD extention, where the real guider ccd interfacing happens, this is
+     * the guider ccd.
+     */
+    @InjectExtension(prefix = "GUIDER_", rename = {
+            @Rename(name = "CCD", to = "CCD2")
+    })
+    protected INDICCDDriverExtension guiderCCD;
     /**
      * The upload mode for the images, if they should be saved on the server or
      * send to the client.
      */
     @InjectProperty(std = UPLOAD_MODE, label = "Upload", group = INDIDriver.GROUP_OPTIONS, timeout = 0, saveable = true)
     private INDISwitchProperty upload;
-
     /**
      * should the images be send to the client?
      */
     @InjectElement(std = UPLOAD_CLIENT, label = "Client", switchValue = SwitchStatus.ON)
     private INDISwitchElement uploadClient;
-
     /**
      * should the images be stored locally (where the driver resides)?
      */
     @InjectElement(std = UPLOAD_LOCAL, label = "Local")
     private INDISwitchElement uploadLocal;
-
     /**
      * should the images be send to the client and stored locally (where the
      * driver resides).
      */
     @InjectElement(std = UPLOAD_BOTH, label = "Both")
     private INDISwitchElement uploadBoth;
-
     /**
      * Upload directory and filenames for local storage.
      */
     @InjectProperty(std = UPLOAD_SETTINGS, label = "Upload Settings", group = INDIDriver.GROUP_OPTIONS, saveable = true)
     private INDITextProperty uploadSettings;
-
     /**
      * Upload directory for local storage.
      */
     @InjectElement(std = UPLOAD_DIR, label = "Dir")
     private INDITextElement uploadSettingsDir;
-
     /**
      * The prefix for the images to store. (The "XX" part of the name will be
      * replaced by a number).
@@ -138,35 +146,10 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
     private INDITextElement uploadSettingsPrefix;
 
     /**
-     * the CCD extention, where the real ccd interfacing happens, this is the
-     * primary ccd.
-     */
-    @InjectExtension(prefix = "CCD_", rename = {
-        @Rename(name = "CCD", to = "CCD1")
-    })
-    protected INDICCDDriverExtension primaryCCD;
-
-    /**
-     * the CCD extention, where the real guider ccd interfacing happens, this is
-     * the guider ccd.
-     */
-    @InjectExtension(prefix = "GUIDER_", rename = {
-        @Rename(name = "CCD", to = "CCD2")
-    })
-    protected INDICCDDriverExtension guiderCCD;
-
-    /**
-     * a capability object with booleans that specify what this dirver can and
-     * can not do.
-     */
-    private final Capability capability = defineCapabilities();
-
-    /**
      * The CCD driver constructor, all subclasses must call this. All local
      * event handlers are here attached to the properties.
-     * 
-     * @param connection
-     *            the indi connection to the server.
+     *
+     * @param connection the indi connection to the server.
      */
     public INDICCDDriver(INDIConnection connection) {
         super(connection);
@@ -198,9 +181,8 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     /**
      * the client send a new value for the temperature.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
+     *
+     * @param elementsAndValues The new Elements and Values
      */
     private void newTemperatureValue(INDINumberElementAndValue[] elementsAndValues) {
         temperature.setValues(elementsAndValues);
@@ -217,9 +199,8 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     /**
      * the client send a new value for the upload directory.
-     * 
-     * @param elementsAndValues
-     *            The new Elements and Values
+     *
+     * @param elementsAndValues The new Elements and Values
      */
     private void newUploadValue(INDISwitchElementAndValue[] elementsAndValues) {
         upload.setValues(elementsAndValues);
@@ -237,7 +218,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     /**
      * @return a handler instance for the guider. mandatory if the ccd support a
-     *         guider head.
+     * guider head.
      */
     protected INDICCDDriverInterface createGuiderDriverHandler() {
         return null;
@@ -245,16 +226,15 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     /**
      * @return a new Capability object that defines the capabilities of this ccd
-     *         driver.
+     * driver.
      */
     protected abstract Capability defineCapabilities();
 
     /**
      * Uploads target Chip exposed buffer as FITS to the client. Dervied classes
      * should call this functon when an exposure is complete.
-     * 
-     * @param targetChip
-     *            chip that contains upload image data
+     *
+     * @param targetChip chip that contains upload image data
      * @return true if the operation was successful.
      */
     protected boolean exposureComplete(INDICCDDriverExtension targetChip) {
@@ -267,12 +247,10 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     /**
      * calculate a unique non existent filename to save an image localy.
-     * 
-     * @param extension
-     *            the file extension to use (file format)
+     *
+     * @param extension the file extension to use (file format)
      * @return the file to use to store the next image.
-     * @throws IOException
-     *             if the driver could not read on the filesystem.
+     * @throws IOException if the driver could not read on the filesystem.
      */
     protected File getFileWithIndex(String extension) throws IOException {
         String dir = uploadSettingsDir.getValue();
@@ -307,14 +285,13 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
      * Set CCD temperature. Upon returning false, the property becomes BUSY.
      * Once the temperature reaches the requested value, change the state to OK.
      * This must be implemented in the child class
-     * 
-     * @param theTargetTemperature
-     *            CCD temperature in degrees celcius.
+     *
+     * @param theTargetTemperature CCD temperature in degrees celcius.
      * @return true or false if setting the temperature call to the hardware is
-     *         successful. null if an error is encountered. Return false if
-     *         setting the temperature to the requested value takes time. Return
-     *         true if setting the temperature to the requested value is
-     *         complete.
+     * successful. null if an error is encountered. Return false if
+     * setting the temperature to the requested value takes time. Return
+     * true if setting the temperature to the requested value is
+     * complete.
      */
     protected abstract Boolean setTemperature(double theTargetTemperature);
 
@@ -357,7 +334,7 @@ public abstract class INDICCDDriver extends INDIDriver implements INDIConnection
 
     /**
      * @return true if the images should be saved locally (where the driver
-     *         resides).
+     * resides).
      */
     public boolean shouldSaveImage() {
         return uploadLocal.isOn() || uploadBoth.isOn();
