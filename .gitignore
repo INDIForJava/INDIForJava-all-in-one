@@ -25,3 +25,4 @@ out/
 /fits-utils/target
 /gnu-scientific-lib/target
 /server/target
+*.class
