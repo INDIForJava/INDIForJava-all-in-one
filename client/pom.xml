@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.indilib.i4j</groupId>
-        <artifactId>i4j</artifactId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
-    <artifactId>client</artifactId>
-    <name>INDI for Java Client Library</name>
-    <description>INDI for Java Client is a library to create Clients that control astronomical devices using the INDI
-        protocol (http://indilib.org)
-    </description>
-    <packaging>jar</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-    <properties>
-        <site.basedir>${project.parent.basedir}</site.basedir>
-        <i4j.nonjavamodule>false</i4j.nonjavamodule>
-    </properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.indilib.i4j</groupId>
+		<artifactId>i4j</artifactId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>i4j-client</artifactId>
+	<name>INDI for Java Client Library</name>
+	<description>INDI for Java Client is a library to create Clients that control astronomical devices using the INDI protocol (http://indilib.org)</description>
+	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>i4j-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	<properties>
+		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
+	</properties>
 </project>

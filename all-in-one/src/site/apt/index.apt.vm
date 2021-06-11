@@ -1,0 +1,78 @@
+%{include|source-content=<div id\="apt-box">}
+
+INDI for Java - All in one zip
+
+ This is our first try for an end-user targeted package. It is a zip file with all the nessesary libraries and a number of cross platform startup script. This is the first version where i4j can run as a service on linux, windows and many other systems supported by the servicewrapper system. 
+Scripts are included for the service to start/stop/control and scripts for other situations. Because they are very "new" please see the maturity of them as BETA, any reported successfull tests and problems would are very welcome. 
+
+*Download
+
+ The all in one zip ( ${project.build.finalName}-distribution.zip ) can be found on the sourceforge files page of the project {{{https://sourceforge.net/projects/indiforjava/files/}indiforjava on sourceforge}}. 
+
+*Usage
+
+ Just unzip the ${project.build.finalName}-distribution.zip where you want it. In the bin sub directory the start scripts are situated.
+i4j-server-interactive.sh for unix based operation systems and i4j-server-interactive.bat for windows based operation systems. This start script takes many parameters that are
+explained in the help. Just execute "i4j-server-interactive.sh -help" to see the help page.
+
+%{include|source=target/help.txt|source-is-template=true|projectVersion=1.0}
+
+ Wenn started with the start script some defaults are different. The indiHome will be set to the directory where you unzipped the package and the lib directory of the
+zip will be added auttomaticaly to the classpath. If you want to include some 3th party drivers the jars will go there.
+
+ If you want do do some commands on startup. For example loading your drivers immediately after startup just put the commands in the file $indiHome/etc/server.boot
+(without the minus prefix). The command in that file will be done immediately after the start of the server.
+ 
+*Interactive mode
+
+ When acivating the interactive mode (i4j-server-interactive.xx), the help will be printed and you will be able to control the server from the command line by
+typing the commands. For example by typing "la" all currently avaiable driver classes will be listed.
+
+ To start a driver just execute the "c" command with as a parameter the class name of the driver. Use the "ld" command to check if the driver 
+is active. Now you can connect to the server with your indi client.
+
+*Service mode
+
+ Using the i4j-server script the server can be started and stopped as a service/daemon. 
+
+----------------
+i4j-server start
+----------------  
+
+ Will start the service, no interactive mode now. all startup commands must be in the "etc/server.boot" script. For example to
+start the "RandomNumberGeneratorDriver" as a driver in the service mode create a file "etc/server.boot" in the etc directoty with
+the content:
+
+---------------------
+c org.indilib.i4j.driver.examples.RandomNumberGeneratorDriver
+---------------------
+
+ Then start the server and the driver will be started at startup,use the i4j-client to check this.
+
+ The service will embed itself into the standard service list of your system. it will run as an independend program.
+To stop the server just do:
+
+----------------
+i4j-server stop
+----------------
+
+ And to check its status just do: 
+   
+----------------
+i4j-server status
+----------------
+
+ Of cource you will need the system permissions to access the service system, i4j just assumes you haven them and will crash
+when you do not.
+
+*Logs
+
+ In the logs directory you will find the log files, the default logging level is Warning. To change this just change the setting
+in etc/logback.xml. There are 2 log files one for the i4j system called "i4j.log" and one for the service system "wrapper.log".
+If you have problems with 14j please attach them both (zipped) to the ticket.
+
+*Client script  
+
+ The sample swing gui client is included as a script, use the "i4j-client" script to start it.
+
+%{include|source-content=</div>}

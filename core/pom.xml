@@ -1,44 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <parent>
-        <groupId>org.indilib.i4j</groupId>
-        <artifactId>i4j</artifactId>
-        <version>2.0-SNAPSHOT</version>
-    </parent>
-    <artifactId>core</artifactId>
-    <name>INDI for Java Core Library</name>
-    <description>INDIForJava is a set of libraries to implement clients, drivers and servers that follow the INDI
-        distributed control protocol, a protocol designed to operate astronomical instrumentation.
-    </description>
-    <packaging>jar</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.4.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.tyrus</groupId>
-            <artifactId>tyrus-client</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-    </dependencies>
-    <properties>
-        <site.basedir>${project.parent.basedir}</site.basedir>
-        <i4j.nonjavamodule>false</i4j.nonjavamodule>
-    </properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.indilib.i4j</groupId>
+		<artifactId>i4j</artifactId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>i4j-core</artifactId>
+	<name>INDI for Java Core Library</name>
+	<description>INDI for Java is a library to deal with astronomical devices using the INDI library (http://indilib.org)</description>
+	<packaging>jar</packaging>
+	<dependencies>
+		<!--dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>protocol</artifactId>
+			<version>${project.version}</version>
+		</dependency-->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.15</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-client</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
+	</dependencies>
+	<properties>
+		<site.basedir>${project.parent.basedir}</site.basedir>
+		<i4j.nonjavamodule>false</i4j.nonjavamodule>
+	</properties>
 </project>
