@@ -27,7 +27,7 @@ import static org.indilib.i4j.INDIDateFormat.dateFormat;
 
 /**
  * A class representing a INDI Device.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -37,34 +37,42 @@ public class INDIDevice {
      * A logger for the errors.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDIDevice.class);
+
     /**
      * The name of the Device.
      */
     private final String name;
+
     /**
      * The Server Connection to which this Device Belongs.
      */
     private final INDIServerConnection server;
+
     /**
      * The collection of properties for this Device.
      */
     private final Map<String, INDIProperty<?>> properties;
+
     /**
      * The list of Listeners of this Device.
      */
     private final List<INDIDeviceListener> listeners;
+
     /**
      * A UI component that can be used in graphical interfaces for this Device.
      */
     private INDIDeviceListener uiComponent;
+
     /**
      * The timestamp for the last message.
      */
     private Date timestamp;
+
     /**
      * The last message of this Device.
      */
     private String message;
+
     /**
      * The number of <code>BLOBProperties</code> in this Device.
      */
@@ -73,9 +81,11 @@ public class INDIDevice {
     /**
      * Constructs an instance of <code>INDIDevice</code>. Usually called from a
      * <code>INDIServerConnection</code>.
-     *
-     * @param name   the name of this Device
-     * @param server the Server Connection of this Device
+     * 
+     * @param name
+     *            the name of this Device
+     * @param server
+     *            the Server Connection of this Device
      * @see INDIServerConnection
      */
     protected INDIDevice(String name, INDIServerConnection server) {
@@ -93,8 +103,9 @@ public class INDIDevice {
 
     /**
      * Adds a new listener to this Device.
-     *
-     * @param listener the listener to be added.
+     * 
+     * @param listener
+     *            the listener to be added.
      */
     public void addINDIDeviceListener(INDIDeviceListener listener) {
         listeners.add(listener);
@@ -102,8 +113,9 @@ public class INDIDevice {
 
     /**
      * Removes a listener from this Device.
-     *
-     * @param listener the listener to be removed.
+     * 
+     * @param listener
+     *            the listener to be removed.
      */
     public void removeINDIDeviceListener(INDIDeviceListener listener) {
         listeners.remove(listener);
@@ -111,8 +123,9 @@ public class INDIDevice {
 
     /**
      * Notifies the listeners of a new <code>INDIProperty</code>.
-     *
-     * @param property The new property
+     * 
+     * @param property
+     *            The new property
      */
     private void notifyListenersNewProperty(INDIProperty<?> property) {
         for (INDIDeviceListener l : new ArrayList<>(listeners)) {
@@ -122,8 +135,9 @@ public class INDIDevice {
 
     /**
      * Notifies the listeners of a removed <code>INDIProperty</code>.
-     *
-     * @param property The removed property
+     * 
+     * @param property
+     *            The removed property
      */
     private void notifyListenersDeleteProperty(INDIProperty<?> property) {
         for (INDIDeviceListener l : new ArrayList<>(listeners)) {
@@ -144,9 +158,11 @@ public class INDIDevice {
     /**
      * Sends the appropriate message to the Server to establish a particular
      * BLOB policy (BLOBEnable) for the Device.
-     *
-     * @param enable The BLOB policy.
-     * @throws IOException if there is some problem sending the message.
+     * 
+     * @param enable
+     *            The BLOB policy.
+     * @throws IOException
+     *             if there is some problem sending the message.
      */
     public void blobsEnable(BLOBEnables enable) throws IOException {
         sendMessageToServer(new EnableBLOB().setDevice(getName()).setTextContent(Constants.getBLOBEnableAsString(enable)));
@@ -155,10 +171,13 @@ public class INDIDevice {
     /**
      * Sends the appropriate message to the Server to establish a particular
      * BLOB policy (BLOBEnable) for the Device and a particular Property.
-     *
-     * @param enable   The BLOB policy.
-     * @param property The Property of the Device to listen to.
-     * @throws IOException if there is some problem sending the message.
+     * 
+     * @param enable
+     *            The BLOB policy.
+     * @param property
+     *            The Property of the Device to listen to.
+     * @throws IOException
+     *             if there is some problem sending the message.
      */
     public void blobsEnable(BLOBEnables enable, INDIProperty<?> property) throws IOException {
         if (properties.containsValue(property) && property instanceof INDIBLOBProperty) {
@@ -168,7 +187,7 @@ public class INDIDevice {
 
     /**
      * Gets the last message received from the Device.
-     *
+     * 
      * @return the last message received.
      */
     public String getLastMessage() {
@@ -177,7 +196,7 @@ public class INDIDevice {
 
     /**
      * Gets the timestamp of the last received message.
-     *
+     * 
      * @return the timestamp of the last received message.
      */
     public Date getTimestamp() {
@@ -186,7 +205,7 @@ public class INDIDevice {
 
     /**
      * Gets the name of the Device.
-     *
+     * 
      * @return the name of the Device.
      */
     public String getName() {
@@ -196,8 +215,9 @@ public class INDIDevice {
     /**
      * Processes a XML message received for this Device and stores and notifies
      * the listeners if there is some message attribute in them.
-     *
-     * @param xml the XML message to be processed.
+     * 
+     * @param xml
+     *            the XML message to be processed.
      */
     protected void messageReceived(INDIProtocol<?> xml) {
         if (xml.hasMessage()) {
@@ -214,8 +234,9 @@ public class INDIDevice {
     /**
      * Processes a XML &lt;delProperty&gt;. It removes the appropriate Property
      * from the list of Properties.
-     *
-     * @param xml the XML message to be processed.
+     * 
+     * @param xml
+     *            the XML message to be processed.
      */
     protected void deleteProperty(DelProperty xml) {
         String propertyName = xml.getName();
@@ -236,8 +257,9 @@ public class INDIDevice {
      * exists in this device and returns it. The wait is dinamic, so it should
      * be called from a different Thread or the app will freeze until the
      * property exists.
-     *
-     * @param propertyName The propertyName of the Property to wait for.
+     * 
+     * @param propertyName
+     *            The propertyName of the Property to wait for.
      * @return The Property once it exists in this device.
      */
     public INDIProperty<?> waitForProperty(String propertyName) {
@@ -250,11 +272,13 @@ public class INDIDevice {
      * be called from a different Thread or the app will freeze until the
      * property exists or the <code>maxWait</code> number of seconds have
      * elapsed.
-     *
-     * @param propertyName The propertyName of the Property to wait for.
-     * @param maxWait      Maximum number of seconds to wait for the Property
+     * 
+     * @param propertyName
+     *            The propertyName of the Property to wait for.
+     * @param maxWait
+     *            Maximum number of seconds to wait for the Property
      * @return The Property once it exists in this Device or <code>null</code>
-     * if the maximum wait is achieved.
+     *         if the maximum wait is achieved.
      */
     public INDIProperty<?> waitForProperty(String propertyName, int maxWait) {
         INDIProperty<?> p = null;
@@ -285,8 +309,9 @@ public class INDIDevice {
 
     /**
      * Processes a XML &lt;setXXXVector&gt;. It updates the appropiate Property.
-     *
-     * @param xml the XML message to be processed.
+     * 
+     * @param xml
+     *            the XML message to be processed.
      */
     protected void updateProperty(SetVector<?> xml) {
         String propertyName = xml.getName();
@@ -313,8 +338,9 @@ public class INDIDevice {
     /**
      * Processes a XML &lt;newXXXVector&gt;. It creates and adds the appropiate
      * Property.
-     *
-     * @param xml The XML message to be processed.
+     * 
+     * @param xml
+     *            The XML message to be processed.
      */
     protected void addProperty(DefVector<?> xml) {
         String propertyName = xml.getName();
@@ -356,7 +382,7 @@ public class INDIDevice {
 
     /**
      * Gets the number of BLOB properties in this Device.
-     *
+     * 
      * @return the number of BLOB properties in this Device.
      */
     public int getBLOBCount() {
@@ -366,8 +392,9 @@ public class INDIDevice {
     /**
      * Adds a Property to the properties list and updates the BLOB count if
      * necessary.
-     *
-     * @param property The property to be added.
+     * 
+     * @param property
+     *            The property to be added.
      */
     private void addProperty(INDIProperty<?> property) {
         properties.put(property.getName(), property);
@@ -380,8 +407,9 @@ public class INDIDevice {
     /**
      * Removes a Property from the properties list and updates the BLOB count if
      * necessary.
-     *
-     * @param property The property to be removed.
+     * 
+     * @param property
+     *            The property to be removed.
      */
     private void removeProperty(INDIProperty<?> property) {
         properties.remove(property.getName());
@@ -395,7 +423,7 @@ public class INDIDevice {
 
     /**
      * Gets the Server Connection of this Device.
-     *
+     * 
      * @return the Server Connection of this Device.
      */
     public INDIServerConnection getServer() {
@@ -404,10 +432,11 @@ public class INDIDevice {
 
     /**
      * Gets a Property by its propertyName.
-     *
-     * @param propertyName the propertyName of the Property to be retrieved.
+     * 
+     * @param propertyName
+     *            the propertyName of the Property to be retrieved.
      * @return the Property with the <code>propertyName</code> or
-     * <code>null</code> if there is no Property with that propertyName.
+     *         <code>null</code> if there is no Property with that propertyName.
      */
     public INDIProperty<?> getProperty(String propertyName) {
         return properties.get(propertyName);
@@ -415,7 +444,7 @@ public class INDIDevice {
 
     /**
      * Gets a list of group names for all the properties.
-     *
+     * 
      * @return the list of group names for all the properties of the device.
      */
     public List<String> getGroupNames() {
@@ -432,7 +461,7 @@ public class INDIDevice {
 
     /**
      * Gets a list of all the properties of the device.
-     *
+     * 
      * @return the list of Properties belonging to the device
      */
     public List<INDIProperty<?>> getAllProperties() {
@@ -441,8 +470,9 @@ public class INDIDevice {
 
     /**
      * Gets a list of properties belonging to a group.
-     *
-     * @param groupName the name of the group
+     * 
+     * @param groupName
+     *            the name of the group
      * @return the list of Properties belonging to the group
      */
     public List<INDIProperty<?>> getPropertiesOfGroup(String groupName) {
@@ -458,11 +488,13 @@ public class INDIDevice {
     /**
      * A convenience method to get the Element of a Property by specifiying
      * their names.
-     *
-     * @param propertyName the name of the Property.
-     * @param elementName  the name of the Element.
+     * 
+     * @param propertyName
+     *            the name of the Property.
+     * @param elementName
+     *            the name of the Element.
      * @return the Element with <code>elementName</code> as name of the property
-     * with <code>propertyName</code> as name.
+     *         with <code>propertyName</code> as name.
      */
     public INDIElement getElement(String propertyName, String elementName) {
         INDIProperty<?> p = getProperty(propertyName);
@@ -476,9 +508,11 @@ public class INDIDevice {
 
     /**
      * Sends a XML message to the Server.
-     *
-     * @param xmlMessage the message to be sent.
-     * @throws IOException if there is some problem with the connection to the server.
+     * 
+     * @param xmlMessage
+     *            the message to be sent.
+     * @throws IOException
+     *             if there is some problem with the connection to the server.
      */
     protected void sendMessageToServer(INDIProtocol<?> xmlMessage) throws IOException {
         server.sendMessageToServer(xmlMessage);
@@ -492,9 +526,10 @@ public class INDIDevice {
      * I4JAndroid, etc). Note that a casting of the returned value must be done.
      * If a previous component has been asked, it will be dregistered as a
      * listener. So, only one default component will listen to the device.
-     *
+     * 
      * @return A UI component that handles this Device.
-     * @throws INDIException if no uiComponent is found in the classpath.
+     * @throws INDIException
+     *             if no uiComponent is found in the classpath.
      */
     public INDIDeviceListener getDefaultUIComponent() throws INDIException {
         if (uiComponent != null) {
@@ -507,7 +542,7 @@ public class INDIDevice {
 
     /**
      * Gets a <code>List</code> with all the Properties of this Device.
-     *
+     * 
      * @return the <code>List</code> of Properties belonging to this Device.
      */
     public List<INDIProperty<?>> getPropertiesAsList() {
@@ -516,7 +551,7 @@ public class INDIDevice {
 
     /**
      * Gets the names of the Properties of this Device.
-     *
+     * 
      * @return the names of the Properties of this Device.
      */
     public String[] getPropertyNames() {

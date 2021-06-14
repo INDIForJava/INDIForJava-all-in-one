@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope.alignment;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 /**
  * entry to store in the alignment database.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class AlignmentDatabaseEntry implements Cloneable, Serializable {
@@ -65,11 +65,15 @@ public class AlignmentDatabaseEntry implements Cloneable, Serializable {
 
     /**
      * constructor with all fields at once.
-     *
-     * @param rightAscension        the right ascention
-     * @param declination           the declination
-     * @param observationJulianDate the observation date
-     * @param telescopeDirection    the telescope direction vector
+     * 
+     * @param rightAscension
+     *            the right ascention
+     * @param declination
+     *            the declination
+     * @param observationJulianDate
+     *            the observation date
+     * @param telescopeDirection
+     *            the telescope direction vector
      */
     public AlignmentDatabaseEntry(double rightAscension, double declination, double observationJulianDate, TelescopeDirectionVector telescopeDirection) {
         this.rightAscension = rightAscension;

@@ -10,12 +10,12 @@ package org.indilib.i4j;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
 
 /**
  * A class to format and parse numbers in sexagesimal format.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDISexagesimalFormatter implements Serializable {
@@ -39,52 +39,64 @@ public class INDISexagesimalFormatter implements Serializable {
      * the serial version id.
      */
     private static final long serialVersionUID = -3904216502728630808L;
+
     /**
      * Fraction Length 3.
      */
     private static final int FL3 = 3;
+
     /**
      * Fraction Length 5.
      */
     private static final int FL5 = 5;
+
     /**
      * Fraction Length 6.
      */
     private static final int FL6 = 6;
+
     /**
      * Fraction Length 8.
      */
     private static final int FL8 = 8;
+
     /**
      * Fraction Length 9.
      */
     private static final int FL9 = 9;
+
     /**
      * Minutes in a hour.
      */
     private static final double MINUTES_PER_HOUR = 60.0;
+
     /**
      * Seconds in a hour.
      */
     private static final double SECONDS_PER_HOUR = 3600.0;
+
     /**
      * Seconds in a minute.
      */
     private static final double SECONDS_PER_MINUTE = 60.0;
+
     /**
      * Zero Negative.
      */
     private static final double ZERO_NEG = -0.;
+
     /**
      * The format to be used. It must begin with %, end with m and specifies a
      * length and fractionLength in the form length.fractionLength. Valid
      * fractionLengths are 3, 5, 6, 8 and 9. For example %5.3m.
      */
     private final String format;
+
     /**
      * The length of the format.
      */
     private int length;
+
     /**
      * The fraction length.
      */
@@ -96,8 +108,9 @@ public class INDISexagesimalFormatter implements Serializable {
      * correct: begins with %, ends with m and specifies a length and
      * fractionLength in the form length.fractionLength. Valid fractionLengths
      * are 3, 5, 6, 8 and 9. For example %5.3m.
-     *
-     * @param format The desired format
+     * 
+     * @param format
+     *            The desired format
      */
     public INDISexagesimalFormatter(final String format) {
         this.format = format;
@@ -107,7 +120,7 @@ public class INDISexagesimalFormatter implements Serializable {
 
     /**
      * Gets the format of this formatter.
-     *
+     * 
      * @return the format of this formatter.
      */
     public final String getFormat() {
@@ -156,8 +169,9 @@ public class INDISexagesimalFormatter implements Serializable {
      * Parses a sexagesimal newNumber. DO NOT USE IT. THIS IS A PRELIMINARY
      * VERSION AND DOES NOT WORK AS EXPECTED. THIS METHOD WILL DISAPEAR IN
      * FUTURE VERSIONS OF THE CLASS.
-     *
-     * @param number NOT USED
+     * 
+     * @param number
+     *            NOT USED
      * @return NOT USED
      * @deprecated
      */
@@ -224,8 +238,9 @@ public class INDISexagesimalFormatter implements Serializable {
      * space. The first newNumber represents the newNumber of degrees, the
      * second is the newNumber of minutes and the third is the newNumber of
      * seconds.
-     *
-     * @param number The newNumber to be parsed.
+     * 
+     * @param number
+     *            The newNumber to be parsed.
      * @return The parsed double.
      */
     public final double parseSexagesimal(final String number) {
@@ -298,8 +313,9 @@ public class INDISexagesimalFormatter implements Serializable {
 
     /**
      * Fomats a newNumber according to the newNumber format os this formatter.
-     *
-     * @param number the newNumber to be formatted.
+     * 
+     * @param number
+     *            the newNumber to be formatted.
      * @return The formatted newNumber as a <code>String</code>.
      */
     public final String format(final Double number) {
@@ -383,9 +399,11 @@ public class INDISexagesimalFormatter implements Serializable {
 
     /**
      * Pads a String to the left with spaces.
-     *
-     * @param s The <code>String</code> to be padded.
-     * @param n The maximum size of the padded <code>String</code>.
+     * 
+     * @param s
+     *            The <code>String</code> to be padded.
+     * @param n
+     *            The maximum size of the padded <code>String</code>.
      * @return The padded <code>String</code>
      */
     private String padLeft(final String s, final int n) {

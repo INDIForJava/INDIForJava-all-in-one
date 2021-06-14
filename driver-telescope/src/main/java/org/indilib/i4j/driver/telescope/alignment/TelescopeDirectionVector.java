@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope.alignment;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * These functions are used to convert different coordinate systems to and from
  * the telescope direction vectors (normalised vector/direction cosines) used
  * for telescope coordinates in the alignment subsystem.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class TelescopeDirectionVector implements Cloneable, Serializable {
@@ -57,14 +57,17 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Servial version id.
      */
     private static final long serialVersionUID = 7085347593351496492L;
+
     /**
      * x part of the vector.
      */
     protected double x;
+
     /**
      * y part of the vector.
      */
     protected double y;
+
     /**
      * z part of the vector.
      */
@@ -81,10 +84,13 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
      * Copy constructor .
-     *
-     * @param x the x part of the vector.
-     * @param y the y part of the vector.
-     * @param z the z part of the vector.
+     * 
+     * @param x
+     *            the x part of the vector.
+     * @param y
+     *            the y part of the vector.
+     * @param z
+     *            the z part of the vector.
      */
     public TelescopeDirectionVector(double x, double y, double z) {
         this.x = x;
@@ -97,8 +103,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * azimuth.This assumes a right handed coordinate system for the telescope
      * direction vector with XY being the azimuthal plane, and azimuth being
      * measured in a clockwise direction.
-     *
-     * @param horizontalCoordinates Altitude and Azimuth in degrees minutes seconds
+     * 
+     * @param horizontalCoordinates
+     *            Altitude and Azimuth in degrees minutes seconds
      * @return A TelescopeDirectionVector
      */
     public static TelescopeDirectionVector telescopeDirectionVectorFromAltitudeAzimuth(LnhHrzPosn horizontalCoordinates) {
@@ -111,8 +118,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * azimuth.This assumes a right handed coordinate system for the telescope
      * direction vector with XY being the azimuthal plane, and azimuth being
      * measured in a clockwise direction.
-     *
-     * @param horizontalCoordinates Altitude and Azimuth in decimal degrees
+     * 
+     * @param horizontalCoordinates
+     *            Altitude and Azimuth in decimal degrees
      * @return A TelescopeDirectionVector
      */
     public static TelescopeDirectionVector telescopeDirectionVectorFromAltitudeAzimuth(LnHrzPosn horizontalCoordinates) {
@@ -124,8 +132,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Calculates a telescope direction vector from the supplied equatorial
      * coordinates.This assumes a right handed coordinate system for the
      * direction vector with the right ascension being in the XY plane.
-     *
-     * @param equatorialCoordinates The equatorial coordinates in decimal degrees
+     * 
+     * @param equatorialCoordinates
+     *            The equatorial coordinates in decimal degrees
      * @return A TelescopeDirectionVector
      */
     public static TelescopeDirectionVector telescopeDirectionVectorFromEquatorialCoordinates(LnEquPosn equatorialCoordinates) {
@@ -137,9 +146,10 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Calculates a telescope direction vector from the supplied equatorial
      * coordinates.This assumes a right handed coordinate system for the
      * direction vector with the right ascension being in the XY plane.
-     *
-     * @param equatorialCoordinates The equatorial coordinates in hours minutes seconds and
-     *                              degrees minutes seconds
+     * 
+     * @param equatorialCoordinates
+     *            The equatorial coordinates in hours minutes seconds and
+     *            degrees minutes seconds
      * @return A TelescopeDirectionVector
      */
     public static TelescopeDirectionVector telescopeDirectionVectorFromEquatorialCoordinates(LnhEquPosn equatorialCoordinates) {
@@ -151,8 +161,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Calculates a telescope direction vector from the supplied local hour
      * angle and declination.This assumes a right handed coordinate system for
      * the direction vector with the hour angle being in the XY plane.
-     *
-     * @param equatorialCoordinates The local hour angle and declination in decimal degrees
+     * 
+     * @param equatorialCoordinates
+     *            The local hour angle and declination in decimal degrees
      * @return A TelescopeDirectionVector
      */
     public static TelescopeDirectionVector telescopeDirectionVectorFromLocalHourAngleDeclination(LnEquPosn equatorialCoordinates) {
@@ -164,17 +175,21 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Calculates a telescope direction vector from the supplied spherical
      * coordinate information. TelescopeDirectionVectors are always assumed to
      * be normalised and right handed.
-     *
-     * @param azimuthAngle          The azimuth angle in radians
-     * @param azimuthAngleDirection The direction the azimuth angle has been measured either
-     *                              CLOCKWISE or ANTI_CLOCKWISE
-     * @param polarAngle            The polar angle in radians
-     * @param polarAngleDirection   The direction the polar angle has been measured either
-     *                              FROM_POLAR_AXIS or FROM_AZIMUTHAL_PLANE
+     * 
+     * @param azimuthAngle
+     *            The azimuth angle in radians
+     * @param azimuthAngleDirection
+     *            The direction the azimuth angle has been measured either
+     *            CLOCKWISE or ANTI_CLOCKWISE
+     * @param polarAngle
+     *            The polar angle in radians
+     * @param polarAngleDirection
+     *            The direction the polar angle has been measured either
+     *            FROM_POLAR_AXIS or FROM_AZIMUTHAL_PLANE
      * @return A TelescopeDirectionVector
      */
     public static TelescopeDirectionVector telescopeDirectionVectorFromSphericalCoordinate(double azimuthAngle, AzimuthAngleDirection azimuthAngleDirection,
-                                                                                           double polarAngle, PolarAngleDirection polarAngleDirection) {
+            double polarAngle, PolarAngleDirection polarAngleDirection) {
         TelescopeDirectionVector vector = new TelescopeDirectionVector();
 
         if (AzimuthAngleDirection.ANTI_CLOCKWISE == azimuthAngleDirection) {
@@ -205,10 +220,11 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
     /**
      * Rotate the reference frame around the Y axis. This has the affect of
      * rotating the vector itself in the opposite direction
-     *
-     * @param angle The angle to rotate the reference frame by. Positive values
-     *              give an anti-clockwise rotation from the perspective of
-     *              looking down the positive axis towards the origin.
+     * 
+     * @param angle
+     *            The angle to rotate the reference frame by. Positive values
+     *            give an anti-clockwise rotation from the perspective of
+     *            looking down the positive axis towards the origin.
      **/
     void rotateAroundY(double angle) {
         angle = angle * Math.PI / HALF_CIRCLE_IN_DEGREES;
@@ -239,8 +255,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * vector and declination.This assumes a right handed coordinate system for
      * the telescope direction vector with XY being the azimuthal plane, and
      * azimuth being measured in a clockwise direction.
-     *
-     * @param horizontalCoordinates Altitude and Azimuth in degrees minutes seconds
+     * 
+     * @param horizontalCoordinates
+     *            Altitude and Azimuth in degrees minutes seconds
      */
     public void altitudeAzimuthFromTelescopeDirectionVector(LnhHrzPosn horizontalCoordinates) {
         DoubleRef azimuthAngle = new DoubleRef();
@@ -255,8 +272,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * vector and declination.This assumes a right handed coordinate system for
      * the telescope direction vector with XY being the azimuthal plane, and
      * azimuth being measured in a clockwise direction.
-     *
-     * @param horizontalCoordinates Altitude and Azimuth in decimal degrees
+     * 
+     * @param horizontalCoordinates
+     *            Altitude and Azimuth in decimal degrees
      */
     public void altitudeAzimuthFromTelescopeDirectionVector(LnHrzPosn horizontalCoordinates) {
         DoubleRef azimuthAngle = new DoubleRef();
@@ -275,8 +293,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
      * do a dot product of this vector.
-     *
-     * @param rhs the richt hand side of the operation.
+     * 
+     * @param rhs
+     *            the richt hand side of the operation.
      * @return the result of the dor product.
      */
     public double dotProduct(TelescopeDirectionVector rhs) {
@@ -290,8 +309,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Calculates equatorial coordinates from the supplied telescope direction
      * vector and declination.This assumes a right handed coordinate system for
      * the direction vector with the right ascension being in the XY plane.
-     *
-     * @param equatorialCoordinates The equatorial coordinates in decimal degrees
+     * 
+     * @param equatorialCoordinates
+     *            The equatorial coordinates in decimal degrees
      */
     public void equatorialCoordinatesFromTelescopeDirectionVector(LnEquPosn equatorialCoordinates) {
         DoubleRef azimuthAngle = new DoubleRef();
@@ -307,9 +327,10 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * Calculates equatorial coordinates from the supplied telescope direction
      * vector and declination.This assumes a right handed coordinate system for
      * the direction vector with the right ascension being in the XY plane.
-     *
-     * @param equatorialCoordinates The equatorial coordinates in hours minutes seconds and
-     *                              degrees minutes seconds
+     * 
+     * @param equatorialCoordinates
+     *            The equatorial coordinates in hours minutes seconds and
+     *            degrees minutes seconds
      */
     public void equatorialCoordinatesFromTelescopeDirectionVector(LnhEquPosn equatorialCoordinates) {
         DoubleRef azimuthAngle = new DoubleRef();
@@ -336,8 +357,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * direction vector and declination.This assumes a right handed coordinate
      * system for the direction vector with the hour angle being in the XY
      * plane.
-     *
-     * @param equatorialCoordinates The local hour angle and declination in decimal degrees
+     * 
+     * @param equatorialCoordinates
+     *            The local hour angle and declination in decimal degrees
      */
     public void localHourAngleDeclinationFromTelescopeDirectionVector(LnEquPosn equatorialCoordinates) {
         DoubleRef azimuthAngle = new DoubleRef();
@@ -354,9 +376,10 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
      * direction vector and declination.This assumes a right handed coordinate
      * system for the direction vector with the hour angle being in the XY
      * plane.
-     *
-     * @param equatorialCoordinates The local hour angle and declination in hours minutes seconds
-     *                              and degrees minutes seconds
+     * 
+     * @param equatorialCoordinates
+     *            The local hour angle and declination in hours minutes seconds
+     *            and degrees minutes seconds
      */
     public void localHourAngleDeclinationFromTelescopeDirectionVector(LnhEquPosn equatorialCoordinates) {
         DoubleRef azimuthAngle = new DoubleRef();
@@ -368,8 +391,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
      * minus operation.
-     *
-     * @param rhs the right hand side of the operation.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
      * @return the resulting new vector.
      */
     public TelescopeDirectionVector minus(TelescopeDirectionVector rhs) {
@@ -381,8 +405,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
      * multiply operation.
-     *
-     * @param rhs the right hand side of the operation.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
      * @return the resulting new vector.
      */
     public TelescopeDirectionVector multiply(double rhs) {
@@ -399,8 +424,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
      * multiply operation.
-     *
-     * @param rhs the right hand side of the operation.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
      * @return the resulting new vector.
      */
     public TelescopeDirectionVector multiply(TelescopeDirectionVector rhs) {
@@ -417,8 +443,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
      * multiply operation and set the results to this vector.
-     *
-     * @param rhs the right hand side of the operation.
+     * 
+     * @param rhs
+     *            the right hand side of the operation.
      * @return the resulting new vector.
      */
     public TelescopeDirectionVector multiplyAsign(double rhs) {
@@ -447,16 +474,20 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
     /**
      * Calculates a spherical coordinate from the supplied telescope direction
      * vectorTelescope.DirectionVectors are always normalised and right handed.
-     *
-     * @param azimuthAngle          The azimuth angle in radians
-     * @param azimuthAngleDirection The direction the azimuth angle has been measured either
-     *                              CLOCKWISE or ANTI_CLOCKWISE
-     * @param polarAngle            The polar angle in radians
-     * @param polarAngleDirection   The direction the polar angle has been measured either
-     *                              FROM_POLAR_AXIS or FROM_AZIMUTHAL_PLANE
+     * 
+     * @param azimuthAngle
+     *            The azimuth angle in radians
+     * @param azimuthAngleDirection
+     *            The direction the azimuth angle has been measured either
+     *            CLOCKWISE or ANTI_CLOCKWISE
+     * @param polarAngle
+     *            The polar angle in radians
+     * @param polarAngleDirection
+     *            The direction the polar angle has been measured either
+     *            FROM_POLAR_AXIS or FROM_AZIMUTHAL_PLANE
      */
     public void sphericalCoordinateFromTelescopeDirectionVector(DoubleRef azimuthAngle, AzimuthAngleDirection azimuthAngleDirection, DoubleRef polarAngle,
-                                                                PolarAngleDirection polarAngleDirection) {
+            PolarAngleDirection polarAngleDirection) {
         if (AzimuthAngleDirection.ANTI_CLOCKWISE == azimuthAngleDirection) {
             if (PolarAngleDirection.FROM_AZIMUTHAL_PLANE == polarAngleDirection) {
                 azimuthAngle.setValue(Math.atan2(y, x));
@@ -478,8 +509,9 @@ public class TelescopeDirectionVector implements Cloneable, Serializable {
 
     /**
      * copy the direction from the other vector.
-     *
-     * @param otherVector the vector to copy the data from.
+     * 
+     * @param otherVector
+     *            the vector to copy the data from.
      */
     public void copyFrom(TelescopeDirectionVector otherVector) {
         x = otherVector.x;

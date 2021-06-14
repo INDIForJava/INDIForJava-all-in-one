@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.filterwheel;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -51,7 +51,7 @@ import static org.indilib.i4j.properties.INDIStandardProperty.FILTER_SLOT;
  * at the beginning of <code>processNewTextValue</code> and
  * <code>processNewNumberValue</code> to handle the generic filter wheel
  * properties correctly.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public abstract class INDIFilterWheelDriver extends INDIDriver {
@@ -91,8 +91,9 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
      * <code>inputStream</code> from which to read the incoming messages (from
      * clients) and a <code>outputStream</code> to write the messages to the
      * clients.
-     *
-     * @param connection the indi connection to the server.
+     * 
+     * @param connection
+     *            the indi connection to the server.
      */
     public INDIFilterWheelDriver(INDIConnection connection) {
         super(connection);
@@ -100,7 +101,7 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
 
     /**
      * Indicates how many filters does the filter wheel manage.
-     *
+     * 
      * @return The number of filters that the filter wheel manages.
      */
     public abstract int getNumberOfFilters();
@@ -165,16 +166,18 @@ public abstract class INDIFilterWheelDriver extends INDIDriver {
 
     /**
      * Implements the actual changing of the filter on the wheel.
-     *
-     * @param filterNumber The filter that must be setted on the filer wheel
+     * 
+     * @param filterNumber
+     *            The filter that must be setted on the filer wheel
      */
     protected abstract void changeFilter(int filterNumber);
 
     /**
      * Notifies that the wheel has finished changing the filter. Should be
      * called by subclases when approppiate.
-     *
-     * @param filterSlot The Filter Slot that is currently on.
+     * 
+     * @param filterSlot
+     *            The Filter Slot that is currently on.
      */
     protected void filterHasBeenChanged(int filterSlot) {
         LOG.info("Filter has been changed " + filterSlot);

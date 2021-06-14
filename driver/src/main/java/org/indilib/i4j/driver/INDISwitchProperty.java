@@ -10,12 +10,12 @@ package org.indilib.i4j.driver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -35,7 +35,7 @@ import org.indilib.i4j.protocol.SetVector;
 
 /**
  * A class representing a INDI Switch Property.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
@@ -53,8 +53,9 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     /**
      * Constructs an instance of a <code>INDISwitchProperty</code>. Called by
      * its sub-classes. useing the settings from the builder.
-     *
-     * @param builder the builder with all the settings.
+     * 
+     * @param builder
+     *            the builder with all the settings.
      */
     public INDISwitchProperty(INDIPropertyBuilder<INDISwitchProperty> builder) {
         super(builder);
@@ -81,10 +82,11 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
     /**
      * Resets to OFF al switch elements but one which is set to ON. Very useful
      * when dealing with <code>SwitchRules.ONE_OF_MANY</code> tipe of Switches.
-     *
-     * @param element The element that is turned ON.
+     * 
+     * @param element
+     *            The element that is turned ON.
      * @return <code>true</code> if the selected element has been changed.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     public boolean setOnlyOneSwitchOn(INDISwitchElement element) {
         boolean changed = false;
@@ -102,7 +104,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
     /**
      * Gets the current Rule for this Switch Property.
-     *
+     * 
      * @return the current Rule for this Switch Property
      */
     public SwitchRules getRule() {
@@ -111,9 +113,9 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
     /**
      * Checks if the Rule of this Switch property holds.
-     *
+     * 
      * @return <code>true</code> if the values of the Elements of this Property
-     * comply with the Rule. <code>false</code> otherwise.
+     *         comply with the Rule. <code>false</code> otherwise.
      */
     protected boolean checkCorrectValues() {
         if (getState() == PropertyStates.OK) {
@@ -134,7 +136,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
     /**
      * Gets the number of selected Switch Elements.
-     *
+     * 
      * @return the number of selected Elements.
      */
     public int getSelectedCount() {
@@ -159,7 +161,7 @@ public class INDISwitchProperty extends INDIProperty<INDISwitchElement> {
 
     /**
      * get the selected Element when the rule is ONE_OF_MANY.
-     *
+     * 
      * @return the switch element that is turned on.
      */
     public INDISwitchElement getOnElement() {

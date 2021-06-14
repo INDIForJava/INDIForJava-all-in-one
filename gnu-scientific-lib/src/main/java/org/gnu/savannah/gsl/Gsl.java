@@ -10,14 +10,14 @@ package org.gnu.savannah.gsl;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -29,9 +29,13 @@ import org.gnu.savannah.gsl.util.IntegerRef;
 public class Gsl {
 
     public static double GSL_SQRT_DBL_MAX = 1.3407807929942596e+154d;
+
     public static double GSL_SQRT_DBL_MIN = 1.4916681462400413e-154d;
+
     public static double GSL_DBL_EPSILON = 2.2204460492503131e-16d;
+
     public static double M_LN2 = 0.69314718055994530941723212146d; /* ln(2) */
+
     public static double GSL_DBL_MIN = 2.2250738585072014e-308d;
 
     public static void cblas_daxpy(int N, double alpha, DoubleArray X, int incX, DoubleArray Y, int incY) {
@@ -84,7 +88,7 @@ public class Gsl {
     }
 
     public static void cblas_dgemm(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB, int M, int N, int K, double alpha, DoubleArray A, int lda,
-                                   DoubleArray B, int ldb, double beta, DoubleArray C, int ldc) {
+            DoubleArray B, int ldb, double beta, DoubleArray C, int ldc) {
 
         int i, j, k;
         int n1, n2;
@@ -196,7 +200,7 @@ public class Gsl {
     }
 
     public static void cblas_dgemv(CBLAS_ORDER order, CBLAS_TRANSPOSE TransA, int M, int N, double alpha, DoubleArray A, int lda, DoubleArray X, int incX, double beta,
-                                   DoubleArray Y, int incY) {
+            DoubleArray Y, int incY) {
         // #define double double
         {
             int i, j;
@@ -357,7 +361,7 @@ public class Gsl {
                     X.set(ix, X.get(ix) / A.get(lda * (N - 1) + (N - 1)));
                 }
                 ix -= incX;
-                for (i = N - 1; i > 0 && i-- != 0; ) {
+                for (i = N - 1; i > 0 && i-- != 0;) {
                     double tmp = X.get(ix);
                     jx = ix + incX;
                     for (j = i + 1; j < N; j++) {
@@ -431,7 +435,7 @@ public class Gsl {
                     X.set(ix, X.get(ix) / A.get(lda * (N - 1) + (N - 1)));
                 }
                 ix -= incX;
-                for (i = N - 1; i > 0 && i-- != 0; ) {
+                for (i = N - 1; i > 0 && i-- != 0;) {
                     double tmp = X.get(ix);
                     jx = ix + incX;
                     for (j = i + 1; j < N; j++) {
@@ -510,7 +514,7 @@ public class Gsl {
         x = d.get(n - 2);
         y = f.get(n - 2);
 
-        for (k = n - 1; k-- > 0; ) {
+        for (k = n - 1; k-- > 0;) {
             gsl_linalg_givens(x, y, c, s);
 
             /* Compute V <= V G where G = [c, s ; -s, c] */
@@ -629,7 +633,7 @@ public class Gsl {
         int MB = (TransB == CBLAS_TRANSPOSE.CblasNoTrans) ? B.size1 : B.size2;
         int NB = (TransB == CBLAS_TRANSPOSE.CblasNoTrans) ? B.size2 : B.size1;
 
-        if (M == MA && N == NB && NA == MB) /* [MxN] = [MAxNA][MBxNB] */ {
+        if (M == MA && N == NB && NA == MB) /* [MxN] = [MAxNA][MBxNB] */{
             cblas_dgemm(CBLAS_ORDER.CblasRowMajor, TransA, TransB, M, N, NA, alpha, A.data, A.tda, B.data, B.tda, beta, C.data, C.tda);
             return GslErrno.GSL_SUCCESS;
         } else {
@@ -693,9 +697,9 @@ public class Gsl {
             e.value = 0;
             return x;
         } else if (Math.abs(x) >= 0.5 && Math.abs(x) < 1) /*
-         * Handle the common
-         * case
-         */ {
+                                                           * Handle the common
+                                                           * case
+                                                           */{
             e.value = 0;
             return x;
         } else {
@@ -831,7 +835,7 @@ public class Gsl {
 
             V.setIdentity();
 
-            for (i = N - 1; i-- > 0; ) {
+            for (i = N - 1; i-- > 0;) {
                 /* Householder row transformation to accumulate V */
                 GslVectorView r = A.row(i);
                 GslVectorView h = r.vector.subvector(i + 1, N - (i + 1));
@@ -855,7 +859,7 @@ public class Gsl {
              * into tau_U
              */
 
-            for (j = N; j-- > 0; ) {
+            for (j = N; j-- > 0;) {
                 /* Householder column transformation to accumulate U */
                 double tj = tau_U.get(j);
                 double Ajj = A.get(j, j);
@@ -1069,10 +1073,13 @@ public class Gsl {
      * (-1)^n, where n is the number of interchanges in the permutation. See
      * Golub and Van Loan, Matrix Computations, Algorithm 3.4.1 (Gauss
      * Elimination with Partial Pivoting).
-     *
-     * @param A      a general N x N matrix
-     * @param p      permutation p
-     * @param signum gives the sign of the permutation
+     * 
+     * @param A
+     *            a general N x N matrix
+     * @param p
+     *            permutation p
+     * @param signum
+     *            gives the sign of the permutation
      * @return the result
      */
 

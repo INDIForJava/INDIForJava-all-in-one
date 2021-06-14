@@ -10,14 +10,14 @@ package org.indilib.i4j.protocol.io;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -35,7 +35,7 @@ import java.io.ObjectInputStream;
 
 /**
  * Input stream of INDIProtocol objects. deserialized from a xml stream.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class INDIInputStreamImpl extends InputStream implements INDIInputStream {
@@ -57,8 +57,9 @@ public class INDIInputStreamImpl extends InputStream implements INDIInputStream 
 
     /**
      * create an INDI inputstream over an object input stream.
-     *
-     * @param in the object input stream
+     * 
+     * @param in
+     *            the object input stream
      */
     protected INDIInputStreamImpl(ObjectInputStream in) {
         this.in = in;
@@ -79,7 +80,8 @@ public class INDIInputStreamImpl extends InputStream implements INDIInputStream 
         try {
             INDIProtocol<?> readObject = (INDIProtocol<?>) in.readObject();
             readObject.trim();
-            if (LOG.isTraceEnabled()) LOG.trace("received indi object " + readObject);
+            if (LOG.isTraceEnabled())
+                LOG.trace("received indi object " + readObject);
             return readObject;
         } catch (EOFException e) {
             return null;

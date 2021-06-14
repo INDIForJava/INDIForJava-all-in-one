@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.telescope;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -30,7 +30,7 @@ import static org.indilib.i4j.Constants.PropertyStates.IDLE;
 /**
  * This is the standard implementation of scope movements, if the scope supports
  * them.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class INDITelescopeMoveImplementation implements INDITelescopeMoveInterface {
@@ -39,10 +39,12 @@ public class INDITelescopeMoveImplementation implements INDITelescopeMoveInterfa
      * multiplier to create 360 degrees from 24 hours.
      */
     private static final double HOUR_TO_DEGREE = 15d;
+
     /**
      * the move extention to access the properties.
      */
     private final INDITelescopeMoveExtension moveExtension;
+
     /**
      * last move motion in the North/south axis.
      */
@@ -55,8 +57,9 @@ public class INDITelescopeMoveImplementation implements INDITelescopeMoveInterfa
 
     /**
      * Contructor of the standard move implementation.
-     *
-     * @param moveExtension the move extention to access the properties.
+     * 
+     * @param moveExtension
+     *            the move extention to access the properties.
      */
     public INDITelescopeMoveImplementation(INDITelescopeMoveExtension moveExtension) {
         this.moveExtension = moveExtension;

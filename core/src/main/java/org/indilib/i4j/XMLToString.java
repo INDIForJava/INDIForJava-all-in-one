@@ -10,12 +10,12 @@ package org.indilib.i4j;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -35,7 +35,7 @@ import java.io.StringWriter;
 
 /**
  * A class to transforms XML Elements into Strings.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public final class XMLToString {
@@ -53,8 +53,9 @@ public final class XMLToString {
 
     /**
      * Transforms a XML Element into a String.
-     *
-     * @param xml The XML Element
+     * 
+     * @param xml
+     *            The XML Element
      * @return A String representing the XML Element
      */
     public static String transform(final Element xml) {

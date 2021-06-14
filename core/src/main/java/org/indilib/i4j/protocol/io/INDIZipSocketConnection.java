@@ -10,12 +10,12 @@ package org.indilib.i4j.protocol.io;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -34,15 +34,16 @@ import java.util.zip.InflaterInputStream;
 /**
  * Create a socket connection that communicates with a zipped data streams. And
  * by that vastly reducing the xml overhead.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class INDIZipSocketConnection extends INDISocketConnection {
 
     /**
      * constructor for the zip compressed socket stream.
-     *
-     * @param socket the socket to connect the in and output streams.
+     * 
+     * @param socket
+     *            the socket to connect the in and output streams.
      */
     public INDIZipSocketConnection(Socket socket) {
         super(socket);
@@ -50,10 +51,13 @@ public class INDIZipSocketConnection extends INDISocketConnection {
 
     /**
      * constructor for the zip compressed socket stream.
-     *
-     * @param host the host name to connect to.
-     * @param port the port to connect to.
-     * @throws IOException if the connection fails.
+     * 
+     * @param host
+     *            the host name to connect to.
+     * @param port
+     *            the port to connect to.
+     * @throws IOException
+     *             if the connection fails.
      */
     public INDIZipSocketConnection(String host, int port) throws IOException {
         super(host, port);

@@ -10,21 +10,21 @@ package org.indilib.i4j.properties;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
 /**
  * Standard element names.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public enum INDIStandardElement {
@@ -170,13 +170,15 @@ public enum INDIStandardElement {
      */
     STREAM_OFF,
     /**
-     * Frame exposure values in seconds when streaming.
-     * This is advisory only as some streaming devices cannot control the exposure duration.
+     * Frame exposure values in seconds when streaming. This is advisory only as
+     * some streaming devices cannot control the exposure duration.
      */
     STREAMING_EXPOSURE_VALUE,
     /**
-     * The divisor is used to skip frames as way to throttle the stream down. By default, a divisor value of 1 does not skip any frames. A value of two would skip every other frame (thereby cutting the FPS in half).
-     * A frame is skipped when the number of captured frames % divisor is equal to zero.
+     * The divisor is used to skip frames as way to throttle the stream down. By
+     * default, a divisor value of 1 does not skip any frames. A value of two
+     * would skip every other frame (thereby cutting the FPS in half). A frame
+     * is skipped when the number of captured frames % divisor is equal to zero.
      */
     STREAMING_DIVISOR_VALUE,
     /**
@@ -212,7 +214,8 @@ public enum INDIStandardElement {
      */
     RECORD_DURATION_ON,
     /**
-     * Start recording until the number of frames set in RECOR_OPTIONS has been captured.
+     * Start recording until the number of frames set in RECOR_OPTIONS has been
+     * captured.
      */
     RECORD_FRAME_ON,
     /**
@@ -420,7 +423,8 @@ public enum INDIStandardElement {
      */
     PARK_DEFAULT,
     /**
-     * Write TELESCOPE_PARK_POSITION and current parking status to file ($HOME/.indi/ParkData.xml)
+     * Write TELESCOPE_PARK_POSITION and current parking status to file
+     * ($HOME/.indi/ParkData.xml)
      */
     PARK_WRITE_DATA,
     /**

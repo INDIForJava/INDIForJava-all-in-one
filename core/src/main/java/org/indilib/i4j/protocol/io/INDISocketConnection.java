@@ -10,14 +10,14 @@ package org.indilib.i4j.protocol.io;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -40,7 +40,7 @@ import java.net.URL;
 
 /**
  * Indi protocol connection around a tcp/ip socket.
- *
+ * 
  * @author Ricard van Nieuwenhoven
  */
 public class INDISocketConnection implements INDIConnection {
@@ -49,6 +49,7 @@ public class INDISocketConnection implements INDIConnection {
      * the logger to log to.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDISocketConnection.class);
+
     /**
      * timeout to use with tcp connections.
      */
@@ -62,10 +63,12 @@ public class INDISocketConnection implements INDIConnection {
      * the socket over with to communicate.
      */
     private final Socket socket;
+
     /**
      * the indi protocol input stream.
      */
     private INDIInputStream inputStream;
+
     /**
      * the indi protocol output stream.
      */
@@ -74,8 +77,9 @@ public class INDISocketConnection implements INDIConnection {
     /**
      * constructor around an existing socket. this is probalby only usefull in a
      * server case where the accept of a server socket returns a client socket.
-     *
-     * @param socket the socket to connecto to
+     * 
+     * @param socket
+     *            the socket to connecto to
      */
     public INDISocketConnection(Socket socket) {
         this.socket = socket;
@@ -83,10 +87,13 @@ public class INDISocketConnection implements INDIConnection {
 
     /**
      * create a indi socket connection the the specified host and port.
-     *
-     * @param host the host name to connect to.
-     * @param port the port to connect to.
-     * @throws IOException if the connection fails.
+     * 
+     * @param host
+     *            the host name to connect to.
+     * @param port
+     *            the port to connect to.
+     * @throws IOException
+     *             if the connection fails.
      */
     public INDISocketConnection(String host, int port) throws IOException {
         this(new Socket());
@@ -103,8 +110,9 @@ public class INDISocketConnection implements INDIConnection {
 
     /**
      * possibility for subclasses to wrap the input stream.
-     *
-     * @param coreInputStream the input stream.
+     * 
+     * @param coreInputStream
+     *            the input stream.
      * @return the inputstream itself or a wrapped version of it
      */
     protected InputStream wrap(InputStream coreInputStream) {
@@ -113,8 +121,9 @@ public class INDISocketConnection implements INDIConnection {
 
     /**
      * possibility for subclasses to wrap the output stream.
-     *
-     * @param coreOutputStream the output stream.
+     * 
+     * @param coreOutputStream
+     *            the output stream.
      * @return the outputStream itself or a wrapped version of it
      */
     protected OutputStream wrap(OutputStream coreOutputStream) {

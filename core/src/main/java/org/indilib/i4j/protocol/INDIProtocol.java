@@ -19,8 +19,9 @@ import org.indilib.i4j.protocol.url.INDIURLStreamHandlerFactory;
 
 /**
  * This class represents an INDI XML protocol element.
- *
- * @param <T> type for the builder
+ * 
+ * @param <T>
+ *            type for the builder
  * @author Richard van Nieuwenhoven
  */
 @SuppressWarnings("unused")
@@ -70,8 +71,9 @@ public abstract class INDIProtocol<T> {
 
     /**
      * set the max message attribute.
-     *
-     * @param newMessage the new message value
+     * 
+     * @param newMessage
+     *            the new message value
      * @return this for builder pattern.
      */
 
@@ -83,8 +85,9 @@ public abstract class INDIProtocol<T> {
 
     /**
      * set the timestamp attribute of the element.
-     *
-     * @param newTimestamp the new attribute timestamp value
+     * 
+     * @param newTimestamp
+     *            the new attribute timestamp value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -389,8 +392,9 @@ public abstract class INDIProtocol<T> {
 
     /**
      * set the name element attribute.
-     *
-     * @param newName the new name of the attribute.
+     * 
+     * @param newName
+     *            the new name of the attribute.
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -401,8 +405,9 @@ public abstract class INDIProtocol<T> {
 
     /**
      * set the device element attribute.
-     *
-     * @param newDevice the new device value
+     * 
+     * @param newDevice
+     *            the new device value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -447,7 +452,7 @@ public abstract class INDIProtocol<T> {
     /**
      * Trim all strings in the structure so all places working with the object
      * do not have to trim any stings.
-     *
+     * 
      * @return myself
      */
     @SuppressWarnings("unchecked")
@@ -461,8 +466,9 @@ public abstract class INDIProtocol<T> {
 
     /**
      * Trim one value but keep it null when it was null.
-     *
-     * @param value the value to trim
+     * 
+     * @param value
+     *            the value to trim
      * @return the trimmed string or null.
      */
     protected String trim(String value) {

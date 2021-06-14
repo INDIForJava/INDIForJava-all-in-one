@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.event;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -35,7 +35,7 @@ import java.util.Date;
  * This is a convince class the reduce the number of genetics that must be
  * specified for event handler. In this case it handles it for the Text
  * properties.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public abstract class TextEvent implements IEventHandler<INDITextProperty, INDITextElement, String> {
@@ -64,9 +64,11 @@ public abstract class TextEvent implements IEventHandler<INDITextProperty, INDIT
     /**
      * the Simplified call without the property. TODO: should we also exclude
      * the date? it is almoust never used.
-     *
-     * @param date              the time it was set
-     * @param elementsAndValues the new values for the elements of this property
+     * 
+     * @param date
+     *            the time it was set
+     * @param elementsAndValues
+     *            the new values for the elements of this property
      */
 
     public abstract void processNewValue(Date date, INDITextElementAndValue[] elementsAndValues);

@@ -10,14 +10,14 @@ package org.indilib.i4j.client;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -35,7 +35,7 @@ import java.util.Locale;
 
 /**
  * A class representing a INDI Number Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDINumberElement extends INDIElement {
@@ -92,10 +92,12 @@ public class INDINumberElement extends INDIElement {
      * XML Element is not well formed (any of the max, min, step or value are
      * not correct numbers, if the format if not correct or if the value is not
      * within [min, max]).
-     *
-     * @param xml      A XML Element <code>&lt;defNumber&gt;</code> describing the
-     *                 Number Element.
-     * @param property The <code>INDIProperty</code> to which the Element belongs.
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;defNumber&gt;</code> describing the
+     *            Number Element.
+     * @param property
+     *            The <code>INDIProperty</code> to which the Element belongs.
      */
     protected INDINumberElement(DefNumber xml, INDINumberProperty property) {
         super(xml, property);
@@ -109,7 +111,7 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Gets the maximum for this Number Element.
-     *
+     * 
      * @return The maximum for this Number Element.
      */
     public double getMax() {
@@ -118,8 +120,9 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Sets the maximum of this Number Element.
-     *
-     * @param maxS A String with the maximum value of this Number Element
+     * 
+     * @param maxS
+     *            A String with the maximum value of this Number Element
      */
     private void setMax(String maxS) {
         max = parseNumber(maxS);
@@ -128,7 +131,7 @@ public class INDINumberElement extends INDIElement {
     /**
      * Gets the maximum for this Number Element formated as a String according
      * to the number format.
-     *
+     * 
      * @return The maximum for this Number Element formatted as a String.
      */
     public String getMaxAsString() {
@@ -137,7 +140,7 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Gets the minimum for this Number Element.
-     *
+     * 
      * @return The minimum for this Number Element.
      */
     public double getMin() {
@@ -146,8 +149,9 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Sets the minimum of this Number Element.
-     *
-     * @param minS A String with the minimum value of this Number Element
+     * 
+     * @param minS
+     *            A String with the minimum value of this Number Element
      */
     private void setMin(String minS) {
         min = parseNumber(minS);
@@ -156,7 +160,7 @@ public class INDINumberElement extends INDIElement {
     /**
      * Gets the minimum for this Number Element formated as a String according
      * to the number format.
-     *
+     * 
      * @return The minimum for this Number Element formatted as a String.
      */
     public String getMinAsString() {
@@ -165,7 +169,7 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Gets the number format of this Number Element.
-     *
+     * 
      * @return the number format of this Number Element.
      */
     public String getNumberFormat() {
@@ -174,8 +178,9 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Set the number format for this Number Element.
-     *
-     * @param newNumberFormat The new number format.
+     * 
+     * @param newNumberFormat
+     *            The new number format.
      */
     private void setNumberFormat(String newNumberFormat) {
 
@@ -201,7 +206,7 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Gets the step for this Number Element.
-     *
+     * 
      * @return The step for this Number Element.
      */
     public double getStep() {
@@ -210,8 +215,9 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Sets the step of this Number Element.
-     *
-     * @param stepS A String with the step value of this Number Element
+     * 
+     * @param stepS
+     *            A String with the step value of this Number Element
      */
     private void setStep(String stepS) {
         step = parseNumber(stepS);
@@ -220,7 +226,7 @@ public class INDINumberElement extends INDIElement {
     /**
      * Gets the step for this Number Element formated as a String according to
      * the number format.
-     *
+     * 
      * @return The step for this Number Element formatted as a String.
      */
     public String getStepAsString() {
@@ -230,7 +236,7 @@ public class INDINumberElement extends INDIElement {
     /**
      * Gets the value of this Number Element formated as a String according to
      * the number format.
-     *
+     * 
      * @return The value of this Number Element formatted as a String.
      */
     @Override
@@ -241,10 +247,11 @@ public class INDINumberElement extends INDIElement {
     /**
      * Returns a number formatted according to the Number Format of this Number
      * Element.
-     *
-     * @param number the number to be formatted.
+     * 
+     * @param number
+     *            the number to be formatted.
      * @return the number formatted according to the Number Format of this
-     * Number Element.
+     *         Number Element.
      */
     private String getNumberAsString(double number) {
         String aux;
@@ -273,8 +280,9 @@ public class INDINumberElement extends INDIElement {
      * Throws IllegalArgumentException if the <code>xml</code> is not well
      * formed (the value is not a correct number or it is not in the [min, max]
      * range).
-     *
-     * @param xml A XML Element &lt;oneNumber&gt; describing the Element.
+     * 
+     * @param xml
+     *            A XML Element &lt;oneNumber&gt; describing the Element.
      */
     @Override
     protected void setValue(OneElement<?> xml) {
@@ -289,8 +297,9 @@ public class INDINumberElement extends INDIElement {
      * outside the [min, max] range. Therefore it does not throw the exception
      * when the value is outside the range. HERE WE SHOULD LOG THIS PROBLEM IN
      * ORDER TO TELL DRIVER PROGRAMERS TO AVOID THESE INCORRECT VALUES.
-     *
-     * @param valueS A String with the new value of this Number Element
+     * 
+     * @param valueS
+     *            A String with the new value of this Number Element
      */
     private void setValue(String valueS) {
         value = parseNumber(valueS);
@@ -305,8 +314,9 @@ public class INDINumberElement extends INDIElement {
      * Parses a number according to the Number Format of this Number Element.
      * Throws IllegalArgumentException if the <code>number</code> is not
      * correctly formatted.
-     *
-     * @param number The number to be parsed.
+     * 
+     * @param number
+     *            The number to be parsed.
      * @return the parsed number
      */
     private double parseNumber(String number) {
@@ -338,14 +348,16 @@ public class INDINumberElement extends INDIElement {
     /**
      * Checks if a desired valueToCheck would be correct to be applied to the
      * Number Element.
-     *
-     * @param valueToCheck The valueToCheck to be checked (usually a String, but can be a
-     *                     Double).
+     * 
+     * @param valueToCheck
+     *            The valueToCheck to be checked (usually a String, but can be a
+     *            Double).
      * @return <code>true</code> if the <code>valueToCheck</code> is a valid
-     * Double or a correct String according to the Number Format.
-     * <code>false</code> otherwise.
-     * @throws INDIValueException if <code>valueToCheck</code> is <code>null</code> or if it is
-     *                            not a Double or a correctly formatted <code>String</code>.
+     *         Double or a correct String according to the Number Format.
+     *         <code>false</code> otherwise.
+     * @throws INDIValueException
+     *             if <code>valueToCheck</code> is <code>null</code> or if it is
+     *             not a Double or a correctly formatted <code>String</code>.
      */
     @Override
     public boolean checkCorrectValue(Object valueToCheck) throws INDIValueException {
@@ -398,9 +410,11 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Sets the desired value from a String.
-     *
-     * @param newDesiredValue The new desired Value
-     * @throws INDIValueException if the desired value not in range
+     * 
+     * @param newDesiredValue
+     *            The new desired Value
+     * @throws INDIValueException
+     *             if the desired value not in range
      */
     private void setDesiredValueAsString(String newDesiredValue) throws INDIValueException {
         double dd = parseNumber(newDesiredValue);
@@ -414,9 +428,11 @@ public class INDINumberElement extends INDIElement {
 
     /**
      * Sets the desired value from a double.
-     *
-     * @param newDesiredValue The new desired Value
-     * @throws INDIValueException if the desired value not in range
+     * 
+     * @param newDesiredValue
+     *            The new desired Value
+     * @throws INDIValueException
+     *             if the desired value not in range
      */
     private void setDesiredValueAsdouble(double newDesiredValue) throws INDIValueException {
         if (newDesiredValue < min || newDesiredValue > max) {
@@ -433,9 +449,9 @@ public class INDINumberElement extends INDIElement {
     /**
      * Returns the XML code &lt;oneNumber&gt; representing this Number Element
      * with a new desired value. Resets the desired value.
-     *
+     * 
      * @return the XML code <code>&lt;oneNumber&gt;</code> representing this
-     * Number Element with a new value.
+     *         Number Element with a new value.
      * @see #setDesiredValue
      */
     @Override

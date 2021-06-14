@@ -10,14 +10,14 @@ package org.indilib.i4j.driver.telescope.simulator;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -43,7 +43,7 @@ import java.util.Date;
 /**
  * An telescope simulator that has "real" encoders and can sync. So a template
  * vor all real horizontal based scopes.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class TelescopeAltAzSimulator extends INDITelescope implements INDITelescopeSyncInterface {
@@ -67,15 +67,18 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(TelescopeAltAzSimulator.class);
+
     /**
      * the simulated mount.
      */
     private SimulatedMount mount = new SimulatedMount();
+
     /**
      * The math plugin for the calculation from eqn to horizontal.
      */
     @InjectExtension
     private MathPluginManagement mathPluginManagement;
+
     /**
      * Current goto or tracking position.
      */
@@ -83,8 +86,9 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
 
     /**
      * constructor for the altaz simulator.
-     *
-     * @param connection the indi connection to the server.
+     * 
+     * @param connection
+     *            the indi connection to the server.
      */
     public TelescopeAltAzSimulator(INDIConnection connection) {
         super(connection);
@@ -157,8 +161,9 @@ public class TelescopeAltAzSimulator extends INDITelescope implements INDITelesc
 
     /**
      * convert the millisecond system time in julian date.
-     *
-     * @param now the system time in milliseconds.
+     * 
+     * @param now
+     *            the system time in milliseconds.
      * @return the julian date.
      */
     protected double jdTimeFromCurrentMiliseconds(long now) {

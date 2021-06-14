@@ -10,14 +10,14 @@ package org.indilib.i4j.driver.ccd;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -36,7 +36,7 @@ import static nom.tam.fits.header.Standard.*;
  * conversions and hides away the image processing from the driver itself. This
  * is an abstract class that has apropriate subclasses as innerclasses for the
  * different bit-per-pixel types.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public abstract class INDICCDImage {
@@ -65,34 +65,42 @@ public abstract class INDICCDImage {
      * the maximum value of a byte.
      */
     private static final int MAX_BYTE_VALUE = 255;
+
     /**
      * the image width.
      */
     protected final int width;
+
     /**
      * the image height.
      */
     protected final int height;
+
     /**
      * bits per pixel.
      */
     protected final int bpp;
+
     /**
      * type of the image.
      */
     protected ImageType type;
+
     /**
      * the fits representation.
      */
     private Fits f;
+
     /**
      * the maximum value of a pixel.
      */
     private float maxPixelValue = Float.MIN_VALUE;
+
     /**
      * the maximum value of a pixel.
      */
     private float minPixelValue = Float.MAX_VALUE;
+
     /**
      * extra fits headers to include.
      */
@@ -100,11 +108,15 @@ public abstract class INDICCDImage {
 
     /**
      * create a ccd image with the specified size and bpp.
-     *
-     * @param width  the width of the image
-     * @param height the height of the image
-     * @param bpp    the bits per pixel of the image.
-     * @param type   type of the image.
+     * 
+     * @param width
+     *            the width of the image
+     * @param height
+     *            the height of the image
+     * @param bpp
+     *            the bits per pixel of the image.
+     * @param type
+     *            type of the image.
      */
     private INDICCDImage(int width, int height, int bpp, ImageType type) {
         this.width = width;
@@ -115,11 +127,15 @@ public abstract class INDICCDImage {
 
     /**
      * create a ccd image with the specified size and bpp.
-     *
-     * @param width  the width of the image
-     * @param height the height of the image
-     * @param bpp    the bits per pixel of the image.
-     * @param type   the type of the image.
+     * 
+     * @param width
+     *            the width of the image
+     * @param height
+     *            the height of the image
+     * @param bpp
+     *            the bits per pixel of the image.
+     * @param type
+     *            the type of the image.
      * @return the newly created image.
      */
     public static INDICCDImage createImage(int width, int height, int bpp, ImageType type) {
@@ -136,8 +152,9 @@ public abstract class INDICCDImage {
 
     /**
      * convert the current imageData to a fits image.
-     *
-     * @throws FitsException if the image could not be converted
+     * 
+     * @throws FitsException
+     *             if the image could not be converted
      */
     private void convertToFits() throws FitsException {
         f = new Fits();
@@ -148,9 +165,11 @@ public abstract class INDICCDImage {
 
     /**
      * add the standard fits attributes to the image.
-     *
-     * @param imageFits the fits image to add the attributes.
-     * @throws HeaderCardException if the header got illegal
+     * 
+     * @param imageFits
+     *            the fits image to add the attributes.
+     * @throws HeaderCardException
+     *             if the header got illegal
      */
     private void addFitsAttributes(BasicHDU<?> imageFits) throws HeaderCardException {
         imageFits.addValue(HISTORY, "FITS image created by i4j");
@@ -188,7 +207,7 @@ public abstract class INDICCDImage {
 
     /**
      * @return an initalized map of values for fits headers. please only use
-     * this for image headers directly from the chip.
+     *         this for image headers directly from the chip.
      */
     public Map<String, Object> getExtraFitsHeaders() {
         if (extraFitsHeaders == null) {
@@ -218,14 +237,21 @@ public abstract class INDICCDImage {
 
     /**
      * write the ccd image to the output stream.
-     *
-     * @param os        the output stream
-     * @param left      start in x
-     * @param top       start in y
-     * @param subWidth  width in pixel
-     * @param subHeigth height in pixel
-     * @param extension the file extension (currently only fits allowed.
-     * @throws FitsException if the file could not be written.
+     * 
+     * @param os
+     *            the output stream
+     * @param left
+     *            start in x
+     * @param top
+     *            start in y
+     * @param subWidth
+     *            width in pixel
+     * @param subHeigth
+     *            height in pixel
+     * @param extension
+     *            the file extension (currently only fits allowed.
+     * @throws FitsException
+     *             if the file could not be written.
      */
     public void write(DataOutputStream os, int left, int top, int subWidth, int subHeigth, String extension) throws FitsException {
         if ("fits".equals(extension)) {
@@ -242,8 +268,9 @@ public abstract class INDICCDImage {
 
     /**
      * Iterator reached its end, we can take some statistics.
-     *
-     * @param iterator the iterator.
+     * 
+     * @param iterator
+     *            the iterator.
      */
     public void iteratorComplete(PixelIterator iterator) {
         maxPixelValue = iterator.maxPixelValue;
@@ -274,8 +301,9 @@ public abstract class INDICCDImage {
 
         /**
          * internal constructor.
-         *
-         * @param axis3 the number of values for the 3 axis.
+         * 
+         * @param axis3
+         *            the number of values for the 3 axis.
          */
         private ImageType(int axis3) {
             this.axis3 = axis3;
@@ -293,22 +321,27 @@ public abstract class INDICCDImage {
          * line width of the image.
          */
         protected final int width;
+
         /**
          * index of the pixel in the first layer.
          */
         protected int index;
+
         /**
          * index of the pixel in the second layer.
          */
         protected int indexLayer2;
+
         /**
          * index of the pixel in the thirt layer.
          */
         protected int indexLayer3;
+
         /**
          * max value of of a pixel.
          */
         private int maxPixelValue = Integer.MIN_VALUE;
+
         /**
          * min value of of a pixel.
          */
@@ -316,9 +349,11 @@ public abstract class INDICCDImage {
 
         /**
          * create a pixel iterator over an image array.
-         *
-         * @param width  the width of the image.
-         * @param heigth the heigth of the image.
+         * 
+         * @param width
+         *            the width of the image.
+         * @param heigth
+         *            the heigth of the image.
          */
         private PixelIterator(int width, int heigth) {
             this.width = width;
@@ -328,17 +363,21 @@ public abstract class INDICCDImage {
 
         /**
          * set the pixel value of the first layer.
-         *
-         * @param value the new value for the pixel.
+         * 
+         * @param value
+         *            the new value for the pixel.
          */
         public abstract void setPixel(int value);
 
         /**
          * set the pixel values of the different colors.
-         *
-         * @param red   the value for the first layer
-         * @param green the value for the second layer
-         * @param blue  the value for the third layer
+         * 
+         * @param red
+         *            the value for the first layer
+         * @param green
+         *            the value for the second layer
+         * @param blue
+         *            the value for the third layer
          */
         public abstract void setPixel(int red, int green, int blue);
 
@@ -364,8 +403,9 @@ public abstract class INDICCDImage {
          * check the max pixel value, an record the new max and min value.
          * Attention the range adaption is not pressent here. so do only enter
          * values between 0 and Integer.MAX_VALUE
-         *
-         * @param value the value to check
+         * 
+         * @param value
+         *            the value to check
          * @return the unchanged original value
          */
         protected final int rangeCheck(int value) {
@@ -377,8 +417,9 @@ public abstract class INDICCDImage {
         /**
          * check the max pixel value, an record the new max and min value. and
          * convert the range to Short.MIN_VALUE and Short.MAX_VALUE
-         *
-         * @param value the value to check
+         * 
+         * @param value
+         *            the value to check
          * @return the unchanged original value
          */
         protected final short rangeCheckShort(int value) {
@@ -400,8 +441,9 @@ public abstract class INDICCDImage {
         /**
          * check the max pixel value, an record the new max and min value.
          * assume that bytes are unsigned, so no range adaption
-         *
-         * @param value the value to check
+         * 
+         * @param value
+         *            the value to check
          * @return the unchanged original value
          */
         protected final byte rangeCheckByte(int value) {
@@ -422,6 +464,7 @@ public abstract class INDICCDImage {
          * the max bit per pixel supported by this class.
          */
         private static final int MAX_BPP = 8;
+
         /**
          * the image data.
          */
@@ -429,10 +472,13 @@ public abstract class INDICCDImage {
 
         /**
          * create a ccd image with the specified size and bpp.
-         *
-         * @param width  the width of the image
-         * @param height the height of the image
-         * @param type   type of the image.
+         * 
+         * @param width
+         *            the width of the image
+         * @param height
+         *            the height of the image
+         * @param type
+         *            type of the image.
          */
         public INDI8BitCCDImage(int width, int height, ImageType type) {
             super(width, height, MAX_BPP, type);
@@ -474,6 +520,7 @@ public abstract class INDICCDImage {
          * the max bit per pixel supported by this class.
          */
         private static final int MAX_BPP = 16;
+
         /**
          * the image data.
          */
@@ -481,10 +528,13 @@ public abstract class INDICCDImage {
 
         /**
          * create a ccd image with the specified size and bpp.
-         *
-         * @param width  the width of the image
-         * @param height the height of the image
-         * @param type   the type of the image.
+         * 
+         * @param width
+         *            the width of the image
+         * @param height
+         *            the height of the image
+         * @param type
+         *            the type of the image.
          */
         public INDI16BitCCDImage(int width, int height, ImageType type) {
             super(width, height, MAX_BPP, type);
@@ -526,6 +576,7 @@ public abstract class INDICCDImage {
          * the max bit per pixel supported by this class.
          */
         private static final int MAX_BPP = 32;
+
         /**
          * the image data.
          */
@@ -533,10 +584,13 @@ public abstract class INDICCDImage {
 
         /**
          * create a ccd image with the specified size and bpp.
-         *
-         * @param width  the width of the image
-         * @param height the height of the image
-         * @param type   type of the image.
+         * 
+         * @param width
+         *            the width of the image
+         * @param height
+         *            the height of the image
+         * @param type
+         *            type of the image.
          */
         public INDI32BitCCDImage(int width, int height, ImageType type) {
             super(width, height, MAX_BPP, type);

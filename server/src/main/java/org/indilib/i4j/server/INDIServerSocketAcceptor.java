@@ -10,14 +10,14 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -34,7 +34,7 @@ import java.net.*;
 /**
  * A basic indi protocol connection acceptor. it wil accept standard indi
  * clients connection to the server socket.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
@@ -69,7 +69,7 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
 
     /**
      * Gets the port to which the Server listens.
-     *
+     * 
      * @return The port to which the Server listens.
      */
     private int getListeningPort() {
@@ -138,8 +138,9 @@ public abstract class INDIServerSocketAcceptor implements INDIServerAcceptor {
     /**
      * create an indiconnection around the socket. other protocols may overwrite
      * this method in subclasses.
-     *
-     * @param clientSocket the client socket to connect to.
+     * 
+     * @param clientSocket
+     *            the client socket to connect to.
      * @return the indi connection
      */
     protected INDIConnection createINDIConnection(Socket clientSocket) {

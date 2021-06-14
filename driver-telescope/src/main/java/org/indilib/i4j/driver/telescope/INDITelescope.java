@@ -27,14 +27,14 @@ package org.indilib.i4j.driver.telescope;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -67,7 +67,7 @@ import static org.indilib.i4j.properties.INDIStandardProperty.*;
  * A class that acts as a abstract INDI for Java Driver for any Telescope. All
  * telescope drivers should subclass this abstract driver. The initial version
  * was a port of the indilib c++ version.
- *
+ * 
  * @author Richard van Nieuwenhoven [ritchie at gmx.at]
  */
 public abstract class INDITelescope extends INDIDriver implements INDIConnectionHandler {
@@ -76,52 +76,64 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * The minimal value for declination in degrees.
      */
     protected static final double MAX_DECLINATION_DEGREES = 90d;
+
     /**
      * The maximal value for declination in degrees.
      */
     protected static final double MIN_DECLINATION_DEGREES = -90d;
+
     /**
      * The property tab for the site defintion properties.
      */
     protected static final String SITE_TAB = "Site";
+
     /**
      * Telescope elevations under 200 meter below see level are not supported.
      */
     private static final double MINIMUM_ELEVATION = -200d;
+
     /**
      * When two doubles are compared, at what precision are they interpreted as
      * equal.
      */
     private static final double EQUALITY_PRECISION = 0.000000000001;
+
     /**
      * how many milliseconds in a second.
      */
     private static final long ONE_SECOND_IN_MILLISECONDS = 1000L;
+
     /**
      * The minimal value for right ascension in hours.
      */
     private static final double MIN_RIGHT_ACENSION_HOURS = 0d;
+
     /**
      * The maximal value for right ascension in hours.
      */
     private static final double MAX_RIGHT_ACENSION_HOURS = 24d;
+
     /**
      * The logger for any messages.
      */
     private static final Logger LOG = LoggerFactory.getLogger(INDITelescope.class);
+
     /**
      * First variant of the iso time format.
      */
     private final SimpleDateFormat extractISOTimeFormat1 = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ss");
+
     /**
      * Second variant of the iso time format.
      */
     private final SimpleDateFormat extractISOTimeFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
     /**
      * Standard property for the pointing direction of the scope.
      */
     @InjectProperty(std = EQUATORIAL_EOD_COORD, label = "Eq. Coordinates", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDINumberProperty eqn;
+
     /**
      * This element represents the right ascension of the pointing direction.
      */
@@ -129,98 +141,117 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     protected INDINumberElement eqnRa;
 
     ;
+
     /**
      * This element represents the declination of the pointing direction.
      */
     @InjectElement(std = DEC, label = "DEC (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement eqnDec;
+
     /**
      * Property for the utc time of the client.
      */
     @InjectProperty(std = TIME_UTC, label = "UTC", group = SITE_TAB)
     protected INDITextProperty time;
+
     /**
      * The UTC time of the client.
      */
     @InjectElement(std = UTC, label = "UTC Time")
     protected INDITextElement timeutc;
+
     /**
      * The current location offset to the UTC time.
      */
     @InjectElement(std = OFFSET, label = "UTC Offset")
     protected INDITextElement timeOffset;
+
     /**
      * The geographic coordinates of the telescope location on earth.
      */
     @InjectProperty(std = GEOGRAPHIC_COORD, label = "Scope Location", state = OK, group = INDITelescope.SITE_TAB, saveable = true)
     protected INDINumberProperty location;
+
     /**
      * the latitude of the coordinates.
      */
     @InjectElement(std = LAT, label = "Lat (dd:mm:ss)", minimum = MIN_DECLINATION_DEGREES, maximum = 90d, numberFormat = "%010.6m")
     protected INDINumberElement locationLat;
+
     /**
      * the longtitude of the coordinates.
      */
     @InjectElement(std = LONG, label = "Lon (dd:mm:ss)", maximum = 360d, numberFormat = "%010.6m")
     protected INDINumberElement locationLong;
+
     /**
      * The elevation of the coordinates.
      */
     @InjectElement(std = ELEV, label = "Elevation (m)", minimum = MINIMUM_ELEVATION, maximum = 10000d)
     protected INDINumberElement locationElev;
+
     /**
      * What should be the next thing to do when the telescope reaches the goto
      * coordinates.
      */
     @InjectProperty(name = "ON_COORD_SET", label = "On Set", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDISwitchProperty coord;
+
     /**
      * On reaching the coordinates the telescope should track the coordinates.
      */
     @InjectElement(name = "TRACK", label = "Track")
     protected INDISwitchElement coordTrack;
+
     /**
      * On reaching the coordinates the telescope should stay.
      */
     @InjectElement(name = "SLEW", label = "Slew")
     protected INDISwitchElement coordSlew;
+
     /**
      * Acccess to the storage of the configuration of the telescope.
      */
     @InjectProperty(name = "CONFIG_PROCESS", label = "Configuration", group = INDIDriver.GROUP_OPTIONS)
     protected INDISwitchProperty config;
+
     /**
      * load the telescope configuration from local storage.
      */
     @InjectElement(name = "CONFIG_LOAD", label = "Load")
     protected INDISwitchElement configLoad;
+
     /**
      * Save the current telescope configuration th the local storage.
      */
     @InjectElement(name = "CONFIG_SAVE", label = "Save")
     protected INDISwitchElement configSave;
+
     /**
      * Reset the telescope configuration to the default.
      */
     @InjectElement(name = "CONFIG_DEFAULT", label = "Default")
     protected INDISwitchElement configDefault;
+
     /**
      * If the telescope supports parking, the handling is done in this
      * extention.
      */
     @InjectExtension
     protected INDITelescopeParkExtension parkExtension;
+
     /**
      * Abrubt abort control property.
      */
     @InjectProperty(name = "TELESCOPE_ABORT_MOTION", label = "Abort Motion", group = INDIDriver.GROUP_MAIN_CONTROL)
     protected INDISwitchProperty abort;
+
     /**
      * Stop the current operation immediatelly (if posssible).
      */
     @InjectElement(name = "ABORT", label = "Abort")
     protected INDISwitchElement abordElement;
+
     /**
      * Most telescopes are controlled by a serial connection, this extension
      * handles the connection for the driver so the driver does only have to
@@ -228,52 +259,62 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      */
     @InjectExtension(group = GROUP_OPTIONS)
     protected INDISerialPortExtension serialPortExtension;
+
     /**
      * extention handling the (manual remote) movement of the scope.
      */
     @InjectExtension
     protected INDITelescopeMoveExtension moveExtention;
+
     /**
      * All elements describing the current telescope are presented in this
      * property.
      */
     @InjectProperty(name = "TELESCOPE_INFO", label = "Scope Properties", group = GROUP_OPTIONS, state = OK, saveable = true)
     protected INDINumberProperty scopeParameters;
+
     /**
      * The aperture of the telescope.
      */
     @InjectElement(name = "TELESCOPE_APERTURE", label = "Aperture (mm)", numberValue = 50d, minimum = 50d, maximum = 4000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersAperture;
+
     /**
      * The focal length of the telescope.
      */
     @InjectElement(name = "TELESCOPE_FOCAL_LENGTH", label = "Focal Length (mm)", numberValue = 100d, minimum = 100d, maximum = 10000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersFocalLength;
+
     /**
      * The aperture of the telescope guider telescope.
      */
     @InjectElement(name = "GUIDER_APERTURE", label = "Guider Aperture (mm)", numberValue = 50d, minimum = 50d, maximum = 4000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersGuiderAperture;
+
     /**
      * The focal length of the telescope guider telescope.
      */
     @InjectElement(name = "GUIDER_FOCAL_LENGTH", label = "Guider Focal Length (mm)", numberValue = 100d, minimum = 100d, maximum = 10000d, numberFormat = "%g")
     protected INDINumberElement scopeParametersGuiderFocalLength;
+
     /**
      * The sync extension handles the system that improves the calibration of
      * the telescope with every sync of a position. If a telescope supports this
      * syncing (with is highly recommenced) than this extension is used for it.
      */
     protected INDITelescopeSyncExtension syncExtension;
+
     /**
      * This is a variable filled in by the ReadStatus telescope low level code,
      * used to report current state are we slewing, tracking, or parked.
      */
     protected TelescopeStatus trackState;
+
     /**
      * What was the last checked state of the eqn property.
      */
     private PropertyStates lastEqnState = null;
+
     /**
      * The currently active scope status updater, that periodically checks the
      * state of the scope.
@@ -283,8 +324,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * The Telescope driver constructor, all subclasses must call this. All
      * local event handlers are here attached to the properties.
-     *
-     * @param connection the indi connection to the server.
+     * 
+     * @param connection
+     *            the indi connection to the server.
      */
     public INDITelescope(INDIConnection connection) {
         super(connection);
@@ -338,8 +380,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     /**
      * convert an iso time string to a java date.
-     *
-     * @param isoTime the String representing the date.
+     * 
+     * @param isoTime
+     *            the String representing the date.
      * @return the java date representation of the isoTime String.
      */
     private synchronized Date extractISOTime(String isoTime) {
@@ -376,8 +419,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     /**
      * neu goto values received from the indi client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     protected void newEqnValue(INDIElementAndValue<INDINumberElement, Double>[] elementsAndValues) {
         // this is for us, and it is a goto
@@ -416,8 +460,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * the client send new values for the telescope location properties. process
      * the values and call the scope implementation.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newLocationValue(INDINumberElementAndValue[] elementsAndValues) {
         Double targetLat = null;
@@ -449,8 +494,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     /**
      * The scope parameters where changes by the client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newScopeParameter(INDINumberElementAndValue[] elementsAndValues) {
         scopeParameters.setState(OK);
@@ -461,8 +507,9 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     /**
      * The current time was changed by the client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newTimeValue(INDITextElementAndValue[] elementsAndValues) {
         String utcString = "";
@@ -500,16 +547,18 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * The driver implementation should try to halt the current operation. And
      * return true if the operation succeeded.
-     *
+     * 
      * @return if the operation succeeded .
      */
     protected abstract boolean abort();
 
     /**
      * The driver implementation should now goto the specified coordinates.
-     *
-     * @param ra  the right ascension of the goto point in space
-     * @param dec the declination of the point in space
+     * 
+     * @param ra
+     *            the right ascension of the goto point in space
+     * @param dec
+     *            the declination of the point in space
      */
     protected abstract void doGoto(double ra, double dec);
 
@@ -517,9 +566,11 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
      * The scope is now pointing here, resport the pointing position back to the
      * indi client. Subclasses should call this method to send the new pointing
      * data to the indi client.
-     *
-     * @param ra  the right ascension of the goto point in space
-     * @param dec the declination of the point in space
+     * 
+     * @param ra
+     *            the right ascension of the goto point in space
+     * @param dec
+     *            the declination of the point in space
      */
     protected void newRaDec(double ra, double dec) {
         // Lets set our eq values to these numbers
@@ -556,11 +607,13 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * equal doubles are two doubles equal? Subclasses my use this helper
      * method.
-     *
-     * @param double1 the first value
-     * @param double2 the other value
+     * 
+     * @param double1
+     *            the first value
+     * @param double2
+     *            the other value
      * @return true if the 2 doubles are equal up to the precision
-     * {@link #EQUALITY_PRECISION}.
+     *         {@link #EQUALITY_PRECISION}.
      */
     protected boolean eq(double double1, double double2) {
         return Math.abs(double1 - double2) < EQUALITY_PRECISION;
@@ -574,7 +627,7 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
 
     /**
      * @return the interfall in which the scope status schould be updated. The
-     * default is {@link #ONE_SECOND_IN_MILLISECONDS}.
+     *         default is {@link #ONE_SECOND_IN_MILLISECONDS}.
      */
     protected long updateInterfall() {
         return ONE_SECOND_IN_MILLISECONDS;
@@ -583,19 +636,24 @@ public abstract class INDITelescope extends INDIDriver implements INDIConnection
     /**
      * The scope location properties where changed, the subclass driver should
      * now update it's values.
-     *
-     * @param targetLat  the new latitude
-     * @param targetLong the new longitude
-     * @param targetElev the new elevation
+     * 
+     * @param targetLat
+     *            the new latitude
+     * @param targetLong
+     *            the new longitude
+     * @param targetElev
+     *            the new elevation
      * @return true if successful
      */
     protected abstract boolean updateLocation(double targetLat, double targetLong, double targetElev);
 
     /**
      * the subclass should now update the current time of the client.
-     *
-     * @param utc the time as a Date in UTC
-     * @param d   the offset at the current location
+     * 
+     * @param utc
+     *            the time as a Date in UTC
+     * @param d
+     *            the offset at the current location
      * @return true if the update was successful
      */
     protected abstract boolean updateTime(Date utc, double d);

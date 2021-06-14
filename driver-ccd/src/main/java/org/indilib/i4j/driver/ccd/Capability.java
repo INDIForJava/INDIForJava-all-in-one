@@ -10,12 +10,12 @@ package org.indilib.i4j.driver.ccd;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,7 +25,7 @@ package org.indilib.i4j.driver.ccd;
 /**
  * This class collects the different capabilities of the current ccd driver. It
  * consists of a list of booleans that can be set with the "builder" paradigm.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class Capability {
@@ -69,8 +69,9 @@ public class Capability {
 
     /**
      * set the can abort value.
-     *
-     * @param canAbortValue the new value
+     * 
+     * @param canAbortValue
+     *            the new value
      * @return this to specify more capabilities
      */
     public Capability canAbort(boolean canAbortValue) {
@@ -87,8 +88,9 @@ public class Capability {
 
     /**
      * set the can bin value.
-     *
-     * @param canBinValue the new value
+     * 
+     * @param canBinValue
+     *            the new value
      * @return this to specify more capabilities
      */
     public Capability canBin(boolean canBinValue) {
@@ -105,8 +107,9 @@ public class Capability {
 
     /**
      * set the can subframe value.
-     *
-     * @param canSubFrameValue the new value
+     * 
+     * @param canSubFrameValue
+     *            the new value
      * @return this to specify more capabilities
      */
     public Capability canSubFrame(boolean canSubFrameValue) {
@@ -116,7 +119,7 @@ public class Capability {
 
     /**
      * @return True if CCD has cooler and temperature can be controlled. False
-     * otherwise.
+     *         otherwise.
      */
     public boolean hasCooler() {
         return hasCooler;
@@ -124,8 +127,9 @@ public class Capability {
 
     /**
      * set the has cooler value.
-     *
-     * @param hasCoolerValue the new value
+     * 
+     * @param hasCoolerValue
+     *            the new value
      * @return this to specify more capabilities
      */
     public Capability hasCooler(boolean hasCoolerValue) {
@@ -142,8 +146,9 @@ public class Capability {
 
     /**
      * set the has guider head value.
-     *
-     * @param hasGuideHeadValue the new value
+     * 
+     * @param hasGuideHeadValue
+     *            the new value
      * @return this to specify more capabilities
      */
     public Capability hasGuideHead(boolean hasGuideHeadValue) {
@@ -153,7 +158,7 @@ public class Capability {
 
     /**
      * @return True if CCD has mechanical or electronic shutter. False
-     * otherwise.
+     *         otherwise.
      */
     public boolean hasShutter() {
         return hasShutter;
@@ -161,8 +166,9 @@ public class Capability {
 
     /**
      * set the has shutter value.
-     *
-     * @param hasShutterValue the new value
+     * 
+     * @param hasShutterValue
+     *            the new value
      * @return this to specify more capabilities
      */
     public Capability hasShutter(boolean hasShutterValue) {

@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -27,7 +27,7 @@ import org.indilib.i4j.Constants.BLOBEnables;
 /**
  * A class that represents a tuple of Device and Property names and a
  * BLOBEnable.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class DevicePropertyBLOBEnableTuple {
@@ -50,8 +50,9 @@ public class DevicePropertyBLOBEnableTuple {
     /**
      * Constructs a new DevicePropertyBLOBEnableTuple with a Property name and
      * BLOB Enable set to <code>null</code>.
-     *
-     * @param device The Device name.
+     * 
+     * @param device
+     *            The Device name.
      */
     protected DevicePropertyBLOBEnableTuple(String device) {
         this.device = device;
@@ -61,9 +62,11 @@ public class DevicePropertyBLOBEnableTuple {
 
     /**
      * Constructs a new DevicePropertyBLOBEnableTuple.
-     *
-     * @param device The Device name.
-     * @param enable The BLOB Enable.
+     * 
+     * @param device
+     *            The Device name.
+     * @param enable
+     *            The BLOB Enable.
      */
     protected DevicePropertyBLOBEnableTuple(String device, BLOBEnables enable) {
         this.device = device;
@@ -74,9 +77,11 @@ public class DevicePropertyBLOBEnableTuple {
     /**
      * Constructs a new DevicePropertyBLOBEnableTuple with a BLOB Enable set to
      * <code>null</code>.
-     *
-     * @param device   The Device name.
-     * @param property The Property name.
+     * 
+     * @param device
+     *            The Device name.
+     * @param property
+     *            The Property name.
      */
     protected DevicePropertyBLOBEnableTuple(String device, String property) {
         this.device = device;
@@ -86,10 +91,13 @@ public class DevicePropertyBLOBEnableTuple {
 
     /**
      * Constructs a new DevicePropertyBLOBEnableTuple.
-     *
-     * @param device   The Device name.
-     * @param property The Property name.
-     * @param enable   The BLOB Enable.
+     * 
+     * @param device
+     *            The Device name.
+     * @param property
+     *            The Property name.
+     * @param enable
+     *            The BLOB Enable.
      */
     protected DevicePropertyBLOBEnableTuple(String device, String property, BLOBEnables enable) {
         this.device = device;
@@ -99,7 +107,7 @@ public class DevicePropertyBLOBEnableTuple {
 
     /**
      * Gets the BLOB Enable.
-     *
+     * 
      * @return the BLOB Enable.
      */
     protected BLOBEnables getBLOBEnable() {
@@ -108,7 +116,7 @@ public class DevicePropertyBLOBEnableTuple {
 
     /**
      * Gets the Device name.
-     *
+     * 
      * @return the Device name.
      */
     protected String getDevice() {
@@ -117,7 +125,7 @@ public class DevicePropertyBLOBEnableTuple {
 
     /**
      * Gets the Property name.
-     *
+     * 
      * @return the Device name.
      */
     protected String getProperty() {
@@ -126,10 +134,11 @@ public class DevicePropertyBLOBEnableTuple {
 
     /**
      * Checks if the Device has a particular name.
-     *
-     * @param deviceName The name of the Device to check.
+     * 
+     * @param deviceName
+     *            The name of the Device to check.
      * @return <code>true</code> if the name of the Device coincides.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     protected boolean isDevice(String deviceName) {
         if (device.equals(deviceName)) {
@@ -142,11 +151,13 @@ public class DevicePropertyBLOBEnableTuple {
     /**
      * Checks if the Device has a particular name and the Property has a
      * particular name.
-     *
-     * @param deviceName   The name of the Device to check.
-     * @param propertyName The name of the Property to check.
+     * 
+     * @param deviceName
+     *            The name of the Device to check.
+     * @param propertyName
+     *            The name of the Property to check.
      * @return <code>true</code> if the name of the Device coincides and the
-     * name of the Property coincides. <code>false</code> otherwise.
+     *         name of the Property coincides. <code>false</code> otherwise.
      */
     protected boolean isProperty(String deviceName, String propertyName) {
         if (device.equals(deviceName)) {

@@ -10,14 +10,14 @@ package org.indilib.i4j.driver.ccd;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -54,7 +54,7 @@ import static nom.tam.fits.header.extra.SBFitsExt.*;
 
 /**
  * This is the extension for handling one ccd chip image.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
@@ -377,8 +377,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * Constructor of the extension, you should really know what you are doing
      * if you call this yourself. Better to let it be used by the injector.
-     *
-     * @param indiccd the ccd driver to attach this extension to.
+     * 
+     * @param indiccd
+     *            the ccd driver to attach this extension to.
      */
     public INDICCDDriverExtension(INDICCDDriver indiccd) {
         super(indiccd);
@@ -453,9 +454,11 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * Add FITS keywords to a fits file. In additional to the standard FITS
      * keywords, this function write the a number of std keywords the FITS file
-     *
-     * @param fitsHeader the fits header definition to extend the headers
-     * @throws HeaderCardException if the header becomes invalid.
+     * 
+     * @param fitsHeader
+     *            the fits header definition to extend the headers
+     * @throws HeaderCardException
+     *             if the header becomes invalid.
      */
     private void addFITSKeywords(BasicHDU<?> fitsHeader) throws HeaderCardException {
         fitsHeader.addValue(EXPOSURE, exposureDuration);
@@ -536,8 +539,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * the compressed property was changed on the client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newCompressedValue(INDISwitchElementAndValue[] elementsAndValues) {
         compress.setValues(elementsAndValues);
@@ -547,8 +551,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * the current frame type was changed on the client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newFrameTypeValue(INDISwitchElementAndValue[] elementsAndValues) {
         frameType.setValues(elementsAndValues);
@@ -582,8 +587,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * the binning properties where changed on the client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newImageBinValue(INDINumberElementAndValue[] elementsAndValues) {
         // We are being asked to set camera binning
@@ -607,8 +613,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * the exposure was changed on the client, attention this also starts the
      * exposure itself.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newImageExposureValue(INDINumberElementAndValue[] elementsAndValues) {
         imageExposure.setValues(elementsAndValues);
@@ -627,8 +634,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * the subframe specification was changed on the client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newImageFrameValue(INDINumberElementAndValue[] elementsAndValues) {
         String message;
@@ -651,8 +659,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * the pixel sizes where changed on the client.
-     *
-     * @param elementsAndValues The new Elements and Values
+     * 
+     * @param elementsAndValues
+     *            The new Elements and Values
      */
     private void newImagePixelSize(INDINumberElementAndValue[] elementsAndValues) {
         imagePixelSize.setValues(elementsAndValues);
@@ -666,9 +675,11 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Set CCD Chip binnig.
-     *
-     * @param hor Horizontal binning.
-     * @param ver Vertical binning.
+     * 
+     * @param hor
+     *            Horizontal binning.
+     * @param ver
+     *            Vertical binning.
      */
     private void setBin(int hor, int ver) {
         binningX = hor;
@@ -681,8 +692,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Set pixel depth of CCD chip.
-     *
-     * @param bpp bits per pixel
+     * 
+     * @param bpp
+     *            bits per pixel
      */
     private void setBitsPerPixel(int bpp) {
         bitsPerPixel = bpp;
@@ -692,11 +704,15 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Set desired frame resolutoin for an exposure.
-     *
-     * @param subx Left position.
-     * @param suby Top position.
-     * @param subw unbinned width of the frame.
-     * @param subh unbinned height of the frame.
+     * 
+     * @param subx
+     *            Left position.
+     * @param suby
+     *            Top position.
+     * @param subw
+     *            unbinned width of the frame.
+     * @param subh
+     *            unbinned height of the frame.
      */
     private void setFrame(int subx, int suby, int subw, int subh) {
         subframeX = subx;
@@ -713,9 +729,11 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Set CCD Chip pixel size.
-     *
-     * @param x Horziontal pixel size in microns.
-     * @param y Vertical pixel size in microns.
+     * 
+     * @param x
+     *            Horziontal pixel size in microns.
+     * @param y
+     *            Vertical pixel size in microns.
      */
     private void setPixelSize(float x, float y) {
         pixelSizeX = x;
@@ -729,9 +747,11 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * set CCD Chip resolution.
-     *
-     * @param x width
-     * @param y height
+     * 
+     * @param x
+     *            width
+     * @param y
+     *            height
      */
     private void setResolution(int x, int y) {
         xResolution = x;
@@ -795,7 +815,7 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * Uploads target Chip exposed buffer as FITS to the client. Dervied classes
      * should call this functon when an exposure is complete.
-     *
+     * 
      * @return true if the operation was successful.
      */
     public boolean exposureComplete() {
@@ -838,8 +858,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Set image extension.
-     *
-     * @param ext extension (fits, jpeg, raw..etc)
+     * 
+     * @param ext
+     *            extension (fits, jpeg, raw..etc)
      */
     public void setImageExtension(String ext) {
         imageExtension = ext;
@@ -855,12 +876,17 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * Setup CCD paramters for the CCD. Child classes call this function to
      * update CCD paramaters
-     *
-     * @param x          Frame X coordinates in pixels.
-     * @param y          Frame Y coordinates in pixels.
-     * @param bpp        Bits Per Pixels.
-     * @param xPixelSize X pixel size in microns.
-     * @param yPixelsize Y pixel size in microns.
+     * 
+     * @param x
+     *            Frame X coordinates in pixels.
+     * @param y
+     *            Frame Y coordinates in pixels.
+     * @param bpp
+     *            Bits Per Pixels.
+     * @param xPixelSize
+     *            X pixel size in microns.
+     * @param yPixelsize
+     *            Y pixel size in microns.
      */
     public void setCCDParams(int x, int y, int bpp, float xPixelSize, float yPixelsize) {
         setResolution(x, y);
@@ -873,8 +899,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * sets the ccd driver interface for this ccd. this should only be changed
      * for non primary ccd's.
-     *
-     * @param driverInterface the implementation of the ccd handling.
+     * 
+     * @param driverInterface
+     *            the implementation of the ccd handling.
      */
     public void setDriverInterface(INDICCDDriverInterface driverInterface) {
         this.driverInterface = driverInterface;
@@ -891,8 +918,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
     /**
      * Update exposure time left. Inform the client of the new exposure time
      * left value.
-     *
-     * @param duration exposure duration left in seconds.
+     * 
+     * @param duration
+     *            exposure duration left in seconds.
      */
     public void setExposureLeft(double duration) {
         imageExposureDuration.setValue(duration);
@@ -901,8 +929,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Set raw frame buffer pointer.
-     *
-     * @param newCcdImage the captured ccd image.
+     * 
+     * @param newCcdImage
+     *            the captured ccd image.
      */
     public void setFrameBuffer(INDICCDImage newCcdImage) {
         ccdImage = newCcdImage;
@@ -910,9 +939,11 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Set Maximum CCD Chip binning.
-     *
-     * @param maxHor Maximum horizontal binning
-     * @param maxVer Maximum vertical binning
+     * 
+     * @param maxHor
+     *            Maximum horizontal binning
+     * @param maxVer
+     *            Maximum vertical binning
      */
     public void setMaxBin(int maxHor, int maxVer) {
         imageBinX.setMax(maxHor);
@@ -922,11 +953,14 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * Upload a new exposure image to the appropriate places.
-     *
-     * @param sendImage should the image be send to the client.
-     * @param saveImage should the image be saved locally (where the driver resides)
-     * @throws Exception if something went wrong with the transmission or the saving
-     *                   of the file.
+     * 
+     * @param sendImage
+     *            should the image be send to the client.
+     * @param saveImage
+     *            should the image be saved locally (where the driver resides)
+     * @throws Exception
+     *             if something went wrong with the transmission or the saving
+     *             of the file.
      */
     public void uploadFile(boolean sendImage, boolean saveImage) throws Exception {
 
@@ -978,8 +1012,9 @@ public class INDICCDDriverExtension extends INDIDriverExtension<INDICCDDriver> {
 
     /**
      * set the auto loop property.
-     *
-     * @param value is the autoloop is on or off.
+     * 
+     * @param value
+     *            is the autoloop is on or off.
      */
     public void setAutoLoop(boolean value) {
         if (value) {

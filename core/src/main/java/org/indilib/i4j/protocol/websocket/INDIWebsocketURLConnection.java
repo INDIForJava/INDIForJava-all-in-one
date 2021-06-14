@@ -10,14 +10,14 @@ package org.indilib.i4j.protocol.websocket;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -45,7 +45,7 @@ import java.net.URLConnection;
  * This class represents a indi connection to a server over an url referense.
  * The url is decoded to get the connection data. Future extentions could also
  * handle the selection of device and property as part of the url path.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class INDIWebsocketURLConnection extends URLConnection implements INDIConnection {
@@ -66,8 +66,9 @@ public class INDIWebsocketURLConnection extends URLConnection implements INDICon
 
     /**
      * constructor using the url.
-     *
-     * @param url the connection specification.
+     * 
+     * @param url
+     *            the connection specification.
      */
     protected INDIWebsocketURLConnection(URL url) {
         super(url);
@@ -116,7 +117,8 @@ public class INDIWebsocketURLConnection extends URLConnection implements INDICon
 
     /**
      * @return the initialized socket connection.
-     * @throws IOException is the connection could not be initialized.
+     * @throws IOException
+     *             is the connection could not be initialized.
      */
     private INDIConnection getSocketConnection() throws IOException {
         connect();

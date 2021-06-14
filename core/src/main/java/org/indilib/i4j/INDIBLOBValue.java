@@ -10,12 +10,12 @@ package org.indilib.i4j;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -33,7 +33,7 @@ import java.util.zip.Inflater;
 
 /**
  * A class representing a INDI BLOB Value (some bytes and a format).
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDIBLOBValue implements Serializable {
@@ -55,9 +55,11 @@ public class INDIBLOBValue implements Serializable {
 
     /**
      * Constructs a new BLOB Value from its corresponding bytes and format.
-     *
-     * @param blobData the data for the BLOB
-     * @param format   the format of the data
+     * 
+     * @param blobData
+     *            the data for the BLOB
+     * @param format
+     *            the format of the data
      */
     public INDIBLOBValue(final byte[] blobData, final String format) {
         this.format = format;
@@ -66,8 +68,9 @@ public class INDIBLOBValue implements Serializable {
 
     /**
      * Constructs a new BLOB Value from a XML &lt;oneBLOB&gt; element.
-     *
-     * @param xml the &lt;oneBLOB&gt; XML element
+     * 
+     * @param xml
+     *            the &lt;oneBLOB&gt; XML element
      */
     public INDIBLOBValue(final OneBlob xml) {
         int size;
@@ -117,7 +120,7 @@ public class INDIBLOBValue implements Serializable {
 
     /**
      * Gets the BLOB data.
-     *
+     * 
      * @return the BLOB data
      */
     public final byte[] getBlobData() {
@@ -126,7 +129,7 @@ public class INDIBLOBValue implements Serializable {
 
     /**
      * Gets the BLOB data format.
-     *
+     * 
      * @return the BLOB data format
      */
     public final String getFormat() {
@@ -135,7 +138,7 @@ public class INDIBLOBValue implements Serializable {
 
     /**
      * Gets the size of the BLOB data.
-     *
+     * 
      * @return the size of the BLOB data
      */
     public final int getSize() {
@@ -144,9 +147,11 @@ public class INDIBLOBValue implements Serializable {
 
     /**
      * Save the BLOB Data to a file.
-     *
-     * @param file The file to which to save the BLOB data.
-     * @throws IOException if there is some problem writting the file.
+     * 
+     * @param file
+     *            The file to which to save the BLOB data.
+     * @throws IOException
+     *             if there is some problem writting the file.
      */
     public final void saveBLOBData(final File file) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(file)) {

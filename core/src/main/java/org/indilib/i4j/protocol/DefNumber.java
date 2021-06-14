@@ -10,14 +10,14 @@ package org.indilib.i4j.protocol;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -29,14 +29,14 @@ import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
 /**
  * This class represents an INDI XML protocol element.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 @XStreamAlias("defNumber")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = {
-        "textContent"
+    "textContent"
 }, types = {
-        DefElement.class
+    DefElement.class
 })
 public class DefNumber extends DefElement<DefNumber> {
 
@@ -73,8 +73,9 @@ public class DefNumber extends DefElement<DefNumber> {
 
     /**
      * set the format element atttribute.
-     *
-     * @param newFormat the new format value
+     * 
+     * @param newFormat
+     *            the new format value
      * @return this for builder pattern.
      */
     public DefNumber setFormat(String newFormat) {
@@ -91,8 +92,9 @@ public class DefNumber extends DefElement<DefNumber> {
 
     /**
      * set the max element atttribute.
-     *
-     * @param newMax the new max value
+     * 
+     * @param newMax
+     *            the new max value
      * @return this for builder pattern.
      */
     public DefNumber setMax(String newMax) {
@@ -109,8 +111,9 @@ public class DefNumber extends DefElement<DefNumber> {
 
     /**
      * set the min element atttribute.
-     *
-     * @param newMin the new min value
+     * 
+     * @param newMin
+     *            the new min value
      * @return this for builder pattern.
      */
     public DefNumber setMin(String newMin) {
@@ -127,8 +130,9 @@ public class DefNumber extends DefElement<DefNumber> {
 
     /**
      * set the step element atttribute.
-     *
-     * @param newLeft the new step value
+     * 
+     * @param newLeft
+     *            the new step value
      * @return this for builder pattern.
      */
     public DefNumber setStep(String newLeft) {

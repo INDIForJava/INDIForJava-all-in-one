@@ -10,14 +10,14 @@ package org.indilib.i4j.protocol;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -30,8 +30,9 @@ import java.util.List;
 
 /**
  * This class represents an INDI XML protocol element.
- *
- * @param <T> type for the builder
+ * 
+ * @param <T>
+ *            type for the builder
  * @author Richard van Nieuwenhoven
  */
 public abstract class SetVector<T> extends INDIProtocol<T> {
@@ -56,8 +57,9 @@ public abstract class SetVector<T> extends INDIProtocol<T> {
 
     /**
      * add one element to the list.
-     *
-     * @param element the element to add.
+     * 
+     * @param element
+     *            the element to add.
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -102,8 +104,9 @@ public abstract class SetVector<T> extends INDIProtocol<T> {
 
     /**
      * set the state attribute of the element.
-     *
-     * @param newState the new attibute state value
+     * 
+     * @param newState
+     *            the new attibute state value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")
@@ -114,8 +117,9 @@ public abstract class SetVector<T> extends INDIProtocol<T> {
 
     /**
      * set the timeout attribute of the element.
-     *
-     * @param newTimeout the new attribute timeout value
+     * 
+     * @param newTimeout
+     *            the new attribute timeout value
      * @return this for builder pattern.
      */
     @SuppressWarnings("unchecked")

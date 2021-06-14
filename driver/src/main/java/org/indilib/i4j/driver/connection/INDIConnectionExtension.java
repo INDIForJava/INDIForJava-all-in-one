@@ -10,14 +10,14 @@ package org.indilib.i4j.driver.connection;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -40,7 +40,7 @@ import static org.indilib.i4j.properties.INDIStandardProperty.CONNECTION;
 /**
  * The standard Connection extension, is activated for any driver implementing
  * the INDIConnectionHandler interface.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
@@ -70,8 +70,9 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * Constructor for the connection extension.
-     *
-     * @param driver the driver to connect to.
+     * 
+     * @param driver
+     *            the driver to connect to.
      */
     public INDIConnectionExtension(INDIDriver driver) {
         super(driver);
@@ -97,11 +98,13 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
      * Sets the CONNECTION Property to connected or disconnected and sends the
      * changes to the clients. If the property does not exist nothing happens.
      * If the connection is already stablished ignore petition.
-     *
-     * @param connected is the driver connected at the moment.
-     * @param message   An optional message (can be <code>null</code>)
-     *                  <code>true</code> if the CONNECT Element must be selected.
-     *                  <code>false</code> if the DISCONNECT Element must be selected.
+     * 
+     * @param connected
+     *            is the driver connected at the moment.
+     * @param message
+     *            An optional message (can be <code>null</code>)
+     *            <code>true</code> if the CONNECT Element must be selected.
+     *            <code>false</code> if the DISCONNECT Element must be selected.
      */
     private void setConnectionProperty(boolean connected, String message) {
         if (connectionP == null) {
@@ -128,9 +131,10 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * Sets the CONNECTION Property to connected or disconnected and sends the
      * changes to the clients. If the property does not exist nothing happens.
-     *
-     * @param connected <code>true</code> if the CONNECT Element must be selected.
-     *                  <code>false</code> if the DISCONNECT Element must be selected.
+     * 
+     * @param connected
+     *            <code>true</code> if the CONNECT Element must be selected.
+     *            <code>false</code> if the DISCONNECT Element must be selected.
      */
     private void setConnectionProperty(boolean connected) {
         setConnectionProperty(connected, null);
@@ -138,9 +142,9 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * Checks if the CONNECTION Property is set to <code>SwitchStatus.ON</code>.
-     *
+     * 
      * @return <code>true</code> if the CONNECTION Property is set to
-     * <code>SwitchStatus.ON</code>. <code>false</code> otherwise.
+     *         <code>SwitchStatus.ON</code>. <code>false</code> otherwise.
      */
     public boolean isConnected() {
         if (connectedE.getValue() == SwitchStatus.ON) {
@@ -153,9 +157,11 @@ public class INDIConnectionExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * Handles the connection property. Called from
      * <code>processNewSwitchVector</code>.
-     *
-     * @param newEvs    The new Elements and Values
-     * @param timestamp The timestamp of the received CONNECTION message.
+     * 
+     * @param newEvs
+     *            The new Elements and Values
+     * @param timestamp
+     *            The timestamp of the received CONNECTION message.
      */
     private synchronized void handleConnectionProperty(INDISwitchElementAndValue[] newEvs, Date timestamp) {
         for (INDISwitchElementAndValue newEv : newEvs) {

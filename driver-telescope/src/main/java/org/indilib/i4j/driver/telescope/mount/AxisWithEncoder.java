@@ -13,14 +13,14 @@ import org.slf4j.LoggerFactory;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -84,18 +84,22 @@ public class AxisWithEncoder {
      * maximum legal value in degrees.
      */
     protected double maximumLegalValue = Double.NaN;
+
     /**
      * the zero degrees position.
      */
     protected long zeroPosition;
+
     /**
      * the current speed.
      */
     protected double speedInTicksPerSecond;
+
     /**
      * the current position.
      */
     private long position;
+
     /**
      * the time in milliseconds when the last position was requested from the
      * real encoder.
@@ -111,8 +115,9 @@ public class AxisWithEncoder {
 
     /**
      * set the current position.
-     *
-     * @param position the new position value.
+     * 
+     * @param position
+     *            the new position value.
      */
     protected void setPosition(long position) {
         this.position = position;
@@ -124,10 +129,12 @@ public class AxisWithEncoder {
      * alloted time frame. Attention the axis will continue to go in that
      * direction even if the coordinates are reached, so update the direction
      * again before the alloted time is over.
-     *
-     * @param degrees         the position relative to the zero position.(value range 0 to
-     *                        360)
-     * @param secondsInFuture the alloted time to get there.
+     * 
+     * @param degrees
+     *            the position relative to the zero position.(value range 0 to
+     *            360)
+     * @param secondsInFuture
+     *            the alloted time to get there.
      */
     public void gotoWithSpeed(double degrees, double secondsInFuture) {
         double protectedDegrees = degrees;
@@ -184,8 +191,9 @@ public class AxisWithEncoder {
      * Maximum speed in ticks per second when the distance to the point is as
      * specified. this should be overloaded to get a more smooth aproch.
      * Defaults to 1 minute to make a full circle.
-     *
-     * @param distanceInDegrees distance in degrees
+     * 
+     * @param distanceInDegrees
+     *            distance in degrees
      * @return the maximum speed
      */
     protected double getMaximumSpeed(double distanceInDegrees) {
@@ -195,8 +203,9 @@ public class AxisWithEncoder {
 
     /**
      * limit the degrees to a value range between 0 and 360.
-     *
-     * @param degrees the value to limit
+     * 
+     * @param degrees
+     *            the value to limit
      * @return the value in the range.
      */
     private double degreeRange(double degrees) {
@@ -226,8 +235,9 @@ public class AxisWithEncoder {
 
     /**
      * set the speed of the axis in ticks per second.
-     *
-     * @param speedInTicksPerSecond the new speed
+     * 
+     * @param speedInTicksPerSecond
+     *            the new speed
      */
     protected void setSpeedInTicksPerSecond(double speedInTicksPerSecond) {
         if (LOG.isDebugEnabled()) {
@@ -238,7 +248,7 @@ public class AxisWithEncoder {
 
     /**
      * @return the current position of the Axis in degrees relative to the zero
-     * position. (value range 0 to 360)
+     *         position. (value range 0 to 360)
      */
     protected double getCurrentPosition() {
         double range = maximum - minimum;
@@ -251,9 +261,11 @@ public class AxisWithEncoder {
     /**
      * axis protection, all tries to leave the range will be blocked. to protect
      * the scope against breaking.
-     *
-     * @param newMinimumLegalValue the minimum legal value in degrees
-     * @param newMaximumLegalValue the maximum legal value in degrees
+     * 
+     * @param newMinimumLegalValue
+     *            the minimum legal value in degrees
+     * @param newMaximumLegalValue
+     *            the maximum legal value in degrees
      */
     protected void setValidRange(double newMinimumLegalValue, double newMaximumLegalValue) {
         minimumLegalValue = newMinimumLegalValue;

@@ -10,12 +10,12 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * A class that represent a Java Device (created with the INDI Driver library).
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -78,11 +78,15 @@ public class INDIJavaDevice extends INDIDevice {
 
     /**
      * Constructs a new Java Device and starts listening to its messages.
-     *
-     * @param server      The server which listens to this Device.
-     * @param driverClass The class of the Driver.
-     * @param identifier  The JAR file from where to load the Driver.
-     * @throws INDIException if there is any problem instantiating the Driver.
+     * 
+     * @param server
+     *            The server which listens to this Device.
+     * @param driverClass
+     *            The class of the Driver.
+     * @param identifier
+     *            The JAR file from where to load the Driver.
+     * @throws INDIException
+     *             if there is any problem instantiating the Driver.
      */
     protected INDIJavaDevice(INDIServer server, Class<?> driverClass, String identifier) throws INDIException {
         super(server);
@@ -149,10 +153,11 @@ public class INDIJavaDevice extends INDIDevice {
 
     /**
      * Checks if the Device corresponds to a particular Device Identifier.
-     *
-     * @param deviceIdentifier The Device Identifier to check.
+     * 
+     * @param deviceIdentifier
+     *            The Device Identifier to check.
      * @return <code>true</code> if the Device corresponds to the Device
-     * Identifier (that is, is in the jar file).
+     *         Identifier (that is, is in the jar file).
      */
     @Override
     public boolean isDevice(String deviceIdentifier) {
@@ -161,7 +166,7 @@ public class INDIJavaDevice extends INDIDevice {
 
     /**
      * Gets a String representation of the Device.
-     *
+     * 
      * @return A String representation of the Device.
      */
     @Override
@@ -171,8 +176,9 @@ public class INDIJavaDevice extends INDIDevice {
 
     /**
      * Deals with a possible new Device name, adding it if it is new.
-     *
-     * @param possibleNewName The new possible new name.
+     * 
+     * @param possibleNewName
+     *            The new possible new name.
      */
     @Override
     protected void dealWithPossibleNewDeviceName(String possibleNewName) {
@@ -183,10 +189,11 @@ public class INDIJavaDevice extends INDIDevice {
 
     /**
      * Checks if the Device has a particular name.
-     *
-     * @param name The name to check.
+     * 
+     * @param name
+     *            The name to check.
      * @return <code>true</code> if the Device respond to <code>name</code>.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     @Override
     protected boolean hasName(String name) {

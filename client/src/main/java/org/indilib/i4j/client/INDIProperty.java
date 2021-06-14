@@ -37,8 +37,9 @@ import static org.indilib.i4j.INDIDateFormat.dateFormat;
  * may contain according to the INDI protocol.
  * <p>
  * It implements a listener mechanism to notify changes in its Elements.
- *
- * @param <Element> the elements that occure in the property.
+ * 
+ * @param <Element>
+ *            the elements that occure in the property.
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public abstract class INDIProperty<Element extends INDIElement> implements Iterable<Element> {
@@ -47,34 +48,42 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * The INDI Device to which this property belongs.
      */
     private final INDIDevice device;
+
     /**
      * This property name.
      */
     private final String name;
+
     /**
      * A list of elements for this Property.
      */
     private final Map<String, Element> elements;
+
     /**
      * The list of listeners of this Property.
      */
     private final List<INDIPropertyListener> listeners;
+
     /**
      * This property label.
      */
     private String label;
+
     /**
      * The group to which this Property might be assigned.
      */
     private String group;
+
     /**
      * The current state of this Property.
      */
     private PropertyStates state = PropertyStates.IDLE;
+
     /**
      * The permission of this Property.
      */
     private PropertyPermissions permission;
+
     /**
      * The timeout of this Property.
      */
@@ -87,10 +96,12 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * IllegalArgumentException if the XML Property is not well formed (does not
      * contain a <code>name</code> attribute or the permissions are not
      * correct).
-     *
-     * @param xml    A XML Element <code>&lt;defXXXVector&gt;</code> describing the
-     *               Property.
-     * @param device The <code>INDIDevice</code> to which this Property belongs.
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;defXXXVector&gt;</code> describing the
+     *            Property.
+     * @param device
+     *            The <code>INDIDevice</code> to which this Property belongs.
      */
     protected INDIProperty(DefVector<?> xml, INDIDevice device) {
         this.device = device;
@@ -131,8 +142,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * of <code>INDIProperty</code> must implement this method to really do the
      * parsing and update (usually calling <code>update(Element, String)</code>
      * ).
-     *
-     * @param xml A XML Element <code>&lt;setXXXVector&gt;</code> to which the
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;setXXXVector&gt;</code> to which the
      *            property must be updated.
      */
     protected abstract void update(SetVector<?> xml);
@@ -141,15 +153,17 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * Updates the values of its elements according to some XML data. Subclasses
      * of <code>INDIProperty</code> usually call this method from
      * <code>update(Element)</code> to really do the parsing and update.
-     *
-     * @param xml            A XML Element <code>&lt;setXXXVector&gt;</code> to which the
-     *                       property must be updated.
-     * @param childNodesType The real XML type of <code>xml</code>, that is, one of
-     *                       <code>&lt;setBLOBVector&gt;</code>,
-     *                       <code>&lt;setLightVector&gt;</code>,
-     *                       <code>&lt;setNumberVector&gt;</code>,
-     *                       <code>&lt;setSwitchVector&gt;</code> or
-     *                       <code>&lt;setTextVector&gt;</code>.
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;setXXXVector&gt;</code> to which the
+     *            property must be updated.
+     * @param childNodesType
+     *            The real XML type of <code>xml</code>, that is, one of
+     *            <code>&lt;setBLOBVector&gt;</code>,
+     *            <code>&lt;setLightVector&gt;</code>,
+     *            <code>&lt;setNumberVector&gt;</code>,
+     *            <code>&lt;setSwitchVector&gt;</code> or
+     *            <code>&lt;setTextVector&gt;</code>.
      */
     protected void update(SetVector<?> xml, Class<?> childNodesType) {
         try {
@@ -182,7 +196,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the Device that owns this Property.
-     *
+     * 
      * @return the Device that owns this Property
      */
     public INDIDevice getDevice() {
@@ -191,7 +205,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the Group to which this property might be assigned.
-     *
+     * 
      * @return the group to which this property might be assigned.
      */
     public String getGroup() {
@@ -200,7 +214,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the timeout for this Property.
-     *
+     * 
      * @return the timeout for this Property.
      */
     public int getTimeout() {
@@ -211,8 +225,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * Sets the current timeout for this Property. Throws
      * IllegalArgumentException if the format of the timeout is not correct (a
      * positive integer).
-     *
-     * @param newTimeout The new current timeout.
+     * 
+     * @param newTimeout
+     *            The new current timeout.
      */
     private void setTimeout(String newTimeout) {
         try {
@@ -227,8 +242,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Sets the timeout of this property.
-     *
-     * @param timeout the new timeout for this Property.
+     * 
+     * @param timeout
+     *            the new timeout for this Property.
      */
     protected void setTimeout(int timeout) {
         this.timeout = timeout;
@@ -236,7 +252,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the label for this Property.
-     *
+     * 
      * @return the label for this Property.
      */
     public String getLabel() {
@@ -245,7 +261,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the name of this Property.
-     *
+     * 
      * @return the name of this Property
      */
     public String getName() {
@@ -254,7 +270,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the number of Elements in this Property.
-     *
+     * 
      * @return the number of Elements in this Property.
      */
     public int getElementCount() {
@@ -263,7 +279,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the Permission of this Property.
-     *
+     * 
      * @return the Permission of this Property.
      */
     public PropertyPermissions getPermission() {
@@ -272,8 +288,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Sets the Permission of this Property.
-     *
-     * @param permission the new Permission for this Property.
+     * 
+     * @param permission
+     *            the new Permission for this Property.
      */
     protected void setPermission(PropertyPermissions permission) {
         this.permission = permission;
@@ -281,7 +298,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the State of this Property.
-     *
+     * 
      * @return the State of this Property.
      */
     public PropertyStates getState() {
@@ -290,10 +307,11 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Sets the state of this property.
-     *
-     * @param newState The new state for this Property in form of a String:
-     *                 <code>Idle</code>, <code>Ok</code>, <code>Busy</code> or
-     *                 <code>Alert</code>.
+     * 
+     * @param newState
+     *            The new state for this Property in form of a String:
+     *            <code>Idle</code>, <code>Ok</code>, <code>Busy</code> or
+     *            <code>Alert</code>.
      */
     private void setState(String newState) {
         state = Constants.parsePropertyState(newState);
@@ -302,8 +320,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
     /**
      * Sets the State of this Property. The listeners are notified of this
      * change.
-     *
-     * @param state the new State of this Property.
+     * 
+     * @param state
+     *            the new State of this Property.
      */
     protected void setState(PropertyStates state) {
         this.state = state;
@@ -313,8 +332,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Adds a new Element to this Property.
-     *
-     * @param element the Element to be added.
+     * 
+     * @param element
+     *            the Element to be added.
      */
     protected void addElement(Element element) {
         elements.put(element.getName(), element);
@@ -322,11 +342,12 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets a particular Element of this Property by its elementName.
-     *
-     * @param elementName The elementName of the Element to be returned
+     * 
+     * @param elementName
+     *            The elementName of the Element to be returned
      * @return The Element of this Property with the given
-     * <code>elementName</code>. <code>null</code> if there is no
-     * Element with that <code>elementName</code>.
+     *         <code>elementName</code>. <code>null</code> if there is no
+     *         Element with that <code>elementName</code>.
      */
     public Element getElement(String elementName) {
         return elements.get(elementName);
@@ -334,11 +355,12 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets a particular Element of this Property by its elementName.
-     *
-     * @param elementName The elementName of the Element to be returned
+     * 
+     * @param elementName
+     *            The elementName of the Element to be returned
      * @return The Element of this Property with the given
-     * <code>elementName</code>. <code>null</code> if there is no
-     * Element with that <code>elementName</code>.
+     *         <code>elementName</code>. <code>null</code> if there is no
+     *         Element with that <code>elementName</code>.
      */
     public Element getElement(INDIStandardElement elementName) {
         return elements.get(elementName.name());
@@ -346,11 +368,12 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets a particular Element of this Property by its elementName.
-     *
-     * @param elementName The elementName of the Element to be returned
+     * 
+     * @param elementName
+     *            The elementName of the Element to be returned
      * @return The Element of this Property with the given
-     * <code>elementName</code>. <code>null</code> if there is no
-     * Element with that <code>elementName</code>.
+     *         <code>elementName</code>. <code>null</code> if there is no
+     *         Element with that <code>elementName</code>.
      */
     public Element getElement(INDIStandardProperty elementName) {
         return elements.get(elementName.name());
@@ -358,9 +381,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets a <code>ArrayList</code> with all the Elements of this Property.
-     *
+     * 
      * @return the <code>ArrayList</code> of Elements belonging to this
-     * Property.
+     *         Property.
      */
     public List<Element> getElementsAsList() {
         return new ArrayList<>(elements.values());
@@ -371,11 +394,13 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * Property. If there are new desired values for any Elements the XML code
      * to produce the change is sent to the INDI Driver. If communication is
      * successful the state of the property is set to "Busy".
-     *
-     * @throws INDIValueException if some of the desired values are not correct or if the
-     *                            Property is Read Only.
-     * @throws IOException        if there is some communication problem with the INDI driver
-     *                            connection.
+     * 
+     * @throws INDIValueException
+     *             if some of the desired values are not correct or if the
+     *             Property is Read Only.
+     * @throws IOException
+     *             if there is some communication problem with the INDI driver
+     *             connection.
      */
     public void sendChangesToDriver() throws INDIValueException, IOException {
         if (permission == PropertyPermissions.RO) {
@@ -400,8 +425,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Adds a new listener to this Property.
-     *
-     * @param listener the listener to be added.
+     * 
+     * @param listener
+     *            the listener to be added.
      */
     public void addINDIPropertyListener(INDIPropertyListener listener) {
         listeners.add(listener);
@@ -409,8 +435,9 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Removes a listener from this Property.
-     *
-     * @param listener the listener to be removed.
+     * 
+     * @param listener
+     *            the listener to be removed.
      */
     public void removeINDIPropertyListener(INDIPropertyListener listener) {
         listeners.remove(listener);
@@ -427,7 +454,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the opening XML Element &lt;newXXXVector&gt; for this Property.
-     *
+     * 
      * @return the opening XML Element &lt;newXXXVector&gt; for this Property.
      */
     protected abstract NewVector<?> getXMLPropertyChangeInit();
@@ -441,16 +468,17 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
      * must be done. If a previous default component has been requested, the
      * previous one will be deregistered. So, only one default component will
      * listen for the property.
-     *
+     * 
      * @return A UI component that handles this Property.
-     * @throws INDIException if there is a problem instantiating an UI component for a
-     *                       Property.
+     * @throws INDIException
+     *             if there is a problem instantiating an UI component for a
+     *             Property.
      */
     public abstract INDIPropertyListener getDefaultUIComponent() throws INDIException;
 
     /**
      * Gets the names of the Elements of this Property.
-     *
+     * 
      * @return the names of the Elements of this Property.
      */
     public String[] getElementNames() {
@@ -464,7 +492,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
     /**
      * Returns a String with the name of the Property, its state and its
      * elements and values.
-     *
+     * 
      * @return a String representation of the property and its values.
      */
     public String getNameStateAndValuesAsString() {
@@ -477,7 +505,7 @@ public abstract class INDIProperty<Element extends INDIElement> implements Itera
 
     /**
      * Gets the values of the Property as a String.
-     *
+     * 
      * @return A String representation of the value of the Property.
      */
     public String getValuesAsString() {

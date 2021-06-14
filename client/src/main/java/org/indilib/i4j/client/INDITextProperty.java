@@ -10,12 +10,12 @@ package org.indilib.i4j.client;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,7 +29,7 @@ import org.indilib.i4j.protocol.*;
  * A class representing a INDI Text Property.
  * <p>
  * It implements a listener mechanism to notify changes in its Elements.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDITextProperty extends INDIProperty<INDITextElement> {
@@ -46,10 +46,12 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
      * Usually used by <code>INDIDevice</code>. Throws IllegalArgumentException
      * if the XML Property is not well formed (for example if the Elements are
      * not well formed).
-     *
-     * @param xml    A XML Element <code>&lt;defTextVector&gt;</code> describing
-     *               the Property.
-     * @param device The <code>INDIDevice</code> to which this Property belongs.
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;defTextVector&gt;</code> describing
+     *            the Property.
+     * @param device
+     *            The <code>INDIDevice</code> to which this Property belongs.
      */
     protected INDITextProperty(DefTextVector xml, INDIDevice device) {
         super(xml, device);
@@ -73,7 +75,7 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
 
     /**
      * Gets the opening XML Element &lt;newTextVector&gt; for this Property.
-     *
+     * 
      * @return the opening XML Element &lt;newTextVector&gt; for this Property.
      */
     @Override
@@ -95,11 +97,12 @@ public class INDITextProperty extends INDIProperty<INDITextElement> {
 
     /**
      * Gets a particular Element of this Property by its name.
-     *
-     * @param name The name of the Element to be returned
+     * 
+     * @param name
+     *            The name of the Element to be returned
      * @return The Element of this Property with the given <code>name</code>.
-     * <code>null</code> if there is no Element with that
-     * <code>name</code>.
+     *         <code>null</code> if there is no Element with that
+     *         <code>name</code>.
      */
     @Override
     public final INDITextElement getElement(String name) {

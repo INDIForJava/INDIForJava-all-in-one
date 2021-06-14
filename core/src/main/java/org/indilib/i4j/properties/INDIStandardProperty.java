@@ -10,14 +10,14 @@ package org.indilib.i4j.properties;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -32,9 +32,11 @@ import static org.indilib.i4j.properties.INDIStandardElement.*;
  * find numerous uses of the standard properties in the INDI library driver
  * repository. We use enum instead of constants to be better able to trace the
  * references.
- *
+ * 
  * @author Richard van Nieuwenhoven
- * @see <a href="http://indilib.org/develop/developer-manual/101-standard-properties.html">Standard properties</a>
+ * @see <a
+ *      href="http://indilib.org/develop/developer-manual/101-standard-properties.html">Standard
+ *      properties</a>
  */
 public enum INDIStandardProperty {
     /**
@@ -70,7 +72,8 @@ public enum INDIStandardProperty {
      */
     EQUATORIAL_COORD(RA, DEC),
     /**
-     * Slew Target. Read Only property set once requested EQUATORIAL_EOD_COORD is accepted by driver.
+     * Slew Target. Read Only property set once requested EQUATORIAL_EOD_COORD
+     * is accepted by driver.
      */
     TARGET_EOD_COORD(RA, DEC),
     /**
@@ -205,16 +208,20 @@ public enum INDIStandardProperty {
      */
     FPS(EST_FPS, AVG_FPS),
     /**
-     * Recorders are responsible for recording the video stream to a file. The recording file directory and name can be set via the RECORD_FILE property which is composed of RECORD_FILE_DIR and RECORD_FILE_NAME elements. You can specify a record directory name together with a file name. You may use special character sequences to generate dynamic names:
+     * Recorders are responsible for recording the video stream to a file. The
+     * recording file directory and name can be set via the RECORD_FILE property
+     * which is composed of RECORD_FILE_DIR and RECORD_FILE_NAME elements. You
+     * can specify a record directory name together with a file name. You may
+     * use special character sequences to generate dynamic names:
      * <p>
-     * _D_ is replaced with the date ('YYYY-MM-DD')
-     * _H_ is replaced with the time ('hh-mm-ss')
-     * _T_ is replaced with a timestamp
-     * _F_ is replaced with the filter name currently in use
+     * _D_ is replaced with the date ('YYYY-MM-DD') _H_ is replaced with the
+     * time ('hh-mm-ss') _T_ is replaced with a timestamp _F_ is replaced with
+     * the filter name currently in use
      */
     RECORD_FILE(RECORD_FILE_DIR, RECORD_FILE_NAME),
     /**
-     * Set the desired duration in seconds or total frames required for the recording.
+     * Set the desired duration in seconds or total frames required for the
+     * recording.
      */
     RECORD_OPTIONS(RECORD_DURATION, RECORD_FRAME_TOTAL),
     /**
@@ -341,8 +348,9 @@ public enum INDIStandardProperty {
 
     /**
      * constructor.
-     *
-     * @param elements standard elements of the property.
+     * 
+     * @param elements
+     *            standard elements of the property.
      */
     INDIStandardProperty(INDIStandardElement... elements) {
         this.elements = elements;

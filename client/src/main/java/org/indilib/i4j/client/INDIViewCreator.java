@@ -10,14 +10,14 @@ package org.indilib.i4j.client;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -31,7 +31,7 @@ import java.util.ServiceLoader;
 /**
  * The view createtion factory, uses the service loader pattern to get the
  * correct implementor for the current situation.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public final class INDIViewCreator {
@@ -40,14 +40,17 @@ public final class INDIViewCreator {
      * static cached dummy device listener.
      */
     private static final DummyDeviceListener DUMMY_DEVICE_LISTENER = new DummyDeviceListener();
+
     /**
      * static cached dummy property listener.
      */
     private static final DummyPropertyListener DUMMY_PROPERTY_LISTENER = new DummyPropertyListener();
+
     /**
      * static cached dummy element listener.
      */
     private static final DummyElementListener DUMMY_ELEMENT_LISTENER = new DummyElementListener();
+
     /**
      * the staticaly cached creator interface resolved using the serviceloader
      * pattern.
@@ -62,7 +65,7 @@ public final class INDIViewCreator {
 
     /**
      * @return the default implementation dependeing on what is first available
-     * in the classpath.
+     *         in the classpath.
      */
     public static INDIViewCreatorInterface getDefault() {
         if (creatorInterface == null) {

@@ -10,14 +10,14 @@ package org.indilib.i4j.driver.serial;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -138,8 +138,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * Extension constructor. do not call this yourself.
-     *
-     * @param driver the driver to connect the extension to.
+     * 
+     * @param driver
+     *            the driver to connect the extension to.
      */
     public INDISerialPortExtension(INDIDriver driver) {
         super(driver);
@@ -181,8 +182,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * Handle any servial exception, by logging it and sendig a message to the
      * client.
-     *
-     * @param e the exception that occured.
+     * 
+     * @param e
+     *            the exception that occured.
      */
     private void handleSerialException(SerialPortException e) {
         updateProperty(port, "Serial port error " + e.getMessage());
@@ -212,7 +214,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * Close the serial port if it was opend.
-     *
+     * 
      * @return true if successful.
      */
     public synchronized boolean close() {
@@ -246,7 +248,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * @return an open serial port to send or receive bytes. If the port was not
-     * yet opened it will be.
+     *         yet opened it will be.
      */
     public SerialPort getOpenSerialPort() {
         if (serialPort == null || !serialPort.isOpened()) {
@@ -263,7 +265,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * open the serial port with the specified properties. If it was already
      * open, close it first.
-     *
+     * 
      * @return true if successful.
      */
     public synchronized boolean open() {
@@ -291,8 +293,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * set the Minimum milliseconds between commands.
-     *
-     * @param minimumMillisecondsBetweenCommands the new value
+     * 
+     * @param minimumMillisecondsBetweenCommands
+     *            the new value
      */
     public void setMinimumMillisecondsBetweenCommands(int minimumMillisecondsBetweenCommands) {
         this.minimumMillisecondsBetweenCommands = minimumMillisecondsBetweenCommands;
@@ -301,8 +304,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * can the port details be changed by the client? defaults to false because
      * most devices have fixed settings.
-     *
-     * @param portDetailesFixed true if they can.
+     * 
+     * @param portDetailesFixed
+     *            true if they can.
      */
     public void setPortDetailesFixed(boolean portDetailesFixed) {
         this.portDetailesFixed = portDetailesFixed;
@@ -315,8 +319,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * set the baut rate.
-     *
-     * @param newBaudrate the baut rate to set.
+     * 
+     * @param newBaudrate
+     *            the baut rate to set.
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setBaudrate(int newBaudrate) {
@@ -327,8 +332,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * set the number of databits.
-     *
-     * @param newDatabits the number of databits to set.
+     * 
+     * @param newDatabits
+     *            the number of databits to set.
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setDatabits(int newDatabits) {
@@ -339,8 +345,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * set the parity.
-     *
-     * @param newParity the parity to set.
+     * 
+     * @param newParity
+     *            the parity to set.
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setParity(int newParity) {
@@ -351,8 +358,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * set the number of stopbits.
-     *
-     * @param newStopbits the number of stopbits to set.
+     * 
+     * @param newStopbits
+     *            the number of stopbits to set.
      * @return this extension itself (builder pattern).
      */
     public INDISerialPortExtension setStopbits(int newStopbits) {
@@ -364,9 +372,11 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * send one byte over the serial port. An illegal state exception will be
      * thrown if the communication breaks down.
-     *
-     * @param value     the byte value to send.
-     * @param skipQueue if true all bytes currently in the read queue will be scipped.
+     * 
+     * @param value
+     *            the byte value to send.
+     * @param skipQueue
+     *            if true all bytes currently in the read queue will be scipped.
      */
     public void sendByte(byte value, boolean skipQueue) {
         if (serialPort != null) {
@@ -389,9 +399,11 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * send multiple bytes over the serial port. An illegal state exception will
      * be thrown if the communication breaks down. All bytes currently in the
      * read queue will be scipped.
-     *
-     * @param bytes     the bytes to send.
-     * @param skipQueue if true all bytes currently in the read queue will be scipped.
+     * 
+     * @param bytes
+     *            the bytes to send.
+     * @param skipQueue
+     *            if true all bytes currently in the read queue will be scipped.
      */
     public void sendBytes(byte[] bytes, boolean skipQueue) {
         if (serialPort != null) {
@@ -411,9 +423,11 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
      * send one byte over the serial port. An illegal state exception will be
      * thrown if the communication breaks down. All bytes currently in the read
      * queue will be scipped.
-     *
-     * @param value     the byte value to send (the integer will be cast to a byte).
-     * @param skipQueue if true all bytes currently in the read queue will be scipped.
+     * 
+     * @param value
+     *            the byte value to send (the integer will be cast to a byte).
+     * @param skipQueue
+     *            if true all bytes currently in the read queue will be scipped.
      */
     public void sendByte(int value, boolean skipQueue) {
         sendByte((byte) value, skipQueue);
@@ -452,7 +466,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * blocking read one byte from the serial port. An illegal state exception
      * will be thrown if the communication breaks down.
-     *
+     * 
      * @return the read byte.
      */
     public byte readByte() {
@@ -465,7 +479,7 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
 
     /**
      * non blocking read all the availabe bytes from the interface.
-     *
+     * 
      * @return the read bytes.
      */
     public byte[] readBytes() {
@@ -479,8 +493,9 @@ public class INDISerialPortExtension extends INDIDriverExtension<INDIDriver> {
     /**
      * blocking read a number of bytes from the serial port. An illegal state
      * exception will be thrown if the communication breaks down.
-     *
-     * @param nrOfBytes the number of bytes to read.
+     * 
+     * @param nrOfBytes
+     *            the number of bytes to read.
      * @return the read byte array.
      */
     public byte[] readByte(int nrOfBytes) {

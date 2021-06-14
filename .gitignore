@@ -24,5 +24,6 @@ out/
 /driver-telescope/target
 /fits-utils/target
 /gnu-scientific-lib/target
+/driver-serial-extension/target
 /server/target
 *.class

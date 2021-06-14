@@ -10,12 +10,12 @@ package org.indilib.i4j;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -25,7 +25,7 @@ package org.indilib.i4j;
 /**
  * A class representing a some Constants and convenience functions to deal with
  * them used in several parts of the INDI for Java libraries.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public final class Constants {
@@ -58,9 +58,10 @@ public final class Constants {
 
     /**
      * Parses a Light State.
-     *
-     * @param state a string representation of the Light State to be parsed
-     *              ("Alert" or "Busy" or "Ok" or "Idle").
+     * 
+     * @param state
+     *            a string representation of the Light State to be parsed
+     *            ("Alert" or "Busy" or "Ok" or "Idle").
      * @return The parsed Light State
      */
     public static LightStates parseLightState(final String state) {
@@ -81,10 +82,11 @@ public final class Constants {
 
     /**
      * Checks if a string corresponds to a valid LightState.
-     *
-     * @param state The string to check
+     * 
+     * @param state
+     *            The string to check
      * @return <code>true</code> if it corresponds to a valid LightState.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     public static boolean isValidLightState(final String state) {
         try {
@@ -98,8 +100,9 @@ public final class Constants {
 
     /**
      * Gets a String representation of the Light State.
-     *
-     * @param lightState The Light State
+     * 
+     * @param lightState
+     *            The Light State
      * @return A String representation of the Light State
      */
     public static String getLightStateAsString(final LightStates lightState) {
@@ -118,9 +121,10 @@ public final class Constants {
 
     /**
      * Parses a Switch Status.
-     *
-     * @param status a string representation of the Switch Status to be parsed
-     *               ("Off" or "On").
+     * 
+     * @param status
+     *            a string representation of the Switch Status to be parsed
+     *            ("Off" or "On").
      * @return The parsed Switch Status
      */
     public static SwitchStatus parseSwitchStatus(final String status) {
@@ -135,10 +139,11 @@ public final class Constants {
 
     /**
      * Checks if a string corresponds to a valid SwitchStatus.
-     *
-     * @param status The string to check
+     * 
+     * @param status
+     *            The string to check
      * @return <code>true</code> if it corresponds to a valid SwitchStatus.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     public static boolean isValidSwitchStatus(final String status) {
         try {
@@ -154,8 +159,9 @@ public final class Constants {
 
     /**
      * Gets a String representation of the Switch Status.
-     *
-     * @param switchStatus The Switch Status
+     * 
+     * @param switchStatus
+     *            The Switch Status
      * @return A String representation of the Switch Status
      */
     public static String getSwitchStatusAsString(final SwitchStatus switchStatus) {
@@ -170,9 +176,10 @@ public final class Constants {
 
     /**
      * Parses a Property Permission.
-     *
-     * @param permission a string representation of the Property Permission to be
-     *                   parsed ("ro" or "rw" or "wo").
+     * 
+     * @param permission
+     *            a string representation of the Property Permission to be
+     *            parsed ("ro" or "rw" or "wo").
      * @return The parsed Property Permission
      */
     public static PropertyPermissions parsePropertyPermission(final String permission) {
@@ -189,10 +196,11 @@ public final class Constants {
 
     /**
      * Checks if a string corresponds to a valid PropertyPermission.
-     *
-     * @param permission The string to check
+     * 
+     * @param permission
+     *            The string to check
      * @return <code>true</code> if it corresponds to a valid
-     * PropertyPermission. <code>false</code> otherwise.
+     *         PropertyPermission. <code>false</code> otherwise.
      */
     public static boolean isValidPropertyPermission(final String permission) {
         try {
@@ -206,8 +214,9 @@ public final class Constants {
 
     /**
      * Gets a String representation of the Property Permission.
-     *
-     * @param permission The Property Permission
+     * 
+     * @param permission
+     *            The Property Permission
      * @return A String representation of the Property Permission.
      */
     public static String getPropertyPermissionAsString(final PropertyPermissions permission) {
@@ -226,9 +235,10 @@ public final class Constants {
 
     /**
      * Parses a Property State.
-     *
-     * @param state a string representation of the Property State to be parsed
-     *              ("Alert" or "Busy" or "Ok" or "Idle").
+     * 
+     * @param state
+     *            a string representation of the Property State to be parsed
+     *            ("Alert" or "Busy" or "Ok" or "Idle").
      * @return The parsed Property State
      */
     public static PropertyStates parsePropertyState(final String state) {
@@ -247,10 +257,11 @@ public final class Constants {
 
     /**
      * Checks if a string corresponds to a valid PropertyState.
-     *
-     * @param state The string to check
+     * 
+     * @param state
+     *            The string to check
      * @return <code>true</code> if it corresponds to a valid PropertyState.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     public static boolean isValidPropertyState(final String state) {
         try {
@@ -264,8 +275,9 @@ public final class Constants {
 
     /**
      * Gets a String representation of the Property State.
-     *
-     * @param propertyState The Property State
+     * 
+     * @param propertyState
+     *            The Property State
      * @return A String representation of the Property State
      */
     public static String getPropertyStateAsString(final PropertyStates propertyState) {
@@ -284,9 +296,10 @@ public final class Constants {
 
     /**
      * Parses a Switch Rule.
-     *
-     * @param rule a string representation of the Switch Rule to be parsed
-     *             ("OneOfMany" or "AtMostOne" or "AnyOfMany").
+     * 
+     * @param rule
+     *            a string representation of the Switch Rule to be parsed
+     *            ("OneOfMany" or "AtMostOne" or "AnyOfMany").
      * @return The Switch Rule
      */
     public static SwitchRules parseSwitchRule(final String rule) {
@@ -305,10 +318,11 @@ public final class Constants {
 
     /**
      * Checks if a string corresponds to a valid SwitchRule.
-     *
-     * @param rule The string to check
+     * 
+     * @param rule
+     *            The string to check
      * @return <code>true</code> if it corresponds to a valid SwitchRule.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     public static boolean isValidSwitchRule(final String rule) {
         try {
@@ -322,8 +336,9 @@ public final class Constants {
 
     /**
      * Gets a String representation of the Switch Rule.
-     *
-     * @param rule The Switch Rule
+     * 
+     * @param rule
+     *            The Switch Rule
      * @return A String representation of the Switch Rule.
      */
     public static String getSwitchRuleAsString(final SwitchRules rule) {
@@ -340,9 +355,10 @@ public final class Constants {
 
     /**
      * Parses a BLOB Enable.
-     *
-     * @param blobEnable a string representation of the BLOB Enable to be parsed
-     *                   ("Never" or "Also" or "Only").
+     * 
+     * @param blobEnable
+     *            a string representation of the BLOB Enable to be parsed
+     *            ("Never" or "Also" or "Only").
      * @return The BLOB Enable
      */
     public static BLOBEnables parseBLOBEnable(final String blobEnable) {
@@ -359,10 +375,11 @@ public final class Constants {
 
     /**
      * Checks if a string corresponds to a valid blobEnable.
-     *
-     * @param blobEnable The string to check
+     * 
+     * @param blobEnable
+     *            The string to check
      * @return <code>true</code> if it corresponds to a valid blobEnable.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     public static boolean isValidBLOBEnable(final String blobEnable) {
         try {
@@ -378,8 +395,9 @@ public final class Constants {
 
     /**
      * Gets a String representation of the BLOB Enable.
-     *
-     * @param blobEnable The blobEnable
+     * 
+     * @param blobEnable
+     *            The blobEnable
      * @return A String representation of the BLOB Enable.
      */
     public static String getBLOBEnableAsString(final BLOBEnables blobEnable) {

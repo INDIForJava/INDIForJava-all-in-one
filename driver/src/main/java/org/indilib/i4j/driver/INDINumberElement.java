@@ -10,12 +10,12 @@ package org.indilib.i4j.driver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -34,7 +34,7 @@ import java.util.Locale;
 
 /**
  * A class representing a INDI Number Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDINumberElement extends INDIElement<INDINumberElement> {
@@ -77,8 +77,9 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
     /**
      * Constructs an instance of a <code>INDINumberElement</code>. Using the
      * settings from the builder.
-     *
-     * @param builder the builder with all the settings.
+     * 
+     * @param builder
+     *            the builder with all the settings.
      */
     public INDINumberElement(INDIElementBuilder<INDINumberElement> builder) {
         super(builder);
@@ -96,7 +97,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Gets the maximum for this Number Element.
-     *
+     * 
      * @return The maximum for this Number Element.
      */
     public double getMax() {
@@ -105,8 +106,9 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Set the new maximal value.
-     *
-     * @param max the new value.
+     * 
+     * @param max
+     *            the new value.
      */
     public void setMax(double max) {
         this.max = max;
@@ -115,7 +117,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
     /**
      * Gets the maximum for this Number Element formated as a String according
      * to the number format.
-     *
+     * 
      * @return The maximum for this Number Element formatted as a String.
      */
     public String getMaxAsString() {
@@ -124,7 +126,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Gets the minimum for this Number Element.
-     *
+     * 
      * @return The minimum for this Number Element.
      */
     public double getMin() {
@@ -133,8 +135,9 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Set the new minimal value.
-     *
-     * @param min the new value.
+     * 
+     * @param min
+     *            the new value.
      */
     public void setMin(double min) {
         this.min = min;
@@ -143,7 +146,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
     /**
      * Gets the minimum for this Number Element formated as a String according
      * to the number format.
-     *
+     * 
      * @return The minimum for this Number Element formatted as a String.
      */
     public String getMinAsString() {
@@ -152,7 +155,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Gets the number format of this Number Element.
-     *
+     * 
      * @return the number format of this Number Element.
      */
     public String getNumberFormat() {
@@ -161,8 +164,9 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Set the number format for this Number Element.
-     *
-     * @param newNumberFormat The new number format. if the number format is not correct.
+     * 
+     * @param newNumberFormat
+     *            The new number format. if the number format is not correct.
      */
     private void setNumberFormat(String newNumberFormat) {
         newNumberFormat = newNumberFormat.trim();
@@ -185,7 +189,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Gets the step for this Number Element.
-     *
+     * 
      * @return The step for this Number Element.
      */
     public double getStep() {
@@ -194,8 +198,9 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Set the new step value.
-     *
-     * @param step the new value.
+     * 
+     * @param step
+     *            the new value.
      */
     public void setStep(double step) {
         this.step = step;
@@ -204,7 +209,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
     /**
      * Gets the step for this Number Element formated as a String according to
      * the number format.
-     *
+     * 
      * @return The step for this Number Element formatted as a String.
      */
     public String getStepAsString() {
@@ -214,7 +219,7 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
     /**
      * Gets the value of this Number Element formated as a String according to
      * the number format.
-     *
+     * 
      * @return The value of this Number Element formatted as a String.
      */
     public String getValueAsString() {
@@ -223,8 +228,9 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * A convenience method to set the value represented by a String.
-     *
-     * @param valueS The value if it is not a value within the limits.
+     * 
+     * @param valueS
+     *            The value if it is not a value within the limits.
      */
     public void setValueAsString(String valueS) {
         value = parseNumber(valueS);
@@ -236,10 +242,11 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
     /**
      * Returns a number formatted according to the Number Format of this Number
      * Element.
-     *
-     * @param number the number to be formatted.
+     * 
+     * @param number
+     *            the number to be formatted.
      * @return the number formatted according to the Number Format of this
-     * Number Element.
+     *         Number Element.
      */
     private String getNumberAsString(double number) {
         String aux;
@@ -284,8 +291,9 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * A covenience method to set the value represented by a double.
-     *
-     * @param doubleValue The value if it is not a value within the limits.
+     * 
+     * @param doubleValue
+     *            The value if it is not a value within the limits.
      */
     public void setValueAsDouble(double doubleValue) {
         value = doubleValue;
@@ -296,11 +304,12 @@ public class INDINumberElement extends INDIElement<INDINumberElement> {
 
     /**
      * Parses a number according to the Number Format of this Number Element.
-     *
-     * @param number The number to be parsed.
+     * 
+     * @param number
+     *            The number to be parsed.
      * @return the parsed number
-     * @throws IllegalArgumentException if the <code>number</code> is not
-     *                                  correctly formatted.
+     * @throws IllegalArgumentException
+     *             if the <code>number</code> is not correctly formatted.
      */
     private double parseNumber(String number) {
         double res;

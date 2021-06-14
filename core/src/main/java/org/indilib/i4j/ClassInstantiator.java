@@ -10,12 +10,12 @@ package org.indilib.i4j;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * A class to instantiate other classes based on their name and constructor
  * parameters.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public final class ClassInstantiator {
@@ -50,12 +50,15 @@ public final class ClassInstantiator {
     /**
      * Instantiates an object from a list of possible classes. The object will
      * be of the class of the first instantiable class in an array.
-     *
-     * @param possibleClassNames An array of class names from which to try to instantiate a
-     *                           object.
-     * @param arguments          The arguments for the constructors.
+     * 
+     * @param possibleClassNames
+     *            An array of class names from which to try to instantiate a
+     *            object.
+     * @param arguments
+     *            The arguments for the constructors.
      * @return The first object that can be instantiated from a list of classes.
-     * @throws INDIException if there is no suitable class to be instantiated.
+     * @throws INDIException
+     *             if there is no suitable class to be instantiated.
      */
     public static Object instantiate(final String[] possibleClassNames, final Object[] arguments) throws INDIException {
         /*
@@ -79,11 +82,14 @@ public final class ClassInstantiator {
     /**
      * Gets a suitable Constructor from a list. It check for the parameters to
      * coincide with a list of parameter classes.
-     *
-     * @param constructors The list of constructors from which to get a suitable one.
-     * @param arguments    The array of parameters objects for the constructor.
+     * 
+     * @param constructors
+     *            The list of constructors from which to get a suitable one.
+     * @param arguments
+     *            The array of parameters objects for the constructor.
      * @return The first suitable constructor for a set of parameters.
-     * @throws INDIException If no suitable constructor is found.
+     * @throws INDIException
+     *             If no suitable constructor is found.
      */
     private static Constructor<?> getSuitableConstructor(final Constructor<?>[] constructors, final Object[] arguments) throws INDIException {
         for (Constructor<?> c : constructors) {
@@ -98,7 +104,8 @@ public final class ClassInstantiator {
                     break;
                 }
             }
-            if (match) return c;
+            if (match)
+                return c;
         }
 
         throw new INDIException("No suitable class to instantiate. Probably some libraries are missing in the classpath.");

@@ -10,12 +10,12 @@ package org.indilib.i4j.client;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -31,7 +31,7 @@ import org.indilib.i4j.protocol.OneSwitch;
 
 /**
  * A class representing a INDI Switch Element.
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  */
 public class INDISwitchElement extends INDIElement {
@@ -56,10 +56,12 @@ public class INDISwitchElement extends INDIElement {
      * Constructs an instance of <code>INDISwitchElement</code>. Usually called
      * from a <code>INDIProperty</code>. Throws IllegalArgumentException if the
      * XML Element is not well formed (switch value not correct).
-     *
-     * @param xml      A XML Element <code>&lt;defSwitch&gt;</code> describing the
-     *                 Switch Element.
-     * @param property The <code>INDIProperty</code> to which the Element belongs.
+     * 
+     * @param xml
+     *            A XML Element <code>&lt;defSwitch&gt;</code> describing the
+     *            Switch Element.
+     * @param property
+     *            The <code>INDIProperty</code> to which the Element belongs.
      */
     protected INDISwitchElement(DefSwitch xml, INDISwitchProperty property) {
         super(xml, property);
@@ -78,8 +80,9 @@ public class INDISwitchElement extends INDIElement {
      * Element.
      * <p>
      * This method will notify the change of the value to the listeners.
-     *
-     * @param xml A XML Element &lt;oneSwitch&gt; describing the Element.
+     * 
+     * @param xml
+     *            A XML Element &lt;oneSwitch&gt; describing the Element.
      */
     @Override
     protected void setValue(OneElement<?> xml) {
@@ -91,8 +94,9 @@ public class INDISwitchElement extends INDIElement {
     /**
      * Sets the value of the Switch Property. Throws IllegalArgumentException if
      * the new status is not a correct one ("On" or "Off")
-     *
-     * @param newStatus the new status of the property
+     * 
+     * @param newStatus
+     *            the new status of the property
      */
     private void setValue(String newStatus) {
         if (newStatus.compareTo("Off") == 0) {
@@ -117,11 +121,13 @@ public class INDISwitchElement extends INDIElement {
     /**
      * Checks if a desired value would be correct to be applied to the Switch
      * Element, that is a <code>SwitchStatus</code> object.
-     *
-     * @param desiredValue The value to be checked.
+     * 
+     * @param desiredValue
+     *            The value to be checked.
      * @return <code>true</code> if the <code>desiredValue</code> is a
-     * <code>SwitchStatus</code>. <code>false</code> otherwise.
-     * @throws INDIValueException if <code>desiredValue</code> is <code>null</code>.
+     *         <code>SwitchStatus</code>. <code>false</code> otherwise.
+     * @throws INDIValueException
+     *             if <code>desiredValue</code> is <code>null</code>.
      */
     @Override
     public boolean checkCorrectValue(Object desiredValue) throws INDIValueException {
@@ -173,9 +179,9 @@ public class INDISwitchElement extends INDIElement {
      * Returns the XML code &lt;oneSwitch&gt; representing this Switch Element
      * with a new value (a <code>SwitchStatus</code>). Resets the desired
      * status.
-     *
+     * 
      * @return the XML code <code>&lt;oneSwitch&gt;</code> representing this
-     * Switch Element with a new value.
+     *         Switch Element with a new value.
      * @see #setDesiredValue
      */
     @Override

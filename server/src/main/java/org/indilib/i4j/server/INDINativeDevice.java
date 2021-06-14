@@ -10,14 +10,14 @@ package org.indilib.i4j.server;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -32,7 +32,7 @@ import java.io.IOException;
 
 /**
  * A class that represent a Native Device (created with the usual INDI library).
- *
+ * 
  * @author S. Alonso (Zerjillo) [zerjioi at ugr.es]
  * @author Richard van Nieuwenhoven
  */
@@ -61,11 +61,14 @@ public class INDINativeDevice extends INDIDevice {
 
     /**
      * Constructs a new Native Device and launches it as a external process.
-     *
-     * @param server     The server which listens to this Device.
-     * @param driverPath The path of of the Driver.
-     * @throws INDIException If there is any problem launching the external process of the
-     *                       driver.
+     * 
+     * @param server
+     *            The server which listens to this Device.
+     * @param driverPath
+     *            The path of of the Driver.
+     * @throws INDIException
+     *             If there is any problem launching the external process of the
+     *             driver.
      */
     protected INDINativeDevice(INDIServer server, String driverPath) throws INDIException {
         super(server);
@@ -94,7 +97,7 @@ public class INDINativeDevice extends INDIDevice {
 
     /**
      * Gets the path of the Driver.
-     *
+     * 
      * @return The path of the Driver.
      */
     public String getDriverPath() {
@@ -113,7 +116,7 @@ public class INDINativeDevice extends INDIDevice {
     @Override
     public String[] getNames() {
         return new String[]{
-                name
+            name
         };
     }
 
@@ -137,7 +140,7 @@ public class INDINativeDevice extends INDIDevice {
 
     /**
      * Gets a String representation of the Device.
-     *
+     * 
      * @return A String representation of the Device.
      */
     @Override
@@ -148,8 +151,9 @@ public class INDINativeDevice extends INDIDevice {
     /**
      * Deals with a possible new Device name. If the Device already has a name,
      * the new name is discarded.
-     *
-     * @param possibleNewName The new possible new name.
+     * 
+     * @param possibleNewName
+     *            The new possible new name.
      */
     @Override
     protected void dealWithPossibleNewDeviceName(String possibleNewName) {
@@ -160,10 +164,11 @@ public class INDINativeDevice extends INDIDevice {
 
     /**
      * Checks if the Device has a particular name.
-     *
-     * @param nameToCheck The name to check.
+     * 
+     * @param nameToCheck
+     *            The name to check.
      * @return <code>true</code> if the Device respond to <code>name</code>.
-     * <code>false</code> otherwise.
+     *         <code>false</code> otherwise.
      */
     @Override
     protected boolean hasName(String nameToCheck) {

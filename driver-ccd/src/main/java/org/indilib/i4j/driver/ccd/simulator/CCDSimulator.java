@@ -10,14 +10,14 @@ package org.indilib.i4j.driver.ccd.simulator;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
- * License along with this program. If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
@@ -45,7 +45,7 @@ import java.util.Random;
 /**
  * This driver simulates a ccd dirver by sending always sending the same pictute
  * when an exposure is ready.
- *
+ * 
  * @author Richard van Nieuwenhoven
  */
 public class CCDSimulator extends INDICCDDriver {
@@ -69,6 +69,7 @@ public class CCDSimulator extends INDICCDDriver {
      * the number of milliseconds per second.
      */
     private static final double MILLISECONDS_PER_SECOND = 1000d;
+
     /**
      * the simulated camera.
      */
@@ -76,8 +77,9 @@ public class CCDSimulator extends INDICCDDriver {
 
     /**
      * standard constructor for the simulated ccd driver.
-     *
-     * @param connection the indi connection to the server.
+     * 
+     * @param connection
+     *            the indi connection to the server.
      */
     public CCDSimulator(INDIConnection connection) {
         super(connection);
@@ -194,34 +196,42 @@ public class CCDSimulator extends INDICCDDriver {
          * sleep time for 1/10 of a second.
          */
         private static final long ONE_TENTH_OF_A_SECOND = 100L;
+
         /**
          * the camera vertical resolution.
          */
         private final int heigth;
+
         /**
          * the camera horizontal resolution.
          */
         private final int width;
+
         /**
          * as soon as this value is a real number the count down starts.
          */
         private double exposure = Double.NaN;
+
         /**
          * random seed to give some reality.
          */
         private Random random = new Random(System.currentTimeMillis());
+
         /**
          * stop the camera.
          */
         private boolean stop = false;
+
         /**
          * the current (simulated) temperature.
          */
         private double temperature = 0.0d;
+
         /**
          * the target temperature to reach.
          */
         private double theTargetTemperature = Double.NaN;
+
         /**
          * the image to send.
          */
@@ -261,9 +271,11 @@ public class CCDSimulator extends INDICCDDriver {
         /**
          * update the exposure left value. and send the image if the rest
          * reaches 0.
-         *
-         * @param sleeptime      the sleep time per loop
-         * @param updateProperty send the property values to the client.
+         * 
+         * @param sleeptime
+         *            the sleep time per loop
+         * @param updateProperty
+         *            send the property values to the client.
          */
         private void updateExposure(long sleeptime, boolean updateProperty) {
             if (!Double.isNaN(exposure)) {
@@ -330,8 +342,9 @@ public class CCDSimulator extends INDICCDDriver {
 
         /**
          * update the temperature field.
-         *
-         * @param updateProperty should the client property be updated?
+         * 
+         * @param updateProperty
+         *            should the client property be updated?
          */
         protected void updateTemperature(boolean updateProperty) {
             double tempDiff = (random.nextDouble() - RANDOM_VALUE_MOVE) / TEMPERATURE_RANDOM_PART;
